@@ -1,6 +1,7 @@
 # propinquity
 
 ## Prerequisites
+
   1. a local version of the OTT taxonomy (see http://files.opentreeoflife.org/ott/)
     with an environmental variable pointing to it:
 
@@ -10,3 +11,8 @@
     with an environmental variable pointing to it:
 
     export PEYOTL_ROOT=/tmp/peyotl
+
+    currently requires non-merged branches of 
+
+## Caveats
+Currently just downloading a copy of the `synthesis-collections.json`
