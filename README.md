@@ -14,6 +14,9 @@
 
     currently requires non-merged branches of peyotl
 
+  3. [tee](https://en.wikipedia.org/wiki/Tee_(command))
+
+
 ## Usage
 
 After you have your environment set up (as described above), you'll need to

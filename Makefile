@@ -16,7 +16,12 @@ PRUNE_DUBIOUS_ARTIFACTS=cleaned_ott/cleaned_ott.tre \
 
 INPUT_PHYLO_ARTIFACTS=phylo_input/studies.txt phylo_input/study_tree_pairs.txt phylo_input/rank_collection.json
 
-ARTIFACTS=$(PRUNE_DUBIOUS_ARTIFACTS) $(INPUT_PHYLO_ARTIFACTS)
+ARTIFACTS=$(PRUNE_DUBIOUS_ARTIFACTS) \
+	$(INPUT_PHYLO_ARTIFACTS) \
+	phylo_snapshot/concrete_rank_collection.json
+
+STUDY_TREE_STEM=$(shell cat phylo_input/study_tree_pairs.txt)
+SNAPSHOT_CACHE=$(addprefix phylo_snapshot/, $(STUDY_TREE_STEM))
 
 # default is "all"
 all: $(ARTIFACTS)
@@ -57,3 +62,11 @@ phylo_input/studies.txt: phylo_input/rank_collection.json
 
 phylo_input/study_tree_pairs.txt: phylo_input/rank_collection.json
 	$(PEYOTL_ROOT)/scripts/collection_export.py --export=studyID_treeID phylo_input/rank_collection.json >phylo_input/study_tree_pairs.txt
+
+phylo_snapshot/concrete_rank_collection.json:
+	if ! test -d phylo_snapshot ; then mkdir phylo_snapshot ; fi
+	$(PEYOTL_ROOT)/scripts/phylesystem/export_studies_from_collection.py \
+	  --phylesystem-par=$(PHYLESYSTEM_ROOT)/shards \
+	  --output-dir=phylo_snapshot \
+	  phylo_input/rank_collection.json \
+	  -v 2>&1 || tee phylo_snapshot/stdouterr.txt
