@@ -18,6 +18,7 @@ INPUT_PHYLO_ARTIFACTS=phylo_input/studies.txt phylo_input/study_tree_pairs.txt p
 
 ARTIFACTS=$(PRUNE_DUBIOUS_ARTIFACTS) \
 	$(INPUT_PHYLO_ARTIFACTS) \
+	phylo_snapshot/git_shas.txt \
 	phylo_snapshot/concrete_rank_collection.json
 
 STUDY_TREE_STEM=$(shell cat phylo_input/study_tree_pairs.txt)
@@ -63,7 +64,11 @@ phylo_input/studies.txt: phylo_input/rank_collection.json
 phylo_input/study_tree_pairs.txt: phylo_input/rank_collection.json
 	$(PEYOTL_ROOT)/scripts/collection_export.py --export=studyID_treeID phylo_input/rank_collection.json >phylo_input/study_tree_pairs.txt
 
-phylo_snapshot/concrete_rank_collection.json:
+phylo_snapshot/git_shas.txt:
+	./bin/shard_shas.sh > .tmp_git_shas.txt
+	if ! diff phylo_snapshot/git_shas.txt .tmp_git_shas.txt >/dev/null 2>&1 ; then mv .tmp_git_shas.txt phylo_snapshot/git_shas.txt ; else rm .tmp_git_shas.txt ; fi
+
+phylo_snapshot/concrete_rank_collection.json: phylo_snapshot/git_shas.txt
 	if ! test -d phylo_snapshot ; then mkdir phylo_snapshot ; fi
 	$(PEYOTL_ROOT)/scripts/phylesystem/export_studies_from_collection.py \
 	  --phylesystem-par=$(PHYLESYSTEM_ROOT)/shards \

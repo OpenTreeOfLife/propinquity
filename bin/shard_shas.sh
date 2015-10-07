@@ -5,7 +5,7 @@ then
     exit 1
 fi
 cd "${PHYLESYSTEM_ROOT}" || exit
-TMPF="/tmp/shard-shas.tmp"
+TMPF="${PWD}/.shard-shas.tmp"
 rm -f "${TMPF}"
 for f in $(ls -d shards/phylesystem-*)
 do
@@ -14,4 +14,4 @@ do
     cd - >/dev/null 2>&1
 done
 cat "${TMPF}" | sort
-rm "${TMPF}"
+rm -f "${TMPF}"
