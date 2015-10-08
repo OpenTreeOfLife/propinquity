@@ -7,7 +7,7 @@
 
     $ export OTT_DIR=/tmp/ott/aster
 
-  2. [peyotl](https://github.com/OpenTreeOfLife/peyotl) should be downloaded and installed
+  2. [peyotl](https://github.com/mtholder/peyotl) should be downloaded and installed
     with an environmental variable pointing to it:
 
     export PEYOTL_ROOT=/tmp/peyotl
