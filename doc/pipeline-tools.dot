@@ -49,22 +49,30 @@ digraph P {
     subproblems -> subproblemsolntool;
     subproblemsolntool -> subproblemsoln;
 
+    graftedsolntool [shape=invhouse label="????" style=filled color="#CCCCFF"];
     graftedsoln [shape=box label="grafted solution"];
-    subproblemsoln -> graftedsoln;
+    subproblemsoln -> graftedsolntool;
+    graftedsolntool -> graftedsoln;
 
+    supertreetopotool [shape=invhouse label="????" style=filled color="#CCCCFF"];
     supertreetopo [shape=box label="Full supertree"];
-    graftedsoln -> supertreetopo;
-    cleanedott -> supertreetopo;
+    graftedsoln -> supertreetopotool;
+    cleanedott -> supertreetopotool;
+    supertreetopotool -> supertreetopo;
 
+    taxolabelledsupertreetool [shape=invhouse label="????" style=filled color="#CCCCFF"];
     taxolabelledsupertree [shape=box label="Supertree with labelled nodes"];
-    cleanedott -> taxolabelledsupertree;
-    supertreetopo -> taxolabelledsupertree;
+    cleanedott -> taxolabelledsupertreetool;
+    supertreetopo -> taxolabelledsupertreetool;
+    taxolabelledsupertreetool -> taxolabelledsupertree;
 
+    supertreewithsupporttool [shape=invhouse label="????" style=filled color="#CCCCFF"];
     supertreewithsupport [shape=box label="Supertree with support statments"];
-    taxolabelledsupertree -> supertreewithsupport;
-    cleanedphylo -> supertreewithsupport;
+    taxolabelledsupertree -> supertreewithsupporttool;
+    cleanedphylo -> supertreewithsupporttool;
+    supertreewithsupporttool -> supertreewithsupport;
 
-    treemachineLite [shape=oval];
+    treemachineLite [shape=invhouse label="treemachineLITE" style=filled color="#BBFFAA"];
     supertreewithsupport -> treemachineLite;
 
 }
