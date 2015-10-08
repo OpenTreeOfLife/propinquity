@@ -48,4 +48,4 @@ studyID_treeID represenation of the tree's ID.
 
 
 ## Sketch
-[![pipeline](https://github.com/mtholder/propinquity/blob/master/doc/pipeline.png)]
+[![pipeline](https://github.com/mtholder/propinquity/blob/master/doc/pipeline-tools.png)]
