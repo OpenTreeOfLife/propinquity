@@ -16,6 +16,7 @@
 
   3. [tee](https://en.wikipedia.org/wiki/Tee_(command))
 
+  4. a local copy of the phylesystem with an environmental variable pointing to the parent of the shards directory.
 
 ## Usage
 
@@ -48,4 +49,6 @@ studyID_treeID represenation of the tree's ID.
 
 
 ## Sketch
-[![pipeline](https://github.com/mtholder/propinquity/blob/master/doc/pipeline-tools.png)]
+A cartoon of the pipeline with peyotl tools in pink and otcetera tools in blue.
+
+![pipeline](https://github.com/mtholder/propinquity/blob/master/doc/pipeline-tools.png)
