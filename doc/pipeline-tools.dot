@@ -1,5 +1,5 @@
 digraph P {
-    ottflags [shape=oval label="OTT Flags"];
+    ottflags [shape=diamond label="OTT Flags"];
     ott [shape=oval label="OTT"];
     phylesystem [shape=oval label="phylesystem"];
     synthcoll [shape=oval label="synth. collection"];

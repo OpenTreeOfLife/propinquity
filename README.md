@@ -50,8 +50,10 @@ studyID_treeID represenation of the tree's ID.
 
 ## Sketch
 A cartoon of the pipeline with peyotl tools in pink and otcetera tools in blue.
-Inputs are ovals, products of this repo are contents of directories, and the rectangles show these directories.
+Input from other components of Open Tree of Life are ovals.
+Settings of the propinquity config file are in diamonds.
 
+The products of this repo are contents of directories, and the rectangles show these directories.
 Don't take this too literally.
 In some cases, there are multiple targets created with 
 different tools in a subdirectory.

@@ -32,17 +32,14 @@ clean:
 
 # "cleaned_ott" has dubious taxa pruned off. should check against treemachine and smasher versions
 cleaned_ott/cleaning_flags.txt: $(CONFIG_FILENAME)
-	if ! test -d cleaned_ott ; then mkdir cleaned_ott ; fi
 	./bin/config_checker.py --config=$(CONFIG_FILENAME) --property=cleaning_flags > cleaned_ott/.raw_cleaning_flags.txt
 	if ! diff cleaned_ott/.raw_cleaning_flags.txt cleaned_ott/cleaning_flags.txt ; then mv cleaned_ott/.raw_cleaning_flags.txt cleaned_ott/cleaning_flags.txt ; fi
 
 
 cleaned_ott/ott_version.txt: $(OTT_DIR)/version.txt
-	if ! test -d cleaned_ott ; then mkdir cleaned_ott ; fi
 	if ! diff $(OTT_DIR)/version.txt cleaned_ott/ott_version.txt >/dev/null 2>&1 ; then cp $(OTT_DIR)/version.txt cleaned_ott/ott_version.txt ; fi
 
 cleaned_ott/cleaned_ott.tre: $(OTT_FILEPATHS) cleaned_ott/ott_version.txt cleaned_ott/cleaning_flags.txt
-	if ! test -d cleaned_ott ; then mkdir cleaned_ott ; fi
 	$(PEYOTL_ROOT)/scripts/ott/suppress-dubious.py \
 	    --ott-dir=$(OTT_DIR) \
 	    --output=cleaned_ott/cleaned_ott.tre \
@@ -54,7 +51,6 @@ cleaned_ott/cleaned_ott.json: cleaned_ott/cleaned_ott.tre
 
 # phylo_input holds the lists of study+tree pairs to be used during the supertree construction
 phylo_input/rank_collection.json: 
-	if ! test -d phylo_input ; then mkdir phylo_input ; fi
 	echo '***TEMPORARY WORKAROUND***!!!!'
 	curl -o phylo_input/rank_collection.json http://phylo.bio.ku.edu/ot/synthesis-collection.json
 
@@ -69,7 +65,6 @@ phylo_snapshot/git_shas.txt:
 	if ! diff phylo_snapshot/git_shas.txt .tmp_git_shas.txt >/dev/null 2>&1 ; then mv .tmp_git_shas.txt phylo_snapshot/git_shas.txt ; else rm .tmp_git_shas.txt ; fi
 
 phylo_snapshot/concrete_rank_collection.json: phylo_snapshot/git_shas.txt
-	if ! test -d phylo_snapshot ; then mkdir phylo_snapshot ; fi
 	$(PEYOTL_ROOT)/scripts/phylesystem/export_studies_from_collection.py \
 	  --phylesystem-par=$(PHYLESYSTEM_ROOT)/shards \
 	  --output-dir=phylo_snapshot \
