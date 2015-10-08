@@ -1,0 +1,70 @@
+digraph P {
+    ottflags [shape=oval label="OTT Flags"];
+    ott [shape=oval label="OTT"];
+    phylesystem [shape=oval label="phylesystem"];
+    synthcoll [shape=oval label="synth. collection"];
+
+    cleanedotttool [shape=invhouse label="suppress-dubious.py", style=filled, color="#EEBBDD"];
+    cleanedott [shape=box label="cleaned OTT"];
+    ott -> cleanedotttool ;
+    ottflags -> cleanedotttool;
+    cleanedotttool ->cleanedott;
+
+    phyloinputtool [shape=invhouse label="collection_export.py", style=filled, color="#EEBBDD"];
+    phyloinput [shape=box label="phylo input list"];
+    synthcoll -> phyloinputtool ;
+    phyloinputtool -> phyloinput;
+
+    phylosnapshottool [shape=invhouse label="export_studies_from_collection.py", style=filled, color="#EEBBDD"];
+    phylosnapshot [shape=box label="phylo snapshot"];
+    phyloinput -> phylosnapshottool ;
+    phylesystem -> phylosnapshottool ;
+    phylosnapshottool ->phylosnapshot;
+
+    cleanedphylotool [shape=invhouse label="to_clean_ott_id_mapped_leaves.py", style=filled, color="#EEBBDD"];
+    cleanedphylo [shape=box label="cleaned phylo"];
+    phylosnapshot -> cleanedphylotool ;
+    ottflags -> cleanedphylotool ;
+    ott -> cleanedphylotool ;
+    cleanedphylotool -> cleanedphylo;
+
+    phyloinducedtaxonomytool [shape=invhouse label="otc-nonterminals-to-exemplars" style=filled color="#CCCCFF"];
+    phyloinducedtaxonomy [shape=box label="phylo induced taxonomy"];
+    exemplifiedphylo [shape=box label="exemplified phylo"];
+    cleanedphylo -> phyloinducedtaxonomytool;
+    cleanedott -> phyloinducedtaxonomytool;
+    phyloinducedtaxonomytool -> phyloinducedtaxonomy;
+    phyloinducedtaxonomytool -> exemplifiedphylo;
+
+
+
+    subproblemstool [shape=invhouse label="otc-uncontested-decompose" style=filled color="#CCCCFF"];
+    subproblems [shape=box label="subproblems"];
+    phyloinducedtaxonomy -> subproblemstool;
+    exemplifiedphylo -> subproblemstool;
+    subproblemstool -> subproblems;
+
+    subproblemsolntool [shape=invhouse label="otc-solve-subproblem" style=filled color="#CCCCFF"];
+    subproblemsoln [shape=box label="subproblem solutions"];
+    subproblems -> subproblemsolntool;
+    subproblemsolntool -> subproblemsoln;
+
+    graftedsoln [shape=box label="grafted solution"];
+    subproblemsoln -> graftedsoln;
+
+    supertreetopo [shape=box label="Full supertree"];
+    graftedsoln -> supertreetopo;
+    cleanedott -> supertreetopo;
+
+    taxolabelledsupertree [shape=box label="Supertree with labelled nodes"];
+    cleanedott -> taxolabelledsupertree;
+    supertreetopo -> taxolabelledsupertree;
+
+    supertreewithsupport [shape=box label="Supertree with support statments"];
+    taxolabelledsupertree -> supertreewithsupport;
+    cleanedphylo -> supertreewithsupport;
+
+    treemachineLite [shape=oval];
+    supertreewithsupport -> treemachineLite;
+
+}
