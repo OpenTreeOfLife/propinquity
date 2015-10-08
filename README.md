@@ -47,3 +47,5 @@ with the study ID alone.
 studyID_treeID represenation of the tree's ID.
 
 
+## Sketch
+https://github.com/mtholder/propinquity/blob/master/doc/pipeline.png
