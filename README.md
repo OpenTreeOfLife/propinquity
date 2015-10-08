@@ -50,5 +50,11 @@ studyID_treeID represenation of the tree's ID.
 
 ## Sketch
 A cartoon of the pipeline with peyotl tools in pink and otcetera tools in blue.
+Inputs are ovals, products of this repo are contents of directories, and the rectangles show these directories.
+
+Don't take this too literally.
+In some cases, there are multiple targets created with 
+different tools in a subdirectory.
+In these cases this sketch just shows the most interesting tool.
 
 ![pipeline](https://github.com/mtholder/propinquity/blob/master/doc/pipeline-tools.png)
