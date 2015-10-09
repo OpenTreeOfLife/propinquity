@@ -16,19 +16,27 @@ PRUNE_DUBIOUS_ARTIFACTS=cleaned_ott/cleaned_ott.tre \
 
 INPUT_PHYLO_ARTIFACTS=phylo_input/studies.txt phylo_input/study_tree_pairs.txt phylo_input/rank_collection.json
 
+STUDY_TREE_STEM=$(shell cat phylo_input/study_tree_pairs.txt)
+STUDY_TREE_FN=$(addsuffix .json, $(STUDY_TREE_STEM))
+SNAPSHOT_CACHE_STEM=$(addprefix phylo_snapshot/, $(STUDY_TREE_FN))
+CLEANED_PHYLO=$(addprefix cleaned_phylo/, $(STUDY_TREE_FN))
+SNAPSHOT_CACHE=$(addprefix phylo_snapshot/, $(STUDY_TREE_FN))
+
 ARTIFACTS=$(PRUNE_DUBIOUS_ARTIFACTS) \
 	$(INPUT_PHYLO_ARTIFACTS) \
 	phylo_snapshot/git_shas.txt \
-	phylo_snapshot/concrete_rank_collection.json
+	phylo_snapshot/concrete_rank_collection.json \
+	cleaned_phylo/cleaning_flags.txt \
+	cleaned_phylo/phylo_inputs_cleaned.txt
 
-STUDY_TREE_STEM=$(shell cat phylo_input/study_tree_pairs.txt)
-SNAPSHOT_CACHE=$(addprefix phylo_snapshot/, $(STUDY_TREE_STEM))
 
 # default is "all"
 all: $(ARTIFACTS)
+	echo $(CLEANED_PHYLO)
 
 clean:
 	rm -f $(ARTIFACTS)
+	rm -f $(CLEANED_PHYLO)
 
 # "cleaned_ott" has dubious taxa pruned off. should check against treemachine and smasher versions
 cleaned_ott/cleaning_flags.txt: $(CONFIG_FILENAME)
@@ -64,9 +72,30 @@ phylo_snapshot/git_shas.txt:
 	./bin/shard_shas.sh > .tmp_git_shas.txt
 	if ! diff phylo_snapshot/git_shas.txt .tmp_git_shas.txt >/dev/null 2>&1 ; then mv .tmp_git_shas.txt phylo_snapshot/git_shas.txt ; else rm .tmp_git_shas.txt ; fi
 
-phylo_snapshot/concrete_rank_collection.json: phylo_snapshot/git_shas.txt
+phylo_snapshot/concrete_rank_collection.json: phylo_snapshot/git_shas.txt phylo_input/rank_collection.json
 	$(PEYOTL_ROOT)/scripts/phylesystem/export_studies_from_collection.py \
 	  --phylesystem-par=$(PHYLESYSTEM_ROOT)/shards \
 	  --output-dir=phylo_snapshot \
 	  phylo_input/rank_collection.json \
 	  -v 2>&1 || tee phylo_snapshot/stdouterr.txt
+
+$(SNAPSHOT_CACHE):  phylo_snapshot/git_shas.txt phylo_snapshot/concrete_rank_collection.json
+
+
+define SNAPSHOT_CACHE_VAR
+$(SNAPSHOT_CACHE)
+endef
+export SNAPSHOT_CACHE_VAR
+
+cleaned_phylo/phylo_inputs_cleaned.txt: $(SNAPSHOT_CACHE) cleaned_ott/cleaning_flags.txt
+	if ! diff cleaned_ott/cleaning_flags.txt cleaned_phylo/cleaning_flags.txt >/dev/null 2>&1 ; \
+	then echo $$SNAPSHOT_CACHE_VAR | sed -E 's/ /\n/g' > cleaned_phylo/needs_updating.txt ;\
+	fi
+	$(PEYOTL_ROOT)/scripts/nexson/prune_to_clean_mapped.py \
+	  --ott-dir=$(OTT_DIR) \
+	  --input-files-list=cleaned_phylo/needs_updating.txt \
+	  --out-dir=cleaned_phylo \
+	  --ott-prune-flags="$(shell cat cleaned_ott/cleaning_flags.txt)"
+
+cleaned_phylo/cleaning_flags.txt: cleaned_phylo/phylo_inputs_cleaned.txt
+	cp cleaned_ott/cleaning_flags.txt cleaned_phylo/cleaning_flags.txt

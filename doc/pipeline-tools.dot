@@ -4,7 +4,7 @@ digraph P {
     phylesystem [shape=oval label="phylesystem"];
     synthcoll [shape=oval label="synth. collection"];
 
-    cleanedotttool [shape=invhouse label="suppress-dubious.py", style=filled, color="#EEBBDD"];
+    cleanedotttool [shape=invhouse label="suppress_by_flag", style=filled, color="#EEBBDD"];
     cleanedott [shape=box label="cleaned_ott"];
     ott -> cleanedotttool ;
     ottflags -> cleanedotttool;
@@ -21,7 +21,7 @@ digraph P {
     phylesystem -> phylosnapshottool ;
     phylosnapshottool ->phylosnapshot;
 
-    cleanedphylotool [shape=invhouse label="to_clean_ott_id_mapped_leaves.py", style=filled, color="#EEBBDD"];
+    cleanedphylotool [shape=invhouse label="prune_to_clean_mapped.py", style=filled, color="#EEBBDD"];
     cleanedphylo [shape=box label="cleaned_phylo"];
     phylosnapshot -> cleanedphylotool ;
     ottflags -> cleanedphylotool ;
