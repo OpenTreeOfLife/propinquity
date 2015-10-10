@@ -49,7 +49,7 @@ digraph P {
     subproblems -> subproblemsolntool;
     subproblemsolntool -> subproblemsoln;
 
-    graftedsolntool [shape=invhouse label="????" style=filled color="#CCCCFF"];
+    graftedsolntool [shape=invhouse label="otc-graft-solutions" style=filled color="#CCCCFF"];
     graftedsoln [shape=box label="grafted_solution"];
     subproblemsoln -> graftedsolntool;
     graftedsolntool -> graftedsoln;
