@@ -68,6 +68,8 @@ phylo_input/studies.txt: phylo_input/rank_collection.json
 phylo_input/study_tree_pairs.txt: phylo_input/rank_collection.json
 	$(PEYOTL_ROOT)/scripts/collection_export.py --export=studyID_treeID phylo_input/rank_collection.json >phylo_input/study_tree_pairs.txt
 
+# Snapshots of the NexSON are more efficient to produce in bulk (hence the export of the entire
+# collection as a part of the concrete_rank_collection target
 phylo_snapshot/git_shas.txt:
 	./bin/shard_shas.sh > .tmp_git_shas.txt
 	if ! diff phylo_snapshot/git_shas.txt .tmp_git_shas.txt >/dev/null 2>&1 ; then mv .tmp_git_shas.txt phylo_snapshot/git_shas.txt ; else rm .tmp_git_shas.txt ; fi
@@ -77,21 +79,36 @@ phylo_snapshot/concrete_rank_collection.json: phylo_snapshot/git_shas.txt phylo_
 	  --phylesystem-par=$(PHYLESYSTEM_ROOT)/shards \
 	  --output-dir=phylo_snapshot \
 	  phylo_input/rank_collection.json \
-	  -v 2>&1 || tee phylo_snapshot/stdouterr.txt
+	  -v 2>&1 | tee phylo_snapshot/stdouterr.txt
 
-$(SNAPSHOT_CACHE):  phylo_snapshot/git_shas.txt phylo_snapshot/concrete_rank_collection.json
+phylo_snapshot/pg_%.json:  phylo_snapshot/git_shas.txt phylo_snapshot/concrete_rank_collection.json
+	$(PEYOTL_ROOT)/scripts/phylesystem/export_studies_from_collection.py \
+	  --phylesystem-par=$(PHYLESYSTEM_ROOT)/shards \
+	  --output-dir=phylo_snapshot \
+	  --select="$(shell basename $@)" \
+	  phylo_input/rank_collection.json \
+	  -v 2>&1 | tee -a phylo_snapshot/stdouterr.txt
 
+phylo_snapshot/ot_%.json:  phylo_snapshot/git_shas.txt phylo_snapshot/concrete_rank_collection.json
+	$(PEYOTL_ROOT)/scripts/phylesystem/export_studies_from_collection.py \
+	  --phylesystem-par=$(PHYLESYSTEM_ROOT)/shards \
+	  --output-dir=phylo_snapshot \
+	  --select="$(shell basename $@)" \
+	  phylo_input/rank_collection.json \
+	  -v 2>&1 | tee -a phylo_snapshot/stdouterr.txt
 
 define SNAPSHOT_CACHE_VAR
 $(SNAPSHOT_CACHE)
 endef
 export SNAPSHOT_CACHE_VAR
 
-cleaned_phylo/phylo_inputs_cleaned.txt: $(SNAPSHOT_CACHE) cleaned_ott/cleaning_flags.txt
+cleaned_phylo/needs_updating.txt: phylo_snapshot/concrete_rank_collection.json
 	if ! diff cleaned_ott/cleaning_flags.txt cleaned_phylo/cleaning_flags.txt >/dev/null 2>&1 ; \
 	then echo $$SNAPSHOT_CACHE_VAR | sed -E 's/ /\n/g' > cleaned_phylo/needs_updating.txt ;\
 	else ./bin/write-needs-updating cleaned_phylo $$SNAPSHOT_CACHE_VAR > cleaned_phylo/needs_updating.txt ;\
 	fi
+
+cleaned_phylo/phylo_inputs_cleaned.txt: $(SNAPSHOT_CACHE) cleaned_phylo/needs_updating.txt cleaned_ott/cleaning_flags.txt
 	$(PEYOTL_ROOT)/scripts/nexson/prune_to_clean_mapped.py \
 	  --ott-dir=$(OTT_DIR) \
 	  --input-files-list=cleaned_phylo/needs_updating.txt \
@@ -101,3 +118,14 @@ cleaned_phylo/phylo_inputs_cleaned.txt: $(SNAPSHOT_CACHE) cleaned_ott/cleaning_f
 
 cleaned_phylo/cleaning_flags.txt: cleaned_phylo/phylo_inputs_cleaned.txt
 	cp cleaned_ott/cleaning_flags.txt cleaned_phylo/cleaning_flags.txt
+
+cleaned_phylo/%.tre: phylo_snapshot/%.json cleaned_ott/cleaning_flags.txt
+	$(PEYOTL_ROOT)/scripts/nexson/prune_to_clean_mapped.py \
+	  --ott-dir=$(OTT_DIR) \
+	  --out-dir=cleaned_phylo \
+	  --ott-prune-flags="$(shell cat cleaned_ott/cleaning_flags.txt)" \
+	  $< 
+
+
+
+
