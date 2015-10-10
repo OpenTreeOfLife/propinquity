@@ -90,12 +90,14 @@ export SNAPSHOT_CACHE_VAR
 cleaned_phylo/phylo_inputs_cleaned.txt: $(SNAPSHOT_CACHE) cleaned_ott/cleaning_flags.txt
 	if ! diff cleaned_ott/cleaning_flags.txt cleaned_phylo/cleaning_flags.txt >/dev/null 2>&1 ; \
 	then echo $$SNAPSHOT_CACHE_VAR | sed -E 's/ /\n/g' > cleaned_phylo/needs_updating.txt ;\
+	else ./bin/write-needs-updating cleaned_phylo $$SNAPSHOT_CACHE_VAR > cleaned_phylo/needs_updating.txt ;\
 	fi
 	$(PEYOTL_ROOT)/scripts/nexson/prune_to_clean_mapped.py \
 	  --ott-dir=$(OTT_DIR) \
 	  --input-files-list=cleaned_phylo/needs_updating.txt \
 	  --out-dir=cleaned_phylo \
 	  --ott-prune-flags="$(shell cat cleaned_ott/cleaning_flags.txt)"
+	touch cleaned_phylo/phylo_inputs_cleaned.txt
 
 cleaned_phylo/cleaning_flags.txt: cleaned_phylo/phylo_inputs_cleaned.txt
 	cp cleaned_ott/cleaning_flags.txt cleaned_phylo/cleaning_flags.txt

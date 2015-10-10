@@ -2,3 +2,4 @@ cleaning_flags.txt
 needs_updating.txt
 *.tre
 *.json
+phylo_inputs_cleaned.txt
