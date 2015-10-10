@@ -81,21 +81,21 @@ phylo_snapshot/concrete_rank_collection.json: phylo_snapshot/git_shas.txt phylo_
 	  phylo_input/rank_collection.json \
 	  -v 2>&1 | tee phylo_snapshot/stdouterr.txt
 
-phylo_snapshot/pg_%.json:  phylo_snapshot/git_shas.txt phylo_snapshot/concrete_rank_collection.json
-	$(PEYOTL_ROOT)/scripts/phylesystem/export_studies_from_collection.py \
-	  --phylesystem-par=$(PHYLESYSTEM_ROOT)/shards \
-	  --output-dir=phylo_snapshot \
-	  --select="$(shell basename $@)" \
-	  phylo_input/rank_collection.json \
-	  -v 2>&1 | tee -a phylo_snapshot/stdouterr.txt
+# phylo_snapshot/pg_%.json:  phylo_snapshot/git_shas.txt phylo_snapshot/concrete_rank_collection.json
+# 	$(PEYOTL_ROOT)/scripts/phylesystem/export_studies_from_collection.py \
+# 	  --phylesystem-par=$(PHYLESYSTEM_ROOT)/shards \
+# 	  --output-dir=phylo_snapshot \
+# 	  --select="$(shell basename $@)" \
+# 	  phylo_input/rank_collection.json \
+# 	  -v 2>&1 | tee -a phylo_snapshot/stdouterr.txt
 
-phylo_snapshot/ot_%.json:  phylo_snapshot/git_shas.txt phylo_snapshot/concrete_rank_collection.json
-	$(PEYOTL_ROOT)/scripts/phylesystem/export_studies_from_collection.py \
-	  --phylesystem-par=$(PHYLESYSTEM_ROOT)/shards \
-	  --output-dir=phylo_snapshot \
-	  --select="$(shell basename $@)" \
-	  phylo_input/rank_collection.json \
-	  -v 2>&1 | tee -a phylo_snapshot/stdouterr.txt
+# phylo_snapshot/ot_%.json:  phylo_snapshot/git_shas.txt phylo_snapshot/concrete_rank_collection.json
+# 	$(PEYOTL_ROOT)/scripts/phylesystem/export_studies_from_collection.py \
+# 	  --phylesystem-par=$(PHYLESYSTEM_ROOT)/shards \
+# 	  --output-dir=phylo_snapshot \
+# 	  --select="$(shell basename $@)" \
+# 	  phylo_input/rank_collection.json \
+# 	  -v 2>&1 | tee -a phylo_snapshot/stdouterr.txt
 
 define SNAPSHOT_CACHE_VAR
 $(SNAPSHOT_CACHE)
@@ -119,12 +119,12 @@ cleaned_phylo/phylo_inputs_cleaned.txt: $(SNAPSHOT_CACHE) cleaned_phylo/needs_up
 cleaned_phylo/cleaning_flags.txt: cleaned_phylo/phylo_inputs_cleaned.txt
 	cp cleaned_ott/cleaning_flags.txt cleaned_phylo/cleaning_flags.txt
 
-cleaned_phylo/%.tre: phylo_snapshot/%.json cleaned_ott/cleaning_flags.txt
-	$(PEYOTL_ROOT)/scripts/nexson/prune_to_clean_mapped.py \
-	  --ott-dir=$(OTT_DIR) \
-	  --out-dir=cleaned_phylo \
-	  --ott-prune-flags="$(shell cat cleaned_ott/cleaning_flags.txt)" \
-	  $< 
+# cleaned_phylo/%.tre: phylo_snapshot/%.json cleaned_ott/cleaning_flags.txt
+# 	$(PEYOTL_ROOT)/scripts/nexson/prune_to_clean_mapped.py \
+# 	  --ott-dir=$(OTT_DIR) \
+# 	  --out-dir=cleaned_phylo \
+# 	  --ott-prune-flags="$(shell cat cleaned_ott/cleaning_flags.txt)" \
+# 	  $< 
 
 
 
