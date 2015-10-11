@@ -66,4 +66,4 @@ the OTT.
   4. `needs_updating.txt` a list of studies for which the `.tre` file is older than
   the corresponding `../phylo_snapshot/*.json` file.
 
-  5. `phylo_inputs_cleaned.txt`
+  5. `phylo_inputs_cleaned.txt` sentinel for successful execution of `prune_to_clean_mapped.py`
