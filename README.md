@@ -12,7 +12,8 @@
 
     export PEYOTL_ROOT=/tmp/peyotl
 
-    currently requires non-merged branches of peyotl
+    Note that (as of 2015-Oct-10) the master branch of peyotl on mtholder's
+    GitHub page (not the Open Tree of Life group). See the link above.
 
   3. [tee](https://en.wikipedia.org/wiki/Tee_(command))
 
