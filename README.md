@@ -16,7 +16,8 @@
 
   3. [tee](https://en.wikipedia.org/wiki/Tee_(command))
 
-  4. a local copy of the phylesystem with an environmental variable pointing to the parent of the shards directory.
+  4. a local copy of the phylesystem with an environmental variable PHYLESYSTEM_ROOT pointing to the parent of the shards directory.
+
 
 ## Usage
 
@@ -60,3 +61,25 @@ different tools in a subdirectory.
 In these cases this sketch just shows the most interesting tool.
 
 ![pipeline](https://github.com/mtholder/propinquity/blob/master/doc/pipeline-tools.png)
+
+### Example configuration
+
+    $ ls $PEYOTL_ROOT 
+    ...
+    peyotl
+    ...
+    setup.py
+    ...
+    $ echo $OTT_DIR
+    /tmp/ott2.9draft9
+    $ ls $OTT_DIR
+    ...
+    taxonomy.tsv
+    ...
+    $ ls $PHYLESYSTEM_ROOT/shards/phylesystem-1
+    next_study_id.json  README.md  study
+    $ cat config
+    [taxonomy]
+    cleaning_flags = major_rank_conflict,major_rank_conflict_direct,major_rank_conflict_inherited,environmental,viral,nootu,barren,not_otu,extinct_inherited,extinct_direct,hidden,tattered
+
+
