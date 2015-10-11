@@ -19,7 +19,7 @@ this directory.
   6. If the OTT Id for a leaf is mapped to a taxon that is a taxonomic ancestor
   of another leaf in the tree, then the leaf is pruned as "mapped_to_taxon_containing_other_mapped_tips"
   7. If there are multiple leaves mapped to the same OTT Id, one is chosen as an 
-  exemplar. Either because it had the '^ot:isTaxonExemplar' or because it had a node
+  exemplar. Either because it had the `^ot:isTaxonExemplar` or because it had a node
   id that is "lower" in lexicographic sort than any other node Id. **TODO** could be locale-specific, I suppose.
 
 ## Artifacts
