@@ -31,9 +31,9 @@ this directory.
   The other properties names other than `EMPTY_TREE` and `revised_ingroup_node`
   hold object with a `nodes` array and an `edges` array
   that correspond to the nodeId and edgeIds of the pruned or suppressed nodes and
-  edges. The property name indicates the reason for the pruning. 
+  edges. The property name indicates the reason for the pruning.
     * `EMPTY_TREE` If all of the nodes were pruned object in this JSON will contain a 
-    `EMPTY_TREE: true` property. 
+    `EMPTY_TREE`: true` property. 
     * `revised_ingroup_node` if the pruning of problematic node makes the ingroup
     node trivial, then this node will hold the ID of the node that is root of the
     emitted tree (otherwise the root node should agree be the ingroup node specified
