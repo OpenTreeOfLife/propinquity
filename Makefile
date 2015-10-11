@@ -29,8 +29,8 @@ ARTIFACTS=$(PRUNE_DUBIOUS_ARTIFACTS) \
 	cleaned_phylo/cleaning_flags.txt \
 	cleaned_phylo/phylo_inputs_cleaned.txt \
 	exemplified_phylo/taxonomy.tre \
-	exemplified_phylo/args.txt	
-
+	exemplified_phylo/args.txt \
+	phylo_induced_taxonomy/taxonomy.tre
 
 # default is "all"
 all: $(ARTIFACTS)
@@ -44,7 +44,6 @@ clean:
 cleaned_ott/cleaning_flags.txt: $(CONFIG_FILENAME)
 	./bin/config_checker.py --config=$(CONFIG_FILENAME) --property=cleaning_flags > cleaned_ott/.raw_cleaning_flags.txt
 	if ! diff cleaned_ott/.raw_cleaning_flags.txt cleaned_ott/cleaning_flags.txt ; then mv cleaned_ott/.raw_cleaning_flags.txt cleaned_ott/cleaning_flags.txt ; fi
-
 
 cleaned_ott/ott_version.txt: $(OTT_DIR)/version.txt
 	if ! diff $(OTT_DIR)/version.txt cleaned_ott/ott_version.txt >/dev/null 2>&1 ; then cp $(OTT_DIR)/version.txt cleaned_ott/ott_version.txt ; fi
@@ -139,3 +138,5 @@ exemplified_phylo/args.txt : $(CLEANED_PHYLO) cleaned_ott/cleaned_ott.tre
 exemplified_phylo/taxonomy.tre : exemplified_phylo/args.txt
 	otc-nonterminals-to-exemplars -eexemplified_phylo cleaned_ott/cleaned_ott.tre -fexemplified_phylo/args.txt
 
+phylo_induced_taxonomy/taxonomy.tre : exemplified_phylo/taxonomy.tre
+	ln -s exemplified_phylo/taxonomy.tre phylo_induced_taxonomy/taxonomy.tre
