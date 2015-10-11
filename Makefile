@@ -27,7 +27,9 @@ ARTIFACTS=$(PRUNE_DUBIOUS_ARTIFACTS) \
 	phylo_snapshot/git_shas.txt \
 	phylo_snapshot/concrete_rank_collection.json \
 	cleaned_phylo/cleaning_flags.txt \
-	cleaned_phylo/phylo_inputs_cleaned.txt
+	cleaned_phylo/phylo_inputs_cleaned.txt \
+	exemplified_phylo/taxonomy.tre \
+	exemplified_phylo/args.txt	
 
 
 # default is "all"
@@ -126,6 +128,14 @@ cleaned_phylo/cleaning_flags.txt: cleaned_phylo/phylo_inputs_cleaned.txt
 # 	  --ott-prune-flags="$(shell cat cleaned_ott/cleaning_flags.txt)" \
 # 	  $< 
 
+define CLEANED_PHYLO_VAR
+$(CLEANED_PHYLO)
+endef
+export CLEANED_PHYLO_VAR
 
+exemplified_phylo/args.txt : $(CLEANED_PHYLO) cleaned_ott/cleaned_ott.tre
+	echo $$CLEANED_PHYLO_VAR | sed -E 's/ /\n/g' | sed -E 's/.json/.tre/g' > exemplified_phylo/args.txt
 
+exemplified_phylo/taxonomy.tre : exemplified_phylo/args.txt
+	otc-nonterminals-to-exemplars -eexemplified_phylo cleaned_ott/cleaned_ott.tre -fexemplified_phylo/args.txt
 
