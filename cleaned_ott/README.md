@@ -2,12 +2,8 @@
 The primary artifact in this directory is `cleaned_ott.tre` which is
 produced by `$(PEYOTL_ROOT)/scripts/ott/suppress_by_flag.py`
 
-  * `ott_version.txt` copy of `version.txt` from the last version of OTT that was
-  used to build the artifacts.
-
-  * `cleaning_flags.txt` value of the `cleaning_flags` of the config file for
-  the pipeline for the last build of the artifacts. These affect the pruning
-  of OTT
+  * `cleaned_ott.tre` is a newick represenation of all taxa in OTT that
+    do not have an ancestor that is flagged with any of the flags to prune.
 
   * `cleaned_ott.json` a provenance file contains the keys:
     * `flags_to_prune` value of the `cleaning_flags` of the config file
@@ -30,8 +26,16 @@ produced by `$(PEYOTL_ROOT)/scripts/ott/suppress_by_flag.py`
             also be pruned off the tree, but the species will not be listed
             in this field.
 
-  * `cleaned_ott.tre` is a newick represenation of all taxa in OTT that
-    do not have an ancestor that is flagged with any of the flags to prune.
+  * `ott_version.txt` copy of `version.txt` from the last version of OTT that was
+  used to build the artifacts. So, if you change the version of OTT that you 
+  are using, this file should be copied and trigger a rebuild of the pruned 
+  taxonomy in cleaned_ott.tre
+
+  * `cleaning_flags.txt` value of the `cleaning_flags` of the config file for
+  the pipeline for the last build of the artifacts. These affect the pruning
+  of OTT.  This setting is pulled out as a separate file to make it obvious
+  when the "cleaned" taxonomy needs to be changed.
+
 
 If you were to select `pruned/*/anc_ott_id_pruned` from `cleaned_ott.json`
 you would get a set of nonoverlapping OTT Ids. If you were to cut the full
