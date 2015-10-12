@@ -77,3 +77,8 @@ In these cases this sketch just shows the most interesting tool.
 
 **TODO** examine the behavior of nodes with outdegree=1 in inputs
 
+**TODO** many of the steps in the Makefile use the presence of a file to signal
+  the successful completion of a step that generates multiple artifacts. I've pretty
+  much been trying to get this pipeline up to the point that Ben Redelings can
+  run otcetera-based tools on the latter stages of the pipeline. So there has been
+  little checking of the logic of each of the make steps is correct for rebuilding.
