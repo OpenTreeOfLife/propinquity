@@ -35,6 +35,7 @@ and tweak the settings as desired. Then:
   1. [phylo_input](phylo_input/README.md)
   1. [phylo_snapshot](phylo_snapshot/README.md)
   1. [cleaned_phylo](cleaned_phylo/README.md)
+  1. [exemplified_phylo](exemplified_phylo/README.md)
 
 
 ## Sketch
