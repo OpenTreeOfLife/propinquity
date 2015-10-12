@@ -36,7 +36,7 @@ ARTIFACTS=$(PRUNE_DUBIOUS_ARTIFACTS) \
 
 # default is "all"
 all: $(ARTIFACTS)
-	echo $(CLEANED_PHYLO)
+	
 
 clean:
 	rm -f $(ARTIFACTS)
@@ -141,7 +141,7 @@ exemplified_phylo/taxonomy.tre : exemplified_phylo/args.txt
 	otc-nonterminals-to-exemplars -eexemplified_phylo cleaned_ott/cleaned_ott.tre -fexemplified_phylo/args.txt
 
 phylo_induced_taxonomy/taxonomy.tre : exemplified_phylo/taxonomy.tre
-	ln -s exemplified_phylo/taxonomy.tre phylo_induced_taxonomy/taxonomy.tre
+	ln -s ../exemplified_phylo/taxonomy.tre phylo_induced_taxonomy/taxonomy.tre
 
 
 subproblems/scratch/args.txt: exemplified_phylo/args.txt
