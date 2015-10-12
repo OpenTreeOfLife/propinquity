@@ -72,3 +72,8 @@ In these cases this sketch just shows the most interesting tool.
     cleaning_flags = major_rank_conflict,major_rank_conflict_direct,major_rank_conflict_inherited,environmental,viral,nootu,barren,not_otu,extinct_inherited,extinct_direct,hidden,tattered
 
 
+### To do
+**TODO**: check flags for pruning
+
+**TODO** examine the behavior of nodes with outdegree=1 in inputs
+
