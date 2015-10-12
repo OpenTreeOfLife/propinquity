@@ -1,0 +1,23 @@
+EXEMPLIFIED_FN=$(shell cat exemplified_phylo/nonempty_trees.txt)
+EXEMPLIFIED_PHYLO=$(addprefix exemplified_phylo/, $(EXEMPLIFIED_FN))
+
+ARTIFACTS=subproblems/subproblem-ids.txt
+
+all: $(ARTIFACTS)
+
+subproblems/scratch/args.txt: exemplified_phylo/nonempty_trees.txt
+	cat exemplified_phylo/nonempty_trees.txt | sed -e 's/^cleaned_phylo/exemplified_phylo/g' > subproblems/scratch/args.txt
+
+# Note that run-subproblem-finder.sh is odd in that the second arg is relative to the first arg.
+subproblems/dumped-subproblem-ids.txt: exemplified_phylo/taxonomy.tre $(EXEMPLIFIED_PHYLO)
+	./bin/run-subproblem-finder.sh \
+	  subproblems/scratch \
+	  ../dumped-subproblem-ids.txt \
+	  ../exemplified_phylo/taxonomy.tre \
+	  -fsubproblems/scratch/args.txt
+
+subproblems/checksummed-subproblem-ids.txt: subproblems/dumped-subproblem-ids.txt
+	bash bin/checksum-tree-files.sh subproblems/scratch && cp subproblems/dumped-subproblem-ids.txt subproblems/checksummed-subproblem-ids.txt
+
+subproblems/subproblem-ids.txt: subproblems/checksummed-subproblem-ids.txt 
+	bash bin/move-subproblem-if-differing.sh subproblems/scratch subproblems subproblems/checksummed-subproblem-ids.txt && cp subproblems/checksummed-subproblem-ids.txt subproblems/subproblem-ids.txt

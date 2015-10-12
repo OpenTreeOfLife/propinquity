@@ -22,7 +22,7 @@ STUDY_TREE_NEWICK=$(addsuffix .tre, $(STUDY_TREE_STEM))
 SNAPSHOT_CACHE_STEM=$(addprefix phylo_snapshot/, $(STUDY_TREE_FN))
 CLEANED_PHYLO=$(addprefix cleaned_phylo/, $(STUDY_TREE_FN))
 SNAPSHOT_CACHE=$(addprefix phylo_snapshot/, $(STUDY_TREE_FN))
-EXEMPLIFIED_PHYLO=$(addprefix exemplified_phylo/, $(STUDY_TREE_FN))
+
 
 ARTIFACTS=$(PRUNE_DUBIOUS_ARTIFACTS) \
 	$(INPUT_PHYLO_ARTIFACTS) \
@@ -138,25 +138,14 @@ exemplified_phylo/args.txt : $(CLEANED_PHYLO) cleaned_ott/cleaned_ott.tre
 	echo $$CLEANED_PHYLO_VAR | sed -E 's/ /\n/g' | sed -E 's/.json/.tre/g' > exemplified_phylo/args.txt
 
 exemplified_phylo/taxonomy.tre : exemplified_phylo/args.txt
-	otc-nonterminals-to-exemplars -eexemplified_phylo cleaned_ott/cleaned_ott.tre -fexemplified_phylo/args.txt
+	otc-nonterminals-to-exemplars \
+	  -eexemplified_phylo \
+	  cleaned_ott/cleaned_ott.tre \
+	  -fexemplified_phylo/args.txt \
+	  -nexemplified_phylo/nonempty_trees.txt
+
 
 phylo_induced_taxonomy/taxonomy.tre : exemplified_phylo/taxonomy.tre
 	ln -s ../exemplified_phylo/taxonomy.tre phylo_induced_taxonomy/taxonomy.tre
 
 
-subproblems/scratch/args.txt: exemplified_phylo/args.txt
-	cat exemplified_phylo/args.txt | sed -e 's/^cleaned_phylo/exemplified_phylo/g' > subproblems/scratch/args.txt
-
-# Note that run-subproblem-finder.sh is odd in that the second arg is relative to the first arg.
-subproblems/dumped-subproblem-ids.txt: exemplified_phylo/taxonomy.tre $(EXEMPLIFIED_PHYLO)
-	./bin/run-subproblem-finder.sh \
-	  subproblems/scratch \
-	  ../dumped-subproblem-ids.txt \
-	  ../exemplified_phylo/taxonomy.tre \
-	  -fsubproblems/scratch/args.txt
-
-subproblems/checksummed-subproblem-ids.txt: subproblems/dumped-subproblem-ids.txt
-	bash bin/checksum-tree-files.sh subproblems/scratch && cp subproblems/dumped-subproblem-ids.txt subproblems/checksummed-subproblem-ids.txt
-
-subproblems/subproblem-ids.txt: subproblems/checksummed-subproblem-ids.txt 
-	bash bin/move-subproblem-if-differing.sh subproblems/scratch subproblems subproblems/checksummed-subproblem-ids.txt && cp subproblems/checksummed-subproblem-ids.txt subproblems/subproblem-ids.txt
