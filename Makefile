@@ -2,9 +2,11 @@ INPUT_PHYLO_ARTIFACTS=phylo_input/studies.txt \
 	 phylo_input/study_tree_pairs.txt
 
 ARTIFACTS=$(INPUT_PHYLO_ARTIFACTS) \
-	      exemplified_phylo/nonempty_trees.txt 
+	      exemplified_phylo/nonempty_trees.txt \
+	      subproblems/subproblem-ids.txt
 
 all: $(ARTIFACTS)
+
 
 # phylo_input holds the lists of study+tree pairs to be used during the supertree construction
 phylo_input/fresh_synth_collection.json: 
@@ -34,6 +36,11 @@ phylo_input/study_tree_pairs.txt: phylo_input/rank_collection.json
 
 clean:
 	rm -f $(ARTIFACTS)
+	make -fMakefile.clean_inputs clean
+	make -fMakefile.subproblems clean
 
 exemplified_phylo/nonempty_trees.txt:
 	make -fMakefile.clean_inputs exemplified_phylo/nonempty_trees.txt
+
+subproblems/subproblem-ids.txt:
+	make -fMakefile.subproblems subproblems/subproblem-ids.txt

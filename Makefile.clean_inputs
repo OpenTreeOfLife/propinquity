@@ -9,7 +9,7 @@ OTT_FILENAMES=about.json \
 
 OTT_FILEPATHS=$(addprefix $(OTT_DIR)/, $(OTT_FILENAMES))
 
-PRUNE_DUBIOUS_ARTIFACTS=cleaned_ott/cleaned_ott.tre \
+SUPPRESS_FLAG_ARTIFACTS=cleaned_ott/cleaned_ott.tre \
 	cleaned_ott/cleaned_ott.json \
 	cleaned_ott/ott_version.txt \
 	cleaned_ott/cleaning_flags.txt
@@ -18,11 +18,11 @@ STUDY_TREE_STEM=$(shell cat phylo_input/study_tree_pairs.txt)
 STUDY_TREE_FN=$(addsuffix .json, $(STUDY_TREE_STEM))
 STUDY_TREE_NEWICK=$(addsuffix .tre, $(STUDY_TREE_STEM))
 SNAPSHOT_CACHE_STEM=$(addprefix phylo_snapshot/, $(STUDY_TREE_FN))
-CLEANED_PHYLO=$(addprefix cleaned_phylo/, $(STUDY_TREE_FN))
+CLEANED_PHYLO=$(addprefix cleaned_phylo/, $(STUDY_TREE_NEWICK))
 SNAPSHOT_CACHE=$(addprefix phylo_snapshot/, $(STUDY_TREE_FN))
 
 
-ARTIFACTS=$(PRUNE_DUBIOUS_ARTIFACTS) \
+ARTIFACTS=$(SUPPRESS_FLAG_ARTIFACTS) \
 	phylo_snapshot/git_shas.txt \
 	phylo_snapshot/concrete_rank_collection.json \
 	cleaned_phylo/cleaning_flags.txt \
