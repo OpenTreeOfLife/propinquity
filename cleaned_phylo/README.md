@@ -7,7 +7,8 @@ this directory.
 
 ## Procedure
   1. If the tree has `^ot:inGroupClade` set to a node, then that node and all of
-  its descendants will be retained and the "outgroup" will be pruned off the tree.
+  its descendants will be retained and the "outgroup" will be pruned off the tree. 
+  **TODO** Should the presence of an inGroupClade be treated as mandatory?
   2. If the tree has any leaves connected to an `otu` that does not have a `ot:^ottId`
   property, these nodes are pruned as "unmapped"
   3. If the OTT Id for a leaf is not in OTT (or the forwarding file), the leaf is
