@@ -2,6 +2,7 @@ INPUT_PHYLO_ARTIFACTS=phylo_input/studies.txt \
 	 phylo_input/study_tree_pairs.txt
 
 ARTIFACTS=$(INPUT_PHYLO_ARTIFACTS) \
+	      cleaned_phylo/phylo_inputs_cleaned.txt \
 	      exemplified_phylo/nonempty_trees.txt \
 	      subproblems/subproblem-ids.txt
 
@@ -44,3 +45,6 @@ exemplified_phylo/nonempty_trees.txt:
 
 subproblems/subproblem-ids.txt:
 	make -fMakefile.subproblems subproblems/subproblem-ids.txt
+
+cleaned_phylo/phylo_inputs_cleaned.txt:
+	make -fMakefile.clean_inputs cleaned_phylo/phylo_inputs_cleaned.txt
