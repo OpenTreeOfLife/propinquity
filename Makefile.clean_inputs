@@ -139,7 +139,7 @@ exemplified_phylo/nonempty_trees.txt : exemplified_phylo/args.txt
 	  -eexemplified_phylo \
 	  cleaned_ott/cleaned_ott.tre \
 	  -fexemplified_phylo/args.txt \
-	  -nexemplified_phylo/nonempty_trees.txt
+	  -nexemplified_phylo/.nonempty_trees.txt && mv exemplified_phylo/.nonempty_trees.txt exemplified_phylo/nonempty_trees.txt
 
 
 phylo_induced_taxonomy/taxonomy.tre : exemplified_phylo/taxonomy.tre
