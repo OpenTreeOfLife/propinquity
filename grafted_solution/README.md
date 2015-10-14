@@ -2,7 +2,11 @@
 Produced by `otc-graft-solutions`.
 All subproblem solutions are read (`subproblem_solutions/ott######-solution.tre`)
 and then assembled into a single tree.
-If the sub-problems do not connect into a single component, then program will exit
+
+The only artifact is:
+    * `grafted_solution.tre`: A newick tree file containing a single tree
+
+If the sub-problems do not connect into a single component, the program will exit
 with error code 1.  It will write multiple trees, where each tree is a connected
 component whose root is not found in the other trees.
 
