@@ -54,7 +54,7 @@ digraph P {
     subproblemsoln -> graftedsolntool;
     graftedsolntool -> graftedsoln;
 
-    supertreetopotool [shape=invhouse label="????" style=filled color="#CCCCFF"];
+    supertreetopotool [shape=invhouse label="otc-unprune-solution" style=filled color="#CCCCFF"];
     supertreetopo [shape=box label="full_supertree"];
     graftedsoln -> supertreetopotool;
     cleanedott -> supertreetopotool;
