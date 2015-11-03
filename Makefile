@@ -5,7 +5,8 @@ ARTIFACTS=$(INPUT_PHYLO_ARTIFACTS) \
 	      cleaned_ott/cleaned_ott.tre \
 	      cleaned_phylo/phylo_inputs_cleaned.txt \
 	      exemplified_phylo/nonempty_trees.txt \
-	      subproblems/subproblem-ids.txt
+	      subproblems/subproblem-ids.txt \
+	      full_supertree/full_supertree.tre
 
 all: $(ARTIFACTS)
 
@@ -52,3 +53,6 @@ cleaned_phylo/phylo_inputs_cleaned.txt:
 
 cleaned_ott/cleaned_ott.tre:
 	make -fMakefile.clean_inputs cleaned_ott/cleaned_ott.tre
+
+full_supertree/full_supertree.tre:
+	make -f Makefile.subproblems full_supertree/full_supertree.tre

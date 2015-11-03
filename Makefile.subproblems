@@ -3,7 +3,8 @@ EXEMPLIFIED_PHYLO=$(addprefix exemplified_phylo/, $(EXEMPLIFIED_FN))
 
 ARTIFACTS += subproblems/subproblem-ids.txt \
 	  grafted_solution/grafted_solution.tre \
-	  full_supertree/full_supertree.tre
+	  full_supertree/full_supertree.tre \
+	  subproblem_solutions/solution-ids.txt
 
 all: $(ARTIFACTS)
 
@@ -12,7 +13,7 @@ subproblems/scratch/args.txt: exemplified_phylo/nonempty_trees.txt
 
 # Note that run-subproblem-finder.sh is odd in that the second arg is relative to the first arg.
 
-subproblems/dumped-subproblem-ids.txt: exemplified_phylo/taxonomy.tre $(EXEMPLIFIED_PHYLO) subproblems/scratch/args.txt
+subproblems/dumped-subproblem-ids.txt: exemplified_phylo/taxonomy.tre subproblems/scratch/args.txt $(EXEMPLIFIED_PHYLO) 
 	./bin/run-subproblem-finder.sh \
 	  subproblems/scratch \
 	  ../dumped-subproblem-ids.txt \
@@ -38,7 +39,7 @@ grafted_solution/grafted_solution.tre: subproblem_solutions/solution-ids.txt
 	mv grafted_solution/.grafted_solution.tre grafted_solution/grafted_solution.tre
 	rm subproblem_solutions/paths.txt
 
-full_supertree/full_supertree: grafted_solution/grafted_solution.tre cleaned_ott/cleaned_ott.tre
+full_supertree/full_supertree.tre: grafted_solution/grafted_solution.tre cleaned_ott/cleaned_ott.tre
 	otc-unprune-solution grafted_solution/grafted_solution.tre cleaned_ott/cleaned_ott.tre > full_supertree/full_supertree.tre
 
 clean:
