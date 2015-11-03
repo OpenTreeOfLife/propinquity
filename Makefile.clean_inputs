@@ -114,7 +114,7 @@ cleaned_phylo/needs_updating.txt: phylo_snapshot/concrete_rank_collection.json
 	else ./bin/write-needs-updating cleaned_phylo $$SNAPSHOT_CACHE_VAR > cleaned_phylo/needs_updating.txt ;\
 	fi
 
-cleaned_phylo/phylo_inputs_cleaned.txt: $(SNAPSHOT_CACHE) cleaned_phylo/needs_updating.txt cleaned_ott/cleaning_flags.txt
+cleaned_phylo/phylo_inputs_cleaned.txt: cleaned_phylo/needs_updating.txt cleaned_ott/cleaning_flags.txt $(SNAPSHOT_CACHE) 
 	$(PEYOTL_ROOT)/scripts/nexson/prune_to_clean_mapped.py \
 	  --ott-dir=$(OTT_DIR) \
 	  --input-files-list=cleaned_phylo/needs_updating.txt \
