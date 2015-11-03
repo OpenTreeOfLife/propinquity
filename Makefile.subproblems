@@ -1,7 +1,9 @@
 EXEMPLIFIED_FN=$(shell cat exemplified_phylo/nonempty_trees.txt)
 EXEMPLIFIED_PHYLO=$(addprefix exemplified_phylo/, $(EXEMPLIFIED_FN))
 
-ARTIFACTS=subproblems/subproblem-ids.txt
+ARTIFACTS += subproblems/subproblem-ids.txt \
+	  grafted_solution/grafted_solution.tre \
+	  full_supertree/full_supertree.tre
 
 all: $(ARTIFACTS)
 
@@ -22,3 +24,30 @@ subproblems/checksummed-subproblem-ids.txt: subproblems/dumped-subproblem-ids.tx
 
 subproblems/subproblem-ids.txt: subproblems/checksummed-subproblem-ids.txt 
 	bash bin/move-subproblem-if-differing.sh subproblems/scratch subproblems subproblems/checksummed-subproblem-ids.txt && cp subproblems/checksummed-subproblem-ids.txt subproblems/subproblem-ids.txt
+
+subproblem_solutions/solution-ids.txt: subproblems/subproblem-ids.txt
+	for n in $$(cat subproblems/subproblem-ids.txt) ; do \
+		id=$${n%.tre} ; \
+		otc-solve-subproblem subproblems/$$n -n$${id} > subproblem_solutions/$${n} ; \
+	done ;
+	cp subproblems/subproblem-ids.txt subproblem_solutions/solution-ids.txt
+
+grafted_solution/grafted_solution.tre: subproblem_solutions/solution-ids.txt
+	sed 's:^:subproblem_solutions/:' subproblem_solutions/solution-ids.txt > subproblem_solutions/paths.txt
+	otc-graft-solutions $$(cat subproblem_solutions/paths.txt) > grafted_solution/.grafted_solution.tre && \
+	mv grafted_solution/.grafted_solution.tre grafted_solution/grafted_solution.tre
+	rm subproblem_solutions/paths.txt
+
+full_supertree/full_supertree: grafted_solution/grafted_solution.tre cleaned_ott/cleaned_ott.tre
+	otc-unprune-solution grafted_solution/grafted_solution.tre cleaned_ott/cleaned_ott.tre > full_supertree/full_supertree.tre
+
+clean:
+	rm -rf $(ARTIFACTS)
+	rm -rf subproblems/scratch/*.tre
+	rm -rf subproblems/scratch/*.md5
+	rm -rf subproblems/scratch/*.txt
+	rm -rf subproblems/*.tre
+	rm -rf subproblems/*.md5
+	rm -rf subproblems/*.txt
+	rm -rf subproblem_solutions/*.tre
+
