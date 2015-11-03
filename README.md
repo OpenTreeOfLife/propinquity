@@ -72,6 +72,18 @@ In these cases this sketch just shows the most interesting tool.
     cleaning_flags = major_rank_conflict,major_rank_conflict_direct,major_rank_conflict_inherited,environmental,viral,nootu,barren,not_otu,extinct_inherited,extinct_direct,hidden,tattered
 
 
+### Checking the synthetic tree
+
+```sh
+cd exemplified_phylo
+otc-displayed-stats ../cleaned_ott/cleaned_ott.tre ../full_supertree/full_supertree.tre $(cat nonempty_trees.txt)
+```
+
+```sh
+cd exemplified_phylo
+otc-displayed-stats ../cleaned_ott/cleaned_ott.tre draftversion4.tre $(cat nonempty_trees.txt)
+```
+
 ### To do
 **TODO**: check flags for pruning
 
