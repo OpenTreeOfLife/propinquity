@@ -14,6 +14,8 @@ SUPPRESS_FLAG_ARTIFACTS=cleaned_ott/cleaned_ott.tre \
 	cleaned_ott/ott_version.txt \
 	cleaned_ott/cleaning_flags.txt
 
+Makefile.clean_inputs: phylo_input/study_tree_pairs.txt
+
 STUDY_TREE_STEM=$(shell cat phylo_input/study_tree_pairs.txt)
 STUDY_TREE_FN=$(addsuffix .json, $(STUDY_TREE_STEM))
 STUDY_TREE_NEWICK=$(addsuffix .tre, $(STUDY_TREE_STEM))
@@ -42,7 +44,7 @@ clean:
 # "cleaned_ott" has dubious taxa pruned off. should check against treemachine and smasher versions
 cleaned_ott/cleaning_flags.txt: $(CONFIG_FILENAME)
 	./bin/config_checker.py --config=$(CONFIG_FILENAME) --property=cleaning_flags > cleaned_ott/.raw_cleaning_flags.txt
-	if ! diff cleaned_ott/.raw_cleaning_flags.txt cleaned_ott/cleaning_flags.txt ; then mv cleaned_ott/.raw_cleaning_flags.txt cleaned_ott/cleaning_flags.txt ; fi
+	if ! diff cleaned_ott/.raw_cleaning_flags.txt cleaned_ott/cleaning_flags.txt 2>/dev/null; then mv cleaned_ott/.raw_cleaning_flags.txt cleaned_ott/cleaning_flags.txt ; fi
 
 cleaned_ott/ott_version.txt: $(OTT_DIR)/version.txt
 	if ! diff $(OTT_DIR)/version.txt cleaned_ott/ott_version.txt >/dev/null 2>&1 ; then cp $(OTT_DIR)/version.txt cleaned_ott/ott_version.txt ; fi
