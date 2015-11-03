@@ -137,7 +137,7 @@ $(CLEANED_PHYLO)
 endef
 export CLEANED_PHYLO_VAR
 
-exemplified_phylo/args.txt : $(CLEANED_PHYLO) cleaned_ott/cleaned_ott.tre
+exemplified_phylo/args.txt : cleaned_ott/cleaned_ott.tre $(CLEANED_PHYLO) 
 	echo $$CLEANED_PHYLO_VAR | sed -E 's/ /\n/g' | sed -E 's/.json/.tre/g' > exemplified_phylo/args.txt
 
 exemplified_phylo/nonempty_trees.txt : exemplified_phylo/args.txt
