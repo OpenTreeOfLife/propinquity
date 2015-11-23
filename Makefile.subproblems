@@ -4,7 +4,9 @@ EXEMPLIFIED_PHYLO=$(addprefix exemplified_phylo/, $(EXEMPLIFIED_FN))
 ARTIFACTS += subproblems/subproblem-ids.txt \
 	  grafted_solution/grafted_solution.tre \
 	  full_supertree/full_supertree.tre \
-	  subproblem_solutions/solution-ids.txt
+	  subproblem_solutions/solution-ids.txt \
+	  labelled_supertree/labelled_supertree.tre \
+	  annotated_supertree/annotations.json
 
 all: $(ARTIFACTS)
 
@@ -42,6 +44,14 @@ grafted_solution/grafted_solution.tre: subproblem_solutions/solution-ids.txt
 full_supertree/full_supertree.tre: grafted_solution/grafted_solution.tre cleaned_ott/cleaned_ott.tre
 	otc-unprune-solution grafted_solution/grafted_solution.tre cleaned_ott/cleaned_ott.tre > full_supertree/full_supertree.tre
 
+labelled_supertree/labelled_supertree.tre: full_supertree/full_supertree.tre
+	otc-name-unnamed-nodes -c $^ > $@
+
+annotated_supertree/annotations.json: cleaned_ott/cleaned_ott.tre labelled_supertree/labelled_supertree.tre exemplified_phylo/nonempty_trees.txt
+	otc-annotate-synth cleaned_ott/cleaned_ott.tre labelled_supertree/labelled_supertree.tre $$(sed 's:^:exemplified_phylo/:' exemplified_phylo/nonempty_trees.txt) > annotated_supertree/annotations1.json
+	bin/gen_attributes.py > annotated_supertree/annotations2.json
+	bin/merge-json.py annotated_supertree/annotations1.json annotated_supertree/annotations2.json > annotated_supertree/annotations.json
+
 clean:
 	rm -rf $(ARTIFACTS)
 	rm -rf subproblems/scratch/*.tre
@@ -51,4 +61,5 @@ clean:
 	rm -rf subproblems/*.md5
 	rm -rf subproblems/*.txt
 	rm -rf subproblem_solutions/*.tre
+	rm -rf annotated_supertree/*.json
 

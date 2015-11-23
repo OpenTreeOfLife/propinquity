@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-from collections import Mapping
 import json
 import sys
 
@@ -14,4 +13,4 @@ dictB = json.loads(json_data2)
 merged_dict = {key: value for (key, value) in (dictA.items() + dictB.items())}
 
 # string dump of the merged dict
-print json.dumps(merged_dict)
+print json.dumps(merged_dict, indent=4)

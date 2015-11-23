@@ -6,7 +6,9 @@ ARTIFACTS=$(INPUT_PHYLO_ARTIFACTS) \
 	      cleaned_phylo/phylo_inputs_cleaned.txt \
 	      exemplified_phylo/nonempty_trees.txt \
 	      subproblems/subproblem-ids.txt \
-	      full_supertree/full_supertree.tre
+	      full_supertree/full_supertree.tre \
+	      labelled_supertree/labelled_supertree.tre \
+	      annotated_supertree/annotations.json
 
 all: $(ARTIFACTS)
 
@@ -56,3 +58,9 @@ cleaned_ott/cleaned_ott.tre:
 
 full_supertree/full_supertree.tre:
 	make -f Makefile.subproblems full_supertree/full_supertree.tre
+
+labelled_supertree/labelled_supertree.tre:
+	make -f Makefile.subproblems labelled_supertree/labelled_supertree.tre
+
+annotated_supertree/annotations.json:
+	make -f Makefile.subproblems annotated_supertree/annotations.json
