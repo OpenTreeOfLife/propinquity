@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# See https://github.com/OpenTreeOfLife/opentree/wiki/Open-Tree-of-Life-APIs-v3#synthetic-tree
 try:
     import configparser  # pylint: disable=F0401
 except ImportError:
@@ -89,8 +90,24 @@ if __name__ == '__main__':
     document["tree_id"] = "opentree4.1"
     document["taxonomy_version"] = extract_version(args)
     document["run_time"] = "30 minutes"
-    document["root_taxon_name"] = "cellular organisms"
-    document["generated_by"] = "propinquity"
+    document["root_taxon_name"] = "cellular organisms" ## This is a hard-coded hack right now.
+    document["generated_by"] = [
+        {"name":"propinquity",
+         "version":"x",
+         "git_sha":"aaa",
+         "url":"link",
+         "invocation":"cmd"},
+        {"name":"peyotl",
+         "version":"x",
+         "git_sha":"aaa",
+         "url":"link",
+         "invocation":"cmd"},
+        {"name":"otcetera",
+         "version":"x",
+         "git_sha":"aaa",
+         "url":"link",
+         "invocation":"cmd"},
+    ]
     document["filtered_flags"] = extract_filtered_flags(args)
     document["source_id_map"] = extract_source_id_map()
     document["num_source_trees"] = num_trees()
