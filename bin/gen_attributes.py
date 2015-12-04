@@ -8,6 +8,26 @@ import datetime
 import os
 import codecs
 
+def num_studies():
+    with open('phylo_snapshot/concrete_rank_collection.json') as data_file:
+        snapshot_data = json.load(data_file)
+    studies = set()
+    for study_tree_object in snapshot_data["decisions"]:
+        study_id = study_tree_object["studyID"]
+        studies.add(study_id)
+    return len(studies)
+
+def num_trees():
+    with open('phylo_snapshot/concrete_rank_collection.json') as data_file:
+        snapshot_data = json.load(data_file)
+    trees = set()
+    for study_tree_object in snapshot_data["decisions"]:
+        study_id = study_tree_object["studyID"]
+        tree_id = study_tree_object["treeID"]
+        name = study_id + "_" + tree_id # This line seems a bit arbitrary.
+        trees.add(name)
+    return len(trees)
+
 def extract_source_id_map():
     source_id_map = {}
     with open('phylo_snapshot/concrete_rank_collection.json') as data_file:
@@ -73,7 +93,7 @@ if __name__ == '__main__':
     document["generated_by"] = "propinquity"
     document["filtered_flags"] = extract_filtered_flags(args)
     document["source_id_map"] = extract_source_id_map()
+    document["num_source_trees"] = num_trees()
+    document["num_source_studies"] = num_studies()
 
     print json.dumps(document,indent=4)
-
-    
