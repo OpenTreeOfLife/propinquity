@@ -2,3 +2,4 @@ concrete_rank_collection.json
 git_shas.txt
 stdouterr.txt
 *.json
+*.tre
