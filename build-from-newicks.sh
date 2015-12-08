@@ -12,6 +12,14 @@ then
     exit 1
 fi
 
+
+touch phylo_input/rank_collection.json
+
+if test -f phylo_input/study_tree_pairs.txt
+then
+    rm phylo_input/study_tree_pairs.txt
+fi
+
 for i in $(cat "${phyloranking}")
 do
     if ! test -f "${i}"
@@ -19,6 +27,9 @@ do
         echo "build-from-newicks: input newick ${i} does not refer to a file."
         exit 1
     fi
+    fn="$(basename $i)"
+    stem="$(echo $fn | sed -e 's/\.tre$//')"
+    echo $stem >> phylo_input/study_tree_pairs.txt
     cp "${i}" "phylo_snapshot" 
 done
 

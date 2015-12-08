@@ -1,8 +1,7 @@
 INPUT_PHYLO_ARTIFACTS=phylo_input/studies.txt \
 	 phylo_input/study_tree_pairs.txt
 
-ARTIFACTS=$(INPUT_PHYLO_ARTIFACTS) \
-	      cleaned_ott/cleaned_ott.tre \
+ARTIFACTS= cleaned_ott/cleaned_ott.tre \
 	      cleaned_phylo/phylo_inputs_cleaned.txt \
 	      exemplified_phylo/nonempty_trees.txt \
 	      subproblems/subproblem-ids.txt \
@@ -41,6 +40,7 @@ phylo_input/study_tree_pairs.txt: phylo_input/rank_collection.json
 
 clean:
 	rm -f $(ARTIFACTS)
+	rm -f $(INPUT_PHYLO_ARTIFACTS)
 	make -fMakefile.clean_inputs clean
 	make -fMakefile.subproblems clean
 
