@@ -1,0 +1,396 @@
+#LyX 2.1 created this file. For more info see http://www.lyx.org/
+\lyxformat 474
+\begin_document
+\begin_header
+\textclass paper
+\use_default_options true
+\maintain_unincluded_children false
+\language english
+\language_package default
+\inputencoding auto
+\fontencoding global
+\font_roman default
+\font_sans default
+\font_typewriter default
+\font_math auto
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100
+\font_tt_scale 100
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\paperfontsize default
+\spacing single
+\use_hyperref false
+\papersize default
+\use_geometry true
+\use_package amsmath 1
+\use_package amssymb 1
+\use_package cancel 1
+\use_package esint 1
+\use_package mathdots 1
+\use_package mathtools 1
+\use_package mhchem 1
+\use_package stackrel 1
+\use_package stmaryrd 1
+\use_package undertilde 1
+\cite_engine basic
+\cite_engine_type default
+\biblio_style plain
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\justification true
+\use_refstyle 1
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\leftmargin 2cm
+\topmargin 2cm
+\rightmargin 2cm
+\bottommargin 2cm
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\paragraph_indentation default
+\quotes_language english
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Abstract
+We present a new software pipeline for constructing a summary supertree
+ from a taxonomy and a collection of curated phylogenetic inputs.
+ This improved pipeline is made up of propinquity, otcetera, and peyotl.
+ It is free software and is available from github.
+ Compared to previous pipelines, the propinquity pipeline decreases the
+ amount of computer memory and processing time required to construct the
+ synthesis tree by about x-fold, preparing the way for the inclusion of
+ many more input trees.
+ The supertree also satisfies the criteria of having no unsupported branches,
+ and no unnecessary polytomies.
+ The supertree also increases the number of phylogenetic input splits that
+ are displayed, while decreasing the number of conflicts between the summary
+ tree and the phylogenetic inputs.
+\end_layout
+
+\begin_layout Section
+Background
+\end_layout
+
+\begin_layout Standard
+We seek to represent the phylogeny of all living organisms.
+ We do this by combining a collection of curated phylogenetic inputs with
+ a taxonomy to produce a summary supertree.
+ Phylogenetic inputs are derived from published papers and do not contain
+ all taxa.
+ The taxonomy is based on widely-used classification schemes and contains
+ all taxa.
+ We seek to construct a summary tree that has all the tips of the taxonomy,
+ and uses 
+\end_layout
+
+\begin_layout Standard
+We seek a summarization method that improves on current approaches in the
+ amount of computer memory and processing time required.
+ We also seek to construct a summary that meets specific criteria:
+\end_layout
+
+\begin_layout Enumerate
+
+\series bold
+minimize 
+\series default
+the amount of computer memory and processing time required to construct
+ the summary.
+\end_layout
+
+\begin_layout Enumerate
+
+\series bold
+maximize
+\series default
+ the number of groups of input trees that it displays.
+\end_layout
+
+\begin_layout Enumerate
+
+\series bold
+no unsupported branches:
+\series default
+ each non-terminal branch is supported by a phylogenetic input, or by the
+ taxonomy.
+\end_layout
+
+\begin_layout Enumerate
+
+\series bold
+no unnecessary polytomies:
+\series default
+ polytomies in the supertree cannot be resolved by branches in the phylogenetic
+ input, or by the taxonomy.
+\end_layout
+
+\begin_layout Standard
+Here a non-terminal branch is 
+\begin_inset Quotes eld
+\end_inset
+
+supported
+\begin_inset Quotes erd
+\end_inset
+
+ by a phylogenetic input if contracting that branch stops displaying a split
+ from that phylogenetic input.
+ As before, we deal with any conflicts between the input trees by ranking
+ them and prefering the groups that occur in higher-ranked inputs.
+\end_layout
+
+\begin_layout Standard
+In order to achieve these goals, we have made the following algorithmic
+ choices:
+\end_layout
+
+\begin_layout Standard
+First, branches in the taxonomy that are not contested by any of the input
+ trees are accepted into the summary tree.
+ Given these branches, the supertree problem may then be decomposed into
+ smaller problems delimited by the uncontested taxonomy branches as boundaries.
+ Each sub-problem is characterized by a ranked sequence of subtrees that
+ are derived from regions of phylogenetic inputs that fall between the boundarie
+s.
+ The smaller problems size then makes tractable a variety of strategies
+ to solve the sub-problems, and decreases the amount of computer memory
+ and processing time that is required.
+ 
+\end_layout
+
+\begin_layout Standard
+Second, when solving sub-problems, we sequentially incorporate splits from
+ trees in order of ranking, retaining splits that are compatible with the
+ current set of splits.
+ The order of splits from the same tree is not specified by this approach,
+ and we incorporate splits in post-order.
+ We make use of the BUILD algorithm to assess compatibility.
+ This strategy avoids unnecessary polytomies, since splits of later input
+ trees are only rejected from the summary supertree if they conflict with
+ higher-priority splits.
+ Finally, we use the BUILD algorithm to construct a supertree displaying
+ all of the splits in the set of compatible splits.
+ Using the BUILD algorithm to construct the subproblem summary tree satisfies
+ criterion 3, because trees from the BUILD algorithm do not contain unsupported
+ branches.
+\end_layout
+
+\begin_layout Section
+Pipeline flow
+\end_layout
+
+\begin_layout Standard
+In order to achieve these criteria, we have 
+\end_layout
+
+\begin_layout Enumerate
+Start with ranked list of trees
+\end_layout
+
+\begin_layout Enumerate
+Check out phylo inputs from phylesystem
+\end_layout
+
+\begin_layout Enumerate
+Make phylo input snapshot (e.g.
+ pinned version of phylo inputs)
+\end_layout
+
+\begin_layout Enumerate
+clean taxonomy & clean phylo inputs (in parallel)
+\end_layout
+
+\begin_layout Enumerate
+Replace non-terminals with exemplars
+\end_layout
+
+\begin_layout Enumerate
+Decompose into subproblems
+\end_layout
+
+\begin_layout Enumerate
+Solve subproblems
+\end_layout
+
+\begin_layout Enumerate
+Regraft subproblems
+\end_layout
+
+\begin_layout Enumerate
+Unprune the solution
+\end_layout
+
+\begin_layout Enumerate
+Label the solution
+\end_layout
+
+\begin_layout Enumerate
+Generate annotations
+\end_layout
+
+\begin_layout Standard
+import READMEs.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename pipeline-tools.png
+	height 75pheight%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Data flow through the 
+\emph on
+propinquity
+\emph default
+ pipeline.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Algorithms
+\end_layout
+
+\begin_layout Standard
+For the sub-problem solver, we make iterative use of the BUILD algorithm.
+ We process input trees in order of their priority.
+ We use the BUILD algorithm to determine whether a given split in an input
+ tree is consistent with the splits we have kept so far.
+ If the new split is consistent, then we add it to the set.
+ After considering all input trees, and the taxonomy, we use the BUILD algorithm
+ to construct a tree from the set of consistent splits.
+\end_layout
+
+\begin_layout Itemize
+Add algorithm from TEX document.
+\end_layout
+
+\begin_layout Section
+Example
+\end_layout
+
+\begin_layout Standard
+We should have a small example: taxonomy and a couple of trees.
+ I guess the example should illustrate the idea of uncontested decomposition?
+ Maybe about 8 taxa, 1 contested node, 1 uncontested node?
+\end_layout
+
+\begin_layout Standard
+We could also have an example thats 
+\end_layout
+
+\begin_layout Section
+Results
+\end_layout
+
+\begin_layout Standard
+We have decreased the time to construct a supertree from (?) about 24 hours
+ to about 8 minutes.
+ The amount of RAM required to construct the supertree has decreased from
+ 
+\begin_inset Formula $X$
+\end_inset
+
+ to 
+\begin_inset Formula $Y$
+\end_inset
+
+.
+ 
+\end_layout
+
+\begin_layout Standard
+Compared to the previous pipeline, we have
+\end_layout
+
+\begin_layout Itemize
+no unsupported nodes
+\end_layout
+
+\begin_layout Itemize
+no unresolved polytomies
+\end_layout
+
+\begin_layout Standard
+We also increase the number of displayed input splits from 35439 to 39713,
+ which is an increase of 3774 more nodes displayed, a 10.6% increase.
+ The number of input splits that do not conflict with the summary tree,
+ but are not incorporated drops from 2736 to 0.
+ The number of input splits that conflict with the phylogeny drops from
+ 2850 to 1312, a decrease of 1538, or 54.0%.
+\end_layout
+
+\begin_layout Section
+Discussion
+\end_layout
+
+\begin_layout Standard
+One of our aim in supertree construction is to minimize the amount of informatio
+n in the supertree that does not come from any of the input trees.
+ However this general principle can be formalized in a variety of ways.
+ For example, one approach is to minimize the number of nodes in the supertree
+ while representing as many of the input splits as possible.
+ While initially attractive, this approach has the downside that, when it
+ is given two input trees with disjoint taxa, it will attempt to merge these
+ trees into a single tree in order to decrease the number of nodes.
+ For example, if given the tree ((human,gorilla),(dog,cat)) and the tree
+ ((fugu,tuna),(shark,ray)) the minimum node criterion leads to the supertree
+ ((human,gorilla,fugu,tuna),(dog,cat,shark,ray)) or ((human,gorilla,shark,ray),(
+dog,cat,fugu,tuna)) with 3 internal nodes.
+ In constrast, the BUILD algorithm would produce ((human,gorilla),(dog,cat),(fug
+u,tuna),(shark,ray)) with 5 internal nodes.
+ We thus prefer the BUILD algorithm, with its preference not to merge groups
+ unless there is phylogenetic input supporting the merger.
+\end_layout
+
+\end_body
+\end_document
