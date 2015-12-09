@@ -60,13 +60,13 @@ digraph P {
     cleanedott -> supertreetopotool;
     supertreetopotool -> supertreetopo;
 
-    taxolabelledsupertreetool [shape=invhouse label="????" style=filled color="#CCCCFF"];
+    taxolabelledsupertreetool [shape=invhouse label="otc-name-unnamed-nodes" style=filled color="#CCCCFF"];
     taxolabelledsupertree [shape=box label="labelled_supertree"];
     cleanedott -> taxolabelledsupertreetool;
     supertreetopo -> taxolabelledsupertreetool;
     taxolabelledsupertreetool -> taxolabelledsupertree;
 
-    supertreewithsupporttool [shape=invhouse label="????" style=filled color="#CCCCFF"];
+    supertreewithsupporttool [shape=invhouse label="otc-annotate-synth" style=filled color="#CCCCFF"];
     supertreewithsupport [shape=box label="annotated_supertree"];
     taxolabelledsupertree -> supertreewithsupporttool;
     cleanedphylo -> supertreewithsupporttool;
