@@ -73,6 +73,18 @@
 
 \begin_body
 
+\begin_layout Title
+Title
+\end_layout
+
+\begin_layout Author
+authors
+\begin_inset Formula $^{1}$
+\end_inset
+
+
+\end_layout
+
 \begin_layout Abstract
 We present a new software pipeline for constructing a summary supertree
  from a taxonomy and a collection of curated phylogenetic inputs.
@@ -94,27 +106,17 @@ Background
 \end_layout
 
 \begin_layout Standard
-We seek to represent the phylogeny of all living organisms.
- We do this by combining a collection of curated phylogenetic inputs with
- a taxonomy to produce a summary supertree.
- Phylogenetic inputs are derived from published papers and do not contain
- all taxa.
- The taxonomy is based on widely-used classification schemes and contains
- all taxa.
- We seek to construct a summary tree that has all the tips of the taxonomy,
- and uses 
-\end_layout
-
-\begin_layout Standard
-We seek a summarization method that improves on current approaches in the
- amount of computer memory and processing time required.
- We also seek to construct a summary that meets specific criteria:
+The Open Tree of Life project is attempting to build a platform for summarizing
+ what is known about phylogenetic relationships across all of Life.
+ Presenting an easy-to-interpret summary of trees that have been “curated”
+ is one component of that effort.
+ We seek to find a summary tree that
 \end_layout
 
 \begin_layout Enumerate
 
 \series bold
-minimize 
+minimizes 
 \series default
 the amount of computer memory and processing time required to construct
  the summary.
@@ -123,31 +125,43 @@ the amount of computer memory and processing time required to construct
 \begin_layout Enumerate
 
 \series bold
-maximize
+maximizes
 \series default
- the number of groups of input trees that it displays.
+ the number of splits in input trees that it displays.
+ 
+\end_layout
+
+\begin_layout Enumerate
+(?)
+\series bold
+ minimize
+\series default
+ the number of conflicts between the summary tree and the input trees (?)
 \end_layout
 
 \begin_layout Enumerate
 
 \series bold
-no unsupported branches:
+has no unsupported branches:
 \series default
- each non-terminal branch is supported by a phylogenetic input, or by the
- taxonomy.
+ each non-terminal branch is supported by an input tree.
 \end_layout
 
 \begin_layout Enumerate
 
 \series bold
-no unnecessary polytomies:
+has no unnecessary polytomies:
 \series default
- polytomies in the supertree cannot be resolved by branches in the phylogenetic
- input, or by the taxonomy.
+ polytomies should remain in the supertree only if unresolvable by any of
+ the input trees.
 \end_layout
 
 \begin_layout Standard
-Here a non-terminal branch is 
+The point of maximizing the number of displayed groups from input trees,
+ and having no unsupported branches, is not to construct an estimate of
+ the true tree, but to explain and represent the input trees well.
+ Thus, the tree should be interpreted as a summary.
+ Here a non-terminal branch is 
 \begin_inset Quotes eld
 \end_inset
 
@@ -157,8 +171,38 @@ supported
 
  by a phylogenetic input if contracting that branch stops displaying a split
  from that phylogenetic input.
- As before, we deal with any conflicts between the input trees by ranking
- them and prefering the groups that occur in higher-ranked inputs.
+ 
+\end_layout
+
+\begin_layout Section
+Algorithmic approach
+\end_layout
+
+\begin_layout Standard
+We also make the following tactical choices
+\end_layout
+
+\begin_layout Enumerate
+
+\series bold
+conflict
+\series default
+ is resolved by ranking the input trees; splits from higher ranked trees
+ over-rule conflicting splits from lower-ranked trees, unless the split
+ from the higher-ranked tree is itself over-ruled by a split from an even
+ high ranked tree.
+\end_layout
+
+\begin_layout Enumerate
+a 
+\series bold
+taxonomy-based supertree
+\series default
+.
+ This is a novel name for a special form of the supertree problem.
+ A taxonomy-based supertree has at least one input (the taxonomic tree)
+ which is complete.
+ the taxonomy is considered the lowest-ranked input.
 \end_layout
 
 \begin_layout Standard
@@ -166,9 +210,13 @@ In order to achieve these goals, we have made the following algorithmic
  choices:
 \end_layout
 
+\begin_layout Subsection
+Problem decomposition
+\end_layout
+
 \begin_layout Standard
-First, branches in the taxonomy that are not contested by any of the input
- trees are accepted into the summary tree.
+First, all branches in the taxonomy that are not contested by any of the
+ input trees are automatically accepted into the summary tree.
  Given these branches, the supertree problem may then be decomposed into
  smaller problems delimited by the uncontested taxonomy branches as boundaries.
  Each sub-problem is characterized by a ranked sequence of subtrees that
@@ -178,6 +226,10 @@ s.
  to solve the sub-problems, and decreases the amount of computer memory
  and processing time that is required.
  
+\end_layout
+
+\begin_layout Subsection
+Subproblem solution
 \end_layout
 
 \begin_layout Standard
@@ -198,7 +250,7 @@ Second, when solving sub-problems, we sequentially incorporate splits from
 \end_layout
 
 \begin_layout Section
-Pipeline flow
+Pipeline
 \end_layout
 
 \begin_layout Standard
@@ -334,7 +386,7 @@ Results
 
 \begin_layout Standard
 We have decreased the time to construct a supertree from (?) about 24 hours
- to about 8 minutes.
+ to about 8 minutes (minus pickle-creation time).
  The amount of RAM required to construct the supertree has decreased from
  
 \begin_inset Formula $X$
