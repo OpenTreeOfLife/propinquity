@@ -11,7 +11,11 @@ then
     echo "build-from-newicks.sh: expecting the second argument to be a file listing the path to the newick files"
     exit 1
 fi
-
+if test -z "$PEYOTL_ROOT"
+then
+    echo "currently you need to have PEYOTL_ROOT in your env set to your local clone of https://github.com/mtholder/peyotl.git"
+    exit 1
+fi
 
 touch phylo_input/rank_collection.json
 
@@ -30,6 +34,6 @@ do
     fn="$(basename $i)"
     stem="$(echo $fn | sed -e 's/\.tre$//')"
     echo $stem >> phylo_input/study_tree_pairs.txt
-    cp "${i}" "phylo_snapshot" 
+    python "${PEYOTL_ROOT}/scripts/nexson/propinquity_newick_to_nexson.py" $i > phylo_snapshot/"${stem}.json"
 done
 
