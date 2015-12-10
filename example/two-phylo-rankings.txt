@@ -1,2 +1,0 @@
-example/newicks/xx_1_t1.tre
-example/newicks/xx_1_t2.tre
