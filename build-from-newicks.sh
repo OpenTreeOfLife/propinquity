@@ -23,7 +23,7 @@ if test -f phylo_input/study_tree_pairs.txt
 then
     rm phylo_input/study_tree_pairs.txt
 fi
-
+set -x
 for i in $(cat "${phyloranking}")
 do
     if ! test -f "${i}"
@@ -33,8 +33,10 @@ do
     fi
     fn="$(basename $i)"
     stem="$(echo $fn | sed -e 's/\.tre$//')"
+    tree_id="$(echo $stem | sed -E 's/^.*_([^_]+)$/\1/')"
+    echo $tree_id
     echo $stem >> phylo_input/study_tree_pairs.txt
-    python "${PEYOTL_ROOT}/scripts/nexson/propinquity_newick_to_nexson.py" $i > phylo_snapshot/"${stem}.json"
+    python "${PEYOTL_ROOT}/scripts/nexson/propinquity_newick_to_nexson.py" "--ids=${tree_id}" $i > phylo_snapshot/"${stem}.json"
 done
 
 echo 0 > phylo_snapshot/git_shas.txt
