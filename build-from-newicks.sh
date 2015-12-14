@@ -37,3 +37,5 @@ do
     python "${PEYOTL_ROOT}/scripts/nexson/propinquity_newick_to_nexson.py" $i > phylo_snapshot/"${stem}.json"
 done
 
+echo 0 > phylo_snapshot/git_shas.txt
+bin/fake-collection.py $(cat "${phyloranking}") > phylo_snapshot/concrete_rank_collection.json
