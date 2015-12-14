@@ -1,9 +1,9 @@
 #!/bin/bash
-ottdir="${1}"
-phyloranking="${2}"
+ottdir="${OTT_DIR}"
+phyloranking="${1}"
 if ! test -d "${ottdir}"
 then
-    echo "build-from-newicks.sh: expecting the first argument to be an argument to the taxonomy directory"
+    echo "build-from-newicks.sh: expecting OTT_DIR to be in your environment and to specify the taxonomy directory"
     exit 1
 fi
 if ! test -f "${phyloranking}"
