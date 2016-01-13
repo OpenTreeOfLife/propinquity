@@ -88,17 +88,34 @@ authors
 \begin_layout Abstract
 We present a new software pipeline for constructing a summary supertree
  from a taxonomy and a collection of curated phylogenetic inputs.
- This improved pipeline is made up of propinquity, otcetera, and peyotl.
+ This improved pipeline is made up of 
+\emph on
+propinquity
+\emph default
+, 
+\emph on
+otcetera
+\emph default
+, and 
+\emph on
+peyotl
+\emph default
+.
  It is free software and is available from github.
- Compared to previous pipelines, the propinquity pipeline decreases the
- amount of computer memory and processing time required to construct the
- synthesis tree by about x-fold, preparing the way for the inclusion of
- many more input trees.
- The supertree also satisfies the criteria of having no unsupported branches,
- and no unnecessary polytomies.
- The supertree also increases the number of phylogenetic input splits that
- are displayed, while decreasing the number of conflicts between the summary
+ The pipeline improves on previous supertree construction methods in that
+ it satisfies the criteria of having no unsupported branches, and no unnecessary
+ polytomies.
+ The supertree increases the number of phylogenetic input splits that are
+ displayed, while decreasing the number of conflicts between the summary
  tree and the phylogenetic inputs.
+ The 
+\emph on
+propinquity
+\emph default
+ pipeline decreases the amount of computer memory and processing time required
+ to construct the synthesis tree by about x-fold.
+ This prepares the way for the inclusion of many more input trees.
+ 
 \end_layout
 
 \begin_layout Section
@@ -421,6 +438,11 @@ We also increase the number of displayed input splits from 35439 to 39713,
  2850 to 1312, a decrease of 1538, or 54.0%.
 \end_layout
 
+\begin_layout Standard
+Additionally, our pipeline now produces a tree with annotations about which
+ input trees support each node in the summary tree.
+\end_layout
+
 \begin_layout Section
 Discussion
 \end_layout
@@ -442,6 +464,31 @@ dog,cat,fugu,tuna)) with 3 internal nodes.
 u,tuna),(shark,ray)) with 5 internal nodes.
  We thus prefer the BUILD algorithm, with its preference not to merge groups
  unless there is phylogenetic input supporting the merger.
+\end_layout
+
+\begin_layout Paragraph*
+comparison with other supertree approaches
+\end_layout
+
+\begin_layout Standard
+distance-based: what supertree approaches are distance-based?
+\end_layout
+
+\begin_layout Standard
+maximum number of input triplets
+\end_layout
+
+\begin_layout Paragraph*
+guarantees
+\end_layout
+
+\begin_layout Itemize
+may not display a rooted triplet that is supported and uncontested, if that
+ triplet is contested by a 
+\emph on
+combination
+\emph default
+ of other rooted triplets.
 \end_layout
 
 \end_body
