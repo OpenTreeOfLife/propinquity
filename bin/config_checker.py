@@ -25,10 +25,14 @@ if __name__ == '__main__':
                         default=None,
                         type=str,
                         required=False,
-                        choices=('cleaning_flags', ),
-                        help='which property value should be printed.')
+#                        choices=('cleaning_flags', ),
+                        help='which property value should be printed, as in taxonomy.cleaning_flags.')
     args = parser.parse_args(sys.argv[1:])
     cf = args.config
+    prop = args.property
+    props = prop.split('.')
+    if (len(props) != 2):
+        errstream("Property '{}' should be of the form section.name".format(prop))
     p = configparser.RawConfigParser()
     try:
         p.read(cf)
@@ -36,12 +40,10 @@ if __name__ == '__main__':
         errstream('problem reading "{}"'.format(cf))
         raise
     try:
-        clean_ott_flags = p.get('taxonomy', 'cleaning_flags').strip()
+        value = p.get(props[0], props[1]).strip()
     except:
-        errstream('Could not find a [taxonomy] section with a valid "cleaning_flags" setting.')
+        errstream('Could not find a [{}] section with a valid "{}" setting.'.format(prop[0],prop[1]))
         raise
-    p = args.property
-    if p is None:
+    if prop is None:
         sys.exit(0)
-    if p == 'cleaning_flags':
-        print clean_ott_flags
+    print value

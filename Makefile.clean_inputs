@@ -48,7 +48,7 @@ clean:
 
 # "cleaned_ott" has dubious taxa pruned off. should check against treemachine and smasher versions
 cleaned_ott/cleaning_flags.txt: $(CONFIG_FILENAME)
-	./bin/config_checker.py --config=$(CONFIG_FILENAME) --property=cleaning_flags > cleaned_ott/.raw_cleaning_flags.txt
+	./bin/config_checker.py --config=$(CONFIG_FILENAME) --property=taxonomy.cleaning_flags > cleaned_ott/.raw_cleaning_flags.txt
 	if ! diff cleaned_ott/.raw_cleaning_flags.txt cleaned_ott/cleaning_flags.txt 2>/dev/null; then mv cleaned_ott/.raw_cleaning_flags.txt cleaned_ott/cleaning_flags.txt ; fi
 
 cleaned_ott/ott_version.txt: $(OTT_DIR)/version.txt
