@@ -45,7 +45,7 @@ full_supertree/full_supertree.tre: grafted_solution/grafted_solution.tre cleaned
 	otc-unprune-solution grafted_solution/grafted_solution.tre cleaned_ott/cleaned_ott.tre > full_supertree/full_supertree.tre
 
 labelled_supertree/labelled_supertree.tre: full_supertree/full_supertree.tre
-	otc-name-unnamed-nodes -c $^ > $@
+	otc-name-unnamed-nodes $^ > $@
 
 annotated_supertree/annotations.json: cleaned_ott/cleaned_ott.tre labelled_supertree/labelled_supertree.tre exemplified_phylo/nonempty_trees.txt
 	otc-annotate-synth cleaned_ott/cleaned_ott.tre labelled_supertree/labelled_supertree.tre $$(sed 's:^:exemplified_phylo/:' exemplified_phylo/nonempty_trees.txt) > annotated_supertree/annotations1.json
