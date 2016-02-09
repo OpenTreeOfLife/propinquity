@@ -33,7 +33,7 @@ if __name__ == '__main__':
     props = prop.split('.')
     if (len(props) != 2):
         errstream("Property '{}' should be of the form section.name".format(prop))
-    p = configparser.RawConfigParser()
+    p = configparser.SafeConfigParser()
     try:
         p.read(cf)
     except:
