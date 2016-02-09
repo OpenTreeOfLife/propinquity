@@ -42,7 +42,7 @@ if __name__ == '__main__':
     try:
         value = p.get(props[0], props[1]).strip()
     except:
-        errstream('Could not find a [{}] section with a valid "{}" setting.'.format(prop[0],prop[1]))
+        errstream('Could not find a [{}] section with a valid "{}" setting.'.format(props[0],props[1]))
         raise
     if prop is None:
         sys.exit(0)
