@@ -1,9 +1,10 @@
 #!/bin/sh
-set -x
+
+#set -x
 outp="$1"
 if test -z $outp
 then
-    echo "expecing an output file as an argument"
+    echo "expecting an output file as an argument"
     exit 1
 fi
 if test -f "$outp"
@@ -12,18 +13,39 @@ then
     exit 1
 fi
 
-for s in plants metazoa fungi safe-microbes
+if [ -z "$COLLECTIONS_ROOT" ] ; then
+    echo "COLLECTIONS_ROOT not set!"
+    exit 1
+fi
+
+if [ ! -e "$COLLECTIONS_ROOT" ] ; then
+    echo "'$COLLECTIONS_ROOT' does not exist!"
+    exit 1
+fi
+
+if [ ! -d "$COLLECTIONS_ROOT" ] ; then
+    echo "'$COLLECTIONS_ROOT' is not a directory!"
+    exit 1
+fi
+
+COLLECTIONS_DIR=$COLLECTIONS_ROOT/shards/collections-1/collections-by-owner/
+
+if [ ! -d "$COLLECTIONS_DIR" ] ; then
+    echo "$COLLECTIONS_DIR does not exist!"
+    exit 1
+fi
+
+
+COLLECTIONS=""
+for s in $SYNTHESIS_COLLECTIONS
 do
-    if test -f "${s}.json"
-    then
-        echo "${s}.json is in the way!"
-        exit 1
+    FILENAME=$COLLECTIONS_DIR/${s}.json
+    if [ ! -f "$FILENAME" ] ; then
+	echo "Collection '$s' not found!"
+	exit 1
     fi
+    COLLECTIONS="$COLLECTIONS $FILENAME"
 done
 
-for s in plants metazoa fungi safe-microbes
-do
-    wget https://raw.githubusercontent.com/OpenTreeOfLife/collections-1/master/collections-by-owner/opentreeoflife/${s}.json
-done
-
-$PEYOTL_ROOT/scripts/concatenate_collections.py plants.json metazoa.json fungi.json safe-microbes.json --output="${outp}"
+echo $PEYOTL_ROOT/scripts/concatenate_collections.py $COLLECTIONS --output="${outp}"
+$PEYOTL_ROOT/scripts/concatenate_collections.py $COLLECTIONS --output="${outp}"

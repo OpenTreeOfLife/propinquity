@@ -1,3 +1,18 @@
+COLLECTIONS_ROOT := $(shell bin/config_checker.py --config=config --property=opentree.collections)
+export COLLECTIONS_ROOT
+
+PEYOTL_ROOT := $(shell bin/config_checker.py --config=config --property=opentree.peyotl)
+export PEYOTL_ROOT
+
+OTT_DIR := $(shell bin/config_checker.py --config=config --property=opentree.ott)
+export OTT_DIR
+
+PHYLESYSTEM_ROOT := $(shell bin/config_checker.py --config=config --property=opentree.phylesystem)
+export PHYLESYSTEM_ROOT 
+
+SYNTHESIS_COLLECTIONS := $(shell bin/config_checker.py --config=config --property=synthesis.collections)
+export SYNTHESIS_COLLECTIONS
+
 INPUT_PHYLO_ARTIFACTS=phylo_input/studies.txt \
 	 phylo_input/study_tree_pairs.txt
 
@@ -15,12 +30,6 @@ all: $(ARTIFACTS)
 # phylo_input holds the lists of study+tree pairs to be used during the supertree construction
 phylo_input/fresh_synth_collection.json: 
 	cd phylo_input ; \
-	rm -f \
-	   fungi.json \
-	   metazoa.json \
-	   plants.json \
-	   safe-microbes.json \
-	   fresh_synth_collection.json ; \
 	../bin/reaggregate-synth-collections.sh fresh_synth_collection.json
 
 phylo_input/studies.txt: phylo_input/rank_collection.json
