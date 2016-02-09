@@ -48,7 +48,7 @@ def extract_version(args):
 
 def extract_filtered_flags(args):
     cf = args.config
-    p = configparser.RawConfigParser()
+    p = configparser.SafeConfigParser()
     try:
         p.read(cf)
     except:
@@ -60,6 +60,28 @@ def extract_filtered_flags(args):
         errstream('Could not find a [taxonomy] section with a valid "cleaning_flags" setting.')
         raise
     return clean_ott_flags.split(',')
+
+def root_taxon_name(args, ott_dir):
+    import subprocess
+    import os
+    cf = args.config
+    p = configparser.SafeConfigParser()
+    try:
+        p.read(cf)
+    except:
+        errstream('problem reading "{}"'.format(cf))
+        raise
+    try:
+        root_ott_id = p.get('synthesis', 'root_ott_id').strip()
+    except:
+        errstream('Could not find a [synthesis] section with a valid "root_ott_id" setting.')
+        raise
+#    root_name = os.system("otc-taxonomy-parser -N",str(root_ott_id)])
+    print ott_dir
+    FNULL = open(os.devnull, 'w')
+    proc = subprocess.Popen(["otc-taxonomy-parser", ott_dir,"-N",str(root_ott_id)], stdout=subprocess.PIPE, stderr=FNULL)
+    root_name = proc.communicate()[0].strip()
+    return root_name
 
 if __name__ == '__main__':
     import argparse
@@ -84,13 +106,13 @@ if __name__ == '__main__':
                         required=False,
                         help='directory containing ott files (e.g "taxonomy.tsv")')
     args = parser.parse_args(sys.argv[1:])
-
+    ott_dir = args.ott_dir
     document = {}
     document["date_completed"] = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     document["tree_id"] = "opentree4.1"
     document["taxonomy_version"] = extract_version(args)
     document["run_time"] = "30 minutes"
-    document["root_taxon_name"] = "cellular organisms" ## This is a hard-coded hack right now.
+    document["root_taxon_name"] = root_taxon_name(args, ott_dir)
     document["generated_by"] = [
         {"name":"propinquity",
          "version":"x",
