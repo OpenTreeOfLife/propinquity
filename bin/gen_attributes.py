@@ -77,7 +77,6 @@ def root_taxon_name(args, ott_dir):
         errstream('Could not find a [synthesis] section with a valid "root_ott_id" setting.')
         raise
 #    root_name = os.system("otc-taxonomy-parser -N",str(root_ott_id)])
-    print ott_dir
     FNULL = open(os.devnull, 'w')
     proc = subprocess.Popen(["otc-taxonomy-parser", ott_dir,"-N",str(root_ott_id)], stdout=subprocess.PIPE, stderr=FNULL)
     root_name = proc.communicate()[0].strip()
