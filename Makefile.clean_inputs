@@ -28,6 +28,7 @@ ARTIFACTS += $(SUPPRESS_FLAG_ARTIFACTS) \
 	phylo_snapshot/git_shas.txt \
 	phylo_snapshot/concrete_rank_collection.json \
 	cleaned_phylo/cleaning_flags.txt \
+	cleaned_phylo/root_ott_id.txt \
 	cleaned_phylo/phylo_inputs_cleaned.txt \
 	exemplified_phylo/taxonomy.tre \
 	exemplified_phylo/args.txt \
@@ -47,6 +48,10 @@ clean:
 	rm -f phylo_snapshot/git_shas.txt
 
 # "cleaned_ott" has dubious taxa pruned off. should check against treemachine and smasher versions
+cleaned_ott/root_ott_id.txt: $(CONFIG_FILENAME)
+	./bin/config_checker.py --config=$(CONFIG_FILENAME) --property=synthesis.root_ott_id > cleaned_ott/.raw_root_ott_id.txt
+	if ! diff cleaned_ott/.raw_root_ott_id.txt cleaned_ott/root_ott_id.txt 2>/dev/null; then mv cleaned_ott/.raw_root_ott_id.txt cleaned_ott/root_ott_id.txt ; fi
+
 cleaned_ott/cleaning_flags.txt: $(CONFIG_FILENAME)
 	./bin/config_checker.py --config=$(CONFIG_FILENAME) --property=taxonomy.cleaning_flags > cleaned_ott/.raw_cleaning_flags.txt
 	if ! diff cleaned_ott/.raw_cleaning_flags.txt cleaned_ott/cleaning_flags.txt 2>/dev/null; then mv cleaned_ott/.raw_cleaning_flags.txt cleaned_ott/cleaning_flags.txt ; fi
@@ -59,7 +64,8 @@ cleaned_ott/cleaned_ott.tre: $(OTT_FILEPATHS) cleaned_ott/ott_version.txt cleane
 	    --ott-dir=$(OTT_DIR) \
 	    --output=cleaned_ott/cleaned_ott.tre \
 	    --log=cleaned_ott/cleaned_ott.json \
-	    --flags="$(shell cat cleaned_ott/cleaning_flags.txt)"
+	    --flags="$(shell cat cleaned_ott/cleaning_flags.txt)" \
+	    --root="$(shell cat cleaned_ott/root_ott_id.txt)"
 
 cleaned_ott/cleaned_ott.json: cleaned_ott/cleaned_ott.tre
 
@@ -109,7 +115,8 @@ endef
 export SNAPSHOT_CACHE_VAR
 
 cleaned_phylo/needs_updating.txt: phylo_snapshot/concrete_rank_collection.json
-	if ! diff cleaned_ott/cleaning_flags.txt cleaned_phylo/cleaning_flags.txt >/dev/null 2>&1 ; \
+	if ! diff cleaned_ott/cleaning_flags.txt cleaned_phylo/cleaning_flags.txt >/dev/null 2>&1 && \
+	   ! diff cleaned_ott/root_ott_id.txt cleaned_phylo/root_ott_id.txt >/dev/null 2>&1 ; \
 	then echo $$SNAPSHOT_CACHE_VAR | sed -E 's/ /\n/g' > cleaned_phylo/needs_updating.txt ;\
 	else ./bin/write-needs-updating cleaned_phylo $$SNAPSHOT_CACHE_VAR > cleaned_phylo/needs_updating.txt ;\
 	fi
@@ -124,6 +131,9 @@ cleaned_phylo/phylo_inputs_cleaned.txt: cleaned_phylo/needs_updating.txt cleaned
 
 cleaned_phylo/cleaning_flags.txt: cleaned_phylo/phylo_inputs_cleaned.txt
 	cp cleaned_ott/cleaning_flags.txt cleaned_phylo/cleaning_flags.txt
+
+cleaned_phylo/root_ott_id.txt: cleaned_phylo/phylo_inputs_cleaned.txt
+	cp cleaned_ott/root_ott_id.txt cleaned_phylo/root_ott_id.txt
 
 # cleaned_phylo/%.tre: phylo_snapshot/%.json cleaned_ott/cleaning_flags.txt
 # 	$(PEYOTL_ROOT)/scripts/nexson/prune_to_clean_mapped.py \

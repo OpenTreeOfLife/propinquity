@@ -1,5 +1,7 @@
 cleaned_ott.json
 cleaned_ott.tre
 cleaning_flags.txt
+root_ott_id.txt
 ott_version.txt
 .raw_cleaning_flags.txt
+.raw_root_ott_id.txt
