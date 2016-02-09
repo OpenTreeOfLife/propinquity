@@ -28,21 +28,26 @@ all: $(ARTIFACTS)
 
 
 # phylo_input holds the lists of study+tree pairs to be used during the supertree construction
-phylo_input/fresh_synth_collection.json: 
+phylo_input/collections.txt: config
+	bin/config_checker.py --config=config --property=synthesis.collections > phylo_input/.raw_collections.txt
+	if ! diff phylo_input/collections.txt phylo_input/.raw_collections.txt 2>/dev/null ; then mv phylo_input/.raw_collections.txt phylo_input/collections.txt ; fi
+
+phylo_input/rank_collection.json: phylo_input/collections.txt
 	cd phylo_input ; \
-	../bin/reaggregate-synth-collections.sh fresh_synth_collection.json
+	../bin/reaggregate-synth-collections.sh .raw_rank_collection.json
+	if ! diff phylo_input/rank_collection.json phylo_input/.raw_rank_collection.json 2>/dev/null ; then mv phylo_input/.raw_rank_collection.json phylo_input/rank_collection.json ; fi
 
 phylo_input/studies.txt: phylo_input/rank_collection.json
 
-phylo_input/rank_collection.json:
-	@echo "You must create the input file phylo_input/rank_collection.json "
-	@echo "  which holds the collection of trees that are used in synthesis."
-	@echo "If you do not have a collection that you want to use as an input you can run:"
-	@echo
-	@echo '   make phylo_input/fresh_synth_collection.json'
-	@echo '   cp phylo_input/fresh_synth_collection.json phylo_input/rank_collection.json'
-	@echo
-	@false
+#phylo_input/rank_collection.json:
+#	@echo "You must create the input file phylo_input/rank_collection.json "
+#	@echo "  which holds the collection of trees that are used in synthesis."
+#	@echo "If you do not have a collection that you want to use as an input you can run:"
+#	@echo
+#	@echo '   make phylo_input/fresh_synth_collection.json'
+#	@echo '   cp phylo_input/fresh_synth_collection.json phylo_input/rank_collection.json'
+#	@echo
+#	@false
 
 phylo_input/study_tree_pairs.txt: phylo_input/rank_collection.json
 	$(PEYOTL_ROOT)/scripts/collection_export.py --export=studyID_treeID phylo_input/rank_collection.json >phylo_input/study_tree_pairs.txt
@@ -53,7 +58,7 @@ clean:
 	make -fMakefile.clean_inputs clean
 	make -fMakefile.subproblems clean
 
-exemplified_phylo/nonempty_trees.txt:
+exemplified_phylo/nonempty_trees.txt: phylo_input/study_tree_pairs.txt phylo_input/rank_collection.json
 	make -fMakefile.clean_inputs exemplified_phylo/nonempty_trees.txt
 
 subproblems/subproblem-ids.txt:
