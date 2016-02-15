@@ -61,7 +61,7 @@ cleaned_ott/cleaning_flags.txt: $(CONFIG_FILENAME)
 cleaned_ott/ott_version.txt: $(OTT_DIR)/version.txt
 	if ! diff $(OTT_DIR)/version.txt cleaned_ott/ott_version.txt >/dev/null 2>&1 ; then cp $(OTT_DIR)/version.txt cleaned_ott/ott_version.txt ; fi
 
-cleaned_ott/cleaned_ott.tre: $(OTT_FILEPATHS) cleaned_ott/ott_version.txt cleaned_ott/cleaning_flags.txt
+cleaned_ott/cleaned_ott.tre: $(OTT_FILEPATHS) cleaned_ott/ott_version.txt cleaned_ott/cleaning_flags.txt cleaned_ott/root_ott_id.txt
 	otc-taxonomy-parser $(OTT_DIR) --config=config -T > cleaned_ott/.raw_cleaned_ott.tre
 	mv cleaned_ott/.raw_cleaned_ott.tre cleaned_ott/cleaned_ott.tre
 #	  $(PEYOTL_ROOT)/scripts/ott/suppress_by_flag.py \
@@ -125,7 +125,7 @@ cleaned_phylo/needs_updating.txt: phylo_snapshot/concrete_rank_collection.json
 	else ./bin/write-needs-updating cleaned_phylo $$SNAPSHOT_CACHE_VAR > cleaned_phylo/needs_updating.txt ;\
 	fi
 
-cleaned_phylo/phylo_inputs_cleaned.txt: cleaned_phylo/needs_updating.txt cleaned_ott/cleaning_flags.txt $(SNAPSHOT_CACHE) 
+cleaned_phylo/phylo_inputs_cleaned.txt: cleaned_phylo/needs_updating.txt cleaned_ott/cleaning_flags.txt cleaned_ott/root_ott_id.txt $(SNAPSHOT_CACHE) 
 	$(PEYOTL_ROOT)/scripts/nexson/prune_to_clean_mapped.py \
 	  --ott-dir=$(OTT_DIR) \
 	  --input-files-list=cleaned_phylo/needs_updating.txt \
