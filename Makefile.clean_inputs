@@ -130,7 +130,8 @@ cleaned_phylo/phylo_inputs_cleaned.txt: cleaned_phylo/needs_updating.txt cleaned
 	  --ott-dir=$(OTT_DIR) \
 	  --input-files-list=cleaned_phylo/needs_updating.txt \
 	  --out-dir=cleaned_phylo \
-	  --ott-prune-flags="$(shell cat cleaned_ott/cleaning_flags.txt)"
+	  --ott-prune-flags="$(shell cat cleaned_ott/cleaning_flags.txt)" \
+	  --root="$(shell cat cleaned_ott/root_ott_id.txt)"
 	touch cleaned_phylo/phylo_inputs_cleaned.txt
 
 cleaned_phylo/cleaning_flags.txt: cleaned_phylo/phylo_inputs_cleaned.txt
