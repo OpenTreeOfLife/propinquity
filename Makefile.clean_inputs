@@ -27,6 +27,8 @@ SNAPSHOT_CACHE := $(addprefix phylo_snapshot/, $(STUDY_TREE_FN))
 ARTIFACTS += $(SUPPRESS_FLAG_ARTIFACTS) \
 	phylo_snapshot/git_shas.txt \
 	phylo_snapshot/concrete_rank_collection.json \
+	cleaned_ott/cleaning_flags.txt \
+	cleaned_ott/root_ott_id.txt \
 	cleaned_phylo/cleaning_flags.txt \
 	cleaned_phylo/root_ott_id.txt \
 	cleaned_phylo/phylo_inputs_cleaned.txt \
