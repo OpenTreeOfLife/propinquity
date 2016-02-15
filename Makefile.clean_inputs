@@ -62,14 +62,15 @@ cleaned_ott/ott_version.txt: $(OTT_DIR)/version.txt
 	if ! diff $(OTT_DIR)/version.txt cleaned_ott/ott_version.txt >/dev/null 2>&1 ; then cp $(OTT_DIR)/version.txt cleaned_ott/ott_version.txt ; fi
 
 cleaned_ott/cleaned_ott.tre: $(OTT_FILEPATHS) cleaned_ott/ott_version.txt cleaned_ott/cleaning_flags.txt cleaned_ott/root_ott_id.txt
-	otc-taxonomy-parser $(OTT_DIR) --config=config -T > cleaned_ott/.raw_cleaned_ott.tre
-	mv cleaned_ott/.raw_cleaned_ott.tre cleaned_ott/cleaned_ott.tre
-#	  $(PEYOTL_ROOT)/scripts/ott/suppress_by_flag.py \
-#	    --ott-dir=$(OTT_DIR) \
-#	    --output=cleaned_ott/cleaned_ott.tre \
-#	    --log=cleaned_ott/cleaned_ott.json \
-#	    --flags="$(shell cat cleaned_ott/cleaning_flags.txt)" \
-#	    --root="$(shell cat cleaned_ott/root_ott_id.txt)"
+	$(PEYOTL_ROOT)/scripts/ott/suppress_by_flag.py \
+	    --ott-dir=$(OTT_DIR) \
+	    --output=cleaned_ott/cleaned_ott.tre \
+	    --log=cleaned_ott/cleaned_ott.json \
+	    --flags="$(shell cat cleaned_ott/cleaning_flags.txt)" \
+	    --root="$(shell cat cleaned_ott/root_ott_id.txt)"
+#    Maybe replace python program with C++ program below after we can generate the necessary log files.
+#	otc-taxonomy-parser $(OTT_DIR) --config=config -T > cleaned_ott/.raw_cleaned_ott.tre
+#	mv cleaned_ott/.raw_cleaned_ott.tre cleaned_ott/cleaned_ott.tre
 
 cleaned_ott/cleaned_ott.json: cleaned_ott/cleaned_ott.tre
 
