@@ -30,12 +30,12 @@ all: $(ARTIFACTS)
 # phylo_input holds the lists of study+tree pairs to be used during the supertree construction
 phylo_input/collections.txt: config
 	bin/config_checker.py --config=config --property=synthesis.collections > phylo_input/.raw_collections.txt
-	if ! diff phylo_input/collections.txt phylo_input/.raw_collections.txt 2>/dev/null ; then mv phylo_input/.raw_collections.txt phylo_input/collections.txt ; fi
+	if ! diff phylo_input/collections.txt phylo_input/.raw_collections.txt 2>/dev/null ; then mv phylo_input/.raw_collections.txt phylo_input/collections.txt ; else rm phylo_input/.raw_collections.txt ; fi
 
 phylo_input/rank_collection.json: phylo_input/collections.txt
 	cd phylo_input ; \
 	../bin/reaggregate-synth-collections.sh .raw_rank_collection.json
-	if ! diff phylo_input/rank_collection.json phylo_input/.raw_rank_collection.json 2>/dev/null ; then mv phylo_input/.raw_rank_collection.json phylo_input/rank_collection.json ; fi
+	if ! diff phylo_input/rank_collection.json phylo_input/.raw_rank_collection.json 2>/dev/null ; then mv phylo_input/.raw_rank_collection.json phylo_input/rank_collection.json ; else rm phylo_input/.raw_rank_collection.json ; fi
 
 phylo_input/studies.txt: phylo_input/rank_collection.json
 
