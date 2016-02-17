@@ -97,23 +97,32 @@ if the variables in the config file are defined as above.
 
 ### Example configuration
 
-    $ ls $PEYOTL_ROOT 
+    $ cat config
+    [taxonomy]
+    cleaning_flags = major_rank_conflict,major_rank_conflict_inherited,environmental,unclassified_inherited,unclassified,viral,barren,not_otu,incertae_sedis,incertae_sedis_inherited,hidden,unplaced,unplaced_inherited,was_container,inconsistent,hybrid,merged,extinct
+
+    [synthesis]
+    collections = opentreeoflife/plants opentreeoflife/metazoa opentreeoflife/fungi opentreeoflife/safe-microbes
+    root_ott_id = 93302
+
+    [opentree]
+    home = /home/bredelings/Devel/OpenTree
+    peyotl = %(home)s/peyotl
+    phylesystem = %(home)s/phylesystem
+    ott = %(home)s/ott/ott2.9draft12/
+    collections = %(home)s/collections
+    $ ls {opentree.peyotl}
     ...
     peyotl
     ...
     setup.py
     ...
-    $ echo $OTT_DIR
-    /tmp/ott2.9draft9
-    $ ls $OTT_DIR
+    $ ls {opentree.ott}
     ...
     taxonomy.tsv
     ...
-    $ ls $PHYLESYSTEM_ROOT/shards/phylesystem-1
+    $ ls {opentree.phylesystem}/shards/phylesystem-1
     next_study_id.json  README.md  study
-    $ cat config
-    [taxonomy]
-    cleaning_flags = major_rank_conflict,major_rank_conflict_direct,major_rank_conflict_inherited,environmental,viral,nootu,barren,not_otu,extinct_inherited,extinct_direct,hidden,tattered
 
 
 ## Usage
