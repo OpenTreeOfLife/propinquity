@@ -49,10 +49,10 @@ if the variables in the config file are defined as above.
   1. A local version of the OTT taxonomy. See http://files.opentreeoflife.org/ott/
   with a config entry pointing to it in the `opentree` section.
     
-       [opentree]
-       ...
-       ott = %(home)s/ott/ott2.9draft12
-       ...
+      [opentree]
+      ...
+      ott = %(home)s/ott/ott2.9draft12
+      ...
 
 
   1. [peyotl](https://github.com/mtholder/peyotl) should be downloaded and installed
