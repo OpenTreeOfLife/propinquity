@@ -58,10 +58,10 @@ if the variables in the config file are defined as above.
   1. [peyotl](https://github.com/mtholder/peyotl) should be downloaded and installed
   with an config entry pointing to it:
 
-       [opentree]
-       ...
-       peyotl = %(home)s/peyotl
-       ...
+      [opentree]
+      ...
+      peyotl = %(home)s/peyotl
+      ...
 
   Note that (as of 2015-Oct-10) the master branch of peyotl on mtholder's
   GitHub page (not the Open Tree of Life group). See the link above.
@@ -70,10 +70,10 @@ if the variables in the config file are defined as above.
   1. A local copy of the [phylesystem-1](https://github.com/opentreeoflife/phylesystem-1)
   repo with a config entry pointing to the parent of the shards directory
 
-       [opentree]
-       ...
-       phylesystem = %(home)s/phylesystem
-       ...
+      [opentree]
+      ...
+      phylesystem = %(home)s/phylesystem
+      ...
 
   The actual phylesystem-1 repo cloned from git should be in a directory {opentree.phylesystem}/shards/phylesystem-1
    
@@ -81,10 +81,10 @@ if the variables in the config file are defined as above.
   1. A local copy of the collections-1 repo with a config entry
   pointing to the parent of the shards directory
 
-       [opentree]
-       ...
-       phylesystem = %(home)s/collections
-       ...
+      [opentree]
+      ...
+      phylesystem = %(home)s/collections
+      ...
 
   The actual [collections-1](https://github.com/opentreeoflife/collections-1) repo cloned from git should be in a directory {opentree.collections}/shards/collections-1
 
