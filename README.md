@@ -47,7 +47,7 @@ if the variables in the config file are defined as above.
 ## Prerequisites
 
   1. A local version of the OTT taxonomy. See http://files.opentreeoflife.org/ott/
-    with a config entry pointing to it in the `opentree` section.
+  with a config entry pointing to it in the `opentree` section.
     
        [opentree]
        ...
@@ -56,7 +56,7 @@ if the variables in the config file are defined as above.
 
 
   1. [peyotl](https://github.com/mtholder/peyotl) should be downloaded and installed
-    with an config entry pointing to it:
+  with an config entry pointing to it:
 
        [opentree]
        ...
