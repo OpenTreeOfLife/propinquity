@@ -115,6 +115,10 @@ described above, you may run synthesis just by typing
   1. [labelled_supertree](labelled_supertree/README.md)
   1. [annotated_supertree](annotated_supertree/README.md)
 
+The final output of synthesis consists of
+* labelled_supertree/labelled_supertre.tre 
+* annotated_supertree/annotations.json
+
 ## Sketch
 A cartoon of the pipeline with peyotl tools in pink and otcetera tools in blue.
 Input from other components of Open Tree of Life are ovals.
