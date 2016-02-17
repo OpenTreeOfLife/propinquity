@@ -36,6 +36,11 @@ produced by `$(PEYOTL_ROOT)/scripts/ott/suppress_by_flag.py`
   of OTT.  This setting is pulled out as a separate file to make it obvious
   when the "cleaned" taxonomy needs to be changed.
 
+  * `root_ott_id.txt` value of the `root_ott_id` of the config file for
+  the pipeline for the last build of the artifacts. These affect the pruning
+  of OTT.  This setting is pulled out as a separate file to make it obvious
+  when the "cleaned" taxonomy needs to be changed.
+
 
 If you were to select `pruned/*/anc_ott_id_pruned` from `cleaned_ott.json`
 you would get a set of nonoverlapping OTT Ids. If you were to cut the full
