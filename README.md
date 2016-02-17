@@ -91,10 +91,11 @@ if the variables in the config file are defined as above.
   The actual `collections-1` repo cloned from git should be in a directory `{opentree.collections}/shards/collections-1`
 
   1. [otcetera](https://github.com/mtholder/otcetera)
+  To install, do:
 
-      $ cd otcetera
-      $ ./configure --prefix=$HOME/local
-      $ make install
+       $ cd otcetera
+       $ ./configure --prefix=$HOME/local
+       $ make install
 
   Now set your PATH to include $HOME/local.    
 
