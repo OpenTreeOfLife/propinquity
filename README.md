@@ -62,8 +62,8 @@ if the variables in the config file are defined as above.
        peyotl = %(home)s/peyotl
        ...
 
-    Note that (as of 2015-Oct-10) the master branch of peyotl on mtholder's
-    GitHub page (not the Open Tree of Life group). See the link above.
+  Note that (as of 2015-Oct-10) the master branch of peyotl on mtholder's
+  GitHub page (not the Open Tree of Life group). See the link above.
 
   1. A local copy of the  [phylesystem-1](https://github.com/opentreeoflife/phylesystem-1) repo.
 
@@ -72,7 +72,7 @@ if the variables in the config file are defined as above.
        phylesystem = %(home)s/phylesystem
        ...
 
-   The actual phylesystem-1 repo cloned from git should be in a directory {opentree.phylesystem}/shards/phylesystem-1
+  The actual phylesystem-1 repo cloned from git should be in a directory {opentree.phylesystem}/shards/phylesystem-1
    
 
   1. A local copy of the collections-1 repo with a config entry
