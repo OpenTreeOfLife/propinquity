@@ -101,12 +101,19 @@ described above, you may run synthesis just by typing
     $ make
 
 ## Artifacts
+  1. [phylo_induced_taxonomy](phylo_induced_taxonomy/README.md)
+  1. [phylo_snapshot](phylo_snapshot/README.md)
   1. [cleaned_ott](cleaned_ott/README.md)
   1. [phylo_input](phylo_input/README.md)
   1. [phylo_snapshot](phylo_snapshot/README.md)
   1. [cleaned_phylo](cleaned_phylo/README.md)
   1. [exemplified_phylo](exemplified_phylo/README.md)
-
+  1. [subproblems](subproblems/README.md)
+  1. [subproblem_solutions](subproblem_solutions/README.md)
+  1. [grafted_solution](grafted_solution/README.md)
+  1. [full_supertree](full_supertree/README.md)
+  1. [labelled_supertree](labelled_supertree/README.md)
+  1. [annotated_supertree](annotated_supertree/README.md)
 
 ## Sketch
 A cartoon of the pipeline with peyotl tools in pink and otcetera tools in blue.
