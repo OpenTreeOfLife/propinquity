@@ -1,13 +1,14 @@
 # subproblem_solutions
-Produced by `otc-solve-subproblem`.
-Each subproblem is read separately (`subproblems/ott#######.tre`).
 
-Requires that otcetera tools be on your PATH.
+Requires that otcetera tools be in your PATH.
 
 The artifacts are solutions to subproblems in the `subproblems/` directory:
 
  * `ott#####-solution.tre`: A newick tree file containing a solution to the subproblem
    in `subproblems/ott#####.tre`
+
+Produced by `otc-solve-subproblem`.
+Each subproblem is read separately (`subproblems/ott#######.tre`).
 
 Here is some shell code to perform this:
 
