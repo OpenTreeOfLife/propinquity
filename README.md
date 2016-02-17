@@ -11,7 +11,7 @@ Before you set up other prequisite software, you'll need to initialize your
     $ cp config.example config
 
 This config file contains sections, each of which contain settings for variables,
-as described [here](https://en.wikipedia.org/wiki/INI_file).  These
+following the [INI file format](https://en.wikipedia.org/wiki/INI_file).  These
 settings may be tweaked to describe the location of installed
 software, the collections used for synthesis, etc.
 
