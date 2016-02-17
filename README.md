@@ -49,28 +49,28 @@ if the variables in the config file are defined as above.
   1. A local version of the OTT taxonomy. See http://files.opentreeoflife.org/ott/
     with a config entry pointing to it in the `opentree` section.
     
-      [opentree]
-      ...
-      ott = %(home)s/ott/ott2.9draft12
-      ...
+       [opentree]
+       ...
+       ott = %(home)s/ott/ott2.9draft12
+       ...
 
   1. [peyotl](https://github.com/mtholder/peyotl) should be downloaded and installed
     with an config entry pointing to it:
 
-   [opentree]
-   ...
-   peyotl = %(home)s/peyotl
-   ...
+       [opentree]
+       ...
+       peyotl = %(home)s/peyotl
+       ...
 
     Note that (as of 2015-Oct-10) the master branch of peyotl on mtholder's
     GitHub page (not the Open Tree of Life group). See the link above.
 
   1. A local copy of the  [phylesystem-1](https://github.com/opentreeoflife/phylesystem-1) repo.
 
-   [opentree]
-   ...
-   phylesystem = %(home)s/phylesystem
-   ...
+       [opentree]
+       ...
+       phylesystem = %(home)s/phylesystem
+       ...
 
    The actual phylesystem-1 repo cloned from git should be in a directory {opentree.phylesystem}/shards/phylesystem-1
    
