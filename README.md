@@ -1,6 +1,8 @@
 # propinquity
 
-## Configuration file
+## Setup
+
+### Configuration file
 
 Before you set up other prequisite software, you'll need to initialize your
 `config` file.  You do this by copying an example config file:
@@ -44,7 +46,7 @@ really means
 if the variables in the config file are defined as above.
 
 
-## Prerequisites
+### Software prerequisites
 
   1. A local version of the OTT taxonomy. See http://files.opentreeoflife.org/ott/
   with a config entry pointing to it in the `opentree` section.
@@ -93,6 +95,27 @@ if the variables in the config file are defined as above.
   1. [tee](https://en.wikipedia.org/wiki/Tee_(command))
 
 
+### Example configuration
+
+    $ ls $PEYOTL_ROOT 
+    ...
+    peyotl
+    ...
+    setup.py
+    ...
+    $ echo $OTT_DIR
+    /tmp/ott2.9draft9
+    $ ls $OTT_DIR
+    ...
+    taxonomy.tsv
+    ...
+    $ ls $PHYLESYSTEM_ROOT/shards/phylesystem-1
+    next_study_id.json  README.md  study
+    $ cat config
+    [taxonomy]
+    cleaning_flags = major_rank_conflict,major_rank_conflict_direct,major_rank_conflict_inherited,environmental,viral,nootu,barren,not_otu,extinct_inherited,extinct_direct,hidden,tattered
+
+
 ## Usage
 
 After you have installed the software and tweaked the seting in your `config` file as
@@ -131,27 +154,6 @@ different tools in a subdirectory.
 In these cases this sketch just shows the most interesting tool.
 
 ![pipeline](https://github.com/mtholder/propinquity/blob/master/doc/pipeline-tools.png)
-
-### Example configuration
-
-    $ ls $PEYOTL_ROOT 
-    ...
-    peyotl
-    ...
-    setup.py
-    ...
-    $ echo $OTT_DIR
-    /tmp/ott2.9draft9
-    $ ls $OTT_DIR
-    ...
-    taxonomy.tsv
-    ...
-    $ ls $PHYLESYSTEM_ROOT/shards/phylesystem-1
-    next_study_id.json  README.md  study
-    $ cat config
-    [taxonomy]
-    cleaning_flags = major_rank_conflict,major_rank_conflict_direct,major_rank_conflict_inherited,environmental,viral,nootu,barren,not_otu,extinct_inherited,extinct_direct,hidden,tattered
-
 
 ### Checking the synthetic tree
 
