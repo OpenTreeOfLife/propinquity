@@ -1,32 +1,91 @@
 # propinquity
 
+## Configuration file
+
+Before you set up other prequisite software, you'll need to set up your
+`config` file.  You can start by copying an example config file:
+
+    $ cp config.example config
+
+This config file contains sections, each of which contain settings for variables,
+as described [here](https://en.wikipedia.org/wiki/INI_file).
+
+The [opentree] section might look like this:
+
+    [opentree]
+    home = /home/USER/OpenTree
+    peyotl = %(home)s/peyotl
+    phylesystem = %(home)s/phylesystem
+    ott = %(home)s/ott/ott2.9draft12/
+    collections = %(home)s/collections
+
+This describes a configuration file the where peyotl, propinquity,
+phylesystem, collections, and the OTT directories are all located
+inside a single `OpenTree` directory. To avoid writing the name of
+that directory multiple times, it is possible to define an addition
+variable `home` to be the `OpenTree` directory, and then reference
+that directory multiple types by writing `%(home)s`.
+
+To save space, from now on we will write {opentree.peyotl} to mean the location of Peyotl
+as defined in the `config` file.  Thus a command line
+
+    $ ls {opentree.ott}/taxonomy.tsv
+
+really means
+
+    $ ls /home/USER/OpenTree/ott/ott2.9draft12/taxonomy.tsv
+
+if the variables in the config file are defined as above.
+
+
 ## Prerequisites
 
-  1. a local version of the OTT taxonomy. See http://files.opentreeoflife.org/ott/
-    with an environmental variable pointing to it:
-
-    $ export OTT_DIR=/tmp/ott/aster
+  1. A local version of the OTT taxonomy. See http://files.opentreeoflife.org/ott/
+    with a config entry pointing to it in the `opentree` section.
+    
+      [opentree]
+      ...
+      ott = %(home)s/ott/ott2.9draft12
+      ...
 
   2. [peyotl](https://github.com/mtholder/peyotl) should be downloaded and installed
-    with an environmental variable pointing to it:
+    with an config entry pointing to it:
 
-    export PEYOTL_ROOT=/tmp/peyotl
+   [opentree]
+   ...
+   peyotl = %(home)s/peyotl
+   ...
 
     Note that (as of 2015-Oct-10) the master branch of peyotl on mtholder's
     GitHub page (not the Open Tree of Life group). See the link above.
 
-  3. [tee](https://en.wikipedia.org/wiki/Tee_(command))
+  3. A local copy of the phylesystem-1 with a config entry pointing to
+  the parent of the shards directory. 
 
-  4. a local copy of the phylesystem with an environmental variable PHYLESYSTEM_ROOT pointing to the parent of the shards directory.
+   [opentree]
+   ...
+   phylesystem = %(home)s/phylesystem
+   ...
+
+   The actual phylesystem-1 repo cloned from git should be in a directory {opentree.phylesystem}/shards/phylesystem-1
+
+  4. A local copy of the collections-1 repo with a config entry
+  pointing to the parent of the shards directory
+
+   [opentree]
+   ...
+   phylesystem = %(home)s/collections
+   ...
+
+   The actual collections-1 repo cloned from git should be in a directory {opentree.collections}/shards/collections-1
+
+  5. [tee](https://en.wikipedia.org/wiki/Tee_(command))
 
 
 ## Usage
 
-After you have your environment set up (as described above), you'll need to
-
-    $ cp config.example config
-
-and tweak the settings as desired. Then:
+After you have installed the software and tweaked the seting in your `config` file as
+described above, you may run synthesis just by typing
 
     $ make
 
