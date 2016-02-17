@@ -75,10 +75,10 @@ if the variables in the config file are defined as above.
       phylesystem = %(home)s/phylesystem
       ...
 
-  The actual phylesystem-1 repo cloned from git should be in a directory {opentree.phylesystem}/shards/phylesystem-1
+  The actual `phylesystem-1` repo cloned from git should be in a directory `{opentree.phylesystem}/shards/phylesystem-1`
    
 
-  1. A local copy of the collections-1 repo with a config entry
+  1. A local copy of the [collections-1](https://github.com/opentreeoflife/collections-1) repo with a config entry
   pointing to the parent of the shards directory
 
       [opentree]
@@ -86,7 +86,7 @@ if the variables in the config file are defined as above.
       phylesystem = %(home)s/collections
       ...
 
-  The actual [collections-1](https://github.com/opentreeoflife/collections-1) repo cloned from git should be in a directory {opentree.collections}/shards/collections-1
+  The actual `collections-1` repo cloned from git should be in a directory `{opentree.collections}/shards/collections-1`
 
   1. [otcetera](https://github.com/mtholder/otcetera)
 
