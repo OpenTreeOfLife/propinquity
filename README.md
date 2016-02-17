@@ -106,23 +106,29 @@ if the variables in the config file are defined as above.
     root_ott_id = 93302
 
     [opentree]
-    home = /home/bredelings/Devel/OpenTree
+    home = /home/USER/OpenTree
     peyotl = %(home)s/peyotl
     phylesystem = %(home)s/phylesystem
     ott = %(home)s/ott/ott2.9draft12/
     collections = %(home)s/collections
-    $ ls {opentree.peyotl}
+    $ bin/config_checker.py --config=config --property=opentree.peyotl
+    /home/USER/OpenTree/peyotl
+    $ ls $(bin/config_checker.py --config=config --property=opentree.peyotl)
     ...
     peyotl
     ...
     setup.py
     ...
-    $ ls {opentree.ott}
+    $ bin/config_checker.py --config=config --property=opentree.ott
+    /home/USER/OpenTree/ott/ott2.9draft12/
+    $ ls $(bin/config_checker.py --config=config --property=opentree.ott)
     ...
     taxonomy.tsv
     ...
-    $ ls {opentree.phylesystem}/shards/phylesystem-1
-    next_study_id.json  README.md  study
+    $ bin/config_checker.py --config=config --property=opentree.phylesystem
+    /home/USER/OpenTree/phylesystem
+    $ ls $(bin/config_checker.py --config=config --property=opentree.phylesystem)/shards/phylesystem-1
+    next_study_id.json  README.md  study/
 
 
 ## Usage
