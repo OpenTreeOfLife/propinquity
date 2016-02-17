@@ -2,13 +2,15 @@
 
 ## Configuration file
 
-Before you set up other prequisite software, you'll need to set up your
-`config` file.  You can start by copying an example config file:
+Before you set up other prequisite software, you'll need to initialize your
+`config` file.  You do this by copying an example config file:
 
     $ cp config.example config
 
 This config file contains sections, each of which contain settings for variables,
-as described [here](https://en.wikipedia.org/wiki/INI_file).
+as described [here](https://en.wikipedia.org/wiki/INI_file).  These
+settings may be tweaked to describe the location of installed
+software, the collections used for synthesis, etc.
 
 The [opentree] section might look like this:
 
