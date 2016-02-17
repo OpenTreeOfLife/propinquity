@@ -54,6 +54,7 @@ if the variables in the config file are defined as above.
        ott = %(home)s/ott/ott2.9draft12
        ...
 
+
   1. [peyotl](https://github.com/mtholder/peyotl) should be downloaded and installed
     with an config entry pointing to it:
 
@@ -65,7 +66,9 @@ if the variables in the config file are defined as above.
   Note that (as of 2015-Oct-10) the master branch of peyotl on mtholder's
   GitHub page (not the Open Tree of Life group). See the link above.
 
-  1. A local copy of the  [phylesystem-1](https://github.com/opentreeoflife/phylesystem-1) repo.
+
+  1. A local copy of the [phylesystem-1](https://github.com/opentreeoflife/phylesystem-1)
+  repo with a config entry pointing to the parent of the shards directory
 
        [opentree]
        ...
