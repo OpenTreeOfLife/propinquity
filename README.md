@@ -5,6 +5,7 @@
 Before you set up other prequisite software, you'll need to initialize your
 `config` file.  You do this by copying an example config file:
 
+    $ cd propinquity
     $ cp config.example config
 
 This config file contains sections, each of which contain settings for variables,
@@ -23,10 +24,13 @@ The [opentree] section might look like this:
 
 This describes a configuration file the where peyotl, propinquity,
 phylesystem, collections, and the OTT directories are all located
-inside a single `OpenTree` directory. To avoid writing the name of
-that directory multiple times, it is possible to define an addition
-variable `home` to be the `OpenTree` directory, and then reference
-that directory multiple types by writing `%(home)s`.
+inside a single `OpenTree` directory. This is not necessary, but is
+one way of doing things.
+
+If you do install multiple packages under the same parent directory,
+you can define a variable such as `home` to point to the parent directory.
+Then you can reference that directory by writing `%(home)s` in other
+variables in the same section.
 
 To save space, from now on we will write {opentree.peyotl} to mean the location of Peyotl
 as defined in the `config` file.  Thus a command line
