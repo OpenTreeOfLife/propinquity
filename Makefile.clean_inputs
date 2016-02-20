@@ -122,11 +122,11 @@ export SNAPSHOT_CACHE_VAR
 cleaned_phylo/needs_updating.txt: phylo_snapshot/concrete_rank_collection.json
 	if ! diff cleaned_ott/cleaning_flags.txt cleaned_phylo/cleaning_flags.txt >/dev/null 2>&1 && \
 	   ! diff cleaned_ott/root_ott_id.txt cleaned_phylo/root_ott_id.txt >/dev/null 2>&1 ; \
-	then echo $$SNAPSHOT_CACHE_VAR | sed -E 's/ /\n/g' > cleaned_phylo/needs_updating.txt ;\
+	then echo $$SNAPSHOT_CACHE_VAR > cleaned_phylo/x ; bin/convert-space-to-newline cleaned_phylo/x > cleaned_phylo/needs_updating.txt ;\
 	else ./bin/write-needs-updating cleaned_phylo $$SNAPSHOT_CACHE_VAR > cleaned_phylo/needs_updating.txt ;\
 	fi
 
-cleaned_phylo/phylo_inputs_cleaned.txt: cleaned_phylo/needs_updating.txt cleaned_ott/cleaning_flags.txt cleaned_ott/root_ott_id.txt $(SNAPSHOT_CACHE) 
+cleaned_phylo/phylo_inputs_cleaned.txt: cleaned_phylo/needs_updating.txt cleaned_ott/cleaning_flags.txt cleaned_ott/root_ott_id.txt $(SNAPSHOT_CACHE)
 	$(PEYOTL_ROOT)/scripts/nexson/prune_to_clean_mapped.py \
 	  --ott-dir=$(OTT_DIR) \
 	  --input-files-list=cleaned_phylo/needs_updating.txt \
@@ -146,15 +146,15 @@ cleaned_phylo/root_ott_id.txt: cleaned_phylo/phylo_inputs_cleaned.txt
 # 	  --ott-dir=$(OTT_DIR) \
 # 	  --out-dir=cleaned_phylo \
 # 	  --ott-prune-flags="$(shell cat cleaned_ott/cleaning_flags.txt)" \
-# 	  $< 
+# 	  $<
 
 define CLEANED_PHYLO_VAR
 $(CLEANED_PHYLO)
 endef
 export CLEANED_PHYLO_VAR
 
-exemplified_phylo/args.txt : cleaned_ott/cleaned_ott.tre $(CLEANED_PHYLO) 
-	echo $$CLEANED_PHYLO_VAR | sed -E 's/ /\n/g' | sed -E 's/.json/.tre/g' > exemplified_phylo/args.txt
+exemplified_phylo/args.txt : cleaned_ott/cleaned_ott.tre $(CLEANED_PHYLO)
+	echo $$CLEANED_PHYLO_VAR >exemplified_phylo/x ; ./bin/convert-space-to-newline exemplified_phylo/x | sed -E 's/.json/.tre/g' > exemplified_phylo/args.txt
 
 exemplified_phylo/nonempty_trees.txt : exemplified_phylo/args.txt phylo_input/study_tree_pairs.txt
 	otc-nonterminals-to-exemplars \
@@ -163,8 +163,10 @@ exemplified_phylo/nonempty_trees.txt : exemplified_phylo/args.txt phylo_input/st
 	  -fexemplified_phylo/args.txt \
 	  -nexemplified_phylo/.nonempty_trees.txt && mv exemplified_phylo/.nonempty_trees.txt exemplified_phylo/nonempty_trees.txt
 
-
 phylo_induced_taxonomy/taxonomy.tre : exemplified_phylo/taxonomy.tre
 	ln -s ../exemplified_phylo/taxonomy.tre phylo_induced_taxonomy/taxonomy.tre
 
-
+phylo_input/rank_collection.json: phylo_input/collections.txt
+	cd phylo_input ; \
+	../bin/reaggregate-synth-collections.sh .raw_rank_collection.json
+	if ! diff phylo_input/rank_collection.json phylo_input/.raw_rank_collection.json 2>/dev/null ; then mv phylo_input/.raw_rank_collection.json phylo_input/rank_collection.json ; else rm phylo_input/.raw_rank_collection.json ; fi
