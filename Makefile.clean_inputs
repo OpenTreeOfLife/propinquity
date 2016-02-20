@@ -166,6 +166,11 @@ exemplified_phylo/nonempty_trees.txt : exemplified_phylo/args.txt phylo_input/st
 phylo_induced_taxonomy/taxonomy.tre : exemplified_phylo/taxonomy.tre
 	ln -s ../exemplified_phylo/taxonomy.tre phylo_induced_taxonomy/taxonomy.tre
 
+# phylo_input holds the lists of study+tree pairs to be used during the supertree construction
+phylo_input/collections.txt: config
+	bin/config_checker.py --config=config --property=synthesis.collections > phylo_input/.raw_collections.txt
+	if ! diff phylo_input/collections.txt phylo_input/.raw_collections.txt 2>/dev/null ; then mv phylo_input/.raw_collections.txt phylo_input/collections.txt ; else rm phylo_input/.raw_collections.txt ; fi
+
 phylo_input/rank_collection.json: phylo_input/collections.txt
 	cd phylo_input ; \
 	../bin/reaggregate-synth-collections.sh .raw_rank_collection.json
