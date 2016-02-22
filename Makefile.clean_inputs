@@ -34,7 +34,8 @@ ARTIFACTS += $(SUPPRESS_FLAG_ARTIFACTS) \
 	cleaned_phylo/phylo_inputs_cleaned.txt \
 	exemplified_phylo/taxonomy.tre \
 	exemplified_phylo/args.txt \
-	phylo_induced_taxonomy/taxonomy.tre
+	phylo_induced_taxonomy/taxonomy.tre \
+	phylo_input/rank_collection.json
 
 # default is "all"
 all: $(ARTIFACTS)

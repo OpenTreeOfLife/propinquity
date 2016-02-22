@@ -1,5 +1,15 @@
 # propinquity
 
+Propinquity is a make-based pipeline for constructing a synthetic tree of life.  
+
+It takes as input a collection of phylogenetic trees from the Open Tree of Life
+datastore and a local copy of the Open Tree of Life Taxonomy. See the [collections documentation](https://github.com/OpenTreeOfLife/opentree/wiki/Working-with-tree-collections) for input on putting trees into collections.
+
+[[Setup]]
+[[Usage]]
+[[Artifacts]]
+[[Sketch]]
+
 ## Setup
 
 ### Configuration file
@@ -50,7 +60,7 @@ if the variables in the config file are defined as above.
 
   1. A local version of the OTT taxonomy. See http://files.opentreeoflife.org/ott/
   with a config entry pointing to it in the `opentree` section.
-    
+
       [opentree]
       ...
       ott = %(home)s/ott/ott2.9draft12
@@ -78,7 +88,7 @@ if the variables in the config file are defined as above.
       ...
 
   The actual `phylesystem-1` repo cloned from git should be in a directory `{opentree.phylesystem}/shards/phylesystem-1`
-   
+
 
   1. A local copy of the [collections-1](https://github.com/opentreeoflife/collections-1) repo with a config entry
   pointing to the parent of the shards directory
@@ -140,12 +150,13 @@ if the variables in the config file are defined as above.
 
 ## Usage
 
-After you have installed the software and tweaked the seting in your `config` file as
-described above, you may run synthesis just by typing
+After you have installed the software and tweaked the setting in your `config` file as described above, you may run synthesis just by typing
 
     $ make
 
 ## Artifacts
+The pipeline produces artifacts at each step of the pipeline. Click on any link below to see more information about the output files in these directories.
+
   1. [phylo_induced_taxonomy](phylo_induced_taxonomy/README.md)
   1. [phylo_snapshot](phylo_snapshot/README.md)
   1. [cleaned_ott](cleaned_ott/README.md)
@@ -161,7 +172,7 @@ described above, you may run synthesis just by typing
   1. [annotated_supertree](annotated_supertree/README.md)
 
 The final output of synthesis consists of
-* labelled_supertree/labelled_supertre.tre 
+* labelled_supertree/labelled_supertre.tre
 * annotated_supertree/annotations.json
 
 ## Sketch
@@ -171,7 +182,7 @@ Settings of the propinquity config file are in diamonds.
 
 The products of this repo are contents of directories, and the rectangles show these directories.
 Don't take this too literally.
-In some cases, there are multiple targets created with 
+In some cases, there are multiple targets created with
 different tools in a subdirectory.
 In these cases this sketch just shows the most interesting tool.
 
