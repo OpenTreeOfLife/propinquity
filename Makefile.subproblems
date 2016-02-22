@@ -3,10 +3,12 @@ EXEMPLIFIED_PHYLO=$(addprefix exemplified_phylo/, $(EXEMPLIFIED_FN))
 
 ARTIFACTS += subproblems/subproblem-ids.txt \
 	  grafted_solution/grafted_solution.tre \
-	  full_supertree/full_supertree.tre \
+	  grafted_solution_ottnames.tre \
+      full_supertree/full_supertree.tre \
 	  subproblem_solutions/solution-ids.txt \
 	  labelled_supertree/labelled_supertree.tre \
 	  annotated_supertree/annotations.json
+
 
 all: $(ARTIFACTS)
 
@@ -15,7 +17,7 @@ subproblems/scratch/args.txt: exemplified_phylo/nonempty_trees.txt
 
 # Note that run-subproblem-finder.sh is odd in that the second arg is relative to the first arg.
 
-subproblems/dumped-subproblem-ids.txt: exemplified_phylo/taxonomy.tre subproblems/scratch/args.txt $(EXEMPLIFIED_PHYLO) 
+subproblems/dumped-subproblem-ids.txt: exemplified_phylo/taxonomy.tre subproblems/scratch/args.txt $(EXEMPLIFIED_PHYLO)
 	./bin/run-subproblem-finder.sh \
 	  subproblems/scratch \
 	  ../dumped-subproblem-ids.txt \
@@ -25,7 +27,7 @@ subproblems/dumped-subproblem-ids.txt: exemplified_phylo/taxonomy.tre subproblem
 subproblems/checksummed-subproblem-ids.txt: subproblems/dumped-subproblem-ids.txt
 	bash bin/checksum-tree-files.sh subproblems/scratch && cp subproblems/dumped-subproblem-ids.txt subproblems/checksummed-subproblem-ids.txt
 
-subproblems/subproblem-ids.txt: subproblems/checksummed-subproblem-ids.txt 
+subproblems/subproblem-ids.txt: subproblems/checksummed-subproblem-ids.txt
 	bash bin/move-subproblem-if-differing.sh subproblems/scratch subproblems subproblems/checksummed-subproblem-ids.txt && cp subproblems/checksummed-subproblem-ids.txt subproblems/subproblem-ids.txt
 
 subproblem_solutions/solution-ids.txt: subproblems/subproblem-ids.txt
@@ -41,11 +43,19 @@ grafted_solution/grafted_solution.tre: subproblem_solutions/solution-ids.txt
 	mv grafted_solution/.grafted_solution.tre grafted_solution/grafted_solution.tre
 	rm subproblem_solutions/paths.txt
 
+grafted_solution/grafted_solution_ottnames.tre: grafted_solution/grafted_solution.tre
+	python bin/convert_ottid_2_ottname.py grafted_solution/grafted_solution.tre $(OTT_DIR)
+	mv ottnamelabelledtree.tre grafted_solution/grafted_solution_ottnames.tre
+
 full_supertree/full_supertree.tre: grafted_solution/grafted_solution.tre cleaned_ott/cleaned_ott.tre
 	otc-unprune-solution grafted_solution/grafted_solution.tre cleaned_ott/cleaned_ott.tre > full_supertree/full_supertree.tre
 
 labelled_supertree/labelled_supertree.tre: full_supertree/full_supertree.tre
 	otc-name-unnamed-nodes $^ > $@
+
+labelled_supertree_ottnames/labelled_supertree_ottnames.tre: labelled_supertree/labelled_supertree.tre
+	python bin/convert_ottid_2_ottname.py labelled_supertree/labelled_supertree.tre $(OTT_DIR)
+	mv ottnamelabelledtree.tre labelled_supertree/labelled_supertree_ottnames.tre
 
 annotated_supertree/annotations.json: cleaned_ott/cleaned_ott.tre labelled_supertree/labelled_supertree.tre exemplified_phylo/nonempty_trees.txt
 	otc-annotate-synth cleaned_ott/cleaned_ott.tre labelled_supertree/labelled_supertree.tre $$(sed 's:^:exemplified_phylo/:' exemplified_phylo/nonempty_trees.txt) > annotated_supertree/annotations1.json
@@ -53,13 +63,12 @@ annotated_supertree/annotations.json: cleaned_ott/cleaned_ott.tre labelled_super
 	bin/merge-json.py annotated_supertree/annotations1.json annotated_supertree/annotations2.json > annotated_supertree/annotations.json
 
 clean:
-	rm -rf $(ARTIFACTS)
-	rm -rf subproblems/scratch/*.tre
-	rm -rf subproblems/scratch/*.md5
-	rm -rf subproblems/scratch/*.txt
-	rm -rf subproblems/*.tre
-	rm -rf subproblems/*.md5
-	rm -rf subproblems/*.txt
-	rm -rf subproblem_solutions/*.tre
-	rm -rf annotated_supertree/*.json
-
+	rm -f $(ARTIFACTS)
+	rm -f subproblems/scratch/*.tre
+	rm -f subproblems/scratch/*.md5
+	rm -f subproblems/scratch/*.txt
+	rm -f subproblems/*.tre
+	rm -f subproblems/*.md5
+	rm -f subproblems/*.txt
+	rm -f subproblem_solutions/*.tre
+	rm -f annotated_supertree/*.json

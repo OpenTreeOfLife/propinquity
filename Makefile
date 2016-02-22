@@ -7,8 +7,19 @@ export PEYOTL_ROOT
 OTT_DIR := $(shell bin/config_checker.py --config=config --property=opentree.ott)
 export OTT_DIR
 
+OTT_FILENAMES=about.json \
+	conflicts.tsv \
+	deprecated.tsv \
+	synonyms.tsv \
+	taxonomy.tsv \
+	version.txt
+export OTT_FILENAMES
+
+OTT_FILEPATHS := $(addprefix $(OTT_DIR)/, $(OTT_FILENAMES))
+export OTT_FILEPATHS
+
 PHYLESYSTEM_ROOT := $(shell bin/config_checker.py --config=config --property=opentree.phylesystem)
-export PHYLESYSTEM_ROOT 
+export PHYLESYSTEM_ROOT
 
 SYNTHESIS_COLLECTIONS := $(shell bin/config_checker.py --config=config --property=synthesis.collections)
 export SYNTHESIS_COLLECTIONS
@@ -20,8 +31,10 @@ ARTIFACTS= cleaned_ott/cleaned_ott.tre \
 	      cleaned_phylo/phylo_inputs_cleaned.txt \
 	      exemplified_phylo/nonempty_trees.txt \
 	      subproblems/subproblem-ids.txt \
+				grafted_solution/grafted_solution_ottnames.tre \
 	      full_supertree/full_supertree.tre \
 	      labelled_supertree/labelled_supertree.tre \
+				labelled_supertree_ottnames/labelled_supertree_ottnames.tre \
 	      annotated_supertree/annotations.json
 
 all: $(ARTIFACTS)
@@ -59,22 +72,28 @@ clean:
 	make -fMakefile.subproblems clean
 
 exemplified_phylo/nonempty_trees.txt: phylo_input/study_tree_pairs.txt phylo_input/rank_collection.json
-	make -fMakefile.clean_inputs exemplified_phylo/nonempty_trees.txt
+	make -f Makefile.clean_inputs exemplified_phylo/nonempty_trees.txt
 
 subproblems/subproblem-ids.txt:
-	make -fMakefile.subproblems subproblems/subproblem-ids.txt
+	make -f Makefile.subproblems subproblems/subproblem-ids.txt
 
 cleaned_phylo/phylo_inputs_cleaned.txt:
-	make -fMakefile.clean_inputs cleaned_phylo/phylo_inputs_cleaned.txt
+	make -f Makefile.clean_inputs cleaned_phylo/phylo_inputs_cleaned.txt
 
 cleaned_ott/cleaned_ott.tre:
-	make -fMakefile.clean_inputs cleaned_ott/cleaned_ott.tre
+	make -f Makefile.clean_inputs cleaned_ott/cleaned_ott.tre
 
 full_supertree/full_supertree.tre:
 	make -f Makefile.subproblems full_supertree/full_supertree.tre
 
+grafted_solution/grafted_solution_ottnames.tre:
+	make -f Makefile.subproblems grafted_solution/grafted_solution_ottnames.tre
+
 labelled_supertree/labelled_supertree.tre:
 	make -f Makefile.subproblems labelled_supertree/labelled_supertree.tre
+
+labelled_supertree_ottnames/labelled_supertree_ottnames.tre:
+	make -f Makefile.subproblems labelled_supertree_ottnames/labelled_supertree_ottnames.tre
 
 annotated_supertree/annotations.json:
 	make -f Makefile.subproblems annotated_supertree/annotations.json

@@ -1,4 +1,4 @@
-import re, sys, argparse
+import re, sys, argparse, codecs
 from peyotl.ott import OTT
 from peyotl.nexson_syntax import quote_newick_name
 
@@ -28,7 +28,7 @@ if __name__ == "__main__":
     ott = OTT(ott_dir=args.ott_dir)
     # load up the OTT dictionary...
     d = ott.ott_id_to_names
-    outfile = open('ottnamelabelledtree.tre','w')
+    outfile = codecs.open('ottnamelabelledtree.tre','w', encoding='utf-8')
     with open(args.newick_file,'r') as f:
         newick = f.read()
         for m in re.finditer(ottpattern,newick):
