@@ -2,8 +2,9 @@
 
 Requires that otcetera tools be on your PATH.
 
-The only artifact is:
- * `grafted_solution.tre`: A newick tree file containing a single tree
+Two artifacts:
+ * `grafted_solution.tre`: A newick tree file containing a single tree. Labels are ottid. 
+ * `grafted_solution_ottnames.tre`: A newick tree file containing a single tree. Labels are 'ottname ottid'
 
 All subproblem solutions are read (`subproblem_solutions/ott######-solution.tre`)
 and then assembled into a single tree.
