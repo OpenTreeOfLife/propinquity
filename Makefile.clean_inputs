@@ -1,14 +1,5 @@
 CONFIG_FILENAME=config
 
-OTT_FILENAMES=about.json \
-	conflicts.tsv \
-	deprecated.tsv \
-	synonyms.tsv \
-	taxonomy.tsv \
-	version.txt
-
-OTT_FILEPATHS := $(addprefix $(OTT_DIR)/, $(OTT_FILENAMES))
-
 SUPPRESS_FLAG_ARTIFACTS=cleaned_ott/cleaned_ott.tre \
 	cleaned_ott/cleaned_ott.json \
 	cleaned_ott/ott_version.txt \
