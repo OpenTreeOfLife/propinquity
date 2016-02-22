@@ -4,7 +4,7 @@ EXEMPLIFIED_PHYLO=$(addprefix exemplified_phylo/, $(EXEMPLIFIED_FN))
 ARTIFACTS += subproblems/subproblem-ids.txt \
 	  grafted_solution/grafted_solution.tre \
 	  grafted_solution_ottnames.tre \
-      full_supertree/full_supertree.tre \
+    full_supertree/full_supertree.tre \
 	  subproblem_solutions/solution-ids.txt \
 	  labelled_supertree/labelled_supertree.tre \
 	  annotated_supertree/annotations.json
@@ -45,7 +45,7 @@ grafted_solution/grafted_solution.tre: subproblem_solutions/solution-ids.txt
 
 grafted_solution/grafted_solution_ottnames.tre: grafted_solution/grafted_solution.tre
 	python bin/convert_ottid_2_ottname.py grafted_solution/grafted_solution.tre $(OTT_DIR)
-	mv ottnamelabelledtree.tre grafted_solution/grafted_solution_ottnames.tre
+	otc-suppress-monotypic ottnamelabelledtree.tre > grafted_solution/grafted_solution_ottnames.tre
 
 full_supertree/full_supertree.tre: grafted_solution/grafted_solution.tre cleaned_ott/cleaned_ott.tre
 	otc-unprune-solution grafted_solution/grafted_solution.tre cleaned_ott/cleaned_ott.tre > full_supertree/full_supertree.tre
@@ -55,7 +55,7 @@ labelled_supertree/labelled_supertree.tre: full_supertree/full_supertree.tre
 
 labelled_supertree_ottnames/labelled_supertree_ottnames.tre: labelled_supertree/labelled_supertree.tre
 	python bin/convert_ottid_2_ottname.py labelled_supertree/labelled_supertree.tre $(OTT_DIR)
-	mv ottnamelabelledtree.tre labelled_supertree/labelled_supertree_ottnames.tre
+	otc-suppress-monotypic ottnamelabelledtree.tre > labelled_supertree/labelled_supertree_ottnames.tre
 
 annotated_supertree/annotations.json: cleaned_ott/cleaned_ott.tre labelled_supertree/labelled_supertree.tre exemplified_phylo/nonempty_trees.txt
 	otc-annotate-synth cleaned_ott/cleaned_ott.tre labelled_supertree/labelled_supertree.tre $$(sed 's:^:exemplified_phylo/:' exemplified_phylo/nonempty_trees.txt) > annotated_supertree/annotations1.json
