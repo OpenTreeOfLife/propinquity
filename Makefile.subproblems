@@ -44,8 +44,7 @@ grafted_solution/grafted_solution.tre: subproblem_solutions/solution-ids.txt
 	rm subproblem_solutions/paths.txt
 
 grafted_solution/grafted_solution_ottnames.tre: grafted_solution/grafted_solution.tre
-	python bin/convert_ottid_2_ottname.py grafted_solution/grafted_solution.tre $(OTT_DIR)
-	otc-suppress-monotypic ottnamelabelledtree.tre > grafted_solution/grafted_solution_ottnames.tre
+	otc-relabel-tree grafted_solution/grafted_solution.tre --taxonomy=$(OTT_DIR) --format-tax="%N ott%I" --del-monotypic > grafted_solution/grafted_solution_ottnames.tre
 
 full_supertree/full_supertree.tre: grafted_solution/grafted_solution.tre cleaned_ott/cleaned_ott.tre
 	otc-unprune-solution grafted_solution/grafted_solution.tre cleaned_ott/cleaned_ott.tre > full_supertree/full_supertree.tre
@@ -54,8 +53,7 @@ labelled_supertree/labelled_supertree.tre: full_supertree/full_supertree.tre
 	otc-name-unnamed-nodes $^ > $@
 
 labelled_supertree_ottnames/labelled_supertree_ottnames.tre: labelled_supertree/labelled_supertree.tre
-	python bin/convert_ottid_2_ottname.py labelled_supertree/labelled_supertree.tre $(OTT_DIR)
-	otc-suppress-monotypic ottnamelabelledtree.tre > labelled_supertree/labelled_supertree_ottnames.tre
+	otc-relabel-tree labelled_supertree/labelled_supertree.tre --taxonomy=$(OTT_DIR) --format-tax="%N ott%I" --del-monotypic > labelled_supertree/labelled_supertree_ottnames.tre
 
 annotated_supertree/annotations.json: cleaned_ott/cleaned_ott.tre labelled_supertree/labelled_supertree.tre exemplified_phylo/nonempty_trees.txt
 	otc-annotate-synth cleaned_ott/cleaned_ott.tre labelled_supertree/labelled_supertree.tre $$(sed 's:^:exemplified_phylo/:' exemplified_phylo/nonempty_trees.txt) > annotated_supertree/annotations1.json
