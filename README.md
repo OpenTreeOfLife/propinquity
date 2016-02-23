@@ -101,7 +101,7 @@ if the variables in the config file are defined as above.
   The actual `collections-1` repo cloned from git should be in a directory `{opentree.collections}/shards/collections-1`
 
   1. [otcetera](https://github.com/mtholder/otcetera)
-  See the [instructions](https://github.com/mtholder/otcetera/README.md) for installing otcetera.
+  See the [instructions](https://github.com/mtholder/otcetera/blobl/master/README.md) for installing otcetera.
   A short version (which might work) is to do:
 
       $ cd otcetera
