@@ -7,8 +7,6 @@ ARTIFACTS += subproblems/subproblem-ids.txt \
 	  annotated_supertree/annotations.json
 
 
-all: $(ARTIFACTS)
-
 subproblems/scratch/args.txt: exemplified_phylo/nonempty_trees.txt
 	cat exemplified_phylo/nonempty_trees.txt | sed -e 's:^:exemplified_phylo/:g' > subproblems/scratch/args.txt
 
@@ -57,8 +55,7 @@ annotated_supertree/annotations.json: cleaned_ott/cleaned_ott.tre labelled_super
 	bin/gen_attributes.py > annotated_supertree/annotations2.json
 	bin/merge-json.py annotated_supertree/annotations1.json annotated_supertree/annotations2.json > annotated_supertree/annotations.json
 
-clean:
-	rm -f $(ARTIFACTS)
+clean2:
 	rm -f subproblems/scratch/*.tre
 	rm -f subproblems/scratch/*.md5
 	rm -f subproblems/scratch/*.txt

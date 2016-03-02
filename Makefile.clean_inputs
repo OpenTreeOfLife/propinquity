@@ -7,10 +7,6 @@ SUPPRESS_FLAG_ARTIFACTS=cleaned_ott/cleaned_ott.tre \
 
 Makefile.clean_inputs: phylo_input/study_tree_pairs.txt
 
-STUDY_TREE_STEM :=$(shell cat phylo_input/study_tree_pairs.txt)
-STUDY_TREE_FN := $(addsuffix .json, $(STUDY_TREE_STEM))
-STUDY_TREE_NEWICK := $(addsuffix .tre, $(STUDY_TREE_STEM))
-
 ARTIFACTS += $(SUPPRESS_FLAG_ARTIFACTS) \
 	phylo_snapshot/git_shas.txt \
 	phylo_snapshot/concrete_rank_collection.json \
@@ -25,11 +21,7 @@ ARTIFACTS += $(SUPPRESS_FLAG_ARTIFACTS) \
 	phylo_induced_taxonomy/taxonomy.tre \
 	phylo_input/rank_collection.json
 
-# default is "all"
-all: $(ARTIFACTS)
-
-clean:
-	rm -f $(ARTIFACTS)
+clean1:
 	rm -f cleaned_phylo/*.tre
 	rm -f cleaned_phylo/*.json
 	rm -f cleaned_phylo/needs_updating.txt
