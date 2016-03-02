@@ -7,12 +7,11 @@ config -> "cleaned_ott/root_ott_id.txt"
 config -> "cleaned_ott/cleaning_flags.txt"
 "$OTT_DIR/version.txt" -> "cleaned_ott/version.txt"
 
-"cleaned_phylo/*_tree*.tre" -> "exemplified_phylo/args.txt"
-"cleaned_phylo/phylo_inputs_cleaned.txt" -> "exemplified_phylo/args.txt"
-"cleaned_ott/cleaned_ott.tre" -> "exemplified_phylo/args.txt"
+"phylo_input/study_tree_pairs.txt" -> "exemplified_phylo/args.txt"
 
 "phylo_input/study_tree_pairs.txt" -> "otc-nonterminalstoexemplars"
 "exemplified_phylo/args.txt" -> "otc-nonterminalstoexemplars"
+"cleaned_phylo/phylo_inputs_cleaned.txt" -> "otc-nonterminalstoexemplars"
 "otc-nonterminalstoexemplars" -> "exemplified_phylo/nonempty_trees.txt"
 "otc-nonterminalstoexemplars"  [style=filled, color="#EEBBDD"]
 
@@ -38,17 +37,19 @@ config -> "cleaned_ott/cleaning_flags.txt"
 "export_studies_from_collection.py" -> "phylo_snapshot/concrete_rank_collection.json"
 "export_studies_from_collection.py"  [style=filled, color="#EEBBDD"]
 
-"phylo_snapshot/concrete_rank_collection.json" -> "bin/write_needs_updating"
-"phylo_snapshot/*_tree*.tre" -> "bin/write_needs_updating"
+"phylo_input/study_tree_pairs.txt" -> "bin/write_needs_updating"
 "bin/write_needs_updating" -> "cleaned_phylo/needs_updating.txt"
 "bin/write_needs_updating"   [style=filled, color="#EEBBDD"]
 
 "cleaned_phylo/needs_updating.txt" -> "prune_to_clean_mapped.py"
 "cleaned_ott/cleaning_flags.txt" -> "prune_to_clean_mapped.py"
 "cleaned_phylo/root_ott_it.txt" -> "prune_to_clean_mapped.py"
-"$SNAPSHOT_CACHE" -> "prune_to_clean_mapped.py"
+"phylo_snapshot/concrete_rank_collection.json" -> "prune_to_clean_mapped.py"
 "prune_to_clean_mapped.py"  [style=filled, color="#EEBBDD"]
 "prune_to_clean_mapped.py" -> "cleaned_phylo/phylo_inputs_cleaned.txt"
 
 
+config -> "phylo_input/collections.txt"
+"phylo_input/collections.txt" -> "phylo_input/rank_collection.json"
+# here is where we need to depend on whether the collections have changed!
 }
