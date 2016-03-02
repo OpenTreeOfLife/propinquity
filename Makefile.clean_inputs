@@ -146,7 +146,7 @@ $(CLEANED_PHYLO)
 endef
 export CLEANED_PHYLO_VAR
 
-exemplified_phylo/args.txt : cleaned_ott/cleaned_ott.tre $(CLEANED_PHYLO)
+exemplified_phylo/args.txt : cleaned_ott/cleaned_ott.tre cleaned_phylo/phylo_inputs_cleaned.txt #$(CLEANED_PHYLO)
 	echo $$CLEANED_PHYLO_VAR >exemplified_phylo/x ; ./bin/convert-space-to-newline exemplified_phylo/x | sed -E 's/.json/.tre/g' > exemplified_phylo/args.txt
 
 exemplified_phylo/nonempty_trees.txt : exemplified_phylo/args.txt phylo_input/study_tree_pairs.txt
