@@ -23,6 +23,7 @@ ARTIFACTS += $(SUPPRESS_FLAG_ARTIFACTS) \
 	cleaned_phylo/cleaning_flags.txt \
 	cleaned_phylo/root_ott_id.txt \
 	cleaned_phylo/phylo_inputs_cleaned.txt \
+	cleaned_phylo/needs_updating.txt \
 	exemplified_phylo/taxonomy.tre \
 	exemplified_phylo/args.txt \
 	phylo_induced_taxonomy/taxonomy.tre \
