@@ -145,7 +145,7 @@ phylo_input/collections.txt: config
 	bin/config_checker.py --config=config --property=synthesis.collections > phylo_input/.raw_collections.txt
 	if ! diff phylo_input/collections.txt phylo_input/.raw_collections.txt 2>/dev/null ; then mv phylo_input/.raw_collections.txt phylo_input/collections.txt ; else rm phylo_input/.raw_collections.txt ; fi
 
-phylo_input/rank_collection.json: phylo_input/collections.txt
+phylo_input/rank_collection.json: phylo_input/collections.txt $(addsuffix .json, $(addprefix $(COLLECTIONS_ROOT)/shards/collections-1/collections-by-owner/, $(SYNTHESIS_COLLECTIONS)))
 	cd phylo_input ; \
 	../bin/reaggregate-synth-collections.sh .raw_rank_collection.json
 	if ! diff phylo_input/rank_collection.json phylo_input/.raw_rank_collection.json 2>/dev/null ; then mv phylo_input/.raw_rank_collection.json phylo_input/rank_collection.json ; else rm phylo_input/.raw_rank_collection.json ; fi
