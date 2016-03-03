@@ -45,7 +45,6 @@ config -> "cleaned_ott/cleaning_flags.txt"
 "cleaned_ott/cleaning_flags.txt" -> "bin/write_needs_updating"
 "cleaned_ott/root_ott_id.txt" -> "bin/write_needs_updating"
 "phylo_input/study_tree_pairs.txt" -> "bin/write_needs_updating"
-"phylo_input/study_tree_pairs.txt" -> "bin/write_needs_updating"
 "bin/write_needs_updating" -> "cleaned_phylo/needs_updating.txt"
 "bin/write_needs_updating" -> "cleaned_phylo/cleaning_flags.txt"  [color=green style=dotted]
 "bin/write_needs_updating" -> "cleaned_phylo/root_ott_id.txt"  [color=green style=dotted]
