@@ -16,6 +16,8 @@ config -> "cleaned_ott/cleaning_flags.txt"
 "otc-nonterminalstoexemplars" -> "exemplified_phylo/taxonomy.tre" [color=green style=dotted]
 "otc-nonterminalstoexemplars"  [style=filled, color="#EEBBDD"]
 
+"exemplified_phylo/nonempty_trees.txt" -> "exemplified_phylo/taxonomy.tre"
+
 "$OTT_FILEPATHS" -> "suppress_by_flag.py"
 "cleaned_ott/version.txt" ->  "suppress_by_flag.py"
 "cleaned_ott/cleaning_flags.txt" ->  "suppress_by_flag.py"
