@@ -25,6 +25,8 @@ config -> "cleaned_ott/cleaning_flags.txt"
 "suppress_by_flag.py" [style=filled, color="#EEBBDD"]
 "suppress_by_flag.py" -> "cleaned_ott/cleaned_ott.tre"
 
+"$(addsuffix .json, $(addprefix $(COLLECTIONS_ROOT)/shards/collections-1/collections-by-owner/, $(SYNTHESIS_COLLECTIONS)))" -> "phylo_input/rank_collection.json"
+
 "phylo_input/rank_collection.json" -> "collection_export.py --export=studyID"
 "collection_export.py --export=studyID" -> "phylo_input/studies.txt"
 "collection_export.py --export=studyID" [style=filled, color="#EEBBDD"]
@@ -52,6 +54,7 @@ config -> "cleaned_ott/cleaning_flags.txt"
 "cleaned_phylo/needs_updating.txt" -> "prune_to_clean_mapped.py"
 "cleaned_ott/cleaning_flags.txt" -> "prune_to_clean_mapped.py"
 "cleaned_phylo/root_ott_it.txt" -> "prune_to_clean_mapped.py"
+"$OTT_FILEPATHS" -> "prune_to_clean_mapped.py"
 "phylo_snapshot/concrete_rank_collection.json" -> "prune_to_clean_mapped.py"
 "prune_to_clean_mapped.py"  [style=filled, color="#EEBBDD"]
 "prune_to_clean_mapped.py" -> "cleaned_phylo/phylo_inputs_cleaned.txt"
