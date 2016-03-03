@@ -54,11 +54,6 @@ cleaned_ott/cleaned_ott.tre: $(OTT_FILEPATHS) cleaned_ott/ott_version.txt cleane
 
 cleaned_ott/cleaned_ott.json: cleaned_ott/cleaned_ott.tre
 
-# phylo_input holds the lists of study+tree pairs to be used during the supertree construction
-#phylo_input/rank_collection.json:
-#	echo '***TEMPORARY WORKAROUND***!!!!'
-#	curl -o phylo_input/rank_collection.json http://phylo.bio.ku.edu/ot/synthesis-collection.json
-
 phylo_input/studies.txt: phylo_input/rank_collection.json
 	$(PEYOTL_ROOT)/scripts/collection_export.py --export=studyID phylo_input/rank_collection.json >phylo_input/studies.txt
 
