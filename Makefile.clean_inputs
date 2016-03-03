@@ -108,7 +108,7 @@ cleaned_phylo/needs_updating.txt: phylo_input/study_tree_pairs.txt cleaned_ott/c
 	cp cleaned_ott/root_ott_id.txt cleaned_phylo/root_ott_id.txt
 
 # Could we make the cleaned_phylo/*.tre files depend on INDIVIDUAL phylo_snapshot/*.json files?
-cleaned_phylo/phylo_inputs_cleaned.txt: cleaned_phylo/needs_updating.txt cleaned_ott/cleaning_flags.txt cleaned_ott/root_ott_id.txt phylo_snapshot/concrete_rank_collection.json 
+cleaned_phylo/phylo_inputs_cleaned.txt: cleaned_phylo/needs_updating.txt cleaned_ott/cleaning_flags.txt cleaned_ott/root_ott_id.txt phylo_snapshot/concrete_rank_collection.json $(OTT_FILEPATHS)
 	$(PEYOTL_ROOT)/scripts/nexson/prune_to_clean_mapped.py \
 	  --ott-dir=$(OTT_DIR) \
 	  --input-files-list=cleaned_phylo/needs_updating.txt \
