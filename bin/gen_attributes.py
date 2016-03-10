@@ -25,7 +25,7 @@ def num_trees():
     for study_tree_object in snapshot_data["decisions"]:
         study_id = study_tree_object["studyID"]
         tree_id = study_tree_object["treeID"]
-        name = study_id + "_" + tree_id # This line seems a bit arbitrary.
+        name = study_id + "@" + tree_id # Using @, which will not be in treeid
         trees.add(name)
     return len(trees)
 
@@ -37,7 +37,7 @@ def extract_source_id_map():
         study_id = study_tree_object["studyID"]
         tree_id = study_tree_object["treeID"]
         git_sha = study_tree_object["SHA"]
-        name = study_id + "_" + tree_id # This line seems a bit arbitrary.
+        name = study_id + "@" + tree_id # Using @, which will not be in treeid
         source_id_map[name] = {"study_id":study_id, "tree_id":tree_id, "git_sha":git_sha}
     return source_id_map
 
