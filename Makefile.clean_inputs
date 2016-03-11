@@ -19,7 +19,8 @@ ARTIFACTS += $(SUPPRESS_FLAG_ARTIFACTS) \
 	exemplified_phylo/taxonomy.tre \
 	exemplified_phylo/args.txt \
 	phylo_induced_taxonomy/taxonomy.tre \
-	phylo_input/rank_collection.json
+	phylo_input/rank_collection.json \
+	phylo_input/collections.txt
 
 clean1:
 	rm -f cleaned_phylo/*.tre
@@ -28,6 +29,8 @@ clean1:
 	rm -f exemplified_phylo/*.tre
 	rm -f phylo_snapshot/*.json
 	rm -f phylo_snapshot/git_shas.txt
+	rm -f phylo_snapshot/stdouterr.txt
+	rm -f phylo_input/collections.txt
 
 # "cleaned_ott" has dubious taxa pruned off. should check against treemachine and smasher versions
 cleaned_ott/root_ott_id.txt: $(CONFIG_FILENAME)
