@@ -42,6 +42,7 @@ def parse_config(config_filepath):
     config = Extensible()
     config.config_filepath = os.path.abspath(config_filepath)
     config.taxonomy_cleaning_flags = [i.strip() for i in parsed_config.get('taxonomy', 'cleaning_flags').split(',')]
+    config.taxonomy_cleaning_flags.sort()
     config.collections = [i.strip() for i in parsed_config.get('synthesis', 'collections').strip().split()]
     config.root_ott_id = parsed_config.getint('synthesis', 'root_ott_id')
     config.peyotl_root = parsed_config.get('opentree', 'peyotl')
@@ -91,7 +92,7 @@ def get_runtime_configuration(config_filepath):
     x = get_otc_version() 
     config.otc_sha, config.otc_version, config.otc_boost_version = x
     x = get_peyotl_version(config.peyotl_root)
-    config.peyotl_sha, config.peyotl_version = x
+    config.peyotl_version, config.peyotl_sha = x
     return config
 
 def write_as_json(obj, out_stream):

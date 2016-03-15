@@ -1,0 +1,8 @@
+<html>
+<head>
+    <div metal:define-slot="head"></div>
+</head>
+<body>
+    <div metal:define-slot="content"></div>
+</body>
+</html>

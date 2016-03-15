@@ -1,1 +1,15 @@
-
+<html metal:use-macro="load: head.pt">
+<div metal:fill-slot="content">
+<p>The files in this directory (and its children) were produced using
+    <a href="https://github.com/OpenTreeOfLife/propinquity">propinquity</a>,
+    a <a href="https://www.gnu.org/software/make/">make</a>-based pipeline for phylogenetic supertrees.
+</p>
+<h1>Configuration</h1>
+<h2>Tools</h2>
+<h3>peyotl</h3>
+<ul>
+    <li>the filepath of the root directory of peyotl was <code>${config.peyotl_root}</code></li>
+    <li>version: <code>${config.peyotl_version}</code> and git SHA <a href="https://github.com/mtholder/peyotl/commit/${config.peyotl_sha}">${config.peyotl_sha}</a></li>
+</ul>
+</div>
+</html>
