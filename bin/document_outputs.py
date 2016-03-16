@@ -51,6 +51,9 @@ def parse_config(config_filepath):
     config.ott_root = parsed_config.get('opentree', 'ott')
     ott_version_file = os.path.join(config.ott_root, 'version.txt')
     config.ott_version = codecs.open(ott_version_file, 'rU', encoding='utf-8').read().strip()
+    ott_major_pat = re.compile('^([0-9.]+)[a-z]?.*')
+    m = ott_major_pat.match(config.ott_version)
+    config.ott_major_minor_version = m.group(1)
     return config
 
 def get_otc_version():
