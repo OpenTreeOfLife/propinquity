@@ -111,6 +111,10 @@ def render_phylo_input_index(container, template, html_out, json_out):
     write_as_json({'phylo_input' : container.phylo_input.__dict__}, json_out)
     html_out.write(template(phylo_input=container.phylo_input))
 
+def render_phylo_snapshot_index(container, template, html_out, json_out):
+    html_out.write(template(phylo_input=container.phylo_input,
+                            phylo_snapshot=container.phylo_snapshot))
+
 class DocGen(object):
     def __init__(self, propinquity_dir, config_filepath):
         self.top_output_dir = propinquity_dir #TEMP should be read from config
@@ -119,6 +123,7 @@ class DocGen(object):
         self.templates = PageTemplateLoader(templates_dir)
         self.config = get_runtime_configuration(config_filepath)
         self.phylo_input = self.read_phylo_input()
+        self.phylo_snapshot = self.read_phylo_snapshot()
     def read_phylo_input(self):
         blob = Extensible()
         blob.directory = os.path.join(self.top_output_dir, 'phylo_input')
@@ -131,13 +136,27 @@ class DocGen(object):
                     x.append(ls.split('@'))
         blob.study_id_tree_id_pairs = x
         return blob
+    def read_phylo_snapshot(self):
+        blob = Extensible()
+        blob.directory = os.path.join(self.top_output_dir, 'phylo_snapshot')
+        blob.git_shas_file = os.path.join(blob.directory, 'git_shas.txt')
+        x = []
+        with open(blob.git_shas_file, 'rU') as inp:
+            for line in inp:
+                ls = line.strip()
+                if ls:
+                    x.append(ls)
+        blob.git_shas = x
+        return blob
     def _cham_out(self, fn):
         fp = os.path.join(self.top_output_dir, fn)
         fo = codecs.open(fp, 'w', encoding='utf-8')
         return fo
     def render(self):
         src_dest_list = ((render_top_index, 'top_index.pt', 'index'),
-                         (render_phylo_input_index, 'phylo_input_index.pt', 'phylo_input/index'))
+                         (render_phylo_input_index, 'phylo_input_index.pt', 'phylo_input/index'),
+                         (render_phylo_snapshot_index, 'phylo_snapshot_index.pt', 'phylo_snapshot/index'),
+                        )
         for func, template_path, prefix in src_dest_list:
             html_path = prefix + '.html'
             json_path = prefix + '.json'
