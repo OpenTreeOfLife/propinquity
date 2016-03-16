@@ -131,6 +131,7 @@ exemplified_phylo/nonempty_trees.txt : exemplified_phylo/args.txt cleaned_ott/cl
 	  -eexemplified_phylo \
 	  cleaned_ott/cleaned_ott.tre \
 	  -fexemplified_phylo/args.txt \
+	  -jexemplified_phylo/exemplified_log.json \
 	  -nexemplified_phylo/.nonempty_trees.txt && mv exemplified_phylo/.nonempty_trees.txt exemplified_phylo/nonempty_trees.txt
 
 exemplified_phylo/taxonomy.tre: exemplified_phylo/nonempty_trees.txt
