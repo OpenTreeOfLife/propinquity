@@ -4,9 +4,10 @@
     <a href="https://github.com/OpenTreeOfLife/propinquity">propinquity</a>,
     a <a href="https://www.gnu.org/software/make/">make</a>-based pipeline for phylogenetic supertrees.
 </p>
-<h1>Configuration</h1>
+<h1 id="configuration">Configuration</h1>
 <p>The configuration file for the propinquity run was at: <code>${config.config_filepath}</code></p>
-<h2>Taxonomy</h2>
+
+<h2 id="configuration-taxonomy">Taxonomy</h2>
 <ul>
     <li>OTT version: <a href="https://tree.opentreeoflife.org/about/taxonomy-version/ott${config.ott_major_minor_version}">${config.ott_major_minor_version}</a> (specifically version ${config.ott_version})</li>
     <li>root taxon:  <a href="https://tree.opentreeoflife.org/taxonomy/browse?id=${config.root_ott_id}">${config.root_ott_id}</a></li>
@@ -17,7 +18,7 @@
     </ul>
 </ul>
 
-<h2>Phylogenetic inputs</h2>
+<h2 id="configuration-phylogenies">Phylogenetic inputs</h2>
 
 <p>The phylesystem shards for this run were located under <code>${config.phylesystem_root}</code></p>
 <p>The collections shards for this run were located under <code>${config.collections_root}</code>. ${len(config.collections)} <a href="https://tree.opentreeoflife.org/curator/collections">collections</a> were used:</p>
@@ -25,9 +26,9 @@
         <li tal:repeat="collection config.collections" ><a href="https://raw.githubusercontent.com/OpenTreeOfLife/collections-1/master/collections-by-owner/${collection}.json">${collection}</a></li>
     </ol>
 
-<h2>Tools</h2>
+<h2 id="configuration-tools">Tools</h2>
 
-<h3><a href="https://github.com/OpenTreeOfLife/otcetera">otcetera</a></h3>
+<h3 id="configuration-tools-otc"><a href="https://github.com/OpenTreeOfLife/otcetera">otcetera</a></h3>
 
 <ul>
     <li>version: <code>${config.otc_version}</code> and git SHA <a href="https://github.com/mtholder/otcetera/commit/${config.otc_sha}">${config.otc_sha}</a></li>
@@ -35,7 +36,7 @@
 
 </ul>
 
-<h3><a href="http://opentreeoflife.github.io/peyotl/">peyotl</a></h3>
+<h3 id="configuration-tools-peyotl"><a href="http://opentreeoflife.github.io/peyotl">peyotl</a></h3>
 
 <ul>
     <li>the filepath of the root directory of peyotl was <code>${config.peyotl_root}</code></li>
