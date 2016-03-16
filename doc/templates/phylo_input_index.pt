@@ -1,5 +1,6 @@
 <html metal:use-macro="load: head.pt">
 <div metal:fill-slot="content">
+<p>Propinquity output documentation. The top-level docs are <a href="../index.html">here</a>.
 <p>This directory holds the files that are used to extract the ranked list of study+tree IDs
     for the phylogenetic inputs to the pipeline.
 </p>

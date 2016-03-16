@@ -17,6 +17,7 @@ try:
     import configparser  # pylint: disable=F0401
 except ImportError:
     import ConfigParser as configparser
+from peyotl.utility import propinquity_fn_to_study_tree
 import subprocess
 import peyotl
 import codecs
@@ -98,6 +99,15 @@ def get_runtime_configuration(config_filepath):
     config.peyotl_version, config.peyotl_sha = x
     return config
 
+def stripped_nonempty_lines(fn):
+    x = []
+    with open(fn, 'rU') as inp:
+        for line in inp:
+            ls = line.strip()
+            if ls:
+                x.append(ls)
+    return x    
+
 def write_as_json(obj, out_stream):
     json.dump(obj, out_stream, indent=2, sort_keys=True, separators=(',', ': '))
     out_stream.write('\n')
@@ -105,7 +115,8 @@ def write_as_json(obj, out_stream):
 def render_top_index(container, template, html_out, json_out):
     write_as_json({'config' : container.config.__dict__}, json_out)
     html_out.write(template(config=container.config,
-                            phylo_input=container.phylo_input))
+                            phylo_input=container.phylo_input,
+                            exemplified_phylo=container.exemplified_phylo))
 
 def render_phylo_input_index(container, template, html_out, json_out):
     write_as_json({'phylo_input' : container.phylo_input.__dict__}, json_out)
@@ -114,6 +125,14 @@ def render_phylo_input_index(container, template, html_out, json_out):
 def render_phylo_snapshot_index(container, template, html_out, json_out):
     html_out.write(template(phylo_input=container.phylo_input,
                             phylo_snapshot=container.phylo_snapshot))
+
+def render_cleaned_phylo_index(container, template, html_out, json_out):
+    html_out.write(template(phylo_input=container.phylo_input,
+                            phylo_snapshot=container.phylo_snapshot,
+                            exemplified_phylo=container.exemplified_phylo))
+def render_exemplified_phylo_index(container, template, html_out, json_out):
+    write_as_json({'exemplified_phylo' : container.exemplified_phylo.__dict__}, json_out)
+    html_out.write(template(exemplified_phylo=container.exemplified_phylo))
 
 class DocGen(object):
     def __init__(self, propinquity_dir, config_filepath):
@@ -124,29 +143,26 @@ class DocGen(object):
         self.config = get_runtime_configuration(config_filepath)
         self.phylo_input = self.read_phylo_input()
         self.phylo_snapshot = self.read_phylo_snapshot()
+        self.exemplified_phylo = self.read_exemplified_phylo()
+    def read_exemplified_phylo(self):
+        blob = Extensible()
+        d = os.path.join(self.top_output_dir, 'exemplified_phylo')
+        f = os.path.join(d, 'nonempty_trees.txt')
+        blob.nonempty_tree_filenames = stripped_nonempty_lines(f)
+        blob.nonempty_trees = [propinquity_fn_to_study_tree(i) for i in blob.nonempty_tree_filenames]
+        return blob
     def read_phylo_input(self):
         blob = Extensible()
         blob.directory = os.path.join(self.top_output_dir, 'phylo_input')
         blob.study_tree_pair_file = os.path.join(blob.directory, 'study_tree_pairs.txt')
-        x = []
-        with open(blob.study_tree_pair_file, 'rU') as inp:
-            for line in inp:
-                ls = line.strip()
-                if ls:
-                    x.append(ls.split('@'))
-        blob.study_id_tree_id_pairs = x
+        x = stripped_nonempty_lines(blob.study_tree_pair_file)
+        blob.study_id_tree_id_pairs = [propinquity_fn_to_study_tree(i, strip_extension=False) for i in x]
         return blob
     def read_phylo_snapshot(self):
         blob = Extensible()
         blob.directory = os.path.join(self.top_output_dir, 'phylo_snapshot')
         blob.git_shas_file = os.path.join(blob.directory, 'git_shas.txt')
-        x = []
-        with open(blob.git_shas_file, 'rU') as inp:
-            for line in inp:
-                ls = line.strip()
-                if ls:
-                    x.append(ls)
-        blob.git_shas = x
+        blob.git_shas = stripped_nonempty_lines(blob.git_shas_file)
         return blob
     def _cham_out(self, fn):
         fp = os.path.join(self.top_output_dir, fn)
@@ -156,6 +172,8 @@ class DocGen(object):
         src_dest_list = ((render_top_index, 'top_index.pt', 'index'),
                          (render_phylo_input_index, 'phylo_input_index.pt', 'phylo_input/index'),
                          (render_phylo_snapshot_index, 'phylo_snapshot_index.pt', 'phylo_snapshot/index'),
+                         (render_cleaned_phylo_index, 'cleaned_phylo_index.pt', 'cleaned_phylo/index'),
+                         (render_exemplified_phylo_index, 'exemplified_phylo_input.pt', 'exemplified_phylo/index'),
                         )
         for func, template_path, prefix in src_dest_list:
             html_path = prefix + '.html'

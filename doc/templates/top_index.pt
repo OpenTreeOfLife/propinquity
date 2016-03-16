@@ -25,11 +25,6 @@
     <ol>
         <li tal:repeat="collection config.collections" ><a href="https://raw.githubusercontent.com/OpenTreeOfLife/collections-1/master/collections-by-owner/${collection}.json">${collection}</a></li>
     </ol>
-<p>See <a href="./phylo_input/index.html">phylo_input/index.html</a> for details on 
-the list of ${len(phylo_input.study_id_tree_id_pairs)} input phylogenetic trees that were identified from the collections.</p>
-<p>See <a href="./phylo_snapshot/index.html">phylo_snapshot/index.html</a> for details on
-the git SHA of these trees and copies of them as they existed when the supertree pipeline
-was run.</p>
 
 <h2 id="configuration-tools">Tools</h2>
 
@@ -47,5 +42,21 @@ was run.</p>
     <li>the filepath of the root directory of peyotl was <code>${config.peyotl_root}</code></li>
     <li>version: <code>${config.peyotl_version}</code> and git SHA <a href="https://github.com/mtholder/peyotl/commit/${config.peyotl_sha}">${config.peyotl_sha}</a></li>
 </ul>
+
+<h2>Processing of phylogenetic inputs</h2>
+<ol>
+    <li> <a href="./phylo_input/index.html">phylo_input/index.html</a> discusses 
+the list of ${len(phylo_input.study_id_tree_id_pairs)} input phylogenetic trees that were identified from the collections.</li>
+    <li><a href="./phylo_snapshot/index.html">phylo_snapshot/index.html</a> links to
+the git SHA of these trees and copies of them as they existed when the supertree pipeline
+was run.</li>
+    <li> <a href="./cleaned_phylo/index.html">cleaned_phylo/index.html</a> describes the
+pruning of tips from input phylogenies due to mapping to problematic taxa. There were ${len(exemplified_phylo.nonempty_trees)} nonempty trees after that cleaning.</li>
+    <li><a href="./exemplified_phylo/index.html">exemplified_phylo/index.html</a> describes the choice of terminal taxa to exemplify those nodes that are mapped to higher taxa.</li>
+</ol>
+
+
+
+
 </div>
 </html>
