@@ -49,7 +49,7 @@ full_supertree/full_supertree.tre: grafted_solution/grafted_solution.tre cleaned
 #	otc-name-unnamed-nodes $^ > $@
 
 labelled_supertree/labelled_supertree.tre: grafted_solution/grafted_solution.tre cleaned_ott/cleaned_ott.tre
-	otc-unprune-solution-and-name-unnamed-nodes grafted_solution/grafted_solution.tre cleaned_ott/cleaned_ott.tre > labelled_supertree/labelled_supertree.tre -j labelled_supertree/broken_taxa.json -s labelled_supertree/input_output_stats.json
+	otc-unprune-solution-and-name-unnamed-nodes grafted_solution/grafted_solution.tre cleaned_ott/cleaned_ott.tre > labelled_supertree/labelled_supertree.tre -jlabelled_supertree/broken_taxa.json -slabelled_supertree/input_output_stats.json
 
 labelled_supertree_ottnames/labelled_supertree_ottnames.tre: labelled_supertree/labelled_supertree.tre
 	otc-relabel-tree labelled_supertree/labelled_supertree.tre --taxonomy=$(OTT_DIR) --format-tax="%N ott%I" --del-monotypic > labelled_supertree/labelled_supertree_ottnames.tre
