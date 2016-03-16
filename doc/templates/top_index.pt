@@ -27,7 +27,9 @@
     </ol>
 <p>See <a href="./phylo_input/index.html">phylo_input/index.html</a> for details on 
 the list of ${len(phylo_input.study_id_tree_id_pairs)} input phylogenetic trees that were identified from the collections.</p>
-
+<p>See <a href="./phylo_snapshot/index.html">phylo_snapshot/index.html</a> for details on
+the git SHA of these trees and copies of them as they existed when the supertree pipeline
+was run.</p>
 
 <h2 id="configuration-tools">Tools</h2>
 
