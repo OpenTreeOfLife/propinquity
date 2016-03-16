@@ -25,6 +25,9 @@
     <ol>
         <li tal:repeat="collection config.collections" ><a href="https://raw.githubusercontent.com/OpenTreeOfLife/collections-1/master/collections-by-owner/${collection}.json">${collection}</a></li>
     </ol>
+<p>See <a href="./phylo_input/index.html">phylo_input/index.html</a> for details on 
+the list of ${len(phylo_input.study_id_tree_id_pairs)} input phylogenetic trees that were identified from the collections.</p>
+
 
 <h2 id="configuration-tools">Tools</h2>
 

@@ -104,7 +104,12 @@ def write_as_json(obj, out_stream):
 
 def render_top_index(container, template, html_out, json_out):
     write_as_json({'config' : container.config.__dict__}, json_out)
-    html_out.write(template(config=container.config))
+    html_out.write(template(config=container.config,
+                            phylo_input=container.phylo_input))
+
+def render_phylo_input_index(container, template, html_out, json_out):
+    write_as_json({'phylo_input' : container.phylo_input.__dict__}, json_out)
+    html_out.write(template(phylo_input=container.phylo_input))
 
 class DocGen(object):
     def __init__(self, propinquity_dir, config_filepath):
@@ -113,13 +118,26 @@ class DocGen(object):
         templates_dir = os.path.join(propinquity_dir, 'doc', 'templates')
         self.templates = PageTemplateLoader(templates_dir)
         self.config = get_runtime_configuration(config_filepath)
-        
+        self.phylo_input = self.read_phylo_input()
+    def read_phylo_input(self):
+        blob = Extensible()
+        blob.directory = os.path.join(self.top_output_dir, 'phylo_input')
+        blob.study_tree_pair_file = os.path.join(blob.directory, 'study_tree_pairs.txt')
+        x = []
+        with open(blob.study_tree_pair_file, 'rU') as inp:
+            for line in inp:
+                ls = line.strip()
+                if ls:
+                    x.append(ls.split('@'))
+        blob.study_id_tree_id_pairs = x
+        return blob
     def _cham_out(self, fn):
         fp = os.path.join(self.top_output_dir, fn)
         fo = codecs.open(fp, 'w', encoding='utf-8')
         return fo
     def render(self):
-        src_dest_list = ((render_top_index, 'top_index.pt', 'index'),)
+        src_dest_list = ((render_top_index, 'top_index.pt', 'index'),
+                         (render_phylo_input_index, 'phylo_input_index.pt', 'phylo_input/index'))
         for func, template_path, prefix in src_dest_list:
             html_path = prefix + '.html'
             json_path = prefix + '.json'

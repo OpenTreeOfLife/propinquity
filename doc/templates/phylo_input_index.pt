@@ -1,0 +1,15 @@
+<html metal:use-macro="load: head.pt">
+<div metal:fill-slot="content">
+<p>This directory holds the files that are used to extract the ranked list of study+tree IDs
+    for the phylogenetic inputs to the pipeline.</p>
+<ul>
+    <li><a href="./collections.txt">collections.txt</a> is simply a copy of the configuration setting that list the identifiers for the collections in order</li>
+    <li><a href="./rank_collection.json">rank_collection.json</a> is a collection JSON that is the concatenation of the collections (which where found in the phylesystem shard
+    described in <a href="../index.html#configuration">the configuration</a> documentation.</li><li><a href="./study_tree_pairs.txt">is list of the study ID + tree ID</a> in a terse syntax that is appropriate for file names within this propinquity pipeline.</li>
+    <li>The ${len(phylo_input.study_id_tree_id_pairs)} trees used as inputs for this run were:
+        <ol>
+            <li tal:repeat="stp phylo_input.study_id_tree_id_pairs"><a href="https://tree.opentreeoflife.org/curator/study/view/${stp[0]}/?tab=trees&tree=${stp[1]}">tree ${stp[1]} of study ${stp[0]}</a></li>
+        </ol>
+    </li>
+</div>
+</html>
