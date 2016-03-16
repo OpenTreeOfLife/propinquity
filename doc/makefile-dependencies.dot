@@ -94,14 +94,25 @@ config -> "phylo_input/collections.txt"
 "otc-relabel-tree grafted_solution/grafted_solution.tre" [style=filled, color="#EEBBDD"]
 "otc-relabel-tree grafted_solution/grafted_solution.tre" -> "grafted_solution/grafted_solution_ottnames.tre"
 
-"cleaned_ott/cleaned_ott.tre" -> "otc-unprune-solution"
-"grafted_solution/grafted_solution.tre" -> "otc-unprune-solution"
-"otc-unprune-solution" [style=filled, color="#EEBBDD"]
-"otc-unprune-solution" -> "full_supertree/full_supertree.tre"
+"cleaned_ott/cleaned_ott.tre" -> "otc-unprune-solution-and-name-unnamed-nodes"
+"grafted_solution/grafted_solution.tre" -> "otc-unprune-solution-and-name-unnamed-nodes"
+"otc-unprune-solution-and-name-unnamed-nodes" [style=filled, color="#EEBBDD"]
+"otc-unprune-solution-and-name-unnamed-nodes" -> "labelled_supertree/labelled_supertree.tre"
+"otc-unprune-solution-and-name-unnamed-nodes" -> "labelled_supertree/broken_taxa.json"
+"otc-unprune-solution-and-name-unnamed-nodes" -> "labelled_supertree/input_output_stats.json"
+"labelled_supertree/broken_taxa.json" [color="#AAAAEE"]
+"labelled_supertree/input_output_stats.json" [color="#AAAAEE"]
 
-"full_supertree/full_supertree.tre" -> "otc-name-unnamed-nodes"
-"otc-name-unnamed-nodes" [style=filled, color="#EEBBDD"]
-"otc-name-unnamed-nodes" -> "labelled_supertree/labelled_supertree.tre"
+#"cleaned_ott/cleaned_ott.tre" -> "otc-unprune-solution"
+#"grafted_solution/grafted_solution.tre" -> "otc-unprune-solution"
+#"otc-unprune-solution" [style=filled, color="#EEBBDD"]
+#"otc-unprune-solution" -> "full_supertree/full_supertree.tre"
+
+#"full_supertree/full_supertree.tre" -> "otc-name-unnamed-nodes"
+#"otc-name-unnamed-nodes" [style=filled, color="#EEBBDD"]
+#"otc-name-unnamed-nodes" -> "labelled_supertree/labelled_supertree.tre"
+
+
 
 "labelled_supertree/labelled_supertree.tre" -> "otc-relabel-tree labelled_supertree/labelled_supertree.tre"
 "otc-relabel-tree labelled_supertree/labelled_supertree.tre" [style=filled, color="#EEBBDD"]
