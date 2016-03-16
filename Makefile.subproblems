@@ -44,8 +44,12 @@ grafted_solution/grafted_solution_ottnames.tre: grafted_solution/grafted_solutio
 full_supertree/full_supertree.tre: grafted_solution/grafted_solution.tre cleaned_ott/cleaned_ott.tre
 	otc-unprune-solution grafted_solution/grafted_solution.tre cleaned_ott/cleaned_ott.tre > full_supertree/full_supertree.tre
 
-labelled_supertree/labelled_supertree.tre: full_supertree/full_supertree.tre
-	otc-name-unnamed-nodes $^ > $@
+# No longer needed, since we now unprune and name unnamed nodes in one step
+#labelled_supertree/labelled_supertree.tre: full_supertree/full_supertree.tre
+#	otc-name-unnamed-nodes $^ > $@
+
+labelled_supertree/labelled_supertree.tre: grafted_solution/grafted_solution.tre cleaned_ott/cleaned_ott.tre
+	otc-unprune-solution-and-name-unnamed-nodes grafted_solution/grafted_solution.tre cleaned_ott/cleaned_ott.tre > labelled_supertree/labelled_supertree.tre -j labelled_supertree/broken_taxa.json -s labelled_supertree/input_output_stats.json
 
 labelled_supertree_ottnames/labelled_supertree_ottnames.tre: labelled_supertree/labelled_supertree.tre
 	otc-relabel-tree labelled_supertree/labelled_supertree.tre --taxonomy=$(OTT_DIR) --format-tax="%N ott%I" --del-monotypic > labelled_supertree/labelled_supertree_ottnames.tre
