@@ -17,6 +17,7 @@ try:
     import configparser  # pylint: disable=F0401
 except ImportError:
     import ConfigParser as configparser
+from peyotl import read_as_json
 from peyotl.utility import propinquity_fn_to_study_tree
 import subprocess
 import peyotl
@@ -145,8 +146,19 @@ class DocGen(object):
         self.phylo_snapshot = self.read_phylo_snapshot()
         self.exemplified_phylo = self.read_exemplified_phylo()
     def read_exemplified_phylo(self):
-        blob = Extensible()
         d = os.path.join(self.top_output_dir, 'exemplified_phylo')
+        x = read_as_json(os.path.join(d, 'exemplified_log.json'))
+        tx = x['taxa_exemplified']
+        by_source_tree = {}
+        for ott_id, exdict in tx.items():
+            tm = exdict['trees_modified']
+            for tree in tm:
+                by_source_tree.setdefault(tree, []).append(ott_id)
+        for v in by_source_tree.values():
+            v.sort()
+        blob = Extensible()
+        blob.taxa_exemplified = tx
+        blob.source_tree_to_ott_id_exemplified_list = by_source_tree
         f = os.path.join(d, 'nonempty_trees.txt')
         blob.nonempty_tree_filenames = stripped_nonempty_lines(f)
         blob.nonempty_trees = [propinquity_fn_to_study_tree(i) for i in blob.nonempty_tree_filenames]
