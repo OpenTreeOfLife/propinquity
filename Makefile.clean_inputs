@@ -18,6 +18,7 @@ ARTIFACTS += $(SUPPRESS_FLAG_ARTIFACTS) \
 	cleaned_phylo/needs_updating.txt \
 	exemplified_phylo/taxonomy.tre \
 	exemplified_phylo/args.txt \
+	exemplified_phylo/pruned_taxonomy_degree_distribution.txt \
 	phylo_induced_taxonomy/taxonomy.tre \
 	phylo_input/rank_collection.json \
 	phylo_input/collections.txt
@@ -135,6 +136,9 @@ exemplified_phylo/nonempty_trees.txt : exemplified_phylo/args.txt cleaned_ott/cl
 	  -nexemplified_phylo/.nonempty_trees.txt && mv exemplified_phylo/.nonempty_trees.txt exemplified_phylo/nonempty_trees.txt
 
 exemplified_phylo/taxonomy.tre: exemplified_phylo/nonempty_trees.txt
+
+exemplified_phylo/pruned_taxonomy_degree_distribution.txt : exemplified_phylo/taxonomy.tre
+	otc-degree-distribution exemplified_phylo/taxonomy.tre > exemplified_phylo/pruned_taxonomy_degree_distribution.txt
 
 phylo_induced_taxonomy/taxonomy.tre : exemplified_phylo/taxonomy.tre
 	ln -s ../exemplified_phylo/taxonomy.tre phylo_induced_taxonomy/taxonomy.tre

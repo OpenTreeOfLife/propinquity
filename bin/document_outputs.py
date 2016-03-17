@@ -156,7 +156,16 @@ class DocGen(object):
                 by_source_tree.setdefault(tree, []).append(ott_id)
         for v in by_source_tree.values():
             v.sort()
+        ptdd = os.path.join(d, 'pruned_taxonomy_degree_distribution.txt')
+        if not os.path.exists(ptdd):
+            subprocess.call(['make', 'exemplified_phylo/pruned_taxonomy_degree_distribution.txt'])
+            assert(os.path.exists(ptdd))
+        ddlines = [i.split() for i in stripped_nonempty_lines(ptdd) if i.split()[0] == '0']
+        assert(len(ddlines) == 1)
+        leaf_line = ddlines[0] # should b
+        assert(len(leaf_line) == 2)
         blob = Extensible()
+        blob.num_leaves_in_exemplified_taxonomy = int(leaf_line[1])
         blob.taxa_exemplified = tx
         blob.source_tree_to_ott_id_exemplified_list = by_source_tree
         f = os.path.join(d, 'nonempty_trees.txt')

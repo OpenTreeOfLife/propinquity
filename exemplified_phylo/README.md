@@ -9,6 +9,11 @@ Then the induced tree from the taxonomic input is produced.
 The goal of this step is to remove tips that represent higher taxa and
 produce smaller inputs for the subproblem identification.
 
+Currently if a leaf is mapped to a higher taxon, then that node is pruned from
+the tree and a set of "exemplar taxa" are added to the tree to the
+parent of the pruned node.
+
+
 The choice of which taxa are used to exemplify a higher taxon is made
     to fulfill the following requirements:
 
@@ -28,8 +33,6 @@ The choice of which taxa are used to exemplify a higher taxon is made
     of the incoming newick - so clients should NOT rely on the
     same exemplar being chosen in every run in which semantically
     identical inputs are given).
-
-
 
 Requires that otcetera tools be on your PATH.
 

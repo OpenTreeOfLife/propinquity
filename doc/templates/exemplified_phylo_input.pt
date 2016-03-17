@@ -1,5 +1,13 @@
 <html metal:use-macro="load: head.pt">
 <div metal:fill-slot="content" tal:define="basename import: os.path.basename">
-<p>Propinquity output documentation. The top-level docs are <a href="../index.html">here</a>.
+<p>Propinquity output documentation. The top-level docs are <a href="../index.html">here</a>.</p>
+<p>This directory holds the results of the last step of the input preprocessing for the
+    supertree pipeline.
+All of the leaves in these trees are mapped to terminal taxa in the taxonomy.
+This is accomplished by taking the cleaned input trees (see 
+<a href="../cleaned_phylo/index.html">../cleaned_phylo/index.html</a> and 
+<a href="../cleaned_ott/index.html">../cleaned_ott/index.html</a>) and choosing
+exemplar taxa to represent at for each tip that is mapped to a non-terminal taxon.</p>
+ 
 </div>
 </html>
