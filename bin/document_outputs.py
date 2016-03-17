@@ -136,6 +136,9 @@ def render_cleaned_phylo_index(container, template, html_out, json_out):
 def render_exemplified_phylo_index(container, template, html_out, json_out):
     write_as_json({'exemplified_phylo' : container.exemplified_phylo.__dict__}, json_out)
     html_out.write(template(exemplified_phylo=container.exemplified_phylo))
+def render_subproblems_index(container, template, html_out, json_out):
+    write_as_json({'subproblems' : container.subproblems.__dict__}, json_out)
+    html_out.write(template(subproblems=container.subproblems))
 
 class DocGen(object):
     def __init__(self, propinquity_dir, config_filepath):
@@ -148,6 +151,32 @@ class DocGen(object):
         self.phylo_snapshot = self.read_phylo_snapshot()
         self.cleaned_ott = self.read_cleaned_ott()
         self.exemplified_phylo = self.read_exemplified_phylo()
+        self.subproblems = self.read_subproblems()
+    def read_subproblems(self):
+        d = os.path.join(self.top_output_dir, 'subproblems')
+        blob = Extensible()
+        blob.tree_files = stripped_nonempty_lines(os.path.join(d, 'subproblem-ids.txt'))
+        by_num_phylo = []
+        by_input = {}
+        for s in blob.tree_files:
+            assert s.endswith('.tre')
+            pref = s[:-4]
+            assert pref.startswith('ott')
+            tree_name_file = os.path.join(d, pref + '-tree-names.txt')
+            phylo_inputs = []
+            for i in stripped_nonempty_lines(tree_name_file):
+                x = i[:-4] if i.endswith('.tre') else i
+                phylo_inputs.append(i)
+                if x != 'TAXONOMY':
+                    by_input.setdefault(x, []).append(pref)
+            npi = len(phylo_inputs)
+            by_num_phylo.append((npi, int(pref[3:]), s, phylo_inputs))
+        by_num_phylo.sort(reverse=True)
+        blob.sorted_by_num_phylo_inputs = [[i[2], i[3]] for i in by_num_phylo]
+        by_input = [(len(v), k, v) for k, v in by_input.items()]
+        by_input.sort(reverse=True)
+        blob.input_and_subproblems_sorted = [[i[1], i[2]] for i in by_input]
+        return blob
     def read_cleaned_ott(self):
         blob = Extensible()
         d = os.path.join(self.top_output_dir, 'cleaned_ott')
@@ -158,7 +187,6 @@ class DocGen(object):
                 v.sort()
         blob.root_ott_id = self.config.root_ott_id
         return blob
-    
     def read_exemplified_phylo(self):
         d = os.path.join(self.top_output_dir, 'exemplified_phylo')
         x = read_as_json(os.path.join(d, 'exemplified_log.json'))
@@ -210,7 +238,8 @@ class DocGen(object):
                          (render_phylo_snapshot_index, 'phylo_snapshot_index.pt', 'phylo_snapshot/index'),
                          (render_cleaned_phylo_index, 'cleaned_phylo_index.pt', 'cleaned_phylo/index'),
                          (render_cleaned_ott_index, 'cleaned_ott_index.pt', 'cleaned_ott/index'),
-                         (render_exemplified_phylo_index, 'exemplified_phylo_input.pt', 'exemplified_phylo/index'),
+                         (render_exemplified_phylo_index, 'exemplified_phylo_index.pt', 'exemplified_phylo/index'),
+                         (render_subproblems_index, 'subproblems_index.pt', 'subproblems/index'),
                         )
         for func, template_path, prefix in src_dest_list:
             html_path = prefix + '.html'
