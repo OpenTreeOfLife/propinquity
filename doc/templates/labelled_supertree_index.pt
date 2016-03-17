@@ -24,7 +24,15 @@
 </ul>
 
 <p>The next step is to reattach the taxa that were not present in any phylogenetic estimated; See <a href="../grafted_solution/index.html">../grafted_solution/index.html</a></p>
-<p>Sorted by the number of tips then by the number of internal nodes, these are:</p>
 
+<p>The ${len(non_monophyletic_taxa.non_monophyletic_taxa)} taxa from OTT that could not make it into the tree were:</p>
+<table>
+    <tr><th>"broken" taxon</th><th>MRCA</th><th># attachment points</th></tr>
+    <tr tal:repeat="id2dict non_monophyletic_taxa.non_monophyletic_taxa.items()">
+        <td>${id2dict[0]}</td>
+        <td>${id2dict[1]["mrca"]}</td>
+        <td>${len(id2dict[1]["attachment_points"])}</td>
+    </tr>
+</table>
 </div>
 </html>

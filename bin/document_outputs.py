@@ -189,7 +189,7 @@ def render_grafted_solution_index(container, template, html_out, json_out):
     html_out.write(template(subproblems=container.subproblems))
 def render_labelled_supertree_index(container, template, html_out, json_out):
     html_out.write(template(unprune_stats=container.labelled_supertree.unprune_stats,
-                            broken_taxa=container.labelled_supertree.broken_taxa))
+                            non_monophyletic_taxa=container.labelled_supertree.non_monophyletic_taxa))
 
 class DocGen(object):
     def __init__(self, propinquity_dir, config_filepath):
@@ -213,7 +213,7 @@ class DocGen(object):
         assert(os.path.exists(lsodd))
         blob = Extensible()
         blob.unprune_stats = read_as_json(os.path.join(d, 'input_output_stats.json'))
-        blob.broken_taxa = read_as_json(os.path.join(d, 'broken_taxa.json'))
+        blob.non_monophyletic_taxa = read_as_json(os.path.join(d, 'broken_taxa.json'))
         return blob
     def read_subproblem_solutions(self):
         d = os.path.join(self.top_output_dir, 'subproblem_solutions')
