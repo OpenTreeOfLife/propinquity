@@ -6,8 +6,8 @@ This directory just holds annoations of that tree</p>
 <p>The files of interest in this directory are:
 <ul>
     <li>the <a href="./annotations.json">./annotations.json</a></li>
-    <li>the <a href="./annotations1.json">./annotations.json</a></li>
-    <li>the <a href="./annotations2.json">./annotations.json</a></li>
+    <li>the <a href="./annotations1.json">./annotations1.json</a></li>
+    <li>the <a href="./annotations2.json">./annotations2.json</a></li>
 </ul>
 <p>See <a href="https://github.com/OpenTreeOfLife/propinquity/blob/master/annotated_supertree/README.md">README</a> for discussion of these files and links to the description of the schema</p>
 
