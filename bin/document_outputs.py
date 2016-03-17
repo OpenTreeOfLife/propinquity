@@ -127,6 +127,8 @@ def render_phylo_snapshot_index(container, template, html_out, json_out):
     html_out.write(template(phylo_input=container.phylo_input,
                             phylo_snapshot=container.phylo_snapshot))
 
+def render_cleaned_ott_index(container, template, html_out, json_out):
+    html_out.write(template(cleaned_ott=container.cleaned_ott))
 def render_cleaned_phylo_index(container, template, html_out, json_out):
     html_out.write(template(phylo_input=container.phylo_input,
                             phylo_snapshot=container.phylo_snapshot,
@@ -144,7 +146,19 @@ class DocGen(object):
         self.config = get_runtime_configuration(config_filepath)
         self.phylo_input = self.read_phylo_input()
         self.phylo_snapshot = self.read_phylo_snapshot()
+        self.cleaned_ott = self.read_cleaned_ott()
         self.exemplified_phylo = self.read_exemplified_phylo()
+    def read_cleaned_ott(self):
+        blob = Extensible()
+        d = os.path.join(self.top_output_dir, 'cleaned_ott')
+        o = read_as_json(os.path.join(d, 'cleaned_ott.json'))
+        for k, v in o.items():
+            setattr(blob, k, v)
+            if k == 'flags_to_prune':
+                v.sort()
+        blob.root_ott_id = self.config.root_ott_id
+        return blob
+    
     def read_exemplified_phylo(self):
         d = os.path.join(self.top_output_dir, 'exemplified_phylo')
         x = read_as_json(os.path.join(d, 'exemplified_log.json'))
@@ -195,6 +209,7 @@ class DocGen(object):
                          (render_phylo_input_index, 'phylo_input_index.pt', 'phylo_input/index'),
                          (render_phylo_snapshot_index, 'phylo_snapshot_index.pt', 'phylo_snapshot/index'),
                          (render_cleaned_phylo_index, 'cleaned_phylo_index.pt', 'cleaned_phylo/index'),
+                         (render_cleaned_ott_index, 'cleaned_ott_index.pt', 'cleaned_ott/index'),
                          (render_exemplified_phylo_index, 'exemplified_phylo_input.pt', 'exemplified_phylo/index'),
                         )
         for func, template_path, prefix in src_dest_list:
