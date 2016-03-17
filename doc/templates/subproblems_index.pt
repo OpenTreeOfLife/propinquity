@@ -16,10 +16,11 @@ See <a href="https://github.com/OpenTreeOfLife/propinquity/blob/master/subproble
 The taxonomy overlaps with every subproblem.</p>
 <p>Sorted by the number of phylogenetic inputs, the subproblems are:</p>
 <table>
-    <tr><th>Subproblem</th><th># inputs</th><th>Input Identifiers</tr>
+    <tr><th>Subproblem</th><th># inputs</th><th># tips</th><th>Input Identifiers</tr>
     <tr tal:repeat="id_src_el subproblems.sorted_by_num_phylo_inputs">
         <td><a href="./${id_src_el[0]}">${id_src_el[0]}</a></td>
         <td>${len(id_src_el[1])}</td>
+        <td>${id_src_el[2]}</td>
         <td>${', '.join(id_src_el[1])}</td>
     </tr>
 </table>

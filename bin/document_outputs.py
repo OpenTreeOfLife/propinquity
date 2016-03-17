@@ -33,7 +33,6 @@ class Extensible(object):
 def errstream(msg):
     sys.stderr.write('{n}: ERROR: {m}\n'.format(n=SCRIPT_NAME, m=msg))
 
-
 def parse_config(config_filepath):
     parsed_config = configparser.SafeConfigParser()
     try:
@@ -109,6 +108,49 @@ def stripped_nonempty_lines(fn):
                 x.append(ls)
     return x    
 
+def parse_subproblem_solutions_degree_dist(fn):
+    x = []
+    for p in gen_degree_dist(fn):
+        fn, dd_list = p
+        assert dd_list[0][0] == 0
+        num_leaves = dd_list[0][1]
+        num_forking = 0
+        for el in dd_list:
+            if el[0] > 1:
+                num_forking += el[1]
+        x.append((num_leaves, num_forking, fn))
+    x.sort(reverse=True)
+    x = [(i[2], i[0], i[1]) for i in x]
+    return x
+def gen_degree_dist(fn):
+    header_pat = re.compile(r'Out-degree\S+Count')
+    with open(fn, 'rU') as inp:
+        lines = stripped_nonempty_lines(fn)
+        rfn = None
+        expecting_header = False
+        dd = []
+        for n, line in enumerate(inp):
+            ls = line.strip()
+            if not ls:
+                continue
+            if expecting_header:
+                if header_pat.match(ls):
+                    raise ValueError('expecting a header at line {}, but found "{}"'.format(1 + n, ls))
+                expecting_header = False
+            else:
+                if ls.endswith('.tre'):
+                    if rfn:
+                        yield rfn, dd
+                    dd = []
+                    rfn = ls
+                    expecting_header = True
+                else:
+                    row = ls.split()
+                    assert len(row) == 2
+                    dd.append([int(i) for i in row])
+        if rfn:
+            yield rfn, dd     
+    
 def write_as_json(obj, out_stream):
     json.dump(obj, out_stream, indent=2, sort_keys=True, separators=(',', ': '))
     out_stream.write('\n')
@@ -139,6 +181,10 @@ def render_exemplified_phylo_index(container, template, html_out, json_out):
 def render_subproblems_index(container, template, html_out, json_out):
     write_as_json({'subproblems' : container.subproblems.__dict__}, json_out)
     html_out.write(template(subproblems=container.subproblems))
+def render_subproblem_solutions_index(container, template, html_out, json_out):
+    write_as_json({'subproblem_solutions' : container.subproblem_solutions.__dict__}, json_out)
+    html_out.write(template(subproblems=container.subproblems,
+                            subproblem_solutions=container.subproblem_solutions))
 
 class DocGen(object):
     def __init__(self, propinquity_dir, config_filepath):
@@ -151,11 +197,24 @@ class DocGen(object):
         self.phylo_snapshot = self.read_phylo_snapshot()
         self.cleaned_ott = self.read_cleaned_ott()
         self.exemplified_phylo = self.read_exemplified_phylo()
+        self.subproblem_solutions = self.read_subproblem_solutions()
         self.subproblems = self.read_subproblems()
+    def read_subproblem_solutions(self):
+        d = os.path.join(self.top_output_dir, 'subproblem_solutions')
+        sdd = os.path.join(d, 'solution-degree-distributions.txt')
+        if not os.path.exists(sdd):
+            subprocess.call(['make', 'subproblem_solutions/solution-degree-distributions.txt'])
+            assert(os.path.exists(sdd))
+        blob = Extensible()
+        blob.subproblem_num_leaves_num_internal_nodes = parse_subproblem_solutions_degree_dist(sdd)
+        return blob
     def read_subproblems(self):
         d = os.path.join(self.top_output_dir, 'subproblems')
         blob = Extensible()
         blob.tree_files = stripped_nonempty_lines(os.path.join(d, 'subproblem-ids.txt'))
+        id2num_leaves = {}
+        for el in self.subproblem_solutions.subproblem_num_leaves_num_internal_nodes:
+            id2num_leaves[el[0]] = el[1]
         by_num_phylo = []
         by_input = {}
         for s in blob.tree_files:
@@ -172,7 +231,7 @@ class DocGen(object):
             npi = len(phylo_inputs)
             by_num_phylo.append((npi, int(pref[3:]), s, phylo_inputs))
         by_num_phylo.sort(reverse=True)
-        blob.sorted_by_num_phylo_inputs = [[i[2], i[3]] for i in by_num_phylo]
+        blob.sorted_by_num_phylo_inputs = [[i[2], i[3], id2num_leaves[i[2]]] for i in by_num_phylo]
         by_input = [(len(v), k, v) for k, v in by_input.items()]
         by_input.sort(reverse=True)
         blob.input_and_subproblems_sorted = [[i[1], i[2]] for i in by_input]
