@@ -302,6 +302,8 @@ class DocGen(object):
         blob = Extensible()
         blob.directory = os.path.join(self.top_output_dir, 'phylo_snapshot')
         blob.git_shas_file = os.path.join(blob.directory, 'git_shas.txt')
+        subprocess.call(['make', 'phylo_snapshot/collections_git_shas.txt'])
+        blob.collections_git_shas_file = os.path.join(blob.directory, 'collections_git_shas.txt')
         blob.git_shas = stripped_nonempty_lines(blob.git_shas_file)
         return blob
     def _cham_out(self, fn):

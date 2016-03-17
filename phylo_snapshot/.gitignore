@@ -3,3 +3,4 @@ git_shas.txt
 stdouterr.txt
 *.json
 *.tre
+collections_git_shas.txt
