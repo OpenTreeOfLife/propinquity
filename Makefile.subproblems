@@ -3,6 +3,7 @@ ARTIFACTS += subproblems/subproblem-ids.txt \
 	  grafted_solution_ottnames.tre \
 	  full_supertree/full_supertree.tre \
 	  subproblem_solutions/solution-ids.txt \
+	  subproblem_solutions/solution-degree-distributions.txt \
 	  labelled_supertree/labelled_supertree.tre \
 	  annotated_supertree/annotations.json
 
@@ -31,6 +32,17 @@ subproblem_solutions/solution-ids.txt: subproblems/subproblem-ids.txt
 		otc-solve-subproblem subproblems/$$n -n$${id} > subproblem_solutions/$${n} ; \
 	done ;
 	cp subproblems/subproblem-ids.txt subproblem_solutions/solution-ids.txt
+
+# This solution-degree-distributions.txt is just for documentation. The
+#	dependency should be all of the solutions, but it is easier to just
+#	make it depend on the next step in the procedure 
+subproblem_solutions/solution-degree-distributions.txt: grafted_solution/grafted_solution.tre
+	rm -f subproblem_solutions/.solution-degree-distributions.txt
+	for n in $$(cat subproblems/subproblem-ids.txt) ; do \
+		echo $${n} >> subproblem_solutions/.solution-degree-distributions.txt ;\
+		otc-degree-distribution subproblem_solutions/$${n} >> subproblem_solutions/.solution-degree-distributions.txt 2>/dev/null; \
+	done ;
+	mv subproblem_solutions/.solution-degree-distributions.txt subproblem_solutions/solution-degree-distributions.txt
 
 grafted_solution/grafted_solution.tre: subproblem_solutions/solution-ids.txt
 	sed 's:^:subproblem_solutions/:' subproblem_solutions/solution-ids.txt > subproblem_solutions/paths.txt
