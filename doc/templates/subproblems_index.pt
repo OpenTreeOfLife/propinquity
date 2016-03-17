@@ -16,7 +16,7 @@ See <a href="https://github.com/OpenTreeOfLife/propinquity/blob/master/subproble
 The taxonomy overlaps with every subproblem.</p>
 <p>Sorted by the number of phylogenetic inputs, the subproblems are:</p>
 <table>
-    <tr><th>Subproblem</th><th># inputs</th><th># tips</th><th>Input Identifiers</tr>
+    <tr><th>Subproblem</th><th># inputs</th><th># tips</th><th>Input Identifiers</th></tr>
     <tr tal:repeat="id_src_el subproblems.sorted_by_num_phylo_inputs">
         <td><a href="./${id_src_el[0]}">${id_src_el[0]}</a></td>
         <td>${len(id_src_el[1])}</td>
@@ -26,7 +26,7 @@ The taxonomy overlaps with every subproblem.</p>
 </table>
 <p>The list of input phylogenetic trees sorted by the number of subproblems that they overlap with is:</p>
 <table>
-    <tr><th>Study+Tree key</th><th># subproblems</th><th>Subproblem Identifiers</tr>
+    <tr><th>Study+Tree key</th><th># subproblems</th><th>Subproblem Identifiers</th></tr>
     <tr tal:repeat="inp_sub_l subproblems.input_and_subproblems_sorted">
         <td>${inp_sub_l[0]}</td>
         <td>${len(inp_sub_l[1])}</td>

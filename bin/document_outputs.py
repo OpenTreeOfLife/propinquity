@@ -185,6 +185,8 @@ def render_subproblem_solutions_index(container, template, html_out, json_out):
     write_as_json({'subproblem_solutions' : container.subproblem_solutions.__dict__}, json_out)
     html_out.write(template(subproblems=container.subproblems,
                             subproblem_solutions=container.subproblem_solutions))
+def render_grafted_solution_index(container, template, html_out, json_out):
+    html_out.write(template(subproblems=container.subproblems))
 
 class DocGen(object):
     def __init__(self, propinquity_dir, config_filepath):
@@ -299,6 +301,8 @@ class DocGen(object):
                          (render_cleaned_ott_index, 'cleaned_ott_index.pt', 'cleaned_ott/index'),
                          (render_exemplified_phylo_index, 'exemplified_phylo_index.pt', 'exemplified_phylo/index'),
                          (render_subproblems_index, 'subproblems_index.pt', 'subproblems/index'),
+                         (render_subproblem_solutions_index, 'subproblem_solutions_index.pt', 'subproblem_solutions/index'),
+                         (render_grafted_solution_index, 'grafted_solution_index.pt', 'grafted_solution/index'),
                         )
         for func, template_path, prefix in src_dest_list:
             html_path = prefix + '.html'
