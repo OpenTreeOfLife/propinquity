@@ -210,6 +210,7 @@ class DocGen(object):
         p = 'labelled_supertree_out_degree_distribution.txt'
         lsodd = os.path.join(d, p)
         subprocess.call(['make', 'labelled_supertree/' + p])
+        subprocess.call(['make', 'labelled_supertree/' + 'labelled_supertree_ottnames.tre'])
         assert(os.path.exists(lsodd))
         blob = Extensible()
         blob.unprune_stats = read_as_json(os.path.join(d, 'input_output_stats.json'))

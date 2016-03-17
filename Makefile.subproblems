@@ -6,6 +6,7 @@ ARTIFACTS += subproblems/subproblem-ids.txt \
 	  subproblem_solutions/solution-degree-distributions.txt \
 	  labelled_supertree/labelled_supertree.tre \
 	  labelled_supertree/labelled_supertree_out_degree_distribution.txt \
+	  labelled_supertree/labelled_supertree_ottnames.tre \
 	  annotated_supertree/annotations.json
 
 
@@ -67,7 +68,7 @@ labelled_supertree/labelled_supertree.tre: grafted_solution/grafted_solution.tre
 labelled_supertree/labelled_supertree_out_degree_distribution.txt: labelled_supertree/labelled_supertree.tre
 	otc-degree-distribution labelled_supertree/labelled_supertree.tre > labelled_supertree/labelled_supertree_out_degree_distribution.txt
 
-labelled_supertree_ottnames/labelled_supertree_ottnames.tre: labelled_supertree/labelled_supertree.tre
+labelled_supertree/labelled_supertree_ottnames.tre: labelled_supertree/labelled_supertree.tre
 	otc-relabel-tree labelled_supertree/labelled_supertree.tre --taxonomy=$(OTT_DIR) --format-tax="%N ott%I" --del-monotypic > labelled_supertree/labelled_supertree_ottnames.tre
 
 annotated_supertree/annotations.json: cleaned_ott/cleaned_ott.tre labelled_supertree/labelled_supertree.tre exemplified_phylo/nonempty_trees.txt

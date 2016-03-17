@@ -15,6 +15,7 @@
 <p>The files of interest in this directory are:
 <ul>
     <li>the <a href="./labelled_supertree.tre">./labelled_supertree.tre</a> (full solution with names created for non-taxonomic internal nodes).</li>
+    <li>the <a href="./labelled_supertree_ottnames.tre">./labelled_supertree_ottnames.tre</a> the same tree with the name_id format for taxa from OTT.</li>
     <li>the <a href="./broken_taxa.json">./broken_taxa.json</a> which describes who
     members of non-monophyletic taxa are spread across the tree.</li>
     <li>the <a href="./input_output_stats.json">./input_output_stats.json</a> which describes the
@@ -23,7 +24,7 @@
     for the nodes in the labelled supertree</li>
 </ul>
 
-<p>The next step is to reattach the taxa that were not present in any phylogenetic estimated; See <a href="../grafted_solution/index.html">../grafted_solution/index.html</a></p>
+<p>The next step is to annotate the tree <a href="../annotated_supertree/index.html">../annotated_supertree/index.html</a></p>
 
 <p>The ${len(non_monophyletic_taxa.non_monophyletic_taxa)} taxa from OTT that could not make it into the tree were:</p>
 <table>
