@@ -5,6 +5,7 @@ ARTIFACTS += subproblems/subproblem-ids.txt \
 	  subproblem_solutions/solution-ids.txt \
 	  subproblem_solutions/solution-degree-distributions.txt \
 	  labelled_supertree/labelled_supertree.tre \
+	  labelled_supertree/labelled_supertree_out_degree_distribution.txt \
 	  annotated_supertree/annotations.json
 
 
@@ -62,6 +63,9 @@ full_supertree/full_supertree.tre: grafted_solution/grafted_solution.tre cleaned
 
 labelled_supertree/labelled_supertree.tre: grafted_solution/grafted_solution.tre cleaned_ott/cleaned_ott.tre
 	otc-unprune-solution-and-name-unnamed-nodes grafted_solution/grafted_solution.tre cleaned_ott/cleaned_ott.tre > labelled_supertree/labelled_supertree.tre -jlabelled_supertree/broken_taxa.json -slabelled_supertree/input_output_stats.json
+
+labelled_supertree/labelled_supertree_out_degree_distribution.txt: labelled_supertree/labelled_supertree.tre
+	otc-degree-distribution labelled_supertree/labelled_supertree.tre > labelled_supertree/labelled_supertree_out_degree_distribution.txt
 
 labelled_supertree_ottnames/labelled_supertree_ottnames.tre: labelled_supertree/labelled_supertree.tre
 	otc-relabel-tree labelled_supertree/labelled_supertree.tre --taxonomy=$(OTT_DIR) --format-tax="%N ott%I" --del-monotypic > labelled_supertree/labelled_supertree_ottnames.tre

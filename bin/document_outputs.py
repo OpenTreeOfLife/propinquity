@@ -187,6 +187,9 @@ def render_subproblem_solutions_index(container, template, html_out, json_out):
                             subproblem_solutions=container.subproblem_solutions))
 def render_grafted_solution_index(container, template, html_out, json_out):
     html_out.write(template(subproblems=container.subproblems))
+def render_labelled_supertree_index(container, template, html_out, json_out):
+    html_out.write(template(unprune_stats=container.labelled_supertree.unprune_stats,
+                            broken_taxa=container.labelled_supertree.broken_taxa))
 
 class DocGen(object):
     def __init__(self, propinquity_dir, config_filepath):
@@ -201,12 +204,22 @@ class DocGen(object):
         self.exemplified_phylo = self.read_exemplified_phylo()
         self.subproblem_solutions = self.read_subproblem_solutions()
         self.subproblems = self.read_subproblems()
+        self.labelled_supertree = self.read_labelled_supertree()
+    def read_labelled_supertree(self):
+        d = os.path.join(self.top_output_dir, 'labelled_supertree')
+        p = 'labelled_supertree_out_degree_distribution.txt'
+        lsodd = os.path.join(d, p)
+        subprocess.call(['make', 'labelled_supertree/' + p])
+        assert(os.path.exists(lsodd))
+        blob = Extensible()
+        blob.unprune_stats = read_as_json(os.path.join(d, 'input_output_stats.json'))
+        blob.broken_taxa = read_as_json(os.path.join(d, 'broken_taxa.json'))
+        return blob
     def read_subproblem_solutions(self):
         d = os.path.join(self.top_output_dir, 'subproblem_solutions')
         sdd = os.path.join(d, 'solution-degree-distributions.txt')
-        if not os.path.exists(sdd):
-            subprocess.call(['make', 'subproblem_solutions/solution-degree-distributions.txt'])
-            assert(os.path.exists(sdd))
+        subprocess.call(['make', 'subproblem_solutions/solution-degree-distributions.txt'])
+        assert(os.path.exists(sdd))
         blob = Extensible()
         blob.subproblem_num_leaves_num_internal_nodes = parse_subproblem_solutions_degree_dist(sdd)
         return blob
@@ -261,9 +274,8 @@ class DocGen(object):
         for v in by_source_tree.values():
             v.sort()
         ptdd = os.path.join(d, 'pruned_taxonomy_degree_distribution.txt')
-        if not os.path.exists(ptdd):
-            subprocess.call(['make', 'exemplified_phylo/pruned_taxonomy_degree_distribution.txt'])
-            assert(os.path.exists(ptdd))
+        subprocess.call(['make', 'exemplified_phylo/pruned_taxonomy_degree_distribution.txt'])
+        assert(os.path.exists(ptdd))
         ddlines = [i.split() for i in stripped_nonempty_lines(ptdd) if i.split()[0] == '0']
         assert(len(ddlines) == 1)
         leaf_line = ddlines[0] # should b
@@ -303,6 +315,7 @@ class DocGen(object):
                          (render_subproblems_index, 'subproblems_index.pt', 'subproblems/index'),
                          (render_subproblem_solutions_index, 'subproblem_solutions_index.pt', 'subproblem_solutions/index'),
                          (render_grafted_solution_index, 'grafted_solution_index.pt', 'grafted_solution/index'),
+                         (render_labelled_supertree_index, 'labelled_supertree_index.pt', 'labelled_supertree/index'),
                         )
         for func, template_path, prefix in src_dest_list:
             html_path = prefix + '.html'
