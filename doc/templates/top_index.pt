@@ -72,7 +72,6 @@ pruning of tips from input phylogenies due to mapping to problematic taxa. There
 <ol>
     <li><a href="./labelled_supertree/labelled_supertree.tre">./labelled_supertree/labelled_supertree.tre</a> (the tree)</li>
     <li><a href="./annotated_supertree/annotations.json">./annotated_supertree/annotations.json</a> (the annotations file)</li>
-    
 <ol>
 
 </div>
