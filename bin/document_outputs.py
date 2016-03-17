@@ -190,6 +190,8 @@ def render_grafted_solution_index(container, template, html_out, json_out):
 def render_labelled_supertree_index(container, template, html_out, json_out):
     html_out.write(template(unprune_stats=container.labelled_supertree.unprune_stats,
                             non_monophyletic_taxa=container.labelled_supertree.non_monophyletic_taxa))
+def render_annotated_supertree_index(container, template, html_out, json_out):
+    html_out.write(template())
 
 class DocGen(object):
     def __init__(self, propinquity_dir, config_filepath):
@@ -317,6 +319,7 @@ class DocGen(object):
                          (render_subproblem_solutions_index, 'subproblem_solutions_index.pt', 'subproblem_solutions/index'),
                          (render_grafted_solution_index, 'grafted_solution_index.pt', 'grafted_solution/index'),
                          (render_labelled_supertree_index, 'labelled_supertree_index.pt', 'labelled_supertree/index'),
+                         (render_annotated_supertree_index, 'annotated_supertree_index.pt', 'annotated_supertree/index'),
                         )
         for func, template_path, prefix in src_dest_list:
             html_path = prefix + '.html'
