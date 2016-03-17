@@ -153,7 +153,8 @@ class DocGen(object):
         for ott_id, exdict in tx.items():
             tm = exdict['trees_modified']
             for tree in tm:
-                by_source_tree.setdefault(tree, []).append(ott_id)
+                key = '.'.join(tree.split('.')[:-1])
+                by_source_tree.setdefault(key, []).append(ott_id)
         for v in by_source_tree.values():
             v.sort()
         ptdd = os.path.join(d, 'pruned_taxonomy_degree_distribution.txt')
