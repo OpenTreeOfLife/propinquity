@@ -3,3 +3,5 @@ pg_*.tre
 ot_*.tre
 taxonomy.tre
 nonempty_trees.txt
+exemplified_log.json
+pruned_taxonomy_degree_distribution.txt

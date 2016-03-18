@@ -9,6 +9,7 @@ Makefile.clean_inputs: phylo_input/study_tree_pairs.txt
 
 ARTIFACTS += $(SUPPRESS_FLAG_ARTIFACTS) \
 	phylo_snapshot/git_shas.txt \
+	phylo_snapshot/collections_git_shas.txt \
 	phylo_snapshot/concrete_rank_collection.json \
 	cleaned_ott/cleaning_flags.txt \
 	cleaned_ott/root_ott_id.txt \
@@ -18,6 +19,7 @@ ARTIFACTS += $(SUPPRESS_FLAG_ARTIFACTS) \
 	cleaned_phylo/needs_updating.txt \
 	exemplified_phylo/taxonomy.tre \
 	exemplified_phylo/args.txt \
+	exemplified_phylo/pruned_taxonomy_degree_distribution.txt \
 	phylo_induced_taxonomy/taxonomy.tre \
 	phylo_input/rank_collection.json \
 	phylo_input/collections.txt
@@ -29,6 +31,7 @@ clean1:
 	rm -f exemplified_phylo/*.tre
 	rm -f phylo_snapshot/*.json
 	rm -f phylo_snapshot/git_shas.txt
+	rm -f phylo_snapshot/collections_git_shas.txt
 	rm -f phylo_snapshot/stdouterr.txt
 	rm -f phylo_input/collections.txt
 
@@ -68,6 +71,12 @@ phylo_input/study_tree_pairs.txt: phylo_input/rank_collection.json
 phylo_snapshot/git_shas.txt:
 	./bin/shard_shas.sh > .tmp_git_shas.txt
 	if ! diff phylo_snapshot/git_shas.txt .tmp_git_shas.txt >/dev/null 2>&1 ; then mv .tmp_git_shas.txt phylo_snapshot/git_shas.txt ; else rm .tmp_git_shas.txt ; fi
+
+
+phylo_snapshot/collections_git_shas.txt:
+	./bin/collections_shard_shas.sh > .tmp_collections_git_shas.txt
+	if ! diff phylo_snapshot/git_shas.txt .tmp_collections_git_shas.txt >/dev/null 2>&1 ; then mv .tmp_collections_git_shas.txt phylo_snapshot/collections_git_shas.txt ; else rm .tmp_collections_git_shas.txt ; fi
+
 
 phylo_snapshot/concrete_rank_collection.json: phylo_snapshot/git_shas.txt phylo_input/rank_collection.json
 	$(PEYOTL_ROOT)/scripts/phylesystem/export_studies_from_collection.py \
@@ -131,9 +140,13 @@ exemplified_phylo/nonempty_trees.txt : exemplified_phylo/args.txt cleaned_ott/cl
 	  -eexemplified_phylo \
 	  cleaned_ott/cleaned_ott.tre \
 	  -fexemplified_phylo/args.txt \
+	  -jexemplified_phylo/exemplified_log.json \
 	  -nexemplified_phylo/.nonempty_trees.txt && mv exemplified_phylo/.nonempty_trees.txt exemplified_phylo/nonempty_trees.txt
 
 exemplified_phylo/taxonomy.tre: exemplified_phylo/nonempty_trees.txt
+
+exemplified_phylo/pruned_taxonomy_degree_distribution.txt : exemplified_phylo/taxonomy.tre
+	otc-degree-distribution exemplified_phylo/taxonomy.tre > exemplified_phylo/pruned_taxonomy_degree_distribution.txt
 
 phylo_induced_taxonomy/taxonomy.tre : exemplified_phylo/taxonomy.tre
 	ln -s ../exemplified_phylo/taxonomy.tre phylo_induced_taxonomy/taxonomy.tre
