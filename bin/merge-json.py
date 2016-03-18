@@ -18,4 +18,4 @@ dictB = json.loads(json_data2)
 merged_dict = {key: value for (key, value) in (dictA.items() + dictB.items())}
 
 # string dump of the merged dict
-print json.dumps(merged_dict, indent=4)
+print json.dumps(merged_dict, indent=1, sort_keys=True, separators=(',', ': '))

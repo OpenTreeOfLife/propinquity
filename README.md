@@ -196,7 +196,7 @@ In these cases this sketch just shows the most interesting tool.
 
 ```sh
 cd exemplified_phylo
-otc-displayed-stats ../cleaned_ott/cleaned_ott.tre ../full_supertree/full_supertree.tre $(cat nonempty_trees.txt)
+otc-displayed-stats ../cleaned_ott/cleaned_ott.tre ../labelled_supertree/labelled_supertree.tre $(cat nonempty_trees.txt)
 ```
 
 ```sh
