@@ -76,6 +76,7 @@ def get_otc_version():
     except:
         pass
     return git_sha, version, boost_version
+
 def get_peyotl_version(peyotl_dir):
     peyotl_version, peyotl_sha = ['unknown'] * 2
     try:
@@ -122,6 +123,7 @@ def parse_subproblem_solutions_degree_dist(fn):
     x.sort(reverse=True)
     x = [(i[2], i[0], i[1]) for i in x]
     return x
+
 def gen_degree_dist(fn):
     header_pat = re.compile(r'Out-degree\S+Count')
     with open(fn, 'rU') as inp:

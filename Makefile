@@ -37,6 +37,11 @@ ARTIFACTS=cleaned_ott/cleaned_ott.tre \
 	  labelled_supertree_ottnames/labelled_supertree_ottnames.tre \
 	  annotated_supertree/annotations.json
 
+ASSESSMENT_ARTIFACTS = assessments/supertree_degree_distribution.txt \
+	assessments/taxonomy_degree_distribution.txt \
+	assessments/lost_taxa.txt \
+	assessments/summary.json
+
 all: labelled_supertree/labelled_supertree.tre annotated_supertree/annotations.json
 
 extra: labelled_supertree/labelled_supertree_ottnames.tre grafted_supertree/grafted_supertree_ottnames.tre
@@ -47,3 +52,28 @@ clean: clean1 clean2
 
 include Makefile.clean_inputs
 include Makefile.subproblems
+
+
+assessments/supertree_degree_distribution.txt: labelled_supertree/labelled_supertree.tre
+	otc-degree-distribution labelled_supertree/labelled_supertree.tre > assessments/supertree_degree_distribution.txt
+
+assessments/taxonomy_degree_distribution.txt: cleaned_ott/cleaned_ott.tre
+	otc-degree-distribution cleaned_ott/cleaned_ott.tre > assessments/taxonomy_degree_distribution.txt
+
+assessments/lost_taxa.txt: labelled_supertree/labelled_supertree.tre
+	otc-taxonomy-parser \
+	  $$(./bin/config_checker.py \
+	  --config=config \
+	  --property=opentree.ott) \
+	  --report-lost-taxa \
+	  labelled_supertree/labelled_supertree.tre \
+	  -c config > assessments/lost_taxa.txt
+
+assessments/summary.json: assessments/taxonomy_degree_distribution.txt \
+	                      assessments/supertree_degree_distribution.txt \
+	                      assessments/lost_taxa.txt
+	./bin/run_assessments.py . assessments/summary.json
+
+
+make check: assessments/summary.json
+
