@@ -65,9 +65,11 @@ if __name__ == '__main__':
     sdd = parse_degree_dist(supertree_dd_file)
     if tdd[0] != sdd[0]:
         err('The number of leaves differed between the taxonomy and supertree')
-        summary['num_tips'] = ['ERROR', [tdd[0][1], sdd[0][1]]]
+        nt = {'result':'ERROR', 'data':[tdd[0][1], sdd[0][1]]}
     else:
-        summary['num_tips'] = ['OK', tdd[0][1]]
+        nt = {'result':'OK', 'data': tdd[0][1]}
+    nt['description'] = 'Check that the cleaned version of the taxonomy and the supertree have the same number of leaves'
+    summary['num_tips'] = nt
     # Check that otc-taxonomy-parser and otc-unprune-solution-and-name-unnamed-nodes
     #   agree on the number of taxa that were lost
     #
@@ -91,7 +93,12 @@ if __name__ == '__main__':
             if ott_id not in lt_set:
                 err('{} was in {} but not {}'.format(ott_id_str, bt_name, lt_name))
                 lte[ott_id_str] = {'listed': bt_pair, 'absent': lt_pair}
-    summary['lost_taxa'] = ['ERROR', [len(lt_set), lte]] if bool(lte) else ['OK', len(lt_set)]
+    if lte:
+        ltb = {'result': 'ERROR', 'data': [len(lt_set), lte]}
+    else:
+        ltb = {'result': 'OK', 'data': [len(lt_set)]}
+    ltb['description'] = "Check that otcetera's tc-taxonomy-parser and otc-unprune-solution-and-name-unnamed-nodes tools agree about the number of taxa that are not present in the solution"
+    summary['lost_taxa'] = ltb
     # Check that 'supported_by' is not empty for any node in the tree
     #
     annot_file = os.path.join(top_dir, 'annotated_supertree', 'annotations.json')
@@ -108,9 +115,19 @@ if __name__ == '__main__':
            and (('terminal' not in supp) or (not supp['terminal'])):
             err('Unsupported node: {}'.format(node_id))
             unsup[node_id] = supp
-    summary['lost_taxa_included_in_tree'] = ['ERROR' if broken_taxa_inc else 'OK', broken_taxa_inc]
-    summary['unsupported_nodes'] = ['ERROR' if unsup else 'OK', unsup]
-
+    if broken_taxa_inc:
+        btb = {'result': 'ERROR', 'data': broken_taxa_inc}
+    else:
+        btb = {'result': 'OK', 'data': broken_taxa_inc}
+    btb['description'] = 'Check that none of the taxa listed as "lost" are in the annotations file'
+    summary['lost_taxa_included_in_tree'] = btb
+    if unsup:
+        ub = {'result': 'ERROR', 'data':unsup}
+    else:
+        ub = {'result': 'OK', 'data':unsup}
+    ub['description'] = 'Check that none of the nodes listed in the annotations file are completely unsuported'
+    summary['unsupported_nodes'] = ub
+    
     # serialize the summary
     #
     write_as_json(summary, os.path.join(assessments_dir, 'summary.json'), indent=2)

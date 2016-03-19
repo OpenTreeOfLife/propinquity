@@ -194,6 +194,8 @@ def render_labelled_supertree_index(container, template, html_out, json_out):
                             non_monophyletic_taxa=container.labelled_supertree.non_monophyletic_taxa))
 def render_annotated_supertree_index(container, template, html_out, json_out):
     html_out.write(template())
+def render_assessments_index(container, template, html_out, json_out):
+    html_out.write(template(assessments=container.assessments))
 
 class DocGen(object):
     def __init__(self, propinquity_dir, config_filepath):
@@ -209,6 +211,19 @@ class DocGen(object):
         self.subproblem_solutions = self.read_subproblem_solutions()
         self.subproblems = self.read_subproblems()
         self.labelled_supertree = self.read_labelled_supertree()
+        self.assessments = self.read_assessments()
+    def read_assessments(self):
+        d = os.path.join(self.top_output_dir, 'assessments')
+        blob = Extensible()
+        blob.assessments = read_as_json(os.path.join(d, 'summary.json'))
+        blob.categories_of_checks = list(blob.assessments.keys())
+        blob.categories_of_checks.sort()
+        blob.categories_of_checks_with_errors = []
+        for k, v in blob.assessments.items():
+            if v['result'] != 'OK':
+                blob.categories_of_checks_with_errors.append(k)
+        blob.categories_of_checks_with_errors.sort()
+        return blob
     def read_labelled_supertree(self):
         d = os.path.join(self.top_output_dir, 'labelled_supertree')
         p = 'labelled_supertree_out_degree_distribution.txt'
@@ -325,6 +340,7 @@ class DocGen(object):
                          (render_grafted_solution_index, 'grafted_solution_index.pt', 'grafted_solution/index'),
                          (render_labelled_supertree_index, 'labelled_supertree_index.pt', 'labelled_supertree/index'),
                          (render_annotated_supertree_index, 'annotated_supertree_index.pt', 'annotated_supertree/index'),
+                         (render_assessments_index, 'assessments_index.pt', 'assessments/index'),
                         )
         for func, template_path, prefix in src_dest_list:
             html_path = prefix + '.html'
