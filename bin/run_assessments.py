@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 from peyotl import read_as_json, write_as_json
 import subprocess
+import csv
 import sys
 import os
 import re
@@ -127,7 +128,36 @@ if __name__ == '__main__':
         ub = {'result': 'OK', 'data':unsup}
     ub['description'] = 'Check that none of the nodes listed in the annotations file are completely unsuported'
     summary['unsupported_nodes'] = ub
-    
+    # Monophyly tests are env sensitive
+    if 'MONOPHYLY_TEST_CSV_FILE' in os.environ:
+        mp = []
+        n_failures, n_passes, n_skipped = 0, 0, 0
+        fn = os.environ['MONOPHYLY_TEST_CSV_FILE']
+        with open(fn) as inp:
+            for row in csv.reader(inp, delimiter=','):
+                ott_id = 'ott{}'.format(row[1])
+                if ott_id in nodes_annotations:
+                    n_passes += 1
+                elif ott_id in bt_dict:
+                    n_failures += 1
+                    err('Taxon {} from monophyly is not monophyletic in the tree'.format(ott_id))
+                    mp.append(ott_id)
+                else:
+                    skip_msg = 'Monophyly test for {} treated as a skipped test because the taxon is not in the lost taxa or in the tree. (it could be the case that the synthesis was run on a subset of the full taxonomy)\n'
+                    sys.stderr.write(skip_msg.format(ott_id))
+                    n_skipped += 1
+        if 'MONOPHYLY_TEST_SOURCE_NAME' in os.environ:
+            src = os.environ['MONOPHYLY_TEST_SOURCE_NAME']
+        else:
+            src = fn
+        if mp:
+            mtb = {'result': 'ERROR', 'data': [n_passes, n_skipped, n_failures, mp]}
+        else:
+            mtb = {'result': 'OK', 'data': [n_passes, n_skipped, n_failures, mp]}
+        mtb['description'] = 'Check that the taxa from the monophyly tests listed in {} are monophyletic in the tree.'.format(src)
+        summary['monophyly'] = mtb
+    else:
+        sys.stderr.write('MONOPHYLY_TEST_CSV_FILE is not in the env, so no monophyly tests are being run\n')
     # serialize the summary
     #
     write_as_json(summary, os.path.join(assessments_dir, 'summary.json'), indent=2)
