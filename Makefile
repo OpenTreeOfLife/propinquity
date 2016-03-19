@@ -72,8 +72,13 @@ assessments/lost_taxa.txt: labelled_supertree/labelled_supertree.tre
 assessments/summary.json: assessments/taxonomy_degree_distribution.txt \
 	                      assessments/supertree_degree_distribution.txt \
 	                      assessments/lost_taxa.txt
-	./bin/run_assessments.py . assessments/summary.json
+	@rm -f assessments/summary.json 2>/dev/null
+	./bin/run_assessments.py . assessments/summary.json || true
+	@ls assessments/summary.json >/dev/null
 
 
 make check: assessments/summary.json
-
+	@if grep '"ERROR"' assessments/summary.json >/dev/null 2>/dev/null ; \
+		then cat assessments/summary.json && echo 'Errors found' && false ; \
+		else echo 'OK. Checks passed. A quirky listing of checks is in assessments/summary.json'; \
+		fi
