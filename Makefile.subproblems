@@ -72,7 +72,12 @@ labelled_supertree/labelled_supertree_ottnames.tre: labelled_supertree/labelled_
 	otc-relabel-tree labelled_supertree/labelled_supertree.tre --taxonomy=$(OTT_DIR) --format-tax="%N ott%I" --del-monotypic > labelled_supertree/labelled_supertree_ottnames.tre
 
 annotated_supertree/annotations.json: cleaned_ott/cleaned_ott.tre labelled_supertree/labelled_supertree.tre exemplified_phylo/nonempty_trees.txt
-	otc-annotate-synth cleaned_ott/cleaned_ott.tre labelled_supertree/labelled_supertree.tre $$(sed 's:^:exemplified_phylo/:' exemplified_phylo/nonempty_trees.txt) > annotated_supertree/annotations1.json
+	otc-annotate-synth cleaned_ott/cleaned_ott.tre labelled_supertree/labelled_supertree.tre $$(sed 's:^:exemplified_phylo/:' exemplified_phylo/nonempty_trees.txt) > annotated_supertree/preannotations1.json
+	bin/add_subproblem_info_to_annotations.py \
+		subproblems/subproblem-ids.txt \
+		annotated_supertree/preannotations1.json \
+		annotated_supertree/annotations1.json
+	@rm annotated_supertree/preannotations1.json
 	bin/gen_attributes.py > annotated_supertree/annotations2.json
 	bin/merge-json.py annotated_supertree/annotations1.json annotated_supertree/annotations2.json > annotated_supertree/annotations.json
 

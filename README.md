@@ -157,6 +157,22 @@ if the variables in the config file are defined as above.
 After you have installed the software and tweaked the setting in your `config` file as described above, you may run synthesis just by typing
 
     $ make
+    $ make check
+
+If you have [Chameleon](https://chameleon.readthedocs.org/en/latest/) installed, then
+you can run
+
+    $ make && make check && make html
+
+to create a series of `index.html` files in the output directories that document and 
+  summarize the outputs produced by the pipeline.
+These html files are created using templates and information from JSON files which
+  are produced either by the `make` run or using information gleaned from existing
+  outputs.
+In the latter case, the calculated summaries used in the templating step are also
+  stored in a corresponding `index.json` in the same directory as the `index.html`
+  to make it easy for you to get the data needed to summarize the outputs in a 
+  different manner.
 
 ## Artifacts
 The pipeline produces artifacts at each step of the pipeline. Click on any link below to see more information about the output files in these directories.
@@ -171,7 +187,6 @@ The pipeline produces artifacts at each step of the pipeline. Click on any link 
   1. [subproblems](subproblems/README.md)
   1. [subproblem_solutions](subproblem_solutions/README.md)
   1. [grafted_solution](grafted_solution/README.md)
-  1. [full_supertree](full_supertree/README.md)
   1. [labelled_supertree](labelled_supertree/README.md)
   1. [annotated_supertree](annotated_supertree/README.md)
 
