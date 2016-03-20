@@ -77,6 +77,13 @@ def get_otc_version():
         pass
     return git_sha, version, boost_version
 
+def get_git_sha_from_dir(d):
+    head = os.path.join(d, '.git', 'HEAD')
+    head_branch_ref_frag = open(head, 'rU').read().split()[1]
+    head_branch_ref = os.path.join(d, '.git', head_branch_ref_frag)
+    return open(head_branch_ref, 'rU').read().strip()
+
+
 def get_peyotl_version(peyotl_dir):
     peyotl_version, peyotl_sha = ['unknown'] * 2
     try:
@@ -84,10 +91,7 @@ def get_peyotl_version(peyotl_dir):
     except:
         pass
     try:
-        head = os.path.join(peyotl_dir, '.git', 'HEAD')
-        head_branch_ref_frag = open(head, 'rU').read().split()[1]
-        head_branch_ref = os.path.join(peyotl_dir, '.git', head_branch_ref_frag)
-        peyotl_sha = open(head_branch_ref, 'rU').read().strip()
+        peyotl_sha = get_git_sha_from_dir(peyotl_dir)
     except:
         pass
     return peyotl_version, peyotl_sha
@@ -98,6 +102,7 @@ def get_runtime_configuration(config_filepath):
     config.otc_sha, config.otc_version, config.otc_boost_version = x
     x = get_peyotl_version(config.peyotl_root)
     config.peyotl_version, config.peyotl_sha = x
+    config.propinquity_sha = get_git_sha_from_dir(propinquity_dir)
     return config
 
 def stripped_nonempty_lines(fn):
@@ -201,6 +206,7 @@ class DocGen(object):
     def __init__(self, propinquity_dir, config_filepath):
         self.top_output_dir = propinquity_dir #TEMP should be read from config
         self.propinquity_dir = propinquity_dir
+        subprocess.call(['make', 'assessments/summary.json'])
         templates_dir = os.path.join(propinquity_dir, 'doc', 'templates')
         self.templates = PageTemplateLoader(templates_dir)
         self.config = get_runtime_configuration(config_filepath)
