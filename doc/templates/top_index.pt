@@ -43,7 +43,7 @@
     <li>version: <code>${config.peyotl_version}</code> and git SHA <a href="https://github.com/mtholder/peyotl/commit/${config.peyotl_sha}">${config.peyotl_sha}</a></li>
 </ul>
 
-<h3 id="configuration-tools-propinquity"><a href="http://opentreeoflife.github.io/propinquity">propinquity</a></h3>
+<h3 id="configuration-tools-propinquity"><a href="https://github.com/OpenTreeOfLife/propinquity">propinquity</a></h3>
 
 <ul>
     <li>git SHA <a href="https://github.com/mtholder/propinquity/commit/${config.propinquity_sha}">${config.propinquity_sha}</a></li>
