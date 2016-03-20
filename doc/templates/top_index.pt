@@ -46,7 +46,7 @@
 <h3 id="configuration-tools-propinquity"><a href="http://opentreeoflife.github.io/propinquity">propinquity</a></h3>
 
 <ul>
-    <li>git SHA <a href="https://github.com/mtholder/propinquity/commit/${config.peyotl_sha}">${config.propinquity_sha}</a></li>
+    <li>git SHA <a href="https://github.com/mtholder/propinquity/commit/${config.propinquity_sha}">${config.propinquity_sha}</a></li>
 </ul>
 
 
