@@ -89,6 +89,7 @@ run to assess the supertree.</p>
 <p>Logs for these steps are <a href="logs/log-of-assessments.txt">here (stdout)</a> and <a href="logs/log-of-assessments-err.txt">here (stderr)</a></p>
 
 <p>Logs for the HTML generation steps are <a href="logs/log-of-html.txt">here (stdout)</a> and <a href="logs/log-of-html-err.txt">here (stderr)</a></p>
+<p>An index for all of the logs is available <a href="logs/index.html">here</a></p>
 
 <h2>Final output</h2>
 <ol>
