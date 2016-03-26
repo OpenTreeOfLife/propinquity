@@ -1,162 +1,191 @@
 CONFIG_FILENAME=config
 
-SUPPRESS_FLAG_ARTIFACTS=cleaned_ott/cleaned_ott.tre \
-	cleaned_ott/cleaned_ott.json \
-	cleaned_ott/ott_version.txt \
-	cleaned_ott/cleaning_flags.txt
+SUPPRESS_FLAG_ARTIFACTS=$(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaned_ott.tre \
+	$(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaned_ott.json \
+	$(PROPINQUITY_OUT_DIR)/cleaned_ott/ott_version.txt \
+	$(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaning_flags.txt
 
-Makefile.clean_inputs: phylo_input/study_tree_pairs.txt
+Makefile.clean_inputs: $(PROPINQUITY_OUT_DIR)/phylo_input/study_tree_pairs.txt
 
 ARTIFACTS += $(SUPPRESS_FLAG_ARTIFACTS) \
-	phylo_snapshot/git_shas.txt \
-	phylo_snapshot/collections_git_shas.txt \
-	phylo_snapshot/concrete_rank_collection.json \
-	cleaned_ott/cleaning_flags.txt \
-	cleaned_ott/root_ott_id.txt \
-	cleaned_phylo/cleaning_flags.txt \
-	cleaned_phylo/root_ott_id.txt \
-	cleaned_phylo/phylo_inputs_cleaned.txt \
-	cleaned_phylo/needs_updating.txt \
-	exemplified_phylo/taxonomy.tre \
-	exemplified_phylo/args.txt \
-	exemplified_phylo/pruned_taxonomy_degree_distribution.txt \
-	phylo_induced_taxonomy/taxonomy.tre \
-	phylo_input/rank_collection.json \
-	phylo_input/collections.txt
+	$(PROPINQUITY_OUT_DIR)/phylo_snapshot/git_shas.txt \
+	$(PROPINQUITY_OUT_DIR)/phylo_snapshot/collections_git_shas.txt \
+	$(PROPINQUITY_OUT_DIR)/phylo_snapshot/concrete_rank_collection.json \
+	$(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaning_flags.txt \
+	$(PROPINQUITY_OUT_DIR)/cleaned_ott/root_ott_id.txt \
+	$(PROPINQUITY_OUT_DIR)/cleaned_phylo/cleaning_flags.txt \
+	$(PROPINQUITY_OUT_DIR)/cleaned_phylo/root_ott_id.txt \
+	$(PROPINQUITY_OUT_DIR)/cleaned_phylo/phylo_inputs_cleaned.txt \
+	$(PROPINQUITY_OUT_DIR)/cleaned_phylo/needs_updating.txt \
+	$(PROPINQUITY_OUT_DIR)/exemplified_phylo/taxonomy.tre \
+	$(PROPINQUITY_OUT_DIR)/exemplified_phylo/args.txt \
+	$(PROPINQUITY_OUT_DIR)/exemplified_phylo/pruned_taxonomy_degree_distribution.txt \
+	$(PROPINQUITY_OUT_DIR)/phylo_induced_taxonomy/taxonomy.tre \
+	$(PROPINQUITY_OUT_DIR)/phylo_input/rank_collection.json \
+	$(PROPINQUITY_OUT_DIR)/phylo_input/collections.txt
 
 clean1:
-	rm -f cleaned_phylo/*.tre
-	rm -f cleaned_phylo/*.json
-	rm -f cleaned_phylo/needs_updating.txt
-	rm -f exemplified_phylo/*.tre
-	rm -f phylo_snapshot/*.json
-	rm -f phylo_snapshot/git_shas.txt
-	rm -f phylo_snapshot/collections_git_shas.txt
-	rm -f phylo_snapshot/stdouterr.txt
-	rm -f phylo_input/collections.txt
+	rm -f $(PROPINQUITY_OUT_DIR)/cleaned_phylo/*.tre
+	rm -f $(PROPINQUITY_OUT_DIR)/cleaned_phylo/*.json
+	rm -f $(PROPINQUITY_OUT_DIR)/cleaned_phylo/needs_updating.txt
+	rm -f $(PROPINQUITY_OUT_DIR)/exemplified_phylo/*.tre
+	rm -f $(PROPINQUITY_OUT_DIR)/phylo_snapshot/*.json
+	rm -f $(PROPINQUITY_OUT_DIR)/phylo_snapshot/git_shas.txt
+	rm -f $(PROPINQUITY_OUT_DIR)/phylo_snapshot/collections_git_shas.txt
+	rm -f $(PROPINQUITY_OUT_DIR)/phylo_snapshot/stdouterr.txt
+	rm -f $(PROPINQUITY_OUT_DIR)/phylo_input/collections.txt
 
 # "cleaned_ott" has dubious taxa pruned off. should check against treemachine and smasher versions
-cleaned_ott/root_ott_id.txt: $(CONFIG_FILENAME)
-	./bin/config_checker.py --config=$(CONFIG_FILENAME) --property=synthesis.root_ott_id > cleaned_ott/.raw_root_ott_id.txt
-	if ! diff cleaned_ott/.raw_root_ott_id.txt cleaned_ott/root_ott_id.txt 2>/dev/null; then mv cleaned_ott/.raw_root_ott_id.txt cleaned_ott/root_ott_id.txt ; fi
+$(PROPINQUITY_OUT_DIR)/cleaned_ott/root_ott_id.txt: $(CONFIG_FILENAME)
+	@if ! test -d $(PROPINQUITY_OUT_DIR)/cleaned_ott ; then mkdir -p $(PROPINQUITY_OUT_DIR)/cleaned_ott ; fi
+	./bin/config_checker.py --config=$(CONFIG_FILENAME) --property=synthesis.root_ott_id > $(PROPINQUITY_OUT_DIR)/cleaned_ott/.raw_root_ott_id.txt
+	if ! diff $(PROPINQUITY_OUT_DIR)/cleaned_ott/.raw_root_ott_id.txt $(PROPINQUITY_OUT_DIR)/cleaned_ott/root_ott_id.txt 2>/dev/null; then mv $(PROPINQUITY_OUT_DIR)/cleaned_ott/.raw_root_ott_id.txt $(PROPINQUITY_OUT_DIR)/cleaned_ott/root_ott_id.txt ; fi
 
-cleaned_ott/cleaning_flags.txt: $(CONFIG_FILENAME)
-	./bin/config_checker.py --config=$(CONFIG_FILENAME) --property=taxonomy.cleaning_flags > cleaned_ott/.raw_cleaning_flags.txt
-	if ! diff cleaned_ott/.raw_cleaning_flags.txt cleaned_ott/cleaning_flags.txt 2>/dev/null; then mv cleaned_ott/.raw_cleaning_flags.txt cleaned_ott/cleaning_flags.txt ; fi
+$(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaning_flags.txt: $(CONFIG_FILENAME)
+	@if ! test -d $(PROPINQUITY_OUT_DIR)/cleaned_ott ; then mkdir -p $(PROPINQUITY_OUT_DIR)/cleaned_ott ; fi
+	./bin/config_checker.py --config=$(CONFIG_FILENAME) --property=taxonomy.cleaning_flags > $(PROPINQUITY_OUT_DIR)/cleaned_ott/.raw_cleaning_flags.txt
+	if ! diff $(PROPINQUITY_OUT_DIR)/cleaned_ott/.raw_cleaning_flags.txt $(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaning_flags.txt 2>/dev/null; then mv $(PROPINQUITY_OUT_DIR)/cleaned_ott/.raw_cleaning_flags.txt $(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaning_flags.txt ; fi
 
-cleaned_ott/ott_version.txt: $(OTT_DIR)/version.txt
-	if ! diff $(OTT_DIR)/version.txt cleaned_ott/ott_version.txt >/dev/null 2>&1 ; then cp $(OTT_DIR)/version.txt cleaned_ott/ott_version.txt ; fi
+$(PROPINQUITY_OUT_DIR)/cleaned_ott/ott_version.txt: $(OTT_DIR)/version.txt
+	@if ! test -d $(PROPINQUITY_OUT_DIR)/cleaned_ott ; then mkdir -p $(PROPINQUITY_OUT_DIR)/cleaned_ott ; fi
+	if ! diff $(OTT_DIR)/version.txt $(PROPINQUITY_OUT_DIR)/cleaned_ott/ott_version.txt >/dev/null 2>&1 ; then cp $(OTT_DIR)/version.txt $(PROPINQUITY_OUT_DIR)/cleaned_ott/ott_version.txt ; fi
 
-cleaned_ott/cleaned_ott.tre: $(OTT_FILEPATHS) cleaned_ott/ott_version.txt cleaned_ott/cleaning_flags.txt cleaned_ott/root_ott_id.txt
+$(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaned_ott.tre: $(OTT_FILEPATHS) \
+													$(PROPINQUITY_OUT_DIR)/cleaned_ott/ott_version.txt \
+													$(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaning_flags.txt \
+													$(PROPINQUITY_OUT_DIR)/cleaned_ott/root_ott_id.txt
 	$(PEYOTL_ROOT)/scripts/ott/suppress_by_flag.py \
 	    --ott-dir=$(OTT_DIR) \
-	    --output=cleaned_ott/cleaned_ott.tre \
-	    --log=cleaned_ott/cleaned_ott.json \
-	    --flags="$(shell cat cleaned_ott/cleaning_flags.txt)" \
-	    --root="$(shell cat cleaned_ott/root_ott_id.txt)"
+	    --output=$(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaned_ott.tre \
+	    --log=$(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaned_ott.json \
+	    --flags="$(shell cat $(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaning_flags.txt)" \
+	    --root="$(shell cat $(PROPINQUITY_OUT_DIR)/cleaned_ott/root_ott_id.txt)"
 #    Maybe replace python program with C++ program below after we can generate the necessary log files.
 #	otc-taxonomy-parser $(OTT_DIR) --config=config -T > cleaned_ott/.raw_cleaned_ott.tre
 #	mv cleaned_ott/.raw_cleaned_ott.tre cleaned_ott/cleaned_ott.tre
 
-cleaned_ott/cleaned_ott.json: cleaned_ott/cleaned_ott.tre
+$(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaned_ott.json: $(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaned_ott.tre
 
-phylo_input/studies.txt: phylo_input/rank_collection.json
-	$(PEYOTL_ROOT)/scripts/collection_export.py --export=studyID phylo_input/rank_collection.json >phylo_input/studies.txt
+$(PROPINQUITY_OUT_DIR)/phylo_input/studies.txt: $(PROPINQUITY_OUT_DIR)/phylo_input/rank_collection.json
+	@if ! test -d $(PROPINQUITY_OUT_DIR)/phylo_input ; then mkdir -p $(PROPINQUITY_OUT_DIR)/phylo_input ; fi
+	$(PEYOTL_ROOT)/scripts/collection_export.py \
+		--export=studyID \
+		$(PROPINQUITY_OUT_DIR)/phylo_input/rank_collection.json \
+		 >$(PROPINQUITY_OUT_DIR)/phylo_input/studies.txt
 
-phylo_input/study_tree_pairs.txt: phylo_input/rank_collection.json
-	$(PEYOTL_ROOT)/scripts/collection_export.py --export=studyID_treeID phylo_input/rank_collection.json >phylo_input/study_tree_pairs.txt
+$(PROPINQUITY_OUT_DIR)/phylo_input/study_tree_pairs.txt: $(PROPINQUITY_OUT_DIR)/phylo_input/rank_collection.json
+	@if ! test -d $(PROPINQUITY_OUT_DIR)/phylo_input ; then mkdir -p $(PROPINQUITY_OUT_DIR)/phylo_input ; fi
+	$(PEYOTL_ROOT)/scripts/collection_export.py \
+		--export=studyID_treeID \
+		$(PROPINQUITY_OUT_DIR)/phylo_input/rank_collection.json \
+		>$(PROPINQUITY_OUT_DIR)/phylo_input/study_tree_pairs.txt
 
 # Snapshots of the NexSON are more efficient to produce in bulk (hence the export of the entire
 # collection as a part of the concrete_rank_collection target
-phylo_snapshot/git_shas.txt:
-	./bin/shard_shas.sh > .tmp_git_shas.txt
-	if ! diff phylo_snapshot/git_shas.txt .tmp_git_shas.txt >/dev/null 2>&1 ; then mv .tmp_git_shas.txt phylo_snapshot/git_shas.txt ; else rm .tmp_git_shas.txt ; fi
+$(PROPINQUITY_OUT_DIR)/phylo_snapshot/git_shas.txt:
+	@if ! test -d $(PROPINQUITY_OUT_DIR)/phylo_snapshot ; then mkdir -p $(PROPINQUITY_OUT_DIR)/phylo_snapshot ; fi
+	./bin/shard_shas.sh > $(PROPINQUITY_OUT_DIR)/.tmp_git_shas.txt
+	if ! diff $(PROPINQUITY_OUT_DIR)/phylo_snapshot/git_shas.txt $(PROPINQUITY_OUT_DIR)/.tmp_git_shas.txt >/dev/null 2>&1 ; then mv $(PROPINQUITY_OUT_DIR)/.tmp_git_shas.txt $(PROPINQUITY_OUT_DIR)/phylo_snapshot/git_shas.txt ; else rm $(PROPINQUITY_OUT_DIR)/.tmp_git_shas.txt ; fi
 
 
-phylo_snapshot/collections_git_shas.txt:
-	./bin/collections_shard_shas.sh > .tmp_collections_git_shas.txt
-	if ! diff phylo_snapshot/git_shas.txt .tmp_collections_git_shas.txt >/dev/null 2>&1 ; then mv .tmp_collections_git_shas.txt phylo_snapshot/collections_git_shas.txt ; else rm .tmp_collections_git_shas.txt ; fi
+$(PROPINQUITY_OUT_DIR)/phylo_snapshot/collections_git_shas.txt:
+	@if ! test -d $(PROPINQUITY_OUT_DIR)/phylo_snapshot ; then mkdir -p $(PROPINQUITY_OUT_DIR)/phylo_snapshot ; fi
+	./bin/collections_shard_shas.sh > $(PROPINQUITY_OUT_DIR)/.tmp_collections_git_shas.txt
+	if ! diff $(PROPINQUITY_OUT_DIR)/phylo_snapshot/git_shas.txt $(PROPINQUITY_OUT_DIR)/.tmp_collections_git_shas.txt >/dev/null 2>&1 ; then mv $(PROPINQUITY_OUT_DIR)/.tmp_collections_git_shas.txt $(PROPINQUITY_OUT_DIR)/phylo_snapshot/collections_git_shas.txt ; else rm $(PROPINQUITY_OUT_DIR)/.tmp_collections_git_shas.txt ; fi
 
-
-phylo_snapshot/concrete_rank_collection.json: phylo_snapshot/git_shas.txt phylo_input/rank_collection.json
+$(PROPINQUITY_OUT_DIR)/phylo_snapshot/concrete_rank_collection.json: $(PROPINQUITY_OUT_DIR)/phylo_snapshot/git_shas.txt phylo_input/rank_collection.json
+	@if ! test -d $(PROPINQUITY_OUT_DIR)/phylo_snapshot ; then mkdir -p $(PROPINQUITY_OUT_DIR)/phylo_snapshot ; fi
 	$(PEYOTL_ROOT)/scripts/phylesystem/export_studies_from_collection.py \
 	  --phylesystem-par=$(PHYLESYSTEM_ROOT)/shards \
-	  --output-dir=phylo_snapshot \
-	  phylo_input/rank_collection.json \
-	  -v 2>&1 | tee phylo_snapshot/stdouterr.txt
+	  --output-dir=$(PROPINQUITY_OUT_DIR)/phylo_snapshot \
+	  $(PROPINQUITY_OUT_DIR)/phylo_input/rank_collection.json \
+	  -v 2>&1 | tee $(PROPINQUITY_OUT_DIR)/phylo_snapshot/stdouterr.txt
 
-# phylo_snapshot/pg_%.json:  phylo_snapshot/git_shas.txt phylo_snapshot/concrete_rank_collection.json
-# 	$(PEYOTL_ROOT)/scripts/phylesystem/export_studies_from_collection.py \
-# 	  --phylesystem-par=$(PHYLESYSTEM_ROOT)/shards \
-# 	  --output-dir=phylo_snapshot \
-# 	  --select="$(shell basename $@)" \
-# 	  phylo_input/rank_collection.json \
-# 	  -v 2>&1 | tee -a phylo_snapshot/stdouterr.txt
-
-# phylo_snapshot/ot_%.json:  phylo_snapshot/git_shas.txt phylo_snapshot/concrete_rank_collection.json
-# 	$(PEYOTL_ROOT)/scripts/phylesystem/export_studies_from_collection.py \
-# 	  --phylesystem-par=$(PHYLESYSTEM_ROOT)/shards \
-# 	  --output-dir=phylo_snapshot \
-# 	  --select="$(shell basename $@)" \
-# 	  phylo_input/rank_collection.json \
-# 	  -v 2>&1 | tee -a phylo_snapshot/stdouterr.txt
-
-cleaned_phylo/needs_updating.txt: phylo_input/study_tree_pairs.txt cleaned_ott/cleaning_flags.txt cleaned_ott/root_ott_id.txt
-	if ! diff cleaned_ott/cleaning_flags.txt cleaned_phylo/cleaning_flags.txt >/dev/null 2>&1 && \
-	   ! diff cleaned_ott/root_ott_id.txt cleaned_phylo/root_ott_id.txt >/dev/null 2>&1 ; \
+$(PROPINQUITY_OUT_DIR)/cleaned_phylo/needs_updating.txt: $(PROPINQUITY_OUT_DIR)/phylo_input/study_tree_pairs.txt \
+														 $(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaning_flags.txt \
+														 $(PROPINQUITY_OUT_DIR)/cleaned_ott/root_ott_id.txt
+	@if ! test -d $(PROPINQUITY_OUT_DIR)/cleaned_phylo ; then mkdir -p $(PROPINQUITY_OUT_DIR)/cleaned_phylo ; fi
+	if ! diff $(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaning_flags.txt $(PROPINQUITY_OUT_DIR)/cleaned_phylo/cleaning_flags.txt >/dev/null 2>&1 && \
+	   ! diff $(PROPINQUITY_OUT_DIR)/cleaned_ott/root_ott_id.txt $(PROPINQUITY_OUT_DIR)/cleaned_phylo/root_ott_id.txt >/dev/null 2>&1 ; \
 	then \
-		sed -e 's:\(.*\):phylo_snapshot/\1.json:' < phylo_input/study_tree_pairs.txt > cleaned_phylo/x ; \
-		bin/convert-space-to-newline cleaned_phylo/x > cleaned_phylo/needs_updating.txt ;\
-		rm -f cleaned_phylo/x ;\
+		sed -e 's:\(.*\):phylo_snapshot/\1.json:' < $(PROPINQUITY_OUT_DIR)/phylo_input/study_tree_pairs.txt > $(PROPINQUITY_OUT_DIR)/cleaned_phylo/x ; \
+		bin/convert-space-to-newline $(PROPINQUITY_OUT_DIR)/cleaned_phylo/x > $(PROPINQUITY_OUT_DIR)/cleaned_phylo/needs_updating.txt ;\
+		rm -f $(PROPINQUITY_OUT_DIR)/cleaned_phylo/x ;\
 	else \
-		./bin/write-needs-updating cleaned_phylo $$(sed -e 's:\(.*\):phylo_snapshot/\1.json:' < phylo_input/study_tree_pairs.txt) > cleaned_phylo/needs_updating.txt ;\
+		./bin/write-needs-updating $(PROPINQUITY_OUT_DIR)/cleaned_phylo $$(sed -e 's:\(.*\):phylo_snapshot/\1.json:' < $(PROPINQUITY_OUT_DIR)/phylo_input/study_tree_pairs.txt) > $(PROPINQUITY_OUT_DIR)/cleaned_phylo/needs_updating.txt ;\
 	fi
-	cp cleaned_ott/cleaning_flags.txt cleaned_phylo/cleaning_flags.txt
-	cp cleaned_ott/root_ott_id.txt cleaned_phylo/root_ott_id.txt
+	cp $(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaning_flags.txt $(PROPINQUITY_OUT_DIR)/cleaned_phylo/cleaning_flags.txt
+	cp $(PROPINQUITY_OUT_DIR)/cleaned_ott/root_ott_id.txt $(PROPINQUITY_OUT_DIR)/cleaned_phylo/root_ott_id.txt
 
 # Could we make the cleaned_phylo/*.tre files depend on INDIVIDUAL phylo_snapshot/*.json files?
-cleaned_phylo/phylo_inputs_cleaned.txt: cleaned_phylo/needs_updating.txt cleaned_ott/cleaning_flags.txt cleaned_ott/root_ott_id.txt phylo_snapshot/concrete_rank_collection.json $(OTT_FILEPATHS)
+$(PROPINQUITY_OUT_DIR)/cleaned_phylo/phylo_inputs_cleaned.txt: $(PROPINQUITY_OUT_DIR)/cleaned_phylo/needs_updating.txt \
+															   $(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaning_flags.txt \
+															   $(PROPINQUITY_OUT_DIR)/cleaned_ott/root_ott_id.txt \
+															   $(PROPINQUITY_OUT_DIR)/phylo_snapshot/concrete_rank_collection.json \
+															   $(OTT_FILEPATHS)
+	@if ! test -d $(PROPINQUITY_OUT_DIR)/cleaned_phylo ; then mkdir -p $(PROPINQUITY_OUT_DIR)/cleaned_phylo ; fi
 	$(PEYOTL_ROOT)/scripts/nexson/prune_to_clean_mapped.py \
 	  --ott-dir=$(OTT_DIR) \
-	  --input-files-list=cleaned_phylo/needs_updating.txt \
-	  --out-dir=cleaned_phylo \
-	  --ott-prune-flags="$(shell cat cleaned_ott/cleaning_flags.txt)" \
-	  --root="$(shell cat cleaned_ott/root_ott_id.txt)"
-	touch cleaned_phylo/phylo_inputs_cleaned.txt
+	  --input-files-list=$(PROPINQUITY_OUT_DIR)/cleaned_phylo/needs_updating.txt \
+	  --out-dir=$(PROPINQUITY_OUT_DIR)/cleaned_phylo \
+	  --ott-prune-flags="$(shell cat $(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaning_flags.txt)" \
+	  --root="$(shell cat $(PROPINQUITY_OUT_DIR)/cleaned_ott/root_ott_id.txt)"
+	touch $(PROPINQUITY_OUT_DIR)/cleaned_phylo/phylo_inputs_cleaned.txt
 
-# cleaned_phylo/%.tre: phylo_snapshot/%.json cleaned_ott/cleaning_flags.txt
-# 	$(PEYOTL_ROOT)/scripts/nexson/prune_to_clean_mapped.py \
-# 	  --ott-dir=$(OTT_DIR) \
-# 	  --out-dir=cleaned_phylo \
-# 	  --ott-prune-flags="$(shell cat cleaned_ott/cleaning_flags.txt)" \
-# 	  $<
-
-exemplified_phylo/args.txt : phylo_input/study_tree_pairs.txt 
-	sed -e 's:\(.*\):cleaned_phylo/\1.tre:' phylo_input/study_tree_pairs.txt > exemplified_phylo/args.txt
+$(PROPINQUITY_OUT_DIR)/exemplified_phylo/args.txt : $(PROPINQUITY_OUT_DIR)/phylo_input/study_tree_pairs.txt 
+	@if ! test -d $(PROPINQUITY_OUT_DIR)/exemplified_phylo ; then mkdir -p $(PROPINQUITY_OUT_DIR)/exemplified_phylo ; fi
+	sed -e "s:\(.*\):$(PROPINQUITY_OUT_DIR)/cleaned_phylo/\1.tre:" $(PROPINQUITY_OUT_DIR)/phylo_input/study_tree_pairs.txt > $(PROPINQUITY_OUT_DIR)/exemplified_phylo/args.txt
 
 # Could we make the exemplified_phylo/*.tre files depend on INDIVIDUAL cleaned_phylo/*.tre files?
-exemplified_phylo/nonempty_trees.txt : exemplified_phylo/args.txt cleaned_ott/cleaned_ott.tre cleaned_phylo/phylo_inputs_cleaned.txt
+$(PROPINQUITY_OUT_DIR)/exemplified_phylo/nonempty_trees.txt : $(PROPINQUITY_OUT_DIR)/exemplified_phylo/args.txt \
+															  $(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaned_ott.tre \
+															  $(PROPINQUITY_OUT_DIR)/cleaned_phylo/phylo_inputs_cleaned.txt
+	@if ! test -d $(PROPINQUITY_OUT_DIR)/exemplified_phylo ; then mkdir -p $(PROPINQUITY_OUT_DIR)/exemplified_phylo ; fi
 	otc-nonterminals-to-exemplars \
-	  -eexemplified_phylo \
-	  cleaned_ott/cleaned_ott.tre \
-	  -fexemplified_phylo/args.txt \
-	  -jexemplified_phylo/exemplified_log.json \
-	  -nexemplified_phylo/.nonempty_trees.txt && mv exemplified_phylo/.nonempty_trees.txt exemplified_phylo/nonempty_trees.txt
+	  -e$(PROPINQUITY_OUT_DIR)/exemplified_phylo \
+	  $(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaned_ott.tre \
+	  -f$(PROPINQUITY_OUT_DIR)/exemplified_phylo/args.txt \
+	  -j$(PROPINQUITY_OUT_DIR)/exemplified_phylo/exemplified_log.json \
+	  -n$(PROPINQUITY_OUT_DIR)/exemplified_phylo/.nonempty_trees.txt && mv \
+	  $(PROPINQUITY_OUT_DIR)/exemplified_phylo/.nonempty_trees.txt \
+	  $(PROPINQUITY_OUT_DIR)/exemplified_phylo/nonempty_trees.txt
 
-exemplified_phylo/taxonomy.tre: exemplified_phylo/nonempty_trees.txt
+$(PROPINQUITY_OUT_DIR)/exemplified_phylo/taxonomy.tre: $(PROPINQUITY_OUT_DIR)/exemplified_phylo/nonempty_trees.txt
 
-exemplified_phylo/pruned_taxonomy_degree_distribution.txt : exemplified_phylo/taxonomy.tre
-	otc-degree-distribution exemplified_phylo/taxonomy.tre > exemplified_phylo/pruned_taxonomy_degree_distribution.txt
+$(PROPINQUITY_OUT_DIR)/exemplified_phylo/pruned_taxonomy_degree_distribution.txt : $(PROPINQUITY_OUT_DIR)/exemplified_phylo/taxonomy.tre
+	@if ! test -d $(PROPINQUITY_OUT_DIR)/exemplified_phylo ; then mkdir -p $(PROPINQUITY_OUT_DIR)/exemplified_phylo ; fi
+	otc-degree-distribution \
+		$(PROPINQUITY_OUT_DIR)/exemplified_phylo/taxonomy.tre \
+		> $(PROPINQUITY_OUT_DIR)/exemplified_phylo/pruned_taxonomy_degree_distribution.txt
 
-phylo_induced_taxonomy/taxonomy.tre : exemplified_phylo/taxonomy.tre
-	ln -s ../exemplified_phylo/taxonomy.tre phylo_induced_taxonomy/taxonomy.tre
+$(PROPINQUITY_OUT_DIR)/phylo_induced_taxonomy/taxonomy.tre : $(PROPINQUITY_OUT_DIR)/exemplified_phylo/taxonomy.tre
+	@if ! test -d $(PROPINQUITY_OUT_DIR)/phylo_induced_taxonomy ; then mkdir -p $(PROPINQUITY_OUT_DIR)/phylo_induced_taxonomy ; fi
+	ln -s $(PROPINQUITY_OUT_DIR)/exemplified_phylo/taxonomy.tre $(PROPINQUITY_OUT_DIR)/phylo_induced_taxonomy/taxonomy.tre
 
 # phylo_input holds the lists of study+tree pairs to be used during the supertree construction
-phylo_input/collections.txt: config
-	bin/config_checker.py --config=config --property=synthesis.collections > phylo_input/.raw_collections.txt
-	if ! diff phylo_input/collections.txt phylo_input/.raw_collections.txt 2>/dev/null ; then mv phylo_input/.raw_collections.txt phylo_input/collections.txt ; else rm phylo_input/.raw_collections.txt ; fi
+$(PROPINQUITY_OUT_DIR)/phylo_input/collections.txt: config
+	@if ! test -d $(PROPINQUITY_OUT_DIR)/phylo_input ; then mkdir -p $(PROPINQUITY_OUT_DIR)/phylo_input ; fi
+	bin/config_checker.py --config=config --property=synthesis.collections > $(PROPINQUITY_OUT_DIR)/phylo_input/.raw_collections.txt
+	if ! diff \
+			$(PROPINQUITY_OUT_DIR)/phylo_input/collections.txt \
+			$(PROPINQUITY_OUT_DIR)/phylo_input/.raw_collections.txt 2>/dev/null ; \
+	then \
+		mv $(PROPINQUITY_OUT_DIR)/phylo_input/.raw_collections.txt \
+		$(PROPINQUITY_OUT_DIR)/phylo_input/collections.txt ; \
+	else rm $(PROPINQUITY_OUT_DIR)/phylo_input/.raw_collections.txt ; \
+	fi
 
-phylo_input/rank_collection.json: phylo_input/collections.txt $(addsuffix .json, $(addprefix $(COLLECTIONS_ROOT)/shards/collections-1/collections-by-owner/, $(SYNTHESIS_COLLECTIONS)))
-	cd phylo_input ; \
-	../bin/reaggregate-synth-collections.sh .raw_rank_collection.json
-	if ! diff phylo_input/rank_collection.json phylo_input/.raw_rank_collection.json 2>/dev/null ; then mv phylo_input/.raw_rank_collection.json phylo_input/rank_collection.json ; else rm phylo_input/.raw_rank_collection.json ; fi
+$(PROPINQUITY_OUT_DIR)/phylo_input/rank_collection.json: $(PROPINQUITY_OUT_DIR)/phylo_input/collections.txt \
+													     $(addsuffix .json, $(addprefix $(COLLECTIONS_ROOT)/shards/collections-1/collections-by-owner/, $(SYNTHESIS_COLLECTIONS)))
+	@if ! test -d $(PROPINQUITY_OUT_DIR)/phylo_input ; then mkdir -p $(PROPINQUITY_OUT_DIR)/phylo_input ; fi
+	bin/reaggregate-synth-collections.sh $(PROPINQUITY_OUT_DIR)/phylo_input/.raw_rank_collection.json
+	if ! diff \
+			$(PROPINQUITY_OUT_DIR)/phylo_input/rank_collection.json \
+			$(PROPINQUITY_OUT_DIR)/phylo_input/.raw_rank_collection.json \
+			2>/dev/null ; \
+	then \
+		mv $(PROPINQUITY_OUT_DIR)/phylo_input/.raw_rank_collection.json \
+		   $(PROPINQUITY_OUT_DIR)/phylo_input/rank_collection.json ; \
+	else \
+		rm $(PROPINQUITY_OUT_DIR)/phylo_input/.raw_rank_collection.json ; \
+	fi

@@ -1,3 +1,6 @@
+PROPINQUITY_OUT_DIR ?= .
+export PROPINQUITY_OUT_DIR
+
 COLLECTIONS_ROOT := $(shell bin/config_checker.py --config=config --property=opentree.collections)
 export COLLECTIONS_ROOT
 
@@ -24,51 +27,53 @@ export PHYLESYSTEM_ROOT
 SYNTHESIS_COLLECTIONS := $(shell bin/config_checker.py --config=config --property=synthesis.collections)
 export SYNTHESIS_COLLECTIONS
 
-INPUT_PHYLO_ARTIFACTS=phylo_input/studies.txt \
-                      phylo_input/study_tree_pairs.txt
+INPUT_PHYLO_ARTIFACTS=$(PROPINQUITY_OUT_DIR)/phylo_input/studies.txt \
+                      $(PROPINQUITY_OUT_DIR)/phylo_input/study_tree_pairs.txt
 
-ARTIFACTS=cleaned_ott/cleaned_ott.tre \
-	  cleaned_phylo/phylo_inputs_cleaned.txt \
-	  exemplified_phylo/nonempty_trees.txt \
-	  subproblems/subproblem-ids.txt \
-	  grafted_solution/grafted_solution_ottnames.tre \
-	  full_supertree/full_supertree.tre \
-	  labelled_supertree/labelled_supertree.tre \
-	  labelled_supertree_ottnames/labelled_supertree_ottnames.tre \
-	  annotated_supertree/annotations.json
+ARTIFACTS=$(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaned_ott.tre \
+	  $(PROPINQUITY_OUT_DIR)/cleaned_phylo/phylo_inputs_cleaned.txt \
+	  $(PROPINQUITY_OUT_DIR)/exemplified_phylo/nonempty_trees.txt \
+	  $(PROPINQUITY_OUT_DIR)/subproblems/subproblem-ids.txt \
+	  $(PROPINQUITY_OUT_DIR)/grafted_solution/grafted_solution_ottnames.tre \
+	  $(PROPINQUITY_OUT_DIR)/full_supertree/full_supertree.tre \
+	  $(PROPINQUITY_OUT_DIR)/labelled_supertree/labelled_supertree.tre \
+	  $(PROPINQUITY_OUT_DIR)/labelled_supertree_ottnames/labelled_supertree_ottnames.tre \
+	  $(PROPINQUITY_OUT_DIR)/annotated_supertree/annotations.json
 
-ASSESSMENT_ARTIFACTS = assessments/supertree_degree_distribution.txt \
-	assessments/taxonomy_degree_distribution.txt \
-	assessments/lost_taxa.txt \
-	assessments/summary.json
+ASSESSMENT_ARTIFACTS = $(PROPINQUITY_OUT_DIR)/assessments/supertree_degree_distribution.txt \
+	$(PROPINQUITY_OUT_DIR)/assessments/taxonomy_degree_distribution.txt \
+	$(PROPINQUITY_OUT_DIR)/assessments/lost_taxa.txt \
+	$(PROPINQUITY_OUT_DIR)/assessments/summary.json
 
-HTML_ARTIFACTS = annotated_supertree/index.html \
-	annotated_supertree/index.json \
-	assessments/index.html \
-	cleaned_ott/index.html \
-	cleaned_ott/index.json \
-	cleaned_phylo/index.json \
-	cleaned_phylo/index.html \
-	exemplified_phylo/index.html \
-	exemplified_phylo/index.json \
-	grafted_solution/index.html \
-	grafted_solution/index.json \
-	index.html \
-	index.json \
-	labelled_supertree/index.html \
-	labelled_supertree/index.json \
-	phylo_input/index.json \
-	phylo_input/index.html \
-	subproblems/index.html \
-	subproblems/index.json \
-	subproblem_solutions/index.html \
-	subproblem_solutions/index.json \
-	phylo_snapshot/index.html \
-	phylo_snapshot/index.json \
+HTML_ARTIFACTS = $(PROPINQUITY_OUT_DIR)/annotated_supertree/index.html \
+	$(PROPINQUITY_OUT_DIR)/annotated_supertree/index.json \
+	$(PROPINQUITY_OUT_DIR)/assessments/index.html \
+	$(PROPINQUITY_OUT_DIR)/cleaned_ott/index.html \
+	$(PROPINQUITY_OUT_DIR)/cleaned_ott/index.json \
+	$(PROPINQUITY_OUT_DIR)/cleaned_phylo/index.json \
+	$(PROPINQUITY_OUT_DIR)/cleaned_phylo/index.html \
+	$(PROPINQUITY_OUT_DIR)/exemplified_phylo/index.html \
+	$(PROPINQUITY_OUT_DIR)/exemplified_phylo/index.json \
+	$(PROPINQUITY_OUT_DIR)/grafted_solution/index.html \
+	$(PROPINQUITY_OUT_DIR)/grafted_solution/index.json \
+	$(PROPINQUITY_OUT_DIR)/index.html \
+	$(PROPINQUITY_OUT_DIR)/index.json \
+	$(PROPINQUITY_OUT_DIR)/labelled_supertree/index.html \
+	$(PROPINQUITY_OUT_DIR)/labelled_supertree/index.json \
+	$(PROPINQUITY_OUT_DIR)/phylo_input/index.json \
+	$(PROPINQUITY_OUT_DIR)/phylo_input/index.html \
+	$(PROPINQUITY_OUT_DIR)/subproblems/index.html \
+	$(PROPINQUITY_OUT_DIR)/subproblems/index.json \
+	$(PROPINQUITY_OUT_DIR)/subproblem_solutions/index.html \
+	$(PROPINQUITY_OUT_DIR)/subproblem_solutions/index.json \
+	$(PROPINQUITY_OUT_DIR)/phylo_snapshot/index.html \
+	$(PROPINQUITY_OUT_DIR)/phylo_snapshot/index.json \
 
-all: labelled_supertree/labelled_supertree.tre annotated_supertree/annotations.json
+all: $(PROPINQUITY_OUT_DIR)/labelled_supertree/labelled_supertree.tre \
+	 $(PROPINQUITY_OUT_DIR)/annotated_supertree/annotations.json
 
-extra: labelled_supertree/labelled_supertree_ottnames.tre grafted_supertree/grafted_supertree_ottnames.tre
+extra: $(PROPINQUITY_OUT_DIR)/labelled_supertree/labelled_supertree_ottnames.tre \
+	   $(PROPINQUITY_OUT_DIR)/grafted_supertree/grafted_supertree_ottnames.tre
 
 clean: clean1 clean2
 	rm -f $(ARTIFACTS)
@@ -80,39 +85,45 @@ include Makefile.clean_inputs
 include Makefile.subproblems
 
 
-assessments/supertree_degree_distribution.txt: labelled_supertree/labelled_supertree.tre
-	otc-degree-distribution labelled_supertree/labelled_supertree.tre > assessments/supertree_degree_distribution.txt
+$(PROPINQUITY_OUT_DIR)/assessments/supertree_degree_distribution.txt: $(PROPINQUITY_OUT_DIR)/labelled_supertree/labelled_supertree.tre
+	@if ! test -d $(PROPINQUITY_OUT_DIR)/assessments ; then mkdir -p $(PROPINQUITY_OUT_DIR)/assessments ; fi
+	otc-degree-distribution \
+		$(PROPINQUITY_OUT_DIR)/labelled_supertree/labelled_supertree.tre \
+		> $(PROPINQUITY_OUT_DIR)/assessments/supertree_degree_distribution.txt
 
-assessments/taxonomy_degree_distribution.txt: cleaned_ott/cleaned_ott.tre
-	otc-degree-distribution cleaned_ott/cleaned_ott.tre > assessments/taxonomy_degree_distribution.txt
+$(PROPINQUITY_OUT_DIR)/assessments/taxonomy_degree_distribution.txt: $(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaned_ott.tre
+	@if ! test -d $(PROPINQUITY_OUT_DIR)/assessments ; then mkdir -p $(PROPINQUITY_OUT_DIR)/assessments ; fi
+	otc-degree-distribution $(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaned_ott.tre > $(PROPINQUITY_OUT_DIR)/assessments/taxonomy_degree_distribution.txt
 
-assessments/lost_taxa.txt: labelled_supertree/labelled_supertree.tre
+$(PROPINQUITY_OUT_DIR)/assessments/lost_taxa.txt: $(PROPINQUITY_OUT_DIR)/labelled_supertree/labelled_supertree.tre
+	@if ! test -d $(PROPINQUITY_OUT_DIR)/assessments ; then mkdir -p $(PROPINQUITY_OUT_DIR)/assessments ; fi
 	otc-taxonomy-parser \
 	  $$(./bin/config_checker.py \
 	  --config=config \
 	  --property=opentree.ott) \
 	  --report-lost-taxa \
-	  labelled_supertree/labelled_supertree.tre \
-	  -c config > assessments/lost_taxa.txt
+	  $(PROPINQUITY_OUT_DIR)/labelled_supertree/labelled_supertree.tre \
+	  -c config > $(PROPINQUITY_OUT_DIR)/assessments/lost_taxa.txt
 
-assessments/summary.json: annotated_supertree/annotations.json \
-						  assessments/taxonomy_degree_distribution.txt \
-	                      assessments/supertree_degree_distribution.txt \
-	                      assessments/lost_taxa.txt
-	@rm -f assessments/summary.json 2>/dev/null
-	./bin/run_assessments.py . assessments/summary.json 2>&1 | tee assessments/log.txt || true
-	@ls assessments/summary.json >/dev/null
+$(PROPINQUITY_OUT_DIR)/assessments/summary.json: $(PROPINQUITY_OUT_DIR)/annotated_supertree/annotations.json \
+						  $(PROPINQUITY_OUT_DIR)/assessments/taxonomy_degree_distribution.txt \
+	                      $(PROPINQUITY_OUT_DIR)/assessments/supertree_degree_distribution.txt \
+	                      $(PROPINQUITY_OUT_DIR)/assessments/lost_taxa.txt
+	@if ! test -d $(PROPINQUITY_OUT_DIR)/assessments ; then mkdir -p $(PROPINQUITY_OUT_DIR)/assessments ; fi
+	@rm -f $(PROPINQUITY_OUT_DIR)/assessments/summary.json 2>/dev/null
+	./bin/run_assessments.py $(PROPINQUITY_OUT_DIR) $(PROPINQUITY_OUT_DIR)/assessments/summary.json 2>&1 | tee $(PROPINQUITY_OUT_DIR)/assessments/log.txt || true
+	@ls $(PROPINQUITY_OUT_DIR)/assessments/summary.json >/dev/null
 
 
-check: assessments/summary.json
-	@if grep '"ERROR"' assessments/summary.json >/dev/null 2>/dev/null ; \
-		then cat assessments/summary.json && echo 'Errors found' && false ; \
-		else echo 'OK. Checks passed. A quirky listing of checks is in assessments/summary.json'; \
+check: $(PROPINQUITY_OUT_DIR)/assessments/summary.json
+	@if grep '"ERROR"' $(PROPINQUITY_OUT_DIR)/assessments/summary.json >/dev/null 2>/dev/null ; \
+		then cat $(PROPINQUITY_OUT_DIR)/assessments/summary.json && echo 'Errors found' && false ; \
+		else echo "OK. Checks passed. A quirky listing of checks is in $(PROPINQUITY_OUT_DIR)/assessments/summary.json"; \
 		fi
 
-$(HTML_ARTIFACTS): assessments/summary.json
-	bin/document_outputs.py
+$(HTML_ARTIFACTS): $(PROPINQUITY_OUT_DIR)/assessments/summary.json
+	bin/document_outputs.py $(PROPINQUITY_OUT_DIR)
 	@echo 'Documentation created'
 
-html: assessments/summary.json assessments/index.html
-	@echo 'See index.html and linked files for documentation of output'
+html: $(PROPINQUITY_OUT_DIR)/assessments/summary.json $(PROPINQUITY_OUT_DIR)/assessments/index.html
+	@echo "See $(PROPINQUITY_OUT_DIR)/index.html and linked files for documentation of output"

@@ -1,92 +1,157 @@
-ARTIFACTS += subproblems/subproblem-ids.txt \
-	  grafted_solution/grafted_solution.tre \
-	  grafted_solution_ottnames.tre \
-	  full_supertree/full_supertree.tre \
-	  subproblem_solutions/solution-ids.txt \
-	  subproblem_solutions/solution-degree-distributions.txt \
-	  labelled_supertree/labelled_supertree.tre \
-	  labelled_supertree/labelled_supertree_out_degree_distribution.txt \
-	  labelled_supertree/labelled_supertree_ottnames.tre \
-	  annotated_supertree/annotations.json
+ARTIFACTS += $(PROPINQUITY_OUT_DIR)/subproblems/subproblem-ids.txt \
+	  $(PROPINQUITY_OUT_DIR)/grafted_solution/grafted_solution.tre \
+	  $(PROPINQUITY_OUT_DIR)/grafted_solution_ottnames.tre \
+	  $(PROPINQUITY_OUT_DIR)/full_supertree/full_supertree.tre \
+	  $(PROPINQUITY_OUT_DIR)/subproblem_solutions/solution-ids.txt \
+	  $(PROPINQUITY_OUT_DIR)/subproblem_solutions/solution-degree-distributions.txt \
+	  $(PROPINQUITY_OUT_DIR)/labelled_supertree/labelled_supertree.tre \
+	  $(PROPINQUITY_OUT_DIR)/labelled_supertree/labelled_supertree_out_degree_distribution.txt \
+	  $(PROPINQUITY_OUT_DIR)/labelled_supertree/labelled_supertree_ottnames.tre \
+	  $(PROPINQUITY_OUT_DIR)/annotated_supertree/annotations.json
 
 
-subproblems/scratch/args.txt: exemplified_phylo/nonempty_trees.txt
-	cat exemplified_phylo/nonempty_trees.txt | sed -e 's:^:exemplified_phylo/:g' > subproblems/scratch/args.txt
+$(PROPINQUITY_OUT_DIR)/subproblems/scratch/args.txt: $(PROPINQUITY_OUT_DIR)/exemplified_phylo/nonempty_trees.txt
+	@if ! test -d $(PROPINQUITY_OUT_DIR)/subproblems/scratch ; then mkdir -p $(PROPINQUITY_OUT_DIR)/subproblems/scratch ; fi
+	cat $(PROPINQUITY_OUT_DIR)/exemplified_phylo/nonempty_trees.txt \
+	| sed -e "s:^:$(PROPINQUITY_OUT_DIR)/exemplified_phylo/:g" \
+	> $(PROPINQUITY_OUT_DIR)/subproblems/scratch/args.txt
 
 # Note that run-subproblem-finder.sh is odd in that the second arg is relative to the first arg.
 
-subproblems/dumped-subproblem-ids.txt: exemplified_phylo/taxonomy.tre subproblems/scratch/args.txt exemplified_phylo/nonempty_trees.txt
+$(PROPINQUITY_OUT_DIR)/subproblems/dumped-subproblem-ids.txt: $(PROPINQUITY_OUT_DIR)/exemplified_phylo/taxonomy.tre \
+															  $(PROPINQUITY_OUT_DIR)/subproblems/scratch/args.txt \
+															  $(PROPINQUITY_OUT_DIR)/exemplified_phylo/nonempty_trees.txt
+	@if ! test -d $(PROPINQUITY_OUT_DIR)/subproblems ; then mkdir -p $(PROPINQUITY_OUT_DIR)/subproblems ; fi
 	./bin/run-subproblem-finder.sh \
-	  subproblems/scratch \
+	  $(PROPINQUITY_OUT_DIR)/subproblems/scratch \
 	  ../dumped-subproblem-ids.txt \
-	  exemplified_phylo/taxonomy.tre \
-	  -fsubproblems/scratch/args.txt
+	  $(PROPINQUITY_OUT_DIR)/exemplified_phylo/taxonomy.tre \
+	  -f$(PROPINQUITY_OUT_DIR)/subproblems/scratch/args.txt
 
-subproblems/checksummed-subproblem-ids.txt: subproblems/dumped-subproblem-ids.txt
-	bash bin/checksum-tree-files.sh subproblems/scratch && cp subproblems/dumped-subproblem-ids.txt subproblems/checksummed-subproblem-ids.txt
+$(PROPINQUITY_OUT_DIR)/subproblems/checksummed-subproblem-ids.txt: $(PROPINQUITY_OUT_DIR)/subproblems/dumped-subproblem-ids.txt
+	@if ! test -d $(PROPINQUITY_OUT_DIR)/subproblems ; then mkdir -p $(PROPINQUITY_OUT_DIR)/subproblems ; fi
+	bash bin/checksum-tree-files.sh \
+		$(PROPINQUITY_OUT_DIR)/subproblems/scratch \
+	&& \
+		cp $(PROPINQUITY_OUT_DIR)/subproblems/dumped-subproblem-ids.txt \
+		   $(PROPINQUITY_OUT_DIR)/subproblems/checksummed-subproblem-ids.txt
 
-subproblems/subproblem-ids.txt: subproblems/checksummed-subproblem-ids.txt
-	bash bin/move-subproblem-if-differing.sh subproblems/scratch subproblems subproblems/checksummed-subproblem-ids.txt && cp subproblems/checksummed-subproblem-ids.txt subproblems/subproblem-ids.txt
+$(PROPINQUITY_OUT_DIR)/subproblems/subproblem-ids.txt: $(PROPINQUITY_OUT_DIR)/subproblems/checksummed-subproblem-ids.txt
+	@if ! test -d $(PROPINQUITY_OUT_DIR)/subproblems ; then mkdir -p $(PROPINQUITY_OUT_DIR)/subproblems ; fi
+	bash bin/move-subproblem-if-differing.sh \
+		$(PROPINQUITY_OUT_DIR)/subproblems/scratch \
+		$(PROPINQUITY_OUT_DIR)/subproblems \
+		$(PROPINQUITY_OUT_DIR)/subproblems/checksummed-subproblem-ids.txt \
+	&& \
+		cp $(PROPINQUITY_OUT_DIR)/subproblems/checksummed-subproblem-ids.txt \
+		   $(PROPINQUITY_OUT_DIR)/subproblems/subproblem-ids.txt
 
-subproblem_solutions/solution-ids.txt: subproblems/subproblem-ids.txt
+$(PROPINQUITY_OUT_DIR)/subproblem_solutions/solution-ids.txt: $(PROPINQUITY_OUT_DIR)/subproblems/subproblem-ids.txt
+	@if ! test -d $(PROPINQUITY_OUT_DIR)/subproblem_solutions ; then mkdir -p $(PROPINQUITY_OUT_DIR)/subproblem_solutions ; fi
 	for n in $$(cat subproblems/subproblem-ids.txt) ; do \
 		id=$${n%.tre} ; \
-		otc-solve-subproblem subproblems/$$n -n$${id} > subproblem_solutions/$${n} ; \
+		otc-solve-subproblem \
+			$(PROPINQUITY_OUT_DIR)/subproblems/$$n \
+			-n$${id} \
+			> $(PROPINQUITY_OUT_DIR)/subproblem_solutions/$${n} ; \
 	done ;
-	cp subproblems/subproblem-ids.txt subproblem_solutions/solution-ids.txt
+	cp $(PROPINQUITY_OUT_DIR)/subproblems/subproblem-ids.txt \
+	   $(PROPINQUITY_OUT_DIR)/subproblem_solutions/solution-ids.txt
 
 # This solution-degree-distributions.txt is just for documentation. The
 #	dependency should be all of the solutions, but it is easier to just
 #	make it depend on the next step in the procedure 
-subproblem_solutions/solution-degree-distributions.txt: grafted_solution/grafted_solution.tre
-	rm -f subproblem_solutions/.solution-degree-distributions.txt
-	for n in $$(cat subproblems/subproblem-ids.txt) ; do \
-		echo $${n} >> subproblem_solutions/.solution-degree-distributions.txt ;\
-		otc-degree-distribution subproblem_solutions/$${n} >> subproblem_solutions/.solution-degree-distributions.txt 2>/dev/null; \
+$(PROPINQUITY_OUT_DIR)/subproblem_solutions/solution-degree-distributions.txt: $(PROPINQUITY_OUT_DIR)/grafted_solution/grafted_solution.tre
+	@if ! test -d $(PROPINQUITY_OUT_DIR)/subproblem_solutions ; then mkdir -p $(PROPINQUITY_OUT_DIR)/subproblem_solutions ; fi
+	rm -f $(PROPINQUITY_OUT_DIR)/subproblem_solutions/.solution-degree-distributions.txt
+	for n in $$(cat $(PROPINQUITY_OUT_DIR)/subproblems/subproblem-ids.txt) ; do \
+		echo $${n} >> $(PROPINQUITY_OUT_DIR)/subproblem_solutions/.solution-degree-distributions.txt ;\
+		otc-degree-distribution \
+			$(PROPINQUITY_OUT_DIR)/subproblem_solutions/$${n} \
+			>> $(PROPINQUITY_OUT_DIR)/subproblem_solutions/.solution-degree-distributions.txt 2>/dev/null; \
 	done ;
-	mv subproblem_solutions/.solution-degree-distributions.txt subproblem_solutions/solution-degree-distributions.txt
+	mv $(PROPINQUITY_OUT_DIR)/subproblem_solutions/.solution-degree-distributions.txt \
+	   $(PROPINQUITY_OUT_DIR)/subproblem_solutions/solution-degree-distributions.txt
 
-grafted_solution/grafted_solution.tre: subproblem_solutions/solution-ids.txt
-	sed 's:^:subproblem_solutions/:' subproblem_solutions/solution-ids.txt > subproblem_solutions/paths.txt
-	otc-graft-solutions $$(cat subproblem_solutions/paths.txt) > grafted_solution/.grafted_solution.tre && \
-	mv grafted_solution/.grafted_solution.tre grafted_solution/grafted_solution.tre
-	rm subproblem_solutions/paths.txt
+$(PROPINQUITY_OUT_DIR)/grafted_solution/grafted_solution.tre: $(PROPINQUITY_OUT_DIR)/subproblem_solutions/solution-ids.txt
+	@if ! test -d $(PROPINQUITY_OUT_DIR)/grafted_solution ; then mkdir -p $(PROPINQUITY_OUT_DIR)/grafted_solution ; fi
+	sed "s:^:$(PROPINQUITY_OUT_DIR)/subproblem_solutions/:" \
+		$(PROPINQUITY_OUT_DIR)/subproblem_solutions/solution-ids.txt \
+		> $(PROPINQUITY_OUT_DIR)/subproblem_solutions/paths.txt
+	otc-graft-solutions $$(cat $(PROPINQUITY_OUT_DIR)/subproblem_solutions/paths.txt) \
+		> $(PROPINQUITY_OUT_DIR)/grafted_solution/.grafted_solution.tre && \
+	mv $(PROPINQUITY_OUT_DIR)/grafted_solution/.grafted_solution.tre \
+	   $(PROPINQUITY_OUT_DIR)/grafted_solution/grafted_solution.tre
+	rm $(PROPINQUITY_OUT_DIR)/subproblem_solutions/paths.txt
 
-grafted_solution/grafted_solution_ottnames.tre: grafted_solution/grafted_solution.tre
-	otc-relabel-tree grafted_solution/grafted_solution.tre --taxonomy=$(OTT_DIR) --format-tax="%N ott%I" --del-monotypic > grafted_solution/grafted_solution_ottnames.tre
+$(PROPINQUITY_OUT_DIR)/grafted_solution/grafted_solution_ottnames.tre: $(PROPINQUITY_OUT_DIR)/grafted_solution/grafted_solution.tre
+	@if ! test -d $(PROPINQUITY_OUT_DIR)/grafted_solution ; then mkdir -p $(PROPINQUITY_OUT_DIR)/grafted_solution ; fi
+	otc-relabel-tree \
+		$(PROPINQUITY_OUT_DIR)/grafted_solution/grafted_solution.tre \
+		--taxonomy=$(OTT_DIR) \
+		--format-tax="%N ott%I" \
+		--del-monotypic \
+		> $(PROPINQUITY_OUT_DIR)/grafted_solution/grafted_solution_ottnames.tre
 
-full_supertree/full_supertree.tre: grafted_solution/grafted_solution.tre cleaned_ott/cleaned_ott.tre
-	otc-unprune-solution grafted_solution/grafted_solution.tre cleaned_ott/cleaned_ott.tre > full_supertree/full_supertree.tre
+$(PROPINQUITY_OUT_DIR)/full_supertree/full_supertree.tre: $(PROPINQUITY_OUT_DIR)/grafted_solution/grafted_solution.tre \
+														  $(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaned_ott.tre
+	@if ! test -d $(PROPINQUITY_OUT_DIR)/full_supertree ; then mkdir -p $(PROPINQUITY_OUT_DIR)/full_supertree ; fi
+	otc-unprune-solution \
+		$(PROPINQUITY_OUT_DIR)/grafted_solution/grafted_solution.tre \
+		$(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaned_ott.tre \
+		> $(PROPINQUITY_OUT_DIR)/full_supertree/full_supertree.tre
 
-# No longer needed, since we now unprune and name unnamed nodes in one step
-#labelled_supertree/labelled_supertree.tre: full_supertree/full_supertree.tre
-#	otc-name-unnamed-nodes $^ > $@
+$(PROPINQUITY_OUT_DIR)/labelled_supertree/labelled_supertree.tre: $(PROPINQUITY_OUT_DIR)/grafted_solution/grafted_solution.tre \
+																  $(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaned_ott.tre
+	@if ! test -d $(PROPINQUITY_OUT_DIR)/labelled_supertree ; then mkdir -p $(PROPINQUITY_OUT_DIR)/labelled_supertree ; fi
+	otc-unprune-solution-and-name-unnamed-nodes \
+		$(PROPINQUITY_OUT_DIR)/grafted_solution/grafted_solution.tre \
+		$(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaned_ott.tre \
+		-j$(PROPINQUITY_OUT_DIR)/labelled_supertree/broken_taxa.json \
+		-s$(PROPINQUITY_OUT_DIR)/labelled_supertree/input_output_stats.json \
+		> $(PROPINQUITY_OUT_DIR)/labelled_supertree/labelled_supertree.tre 
 
-labelled_supertree/labelled_supertree.tre: grafted_solution/grafted_solution.tre cleaned_ott/cleaned_ott.tre
-	otc-unprune-solution-and-name-unnamed-nodes grafted_solution/grafted_solution.tre cleaned_ott/cleaned_ott.tre > labelled_supertree/labelled_supertree.tre -jlabelled_supertree/broken_taxa.json -slabelled_supertree/input_output_stats.json
+$(PROPINQUITY_OUT_DIR)/labelled_supertree/labelled_supertree_out_degree_distribution.txt: $(PROPINQUITY_OUT_DIR)/labelled_supertree/labelled_supertree.tre
+	@if ! test -d $(PROPINQUITY_OUT_DIR)/labelled_supertree ; then mkdir -p $(PROPINQUITY_OUT_DIR)/labelled_supertree ; fi
+	otc-degree-distribution \
+		$(PROPINQUITY_OUT_DIR)/labelled_supertree/labelled_supertree.tre \
+		> $(PROPINQUITY_OUT_DIR)/labelled_supertree/labelled_supertree_out_degree_distribution.txt
 
-labelled_supertree/labelled_supertree_out_degree_distribution.txt: labelled_supertree/labelled_supertree.tre
-	otc-degree-distribution labelled_supertree/labelled_supertree.tre > labelled_supertree/labelled_supertree_out_degree_distribution.txt
+$(PROPINQUITY_OUT_DIR)/labelled_supertree/labelled_supertree_ottnames.tre: $(PROPINQUITY_OUT_DIR)/labelled_supertree/labelled_supertree.tre
+	@if ! test -d $(PROPINQUITY_OUT_DIR)/labelled_supertree ; then mkdir -p $(PROPINQUITY_OUT_DIR)/labelled_supertree ; fi
+	otc-relabel-tree \
+		$(PROPINQUITY_OUT_DIR)/labelled_supertree/labelled_supertree.tre \
+		--taxonomy=$(OTT_DIR) \
+		--format-tax="%N ott%I" \
+		--del-monotypic \
+		> $(PROPINQUITY_OUT_DIR)/labelled_supertree/labelled_supertree_ottnames.tre
 
-labelled_supertree/labelled_supertree_ottnames.tre: labelled_supertree/labelled_supertree.tre
-	otc-relabel-tree labelled_supertree/labelled_supertree.tre --taxonomy=$(OTT_DIR) --format-tax="%N ott%I" --del-monotypic > labelled_supertree/labelled_supertree_ottnames.tre
-
-annotated_supertree/annotations.json: cleaned_ott/cleaned_ott.tre labelled_supertree/labelled_supertree.tre exemplified_phylo/nonempty_trees.txt
-	otc-annotate-synth cleaned_ott/cleaned_ott.tre labelled_supertree/labelled_supertree.tre $$(sed 's:^:exemplified_phylo/:' exemplified_phylo/nonempty_trees.txt) > annotated_supertree/preannotations1.json
+$(PROPINQUITY_OUT_DIR)/annotated_supertree/annotations.json: $(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaned_ott.tre \
+															 $(PROPINQUITY_OUT_DIR)/labelled_supertree/labelled_supertree.tre \
+															 $(PROPINQUITY_OUT_DIR)/exemplified_phylo/nonempty_trees.txt
+	@if ! test -d $(PROPINQUITY_OUT_DIR)/annotated_supertree ; then mkdir -p $(PROPINQUITY_OUT_DIR)/annotated_supertree ; fi
+	otc-annotate-synth \
+		$(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaned_ott.tre \
+		$(PROPINQUITY_OUT_DIR)/labelled_supertree/labelled_supertree.tre \
+		$$(sed "s:^:exemplified_phylo/:" $(PROPINQUITY_OUT_DIR)/exemplified_phylo/nonempty_trees.txt) \
+		> $(PROPINQUITY_OUT_DIR)/annotated_supertree/preannotations1.json
 	bin/add_subproblem_info_to_annotations.py \
-		subproblems/subproblem-ids.txt \
-		annotated_supertree/preannotations1.json \
-		annotated_supertree/annotations1.json
-	@rm annotated_supertree/preannotations1.json
-	bin/gen_attributes.py > annotated_supertree/annotations2.json
-	bin/merge-json.py annotated_supertree/annotations1.json annotated_supertree/annotations2.json > annotated_supertree/annotations.json
+		$(PROPINQUITY_OUT_DIR)/subproblems/subproblem-ids.txt \
+		$(PROPINQUITY_OUT_DIR)/annotated_supertree/preannotations1.json \
+		$(PROPINQUITY_OUT_DIR)/annotated_supertree/annotations1.json
+	@rm $(PROPINQUITY_OUT_DIR)/annotated_supertree/preannotations1.json
+	bin/gen_attributes.py > $(PROPINQUITY_OUT_DIR)/annotated_supertree/annotations2.json
+	bin/merge-json.py \
+		$(PROPINQUITY_OUT_DIR)/annotated_supertree/annotations1.json \
+		$(PROPINQUITY_OUT_DIR)/annotated_supertree/annotations2.json \
+		> $(PROPINQUITY_OUT_DIR)/annotated_supertree/annotations.json
 
 clean2:
-	rm -f subproblems/scratch/*.tre
-	rm -f subproblems/scratch/*.md5
-	rm -f subproblems/scratch/*.txt
-	rm -f subproblems/*.tre
-	rm -f subproblems/*.md5
-	rm -f subproblems/*.txt
-	rm -f subproblem_solutions/*.tre
-	rm -f annotated_supertree/*.json
+	rm -f $(PROPINQUITY_OUT_DIR)/subproblems/scratch/*.tre
+	rm -f $(PROPINQUITY_OUT_DIR)/subproblems/scratch/*.md5
+	rm -f $(PROPINQUITY_OUT_DIR)/subproblems/scratch/*.txt
+	rm -f $(PROPINQUITY_OUT_DIR)/subproblems/*.tre
+	rm -f $(PROPINQUITY_OUT_DIR)/subproblems/*.md5
+	rm -f $(PROPINQUITY_OUT_DIR)/subproblems/*.txt
+	rm -f $(PROPINQUITY_OUT_DIR)/subproblem_solutions/*.tre
+	rm -f $(PROPINQUITY_OUT_DIR)/annotated_supertree/*.json
