@@ -93,7 +93,8 @@ $(PROPINQUITY_OUT_DIR)/phylo_snapshot/collections_git_shas.txt:
 	./bin/collections_shard_shas.sh > $(PROPINQUITY_OUT_DIR)/.tmp_collections_git_shas.txt
 	if ! diff $(PROPINQUITY_OUT_DIR)/phylo_snapshot/git_shas.txt $(PROPINQUITY_OUT_DIR)/.tmp_collections_git_shas.txt >/dev/null 2>&1 ; then mv $(PROPINQUITY_OUT_DIR)/.tmp_collections_git_shas.txt $(PROPINQUITY_OUT_DIR)/phylo_snapshot/collections_git_shas.txt ; else rm $(PROPINQUITY_OUT_DIR)/.tmp_collections_git_shas.txt ; fi
 
-$(PROPINQUITY_OUT_DIR)/phylo_snapshot/concrete_rank_collection.json: $(PROPINQUITY_OUT_DIR)/phylo_snapshot/git_shas.txt phylo_input/rank_collection.json
+$(PROPINQUITY_OUT_DIR)/phylo_snapshot/concrete_rank_collection.json: $(PROPINQUITY_OUT_DIR)/phylo_snapshot/git_shas.txt \
+																	 $(PROPINQUITY_OUT_DIR)/phylo_input/rank_collection.json
 	@if ! test -d $(PROPINQUITY_OUT_DIR)/phylo_snapshot ; then mkdir -p $(PROPINQUITY_OUT_DIR)/phylo_snapshot ; fi
 	$(PEYOTL_ROOT)/scripts/phylesystem/export_studies_from_collection.py \
 	  --phylesystem-par=$(PHYLESYSTEM_ROOT)/shards \
@@ -108,7 +109,7 @@ $(PROPINQUITY_OUT_DIR)/cleaned_phylo/needs_updating.txt: $(PROPINQUITY_OUT_DIR)/
 	if ! diff $(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaning_flags.txt $(PROPINQUITY_OUT_DIR)/cleaned_phylo/cleaning_flags.txt >/dev/null 2>&1 && \
 	   ! diff $(PROPINQUITY_OUT_DIR)/cleaned_ott/root_ott_id.txt $(PROPINQUITY_OUT_DIR)/cleaned_phylo/root_ott_id.txt >/dev/null 2>&1 ; \
 	then \
-		sed -e 's:\(.*\):phylo_snapshot/\1.json:' < $(PROPINQUITY_OUT_DIR)/phylo_input/study_tree_pairs.txt > $(PROPINQUITY_OUT_DIR)/cleaned_phylo/x ; \
+		sed -e "s:\(.*\):$(PROPINQUITY_OUT_DIR)/phylo_snapshot/\1.json:" < $(PROPINQUITY_OUT_DIR)/phylo_input/study_tree_pairs.txt > $(PROPINQUITY_OUT_DIR)/cleaned_phylo/x ; \
 		bin/convert-space-to-newline $(PROPINQUITY_OUT_DIR)/cleaned_phylo/x > $(PROPINQUITY_OUT_DIR)/cleaned_phylo/needs_updating.txt ;\
 		rm -f $(PROPINQUITY_OUT_DIR)/cleaned_phylo/x ;\
 	else \

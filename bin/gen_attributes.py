@@ -10,7 +10,7 @@ import os
 import codecs
 
 def num_studies():
-    with open('phylo_snapshot/concrete_rank_collection.json') as data_file:
+    with open(os.path.join(out_dir, 'phylo_snapshot/concrete_rank_collection.json')) as data_file:
         snapshot_data = json.load(data_file)
     studies = set()
     for study_tree_object in snapshot_data["decisions"]:
@@ -19,7 +19,7 @@ def num_studies():
     return len(studies)
 
 def num_trees():
-    with open('phylo_snapshot/concrete_rank_collection.json') as data_file:
+    with open(os.path.join(out_dir, 'phylo_snapshot/concrete_rank_collection.json')) as data_file:
         snapshot_data = json.load(data_file)
     trees = set()
     for study_tree_object in snapshot_data["decisions"]:
@@ -31,7 +31,7 @@ def num_trees():
 
 def extract_source_id_map():
     source_id_map = {}
-    with open('phylo_snapshot/concrete_rank_collection.json') as data_file:
+    with open(os.path.join(out_dir, 'phylo_snapshot/concrete_rank_collection.json')) as data_file:
         snapshot_data = json.load(data_file)
     for study_tree_object in snapshot_data["decisions"]:
         study_id = study_tree_object["studyID"]
@@ -104,8 +104,14 @@ if __name__ == '__main__':
                         type=str,
                         required=False,
                         help='directory containing ott files (e.g "taxonomy.tsv")')
+    parser.add_argument('dir',
+                        default='.',
+                        type=str,
+                        nargs='?',
+                        help='prefix for inputs')
     args = parser.parse_args(sys.argv[1:])
     ott_dir = args.ott_dir
+    out_dir = args.dir
     document = {}
     document["date_completed"] = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     document["tree_id"] = "opentree4.1"

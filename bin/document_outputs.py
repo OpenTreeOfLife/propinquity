@@ -349,6 +349,7 @@ class DocGen(object):
                          (render_assessments_index, 'assessments_index.pt', 'assessments/index'),
                         )
         for func, template_path, prefix in src_dest_list:
+            prefix = os.path.join(prefix_dir, prefix)
             html_path = prefix + '.html'
             json_path = prefix + '.json'
             t = self.templates[template_path]
@@ -371,7 +372,13 @@ if __name__ == '__main__':
                         type=str,
                         required=False,
                         help='filepath of the config file (default is "config")')
+    parser.add_argument('dir',
+                        default='.',
+                        type=str,
+                        nargs='?',
+                        help='prefix for inputs')
     args = parser.parse_args(sys.argv[1:])
+    prefix_dir = args.dir
     dg = DocGen(propinquity_dir, args.config)
     dg.render()
 
