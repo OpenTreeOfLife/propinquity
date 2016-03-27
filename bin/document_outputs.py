@@ -203,10 +203,10 @@ def render_assessments_index(container, template, html_out, json_out):
     html_out.write(template(assessments=container.assessments))
 
 class DocGen(object):
-    def __init__(self, propinquity_dir, config_filepath):
-        self.top_output_dir = propinquity_dir #TEMP should be read from config
+    def __init__(self, propinquity_dir, supertree_output_dir, config_filepath):
+        self.top_output_dir = supertree_output_dir
         self.propinquity_dir = propinquity_dir
-        subprocess.call(['make', 'assessments/summary.json'])
+        subprocess.call(['make', os.path.join(self.top_output_dir, 'assessments', 'summary.json')])
         templates_dir = os.path.join(propinquity_dir, 'doc', 'templates')
         self.templates = PageTemplateLoader(templates_dir)
         self.config = get_runtime_configuration(config_filepath)
@@ -234,8 +234,8 @@ class DocGen(object):
         d = os.path.join(self.top_output_dir, 'labelled_supertree')
         p = 'labelled_supertree_out_degree_distribution.txt'
         lsodd = os.path.join(d, p)
-        subprocess.call(['make', 'labelled_supertree/' + p])
-        subprocess.call(['make', 'labelled_supertree/' + 'labelled_supertree_ottnames.tre'])
+        subprocess.call(['make', lsodd])
+        subprocess.call(['make', os.path.join(d, 'labelled_supertree_ottnames.tre')])
         assert(os.path.exists(lsodd))
         blob = Extensible()
         blob.unprune_stats = read_as_json(os.path.join(d, 'input_output_stats.json'))
@@ -244,7 +244,7 @@ class DocGen(object):
     def read_subproblem_solutions(self):
         d = os.path.join(self.top_output_dir, 'subproblem_solutions')
         sdd = os.path.join(d, 'solution-degree-distributions.txt')
-        subprocess.call(['make', 'subproblem_solutions/solution-degree-distributions.txt'])
+        subprocess.call(['make', sdd])
         assert(os.path.exists(sdd))
         blob = Extensible()
         blob.subproblem_num_leaves_num_internal_nodes = parse_subproblem_solutions_degree_dist(sdd)
@@ -300,7 +300,7 @@ class DocGen(object):
         for v in by_source_tree.values():
             v.sort()
         ptdd = os.path.join(d, 'pruned_taxonomy_degree_distribution.txt')
-        subprocess.call(['make', 'exemplified_phylo/pruned_taxonomy_degree_distribution.txt'])
+        subprocess.call(['make', ptdd])
         assert(os.path.exists(ptdd))
         ddlines = [i.split() for i in stripped_nonempty_lines(ptdd) if i.split()[0] == '0']
         assert(len(ddlines) == 1)
@@ -325,8 +325,8 @@ class DocGen(object):
         blob = Extensible()
         blob.directory = os.path.join(self.top_output_dir, 'phylo_snapshot')
         blob.git_shas_file = os.path.join(blob.directory, 'git_shas.txt')
-        subprocess.call(['make', 'phylo_snapshot/collections_git_shas.txt'])
         blob.collections_git_shas_file = os.path.join(blob.directory, 'collections_git_shas.txt')
+        subprocess.call(['make', blob.collections_git_shas_file])
         blob.collections_git_shas = stripped_nonempty_lines(blob.collections_git_shas_file)
         blob.git_shas = stripped_nonempty_lines(blob.git_shas_file)
         return blob
@@ -371,7 +371,13 @@ if __name__ == '__main__':
                         type=str,
                         required=False,
                         help='filepath of the config file (default is "config")')
+    parser.add_argument('dir',
+                        default='.',
+                        type=str,
+                        nargs='?',
+                        help='prefix for inputs')
     args = parser.parse_args(sys.argv[1:])
-    dg = DocGen(propinquity_dir, args.config)
+    prefix_dir = args.dir
+    dg = DocGen(propinquity_dir, prefix_dir, args.config)
     dg.render()
 
