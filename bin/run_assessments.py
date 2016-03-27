@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 from peyotl import read_as_json, write_as_json
-import subprocess
 import csv
 import sys
 import os

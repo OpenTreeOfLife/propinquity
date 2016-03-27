@@ -1,13 +1,14 @@
 PROPINQUITY_OUT_DIR ?= .
 export PROPINQUITY_OUT_DIR
+CONFIG_FILENAME=$(PROPINQUITY_OUT_DIR)/config
 
-COLLECTIONS_ROOT := $(shell bin/config_checker.py --config=config --property=opentree.collections)
+COLLECTIONS_ROOT := $(shell bin/config_checker.py --config=$(CONFIG_FILENAME) --property=opentree.collections)
 export COLLECTIONS_ROOT
 
-PEYOTL_ROOT := $(shell bin/config_checker.py --config=config --property=opentree.peyotl)
+PEYOTL_ROOT := $(shell bin/config_checker.py --config=$(CONFIG_FILENAME) --property=opentree.peyotl)
 export PEYOTL_ROOT
 
-OTT_DIR := $(shell bin/config_checker.py --config=config --property=opentree.ott)
+OTT_DIR := $(shell bin/config_checker.py --config=$(CONFIG_FILENAME) --property=opentree.ott)
 export OTT_DIR
 
 OTT_FILENAMES=about.json \
@@ -21,10 +22,10 @@ export OTT_FILENAMES
 OTT_FILEPATHS := $(addprefix $(OTT_DIR)/, $(OTT_FILENAMES))
 export OTT_FILEPATHS
 
-PHYLESYSTEM_ROOT := $(shell bin/config_checker.py --config=config --property=opentree.phylesystem)
+PHYLESYSTEM_ROOT := $(shell bin/config_checker.py --config=$(CONFIG_FILENAME) --property=opentree.phylesystem)
 export PHYLESYSTEM_ROOT
 
-SYNTHESIS_COLLECTIONS := $(shell bin/config_checker.py --config=config --property=synthesis.collections)
+SYNTHESIS_COLLECTIONS := $(shell bin/config_checker.py --config=$(CONFIG_FILENAME) --property=synthesis.collections)
 export SYNTHESIS_COLLECTIONS
 
 INPUT_PHYLO_ARTIFACTS=$(PROPINQUITY_OUT_DIR)/phylo_input/studies.txt \
@@ -99,11 +100,13 @@ $(PROPINQUITY_OUT_DIR)/assessments/lost_taxa.txt: $(PROPINQUITY_OUT_DIR)/labelle
 	@if ! test -d $(PROPINQUITY_OUT_DIR)/assessments ; then mkdir -p $(PROPINQUITY_OUT_DIR)/assessments ; fi
 	otc-taxonomy-parser \
 	  $$(./bin/config_checker.py \
-	  --config=config \
+	  --config=$(CONFIG_FILENAME) \
 	  --property=opentree.ott) \
 	  --report-lost-taxa \
 	  $(PROPINQUITY_OUT_DIR)/labelled_supertree/labelled_supertree.tre \
-	  -c config > $(PROPINQUITY_OUT_DIR)/assessments/lost_taxa.txt
+	  -c $(CONFIG_FILENAME) > $(PROPINQUITY_OUT_DIR)/assessments/.lost_taxa.txt \
+	  || rm $(PROPINQUITY_OUT_DIR)/assessments/.lost_taxa.txt
+	mv $(PROPINQUITY_OUT_DIR)/assessments/.lost_taxa.txt $(PROPINQUITY_OUT_DIR)/assessments/lost_taxa.txt
 
 $(PROPINQUITY_OUT_DIR)/assessments/summary.json: $(PROPINQUITY_OUT_DIR)/annotated_supertree/annotations.json \
 						  $(PROPINQUITY_OUT_DIR)/assessments/taxonomy_degree_distribution.txt \
@@ -121,8 +124,9 @@ check: $(PROPINQUITY_OUT_DIR)/assessments/summary.json
 		else echo "OK. Checks passed. A quirky listing of checks is in $(PROPINQUITY_OUT_DIR)/assessments/summary.json"; \
 		fi
 
-$(HTML_ARTIFACTS): $(PROPINQUITY_OUT_DIR)/assessments/summary.json
-	bin/document_outputs.py $(PROPINQUITY_OUT_DIR)
+$(HTML_ARTIFACTS): $(PROPINQUITY_OUT_DIR)/assessments/summary.json \
+				   $(PROPINQUITY_OUT_DIR)/phylo_snapshot/collections_git_shas.txt
+	bin/document_outputs.py --config=$(CONFIG_FILENAME) $(PROPINQUITY_OUT_DIR)
 	@echo 'Documentation created'
 
 html: $(PROPINQUITY_OUT_DIR)/assessments/summary.json $(PROPINQUITY_OUT_DIR)/assessments/index.html

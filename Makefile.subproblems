@@ -140,7 +140,7 @@ $(PROPINQUITY_OUT_DIR)/annotated_supertree/annotations.json: $(PROPINQUITY_OUT_D
 		$(PROPINQUITY_OUT_DIR)/annotated_supertree/preannotations1.json \
 		$(PROPINQUITY_OUT_DIR)/annotated_supertree/annotations1.json
 	@rm $(PROPINQUITY_OUT_DIR)/annotated_supertree/preannotations1.json
-	bin/gen_attributes.py $(PROPINQUITY_OUT_DIR) > $(PROPINQUITY_OUT_DIR)/annotated_supertree/annotations2.json
+	bin/gen_attributes.py --config=$(CONFIG_FILENAME) $(PROPINQUITY_OUT_DIR) > $(PROPINQUITY_OUT_DIR)/annotated_supertree/annotations2.json
 	bin/merge-json.py \
 		$(PROPINQUITY_OUT_DIR)/annotated_supertree/annotations1.json \
 		$(PROPINQUITY_OUT_DIR)/annotated_supertree/annotations2.json \

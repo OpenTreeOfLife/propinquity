@@ -1,5 +1,3 @@
-CONFIG_FILENAME=config
-
 SUPPRESS_FLAG_ARTIFACTS=$(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaned_ott.tre \
 	$(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaned_ott.json \
 	$(PROPINQUITY_OUT_DIR)/cleaned_ott/ott_version.txt \
@@ -61,7 +59,7 @@ $(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaned_ott.tre: $(OTT_FILEPATHS) \
 	    --flags="$(shell cat $(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaning_flags.txt)" \
 	    --root="$(shell cat $(PROPINQUITY_OUT_DIR)/cleaned_ott/root_ott_id.txt)"
 #    Maybe replace python program with C++ program below after we can generate the necessary log files.
-#	otc-taxonomy-parser $(OTT_DIR) --config=config -T > cleaned_ott/.raw_cleaned_ott.tre
+#	otc-taxonomy-parser $(OTT_DIR) --config=$(CONFIG_FILENAME) -T > cleaned_ott/.raw_cleaned_ott.tre
 #	mv cleaned_ott/.raw_cleaned_ott.tre cleaned_ott/cleaned_ott.tre
 
 $(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaned_ott.json: $(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaned_ott.tre
@@ -164,9 +162,9 @@ $(PROPINQUITY_OUT_DIR)/phylo_induced_taxonomy/taxonomy.tre : $(PROPINQUITY_OUT_D
 	ln -s $(PROPINQUITY_OUT_DIR)/exemplified_phylo/taxonomy.tre $(PROPINQUITY_OUT_DIR)/phylo_induced_taxonomy/taxonomy.tre
 
 # phylo_input holds the lists of study+tree pairs to be used during the supertree construction
-$(PROPINQUITY_OUT_DIR)/phylo_input/collections.txt: config
+$(PROPINQUITY_OUT_DIR)/phylo_input/collections.txt: $(CONFIG_FILENAME)
 	@if ! test -d $(PROPINQUITY_OUT_DIR)/phylo_input ; then mkdir -p $(PROPINQUITY_OUT_DIR)/phylo_input ; fi
-	bin/config_checker.py --config=config --property=synthesis.collections > $(PROPINQUITY_OUT_DIR)/phylo_input/.raw_collections.txt
+	bin/config_checker.py --config=$(CONFIG_FILENAME) --property=synthesis.collections > $(PROPINQUITY_OUT_DIR)/phylo_input/.raw_collections.txt
 	if ! diff \
 			$(PROPINQUITY_OUT_DIR)/phylo_input/collections.txt \
 			$(PROPINQUITY_OUT_DIR)/phylo_input/.raw_collections.txt 2>/dev/null ; \
