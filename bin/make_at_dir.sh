@@ -18,6 +18,16 @@ then
 fi
 echo "Setting PROPINQUITY_OUT_DIR to ${outd}"
 export PROPINQUITY_OUT_DIR="${outd}"
+if test -z "${OTCETERA_LOGFILE}"
+then
+    export OTCETERA_LOGFILE="${PROPINQUITY_OUT_DIR}/logs/myeasylog.log"
+fi
+if ! test -d "${PROPINQUITY_OUT_DIR}/logs"
+then
+    mkdir -p "${PROPINQUITY_OUT_DIR}/logs" || exit
+fi
 master="${d}/opentree_rebuild_from_latest.sh"
-echo "Calling make ..."
-make
+shift
+shift
+echo "Calling make $@..."
+make $@

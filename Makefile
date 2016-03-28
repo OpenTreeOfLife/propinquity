@@ -68,13 +68,31 @@ HTML_ARTIFACTS = $(PROPINQUITY_OUT_DIR)/annotated_supertree/index.html \
 	$(PROPINQUITY_OUT_DIR)/subproblem_solutions/index.html \
 	$(PROPINQUITY_OUT_DIR)/subproblem_solutions/index.json \
 	$(PROPINQUITY_OUT_DIR)/phylo_snapshot/index.html \
-	$(PROPINQUITY_OUT_DIR)/phylo_snapshot/index.json \
+	$(PROPINQUITY_OUT_DIR)/phylo_snapshot/index.json 
+
+HARDCODED_DOC_INPUTS = README.md \
+	labelled_supertree/README.md \
+	grafted_solution/README.md \
+	exemplified_phylo/README.md \
+	phylo_input/README.md \
+	logs/README.md \
+	cleaned_phylo/README.md \
+	subproblem_solutions/README.md \
+	subproblems/README.md \
+	subproblems/scratch/README.md \
+	assessments/README.md \
+	phylo_snapshot/README.md \
+	annotated_supertree/README.md \
+	cleaned_ott/README.md \
+	logs/index.html
+
+HARDCODED_DOC_ARTIFACTS := $(addprefix $(PROPINQUITY_OUT_DIR)/, $(HARDCODED_DOC_INPUTS))
 
 all: $(PROPINQUITY_OUT_DIR)/labelled_supertree/labelled_supertree.tre \
 	 $(PROPINQUITY_OUT_DIR)/annotated_supertree/annotations.json
 
 extra: $(PROPINQUITY_OUT_DIR)/labelled_supertree/labelled_supertree_ottnames.tre \
-	   $(PROPINQUITY_OUT_DIR)/grafted_supertree/grafted_supertree_ottnames.tre
+	   $(PROPINQUITY_OUT_DIR)/grafted_solution/grafted_solution_ottnames.tre
 
 clean: clean1 clean2
 	rm -f $(ARTIFACTS)
@@ -129,5 +147,14 @@ $(HTML_ARTIFACTS): $(PROPINQUITY_OUT_DIR)/assessments/summary.json \
 	bin/document_outputs.py --config=$(CONFIG_FILENAME) $(PROPINQUITY_OUT_DIR)
 	@echo 'Documentation created'
 
-html: $(PROPINQUITY_OUT_DIR)/assessments/summary.json $(PROPINQUITY_OUT_DIR)/assessments/index.html
+$(HARDCODED_DOC_ARTIFACTS): $(HARDCODED_DOC_INPUTS)
+	for f in $(HARDCODED_DOC_INPUTS); \
+	do \
+		cp $$f $(PROPINQUITY_OUT_DIR)/$$f ;\
+	done \
+
+html: $(PROPINQUITY_OUT_DIR)/assessments/summary.json \
+	  $(PROPINQUITY_OUT_DIR)/assessments/index.html \
+	  $(HTML_ARTIFACTS) \
+	  $(HARDCODED_DOC_ARTIFACTS)
 	@echo "See $(PROPINQUITY_OUT_DIR)/index.html and linked files for documentation of output"

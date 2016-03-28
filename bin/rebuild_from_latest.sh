@@ -82,6 +82,19 @@ then
     exit 1
 fi
 
+echo 'make extra...'
+rm -f ${PROPINQUITY_OUT_DIR}/logs/log-of-extra.txt
+rm -f ${PROPINQUITY_OUT_DIR}/logs/log-of-extra-err.txt
+if !  make extra \
+    2>${PROPINQUITY_OUT_DIR}/logs/log-of-extra-err.txt \
+    > ${PROPINQUITY_OUT_DIR}/logs/log-of-extra.txt
+then
+    cat ${PROPINQUITY_OUT_DIR}/logs/log-of-extra-err.txt
+    echo "Failed extra step"
+    exit 1
+fi
+
+
 echo 'running the assessments of the tree...'
 rm -f ${PROPINQUITY_OUT_DIR}/logs/log-of-assessments.txt
 rm -f ${PROPINQUITY_OUT_DIR}/logs/log-of-assessments-err.txt

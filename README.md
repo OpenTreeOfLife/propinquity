@@ -11,16 +11,53 @@ datastore and a local copy of the Open Tree of Life Taxonomy. See the [collectio
 [[Sketch]]
 
 ## Setup
+### Inplace build vs output directory
+If `PROPINQUITY_OUT_DIR` is in your environment when you build with 
+propinquity, then that directory will be used as an output for
+the synthetic tree and all of the other artifacts.
+
+If that option is used, then the `Makefile` will expect the output
+directory to contain a file called `config` that holds your build-specific
+configuration settings (see below)
+
+There are 3 small scripts that let you accomplish some common tasks
+without modifying your environment. These scripts take two arguments: a 
+configuration filepath and an output file path. They copy the configuration
+file into the correct spot in the outpu directory, and then trigger the 
+build operation with the appropriate output directory in the env.
+These scripts are:
+  1.  `bin/build_at_dir.sh cfg out` to call the `bin/opentree_rebuild_from_latest.sh` script
+    (which pulls the latest studies and collections from GitHub and then does a complete
+    build)
+  2. `bin/make_at_dir.sh cfg out` which just runs a call to `make` after setting up the env, and
+  3. `bin/clean_at_dir.sh cfg out` which cleans the `out` directory
 
 ### Configuration file
 
-Before you set up other prequisite software, you'll need to initialize your
-`config` file.  You do this by copying an example config file:
+Before you set up other prequisite software, you'll need to initialize a
+`config` file that is expected to exist in your PROPINQUITY_OUT_DIR. The
+default PROPINQUITY_OUT_DIR is the current directory. So the default location
+is simply `./config`
 
-    $ cd propinquity
+If you do NOT want to build to an output directory (see above), then you'll need the
+configuration file to be called `config` in the top or your propinquity directory.
+You can do this by copying an example config file:
+
     $ cp config.example config
 
-This config file contains sections, each of which contain settings for variables,
+If you are using an output file, you can simply use:
+
+    $ cp config.example "${PROPINQUITY_OUT_DIR}/config"
+
+(if you are calling make from your command line) or 
+
+    $ cp config.example myconfig
+
+(if you going to use one of the `bin/build_at_dir.sh myconfig ${PROPINQUITY_OUT_DIR}` invocations
+mentioned above).
+
+
+The config file contains sections, each of which contain settings for variables,
 following the [INI file format](https://en.wikipedia.org/wiki/INI_file).  These
 settings may be tweaked to describe the location of installed
 software, the collections used for synthesis, etc.

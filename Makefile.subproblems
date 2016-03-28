@@ -1,6 +1,6 @@
 ARTIFACTS += $(PROPINQUITY_OUT_DIR)/subproblems/subproblem-ids.txt \
 	  $(PROPINQUITY_OUT_DIR)/grafted_solution/grafted_solution.tre \
-	  $(PROPINQUITY_OUT_DIR)/grafted_solution_ottnames.tre \
+	  $(PROPINQUITY_OUT_DIR)/grafted_solution/grafted_solution_ottnames.tre \
 	  $(PROPINQUITY_OUT_DIR)/full_supertree/full_supertree.tre \
 	  $(PROPINQUITY_OUT_DIR)/subproblem_solutions/solution-ids.txt \
 	  $(PROPINQUITY_OUT_DIR)/subproblem_solutions/solution-degree-distributions.txt \
