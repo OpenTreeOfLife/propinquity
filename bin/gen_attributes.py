@@ -82,6 +82,20 @@ def root_taxon_name(args, ott_dir):
     root_name = proc.communicate()[0].strip()
     return root_name
 
+def get_synth_id(config_filename):
+    p = configparser.SafeConfigParser()
+    try:
+        p.read(config_filename)
+    except:
+        errstream('problem reading "{}"'.format(config_filename))
+        raise
+    try:
+        synth_id = p.get('synthesis', 'synth_id').strip()
+    except:
+        errstream('Could not find a [synthesis] section with a valid "synth_id" setting.')
+        raise
+    return synth_id
+
 if __name__ == '__main__':
     import argparse
     import sys
@@ -114,7 +128,9 @@ if __name__ == '__main__':
     out_dir = args.dir
     document = {}
     document["date_completed"] = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    document["tree_id"] = "opentree4.1"
+    synth_id = get_synth_id(args.config)
+    document["tree_id"] = synth_id
+    document["synth_id"] = synth_id
     document["taxonomy_version"] = extract_version(args)
     document["run_time"] = "30 minutes"
     document["root_taxon_name"] = root_taxon_name(args, ott_dir)

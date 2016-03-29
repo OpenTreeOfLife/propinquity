@@ -4,4 +4,5 @@ cleaning_flags = major_rank_conflict,major_rank_conflict_inherited,environmental
 [synthesis]
 collections = opentreeoflife/plants opentreeoflife/metazoa opentreeoflife/fungi opentreeoflife/safe-microbes kcranston/barnacles
 root_ott_id = 93302
+synth_id = opentree5.0
 
