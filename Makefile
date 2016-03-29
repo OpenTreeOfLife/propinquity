@@ -162,7 +162,9 @@ $(HARDCODED_DOC_ARTIFACTS): $(HARDCODED_DOC_INPUTS)
 	then \
 		for f in $(HARDCODED_DOC_INPUTS); \
 			do \
-				cp $$f $(PROPINQUITY_OUT_DIR)/$$f ;\
+				g=$(PROPINQUITY_OUT_DIR)/$$f ;\
+				mkdir -p $$(dirname $$g) ;\
+				cp $$f $$g ;\
 		done \
 	fi
 
