@@ -34,11 +34,11 @@ $(PROPINQUITY_OUT_DIR)/assessments/supertree_degree_distribution.txt: $(PROPINQU
 
 $(PROPINQUITY_OUT_DIR)/assessments/taxonomy_degree_distribution.txt: $(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaned_ott.tre
 	@if ! test -d $(PROPINQUITY_OUT_DIR)/assessments ; then mkdir -p $(PROPINQUITY_OUT_DIR)/assessments ; fi
-	cd $(PROPINQUITY_OUT_DIR) ; otc-otc-degree-distribution $(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaned_ott.tre > $(PROPINQUITY_OUT_DIR)/assessments/taxonomy_degree_distribution.txt
+	cd $(PROPINQUITY_OUT_DIR) ; otc-degree-distribution $(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaned_ott.tre > $(PROPINQUITY_OUT_DIR)/assessments/taxonomy_degree_distribution.txt
 
 $(PROPINQUITY_OUT_DIR)/assessments/lost_taxa.txt: $(PROPINQUITY_OUT_DIR)/labelled_supertree/labelled_supertree.tre
 	@if ! test -d $(PROPINQUITY_OUT_DIR)/assessments ; then mkdir -p $(PROPINQUITY_OUT_DIR)/assessments ; fi
-	cd $(PROPINQUITY_OUT_DIR) ; otc-otc-taxonomy-parser \
+	cd $(PROPINQUITY_OUT_DIR) ; otc-taxonomy-parser \
 	  $$(./bin/config_checker.py \
 	  --config=$(CONFIG_FILENAME) \
 	  --property=opentree.ott) \
