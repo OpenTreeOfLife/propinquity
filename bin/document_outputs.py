@@ -6,6 +6,7 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 try:
     from chameleon import PageTemplateLoader
 except:
+    import sys
     sys.exit('''Running this (optional) documentation generator requires the Chameleon
 python package be installed. Usually this is simply a matter of running:
 
