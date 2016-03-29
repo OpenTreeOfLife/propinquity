@@ -7,6 +7,7 @@ then
     exit 1
 fi
 mkdir -p "${PROPINQUITY_OUT_DIR}/logs" || exit
+echo -n 'pulling ' > "${PROPINQUITY_OUT_DIR}/logs/timestamps" ; date >> "${PROPINQUITY_OUT_DIR}/logs/timestamps"
 orig_dir="$(pwd)"
 echo 'pulling the latest studies from the phylesystem shards'
 cd $(python bin/config_checker.py --config=config --property=opentree.phylesystem)
@@ -32,6 +33,7 @@ cd "${orig_dir}"
 
 echo "Logs will show up in the ${PROPINQUITY_OUT_DIR}/logs directory (in the event that something fails, check there)."
 echo 'cleaning previous outputs...'
+echo -n 'makeclean ' >> "${PROPINQUITY_OUT_DIR}/logs/timestamps" ; date >> "${PROPINQUITY_OUT_DIR}/logs/timestamps"
 if ! make clean \
     >${PROPINQUITY_OUT_DIR}/logs/log-of-make-clean.txt \
     2>${PROPINQUITY_OUT_DIR}/logs/log-of-make-clean-err.txt
@@ -46,6 +48,7 @@ set -x
 rm -f ${PROPINQUITY_OUT_DIR}/logs/myeasylog.log
 
 echo 'cleaning the inputs...'
+echo -n 'inputcleaning ' >> "${PROPINQUITY_OUT_DIR}/logs/timestamps" ; date >> "${PROPINQUITY_OUT_DIR}/logs/timestamps"
 rm -f ${PROPINQUITY_OUT_DIR}/logs/log-of-input-cleaning.txt
 rm -f ${PROPINQUITY_OUT_DIR}/logs/log-of-input-cleaning-err.txt
 if ! make ${PROPINQUITY_OUT_DIR}/exemplified_phylo/taxonomy.tre \
@@ -59,6 +62,7 @@ fi
 
 
 echo 'creating the supertree...'
+echo -n 'supertree ' >> "${PROPINQUITY_OUT_DIR}/logs/timestamps" ; date >> "${PROPINQUITY_OUT_DIR}/logs/timestamps"
 rm -f ${PROPINQUITY_OUT_DIR}/logs/log-of-supertree.txt
 rm -f ${PROPINQUITY_OUT_DIR}/logs/log-of-supertree-err.txt
 if ! make ${PROPINQUITY_OUT_DIR}/labelled_supertree/labelled_supertree.tre \
@@ -71,6 +75,7 @@ then
 fi
 
 echo 'annotating the supertree...'
+echo -n 'annotating ' >> "${PROPINQUITY_OUT_DIR}/logs/timestamps" ; date >> "${PROPINQUITY_OUT_DIR}/logs/timestamps"
 rm -f ${PROPINQUITY_OUT_DIR}/logs/log-of-annotations.txt
 rm -f ${PROPINQUITY_OUT_DIR}/logs/log-of-annotations-err.txt
 if !  make ${PROPINQUITY_OUT_DIR}/annotated_supertree/annotations.json \
@@ -83,6 +88,7 @@ then
 fi
 
 echo 'make extra...'
+echo -n 'extra ' >> "${PROPINQUITY_OUT_DIR}/logs/timestamps" ; date >> "${PROPINQUITY_OUT_DIR}/logs/timestamps"
 rm -f ${PROPINQUITY_OUT_DIR}/logs/log-of-extra.txt
 rm -f ${PROPINQUITY_OUT_DIR}/logs/log-of-extra-err.txt
 if !  make extra \
@@ -96,6 +102,7 @@ fi
 
 
 echo 'running the assessments of the tree...'
+echo -n 'assessments ' >> "${PROPINQUITY_OUT_DIR}/logs/timestamps" ; date >> "${PROPINQUITY_OUT_DIR}/logs/timestamps"
 rm -f ${PROPINQUITY_OUT_DIR}/logs/log-of-assessments.txt
 rm -f ${PROPINQUITY_OUT_DIR}/logs/log-of-assessments-err.txt
 if ! make ${PROPINQUITY_OUT_DIR}/assessments/summary.json \
@@ -107,6 +114,7 @@ then
     exit 1
 fi
 
+echo -n 'makecheck ' >> "${PROPINQUITY_OUT_DIR}/logs/timestamps" ; date >> "${PROPINQUITY_OUT_DIR}/logs/timestamps"
 if ! make check 2>${PROPINQUITY_OUT_DIR}/logs/log-of-make-check-err.txt \
     > ${PROPINQUITY_OUT_DIR}/logs/log-of-make-check.txt
 then
@@ -115,6 +123,7 @@ then
     exit 1
 fi 
 
+echo -n 'html ' >> "${PROPINQUITY_OUT_DIR}/logs/timestamps" ; date >> "${PROPINQUITY_OUT_DIR}/logs/timestamps"
 echo 'creating documentation of the outputs...'
 rm -f ${PROPINQUITY_OUT_DIR}/logs/log-of-html.txt
 rm -f ${PROPINQUITY_OUT_DIR}/logs/log-of-html-err.txt
@@ -127,5 +136,5 @@ then
     exit 1
 fi
 
-
 echo 'Done'
+echo -n 'done ' >> "${PROPINQUITY_OUT_DIR}/logs/timestamps" ; date >> "${PROPINQUITY_OUT_DIR}/logs/timestamps"
