@@ -193,7 +193,7 @@ if __name__ == '__main__':
     document["tree_id"] = synth_id
     document["synth_id"] = synth_id
     document["taxonomy_version"] = ott_version(ott_dir)
-    document["run_time"] = "15 minutes"
+    #document["run_time"] = "15 minutes"
     document["root_taxon_name"] = root_taxon_name(args, ott_dir)
     document["generated_by"] = [
         {"name":"propinquity",
