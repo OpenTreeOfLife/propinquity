@@ -70,7 +70,7 @@ HTML_ARTIFACTS = $(PROPINQUITY_OUT_DIR)/annotated_supertree/index.html \
 	$(PROPINQUITY_OUT_DIR)/phylo_snapshot/index.html \
 	$(PROPINQUITY_OUT_DIR)/phylo_snapshot/index.json 
 
-HARDCODED_DOC_INPUTS = README.md \
+HARDCODED_DOC_STEMS = README.md \
 	labelled_supertree/README.md \
 	grafted_solution/README.md \
 	exemplified_phylo/README.md \
@@ -86,7 +86,17 @@ HARDCODED_DOC_INPUTS = README.md \
 	cleaned_ott/README.md \
 	logs/index.html
 
-HARDCODED_DOC_ARTIFACTS := $(addprefix $(PROPINQUITY_OUT_DIR)/, $(HARDCODED_DOC_INPUTS))
+# if PROPINQUITY_OUT_DIR is just ., then we set up 
+#	a bogus input to avoid a circular dependency
+#	note that the rule to build HARDCODED_DOC_ARTIFACTS
+#	does nothing if PROPINQUITY_OUT_DIR is .
+ifeq ($(PROPINQUITY_OUT_DIR), .)
+ HARDCODED_DOC_INPUTS=
+else
+ HARDCODED_DOC_INPUTS=$(HARDCODED_DOC_STEMS)
+endif
+
+HARDCODED_DOC_ARTIFACTS := $(addprefix $(PROPINQUITY_OUT_DIR)/, $(HARDCODED_DOC_STEMS))
 
 all: $(PROPINQUITY_OUT_DIR)/labelled_supertree/labelled_supertree.tre \
 	 $(PROPINQUITY_OUT_DIR)/annotated_supertree/annotations.json
@@ -148,10 +158,13 @@ $(HTML_ARTIFACTS): $(PROPINQUITY_OUT_DIR)/assessments/summary.json \
 	@echo 'Documentation created'
 
 $(HARDCODED_DOC_ARTIFACTS): $(HARDCODED_DOC_INPUTS)
-	for f in $(HARDCODED_DOC_INPUTS); \
-	do \
-		cp $$f $(PROPINQUITY_OUT_DIR)/$$f ;\
-	done \
+	@if ! test . = $(PROPINQUITY_OUT_DIR) ; \
+	then \
+		for f in $(HARDCODED_DOC_INPUTS); \
+			do \
+				cp $$f $(PROPINQUITY_OUT_DIR)/$$f ;\
+		done \
+	fi
 
 html: $(PROPINQUITY_OUT_DIR)/assessments/summary.json \
 	  $(PROPINQUITY_OUT_DIR)/assessments/index.html \
