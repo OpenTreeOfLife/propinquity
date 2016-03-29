@@ -123,7 +123,7 @@ $(PROPINQUITY_OUT_DIR)/cleaned_phylo/phylo_inputs_cleaned.txt: $(PROPINQUITY_OUT
 															   $(PROPINQUITY_OUT_DIR)/phylo_snapshot/concrete_rank_collection.json \
 															   $(OTT_FILEPATHS)
 	@if ! test -d $(PROPINQUITY_OUT_DIR)/cleaned_phylo ; then mkdir -p $(PROPINQUITY_OUT_DIR)/cleaned_phylo ; fi
-	$(PEYOTL_ROOT)/scripts/nexson/prune_to_clean_mapped.py \
+	cd $(PROPINQUITY_OUT_DIR) ; $(PEYOTL_ROOT)/scripts/nexson/prune_to_clean_mapped.py \
 	  --ott-dir=$(OTT_DIR) \
 	  --input-files-list=$(PROPINQUITY_OUT_DIR)/cleaned_phylo/needs_updating.txt \
 	  --out-dir=$(PROPINQUITY_OUT_DIR)/cleaned_phylo \

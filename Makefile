@@ -70,34 +70,6 @@ HTML_ARTIFACTS = $(PROPINQUITY_OUT_DIR)/annotated_supertree/index.html \
 	$(PROPINQUITY_OUT_DIR)/phylo_snapshot/index.html \
 	$(PROPINQUITY_OUT_DIR)/phylo_snapshot/index.json 
 
-HARDCODED_DOC_STEMS = README.md \
-	labelled_supertree/README.md \
-	grafted_solution/README.md \
-	exemplified_phylo/README.md \
-	phylo_input/README.md \
-	logs/README.md \
-	cleaned_phylo/README.md \
-	subproblem_solutions/README.md \
-	subproblems/README.md \
-	subproblems/scratch/README.md \
-	assessments/README.md \
-	phylo_snapshot/README.md \
-	annotated_supertree/README.md \
-	cleaned_ott/README.md \
-	logs/index.html
-
-# if PROPINQUITY_OUT_DIR is just ., then we set up 
-#	a bogus input to avoid a circular dependency
-#	note that the rule to build HARDCODED_DOC_ARTIFACTS
-#	does nothing if PROPINQUITY_OUT_DIR is .
-ifeq ($(PROPINQUITY_OUT_DIR), .)
- HARDCODED_DOC_INPUTS=
-else
- HARDCODED_DOC_INPUTS=$(HARDCODED_DOC_STEMS)
-endif
-
-HARDCODED_DOC_ARTIFACTS := $(addprefix $(PROPINQUITY_OUT_DIR)/, $(HARDCODED_DOC_STEMS))
-
 all: $(PROPINQUITY_OUT_DIR)/labelled_supertree/labelled_supertree.tre \
 	 $(PROPINQUITY_OUT_DIR)/annotated_supertree/annotations.json
 
@@ -110,64 +82,6 @@ clean: clean1 clean2
 	rm -f $(ASSESSMENT_ARTIFACTS)
 	rm -f $(HTML_ARTIFACTS)
 
-include Makefile.clean_inputs
-include Makefile.subproblems
-
-
-$(PROPINQUITY_OUT_DIR)/assessments/supertree_degree_distribution.txt: $(PROPINQUITY_OUT_DIR)/labelled_supertree/labelled_supertree.tre
-	@if ! test -d $(PROPINQUITY_OUT_DIR)/assessments ; then mkdir -p $(PROPINQUITY_OUT_DIR)/assessments ; fi
-	otc-degree-distribution \
-		$(PROPINQUITY_OUT_DIR)/labelled_supertree/labelled_supertree.tre \
-		> $(PROPINQUITY_OUT_DIR)/assessments/supertree_degree_distribution.txt
-
-$(PROPINQUITY_OUT_DIR)/assessments/taxonomy_degree_distribution.txt: $(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaned_ott.tre
-	@if ! test -d $(PROPINQUITY_OUT_DIR)/assessments ; then mkdir -p $(PROPINQUITY_OUT_DIR)/assessments ; fi
-	otc-degree-distribution $(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaned_ott.tre > $(PROPINQUITY_OUT_DIR)/assessments/taxonomy_degree_distribution.txt
-
-$(PROPINQUITY_OUT_DIR)/assessments/lost_taxa.txt: $(PROPINQUITY_OUT_DIR)/labelled_supertree/labelled_supertree.tre
-	@if ! test -d $(PROPINQUITY_OUT_DIR)/assessments ; then mkdir -p $(PROPINQUITY_OUT_DIR)/assessments ; fi
-	otc-taxonomy-parser \
-	  $$(./bin/config_checker.py \
-	  --config=$(CONFIG_FILENAME) \
-	  --property=opentree.ott) \
-	  --report-lost-taxa \
-	  $(PROPINQUITY_OUT_DIR)/labelled_supertree/labelled_supertree.tre \
-	  -c $(CONFIG_FILENAME) > $(PROPINQUITY_OUT_DIR)/assessments/.lost_taxa.txt \
-	  || rm $(PROPINQUITY_OUT_DIR)/assessments/.lost_taxa.txt
-	mv $(PROPINQUITY_OUT_DIR)/assessments/.lost_taxa.txt $(PROPINQUITY_OUT_DIR)/assessments/lost_taxa.txt
-
-$(PROPINQUITY_OUT_DIR)/assessments/summary.json: $(PROPINQUITY_OUT_DIR)/annotated_supertree/annotations.json \
-						  $(PROPINQUITY_OUT_DIR)/assessments/taxonomy_degree_distribution.txt \
-	                      $(PROPINQUITY_OUT_DIR)/assessments/supertree_degree_distribution.txt \
-	                      $(PROPINQUITY_OUT_DIR)/assessments/lost_taxa.txt
-	@if ! test -d $(PROPINQUITY_OUT_DIR)/assessments ; then mkdir -p $(PROPINQUITY_OUT_DIR)/assessments ; fi
-	@rm -f $(PROPINQUITY_OUT_DIR)/assessments/summary.json 2>/dev/null
-	./bin/run_assessments.py $(PROPINQUITY_OUT_DIR) $(PROPINQUITY_OUT_DIR)/assessments/summary.json 2>&1 | tee $(PROPINQUITY_OUT_DIR)/assessments/log.txt || true
-	@ls $(PROPINQUITY_OUT_DIR)/assessments/summary.json >/dev/null
-
-
-check: $(PROPINQUITY_OUT_DIR)/assessments/summary.json
-	@if grep '"ERROR"' $(PROPINQUITY_OUT_DIR)/assessments/summary.json >/dev/null 2>/dev/null ; \
-		then cat $(PROPINQUITY_OUT_DIR)/assessments/summary.json && echo 'Errors found' && false ; \
-		else echo "OK. Checks passed. A quirky listing of checks is in $(PROPINQUITY_OUT_DIR)/assessments/summary.json"; \
-		fi
-
-$(HTML_ARTIFACTS): $(PROPINQUITY_OUT_DIR)/assessments/summary.json \
-				   $(PROPINQUITY_OUT_DIR)/phylo_snapshot/collections_git_shas.txt
-	bin/document_outputs.py --config=$(CONFIG_FILENAME) $(PROPINQUITY_OUT_DIR)
-	@echo 'Documentation created'
-
-$(HARDCODED_DOC_ARTIFACTS): $(HARDCODED_DOC_INPUTS)
-	@if ! test . = $(PROPINQUITY_OUT_DIR) ; \
-	then \
-		for f in $(HARDCODED_DOC_INPUTS); \
-			do \
-				cp $$f $(PROPINQUITY_OUT_DIR)/$$f ;\
-		done \
-	fi
-
-html: $(PROPINQUITY_OUT_DIR)/assessments/summary.json \
-	  $(PROPINQUITY_OUT_DIR)/assessments/index.html \
-	  $(HTML_ARTIFACTS) \
-	  $(HARDCODED_DOC_ARTIFACTS)
-	@echo "See $(PROPINQUITY_OUT_DIR)/index.html and linked files for documentation of output"
+include Makefile.clean_inputs   # contains clean1: target
+include Makefile.subproblems    # contains clean2: target
+include Makefile.docs           # contains html: and check: targets
