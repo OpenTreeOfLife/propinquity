@@ -140,7 +140,7 @@ $(PROPINQUITY_OUT_DIR)/exemplified_phylo/nonempty_trees.txt : $(PROPINQUITY_OUT_
 															  $(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaned_ott.tre \
 															  $(PROPINQUITY_OUT_DIR)/cleaned_phylo/phylo_inputs_cleaned.txt
 	@if ! test -d $(PROPINQUITY_OUT_DIR)/exemplified_phylo ; then mkdir -p $(PROPINQUITY_OUT_DIR)/exemplified_phylo ; fi
-	otc-nonterminals-to-exemplars \
+	cd $(PROPINQUITY_OUT_DIR) ; otc-nonterminals-to-exemplars \
 	  -e$(PROPINQUITY_OUT_DIR)/exemplified_phylo \
 	  $(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaned_ott.tre \
 	  -f$(PROPINQUITY_OUT_DIR)/exemplified_phylo/args.txt \
@@ -153,7 +153,7 @@ $(PROPINQUITY_OUT_DIR)/exemplified_phylo/taxonomy.tre: $(PROPINQUITY_OUT_DIR)/ex
 
 $(PROPINQUITY_OUT_DIR)/exemplified_phylo/pruned_taxonomy_degree_distribution.txt : $(PROPINQUITY_OUT_DIR)/exemplified_phylo/taxonomy.tre
 	@if ! test -d $(PROPINQUITY_OUT_DIR)/exemplified_phylo ; then mkdir -p $(PROPINQUITY_OUT_DIR)/exemplified_phylo ; fi
-	otc-degree-distribution \
+	cd $(PROPINQUITY_OUT_DIR) ; otc-degree-distribution \
 		$(PROPINQUITY_OUT_DIR)/exemplified_phylo/taxonomy.tre \
 		> $(PROPINQUITY_OUT_DIR)/exemplified_phylo/pruned_taxonomy_degree_distribution.txt
 
