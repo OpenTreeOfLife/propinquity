@@ -92,14 +92,14 @@ def get_synth_id(config_filename):
     try:
         synth_id = p.get('synthesis', 'synth_id').strip()
     except:
-        errstream('Could not find a [synthesis] section with a valid "synth_id" setting.')
-        raise
+        return '<UNKNOWN>'
     return synth_id
 
 if __name__ == '__main__':
     import argparse
     import sys
     import os
+    errstream = sys.stderr
     description = 'Write a JSON file with some of synthesis tree attributes'
     parser = argparse.ArgumentParser(prog='suppress-dubious', description=description)
     parser.add_argument('--config',
