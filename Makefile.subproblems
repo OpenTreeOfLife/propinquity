@@ -126,10 +126,20 @@ $(PROPINQUITY_OUT_DIR)/labelled_supertree/labelled_supertree_ottnames.tre: $(PRO
 		--del-monotypic \
 		> $(PROPINQUITY_OUT_DIR)/labelled_supertree/labelled_supertree_ottnames.tre
 
+# added $(PROPINQUITY_OUT_DIR)/exemplified_phylo/pruned_taxonomy_degree_distribution.txt 
+# to hack in a new annotation at the request of JAR
+# So we head, tail, and awk the # of exemplified tips from that output into a temporary file called num_phylo_tips.json
+# and then use merge-json.py to add that info to the annotations2.json
 $(PROPINQUITY_OUT_DIR)/annotated_supertree/annotations.json: $(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaned_ott.tre \
 															 $(PROPINQUITY_OUT_DIR)/labelled_supertree/labelled_supertree.tre \
-															 $(PROPINQUITY_OUT_DIR)/exemplified_phylo/nonempty_trees.txt
+															 $(PROPINQUITY_OUT_DIR)/exemplified_phylo/nonempty_trees.txt \
+															 $(PROPINQUITY_OUT_DIR)/exemplified_phylo/pruned_taxonomy_degree_distribution.txt
 	@if ! test -d $(PROPINQUITY_OUT_DIR)/annotated_supertree ; then mkdir -p $(PROPINQUITY_OUT_DIR)/annotated_supertree ; fi
+	cat $(PROPINQUITY_OUT_DIR)/exemplified_phylo/pruned_taxonomy_degree_distribution.txt \
+		| head -n2 \
+		| tail -n1 \
+		| awk '{print "{\"x\": " $$2 "}" }' \
+		> $(PROPINQUITY_OUT_DIR)/annotated_supertree/num_phylo_tips.json
 	otc-annotate-synth \
 		$(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaned_ott.tre \
 		$(PROPINQUITY_OUT_DIR)/labelled_supertree/labelled_supertree.tre \
@@ -140,7 +150,18 @@ $(PROPINQUITY_OUT_DIR)/annotated_supertree/annotations.json: $(PROPINQUITY_OUT_D
 		$(PROPINQUITY_OUT_DIR)/annotated_supertree/preannotations1.json \
 		$(PROPINQUITY_OUT_DIR)/annotated_supertree/annotations1.json
 	@rm $(PROPINQUITY_OUT_DIR)/annotated_supertree/preannotations1.json
-	bin/gen_attributes.py --config=$(CONFIG_FILENAME) $(PROPINQUITY_OUT_DIR) > $(PROPINQUITY_OUT_DIR)/annotated_supertree/annotations2.json
+	bin/gen_attributes.py \
+		--config=$(CONFIG_FILENAME) \
+		$(PROPINQUITY_OUT_DIR) \
+		> $(PROPINQUITY_OUT_DIR)/annotated_supertree/preannotations2.json
+	bin/merge-json.py \
+		$(PROPINQUITY_OUT_DIR)/annotated_supertree/num_phylo_tips.json \
+		x \
+		$(PROPINQUITY_OUT_DIR)/annotated_supertree/preannotations2.json \
+		num_leaves_in_exemplified_taxonomy \
+		> $(PROPINQUITY_OUT_DIR)/annotated_supertree/annotations2.json
+	@rm $(PROPINQUITY_OUT_DIR)/annotated_supertree/preannotations2.json
+	@rm $(PROPINQUITY_OUT_DIR)/annotated_supertree/num_phylo_tips.json
 	bin/merge-json.py \
 		$(PROPINQUITY_OUT_DIR)/annotated_supertree/annotations1.json \
 		$(PROPINQUITY_OUT_DIR)/annotated_supertree/annotations2.json \
