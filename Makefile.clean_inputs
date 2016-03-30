@@ -36,12 +36,12 @@ clean1:
 # "cleaned_ott" has dubious taxa pruned off. should check against treemachine and smasher versions
 $(PROPINQUITY_OUT_DIR)/cleaned_ott/root_ott_id.txt: $(CONFIG_FILENAME)
 	@if ! test -d $(PROPINQUITY_OUT_DIR)/cleaned_ott ; then mkdir -p $(PROPINQUITY_OUT_DIR)/cleaned_ott ; fi
-	./bin/config_checker.py --config=$(CONFIG_FILENAME) --property=synthesis.root_ott_id > $(PROPINQUITY_OUT_DIR)/cleaned_ott/.raw_root_ott_id.txt
+	./bin/config_checker.py synthesis.root_ott_id $(CONFIG_FILENAME) > $(PROPINQUITY_OUT_DIR)/cleaned_ott/.raw_root_ott_id.txt
 	if ! diff $(PROPINQUITY_OUT_DIR)/cleaned_ott/.raw_root_ott_id.txt $(PROPINQUITY_OUT_DIR)/cleaned_ott/root_ott_id.txt 2>/dev/null; then mv $(PROPINQUITY_OUT_DIR)/cleaned_ott/.raw_root_ott_id.txt $(PROPINQUITY_OUT_DIR)/cleaned_ott/root_ott_id.txt ; fi
 
 $(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaning_flags.txt: $(CONFIG_FILENAME)
 	@if ! test -d $(PROPINQUITY_OUT_DIR)/cleaned_ott ; then mkdir -p $(PROPINQUITY_OUT_DIR)/cleaned_ott ; fi
-	./bin/config_checker.py --config=$(CONFIG_FILENAME) --property=taxonomy.cleaning_flags > $(PROPINQUITY_OUT_DIR)/cleaned_ott/.raw_cleaning_flags.txt
+	./bin/config_checker.py taxonomy.cleaning_flags $(CONFIG_FILENAME) > $(PROPINQUITY_OUT_DIR)/cleaned_ott/.raw_cleaning_flags.txt
 	if ! diff $(PROPINQUITY_OUT_DIR)/cleaned_ott/.raw_cleaning_flags.txt $(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaning_flags.txt 2>/dev/null; then mv $(PROPINQUITY_OUT_DIR)/cleaned_ott/.raw_cleaning_flags.txt $(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaning_flags.txt ; fi
 
 $(PROPINQUITY_OUT_DIR)/cleaned_ott/ott_version.txt: $(OTT_DIR)/version.txt
@@ -164,7 +164,7 @@ $(PROPINQUITY_OUT_DIR)/phylo_induced_taxonomy/taxonomy.tre : $(PROPINQUITY_OUT_D
 # phylo_input holds the lists of study+tree pairs to be used during the supertree construction
 $(PROPINQUITY_OUT_DIR)/phylo_input/collections.txt: $(CONFIG_FILENAME)
 	@if ! test -d $(PROPINQUITY_OUT_DIR)/phylo_input ; then mkdir -p $(PROPINQUITY_OUT_DIR)/phylo_input ; fi
-	bin/config_checker.py --config=$(CONFIG_FILENAME) --property=synthesis.collections > $(PROPINQUITY_OUT_DIR)/phylo_input/.raw_collections.txt
+	bin/config_checker.py synthesis.collections $(CONFIG_FILENAME) > $(PROPINQUITY_OUT_DIR)/phylo_input/.raw_collections.txt
 	if ! diff \
 			$(PROPINQUITY_OUT_DIR)/phylo_input/collections.txt \
 			$(PROPINQUITY_OUT_DIR)/phylo_input/.raw_collections.txt 2>/dev/null ; \
