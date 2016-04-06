@@ -123,4 +123,14 @@ config -> "phylo_input/collections.txt"
 "exemplified_phylo/nonempty_trees.txt" -> "otc-annotate-synth"
 "otc-annotate-synth" [style=filled, color="#EEBBDD"]
 "otc-annotate-synth" -> "annotated_supertree/annotations.json"
+
+"grafted_solution/grafted_solution.tre" -> "otc-degree-distribution (solution)"
+"otc-degree-distribution (solution)" [style=filled, color="#EEBBDD"]
+"otc-degree-distribution (solution)" -> "subproblem_solutions/solution_degree_distributon.txt"
+"subproblem_solutions/solution_degree_distributon.txt" [color="#AAAAEE"]
+
+"labelled_supertree/labelled_supertree.tre" -> "otc-degree-distribution (supertree)"
+"otc-degree-distribution (supertree)" [style=filled, color="#EEBBDD"]
+"otc-degree-distribution (supertree)" -> "labelled_supertree/labelled_supertree_out_degree_distributon.txt"
+"labelled_supertree/labelled_supertree_out_degree_distributon.txt" [color="#AAAAEE"]
 }

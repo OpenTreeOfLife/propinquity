@@ -2,13 +2,13 @@ PROPINQUITY_OUT_DIR ?= .
 export PROPINQUITY_OUT_DIR
 CONFIG_FILENAME=$(PROPINQUITY_OUT_DIR)/config
 
-COLLECTIONS_ROOT := $(shell bin/config_checker.py --config=$(CONFIG_FILENAME) --property=opentree.collections)
+COLLECTIONS_ROOT := $(shell bin/config_checker.py opentree.collections $(CONFIG_FILENAME) $(HOME)/.opentree)
 export COLLECTIONS_ROOT
 
-PEYOTL_ROOT := $(shell bin/config_checker.py --config=$(CONFIG_FILENAME) --property=opentree.peyotl)
+PEYOTL_ROOT := $(shell bin/config_checker.py opentree.peyotl $(CONFIG_FILENAME) $(HOME)/.opentree)
 export PEYOTL_ROOT
 
-OTT_DIR := $(shell bin/config_checker.py --config=$(CONFIG_FILENAME) --property=opentree.ott)
+OTT_DIR := $(shell bin/config_checker.py opentree.ott $(CONFIG_FILENAME) $(HOME)/.opentree)
 export OTT_DIR
 
 OTT_FILENAMES=about.json \
@@ -22,10 +22,10 @@ export OTT_FILENAMES
 OTT_FILEPATHS := $(addprefix $(OTT_DIR)/, $(OTT_FILENAMES))
 export OTT_FILEPATHS
 
-PHYLESYSTEM_ROOT := $(shell bin/config_checker.py --config=$(CONFIG_FILENAME) --property=opentree.phylesystem)
+PHYLESYSTEM_ROOT := $(shell bin/config_checker.py opentree.phylesystem $(CONFIG_FILENAME) $(HOME)/.opentree)
 export PHYLESYSTEM_ROOT
 
-SYNTHESIS_COLLECTIONS := $(shell bin/config_checker.py --config=$(CONFIG_FILENAME) --property=synthesis.collections)
+SYNTHESIS_COLLECTIONS := $(shell bin/config_checker.py synthesis.collections $(CONFIG_FILENAME))
 export SYNTHESIS_COLLECTIONS
 
 INPUT_PHYLO_ARTIFACTS=$(PROPINQUITY_OUT_DIR)/phylo_input/studies.txt \

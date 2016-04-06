@@ -169,23 +169,23 @@ if the variables in the config file are defined as above.
     phylesystem = %(home)s/phylesystem
     ott = %(home)s/ott/ott2.9draft12/
     collections = %(home)s/collections
-    $ bin/config_checker.py --config=config --property=opentree.peyotl
+    $ bin/config_checker.py opentree.peyotl config
     /home/USER/OpenTree/peyotl
-    $ ls $(bin/config_checker.py --config=config --property=opentree.peyotl)
+    $ ls $(bin/config_checker.py opentree.peyotl config)
     ...
     peyotl
     ...
     setup.py
     ...
-    $ bin/config_checker.py --config=config --property=opentree.ott
+    $ bin/config_checker.py opentree.ott config
     /home/USER/OpenTree/ott/ott2.9draft12/
-    $ ls $(bin/config_checker.py --config=config --property=opentree.ott)
+    $ ls $(bin/config_checker.py opentree.ott config)
     ...
     taxonomy.tsv
     ...
-    $ bin/config_checker.py --config=config --property=opentree.phylesystem
+    $ bin/config_checker.py opentree.phylesystem config
     /home/USER/OpenTree/phylesystem
-    $ ls $(bin/config_checker.py --config=config --property=opentree.phylesystem)/shards/phylesystem-1
+    $ ls $(bin/config_checker.py opentree.phylesystem config)/shards/phylesystem-1
     next_study_id.json  README.md  study/
 
 

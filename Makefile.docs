@@ -28,20 +28,18 @@ HARDCODED_DOC_ARTIFACTS := $(addprefix $(PROPINQUITY_OUT_DIR)/, $(HARDCODED_DOC_
 
 $(PROPINQUITY_OUT_DIR)/assessments/supertree_degree_distribution.txt: $(PROPINQUITY_OUT_DIR)/labelled_supertree/labelled_supertree.tre
 	@if ! test -d $(PROPINQUITY_OUT_DIR)/assessments ; then mkdir -p $(PROPINQUITY_OUT_DIR)/assessments ; fi
-	otc-degree-distribution \
+	cd $(PROPINQUITY_OUT_DIR) ; otc-degree-distribution \
 		$(PROPINQUITY_OUT_DIR)/labelled_supertree/labelled_supertree.tre \
 		> $(PROPINQUITY_OUT_DIR)/assessments/supertree_degree_distribution.txt
 
 $(PROPINQUITY_OUT_DIR)/assessments/taxonomy_degree_distribution.txt: $(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaned_ott.tre
 	@if ! test -d $(PROPINQUITY_OUT_DIR)/assessments ; then mkdir -p $(PROPINQUITY_OUT_DIR)/assessments ; fi
-	otc-degree-distribution $(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaned_ott.tre > $(PROPINQUITY_OUT_DIR)/assessments/taxonomy_degree_distribution.txt
+	cd $(PROPINQUITY_OUT_DIR) ; otc-degree-distribution $(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaned_ott.tre > $(PROPINQUITY_OUT_DIR)/assessments/taxonomy_degree_distribution.txt
 
 $(PROPINQUITY_OUT_DIR)/assessments/lost_taxa.txt: $(PROPINQUITY_OUT_DIR)/labelled_supertree/labelled_supertree.tre
 	@if ! test -d $(PROPINQUITY_OUT_DIR)/assessments ; then mkdir -p $(PROPINQUITY_OUT_DIR)/assessments ; fi
-	otc-taxonomy-parser \
-	  $$(./bin/config_checker.py \
-	  --config=$(CONFIG_FILENAME) \
-	  --property=opentree.ott) \
+	cd $(PROPINQUITY_OUT_DIR) ; otc-taxonomy-parser \
+	  $$(./bin/config_checker.py opentree.ott $(CONFIG_FILENAME) ) \
 	  --report-lost-taxa \
 	  $(PROPINQUITY_OUT_DIR)/labelled_supertree/labelled_supertree.tre \
 	  -c $(CONFIG_FILENAME) > $(PROPINQUITY_OUT_DIR)/assessments/.lost_taxa.txt \
@@ -64,12 +62,16 @@ check: $(PROPINQUITY_OUT_DIR)/assessments/summary.json
 		else echo "OK. Checks passed. A quirky listing of checks is in $(PROPINQUITY_OUT_DIR)/assessments/summary.json"; \
 		fi
 
-$(HTML_ARTIFACTS): $(PROPINQUITY_OUT_DIR)/assessments/summary.json \
+html-output: $(PROPINQUITY_OUT_DIR)/assessments/summary.json \
 				   $(PROPINQUITY_OUT_DIR)/phylo_snapshot/collections_git_shas.txt
 	bin/document_outputs.py --config=$(CONFIG_FILENAME) $(PROPINQUITY_OUT_DIR)
 	@echo 'Documentation created'
 
-$(HARDCODED_DOC_ARTIFACTS): $(HARDCODED_DOC_INPUTS)
+
+$(HTML_ARTIFACTS): html-output
+
+
+copy_hardcoded_inputs: $(HARDCODED_DOC_INPUTS)
 	@if ! test . = $(PROPINQUITY_OUT_DIR) ; \
 	then \
 		for f in $(HARDCODED_DOC_INPUTS); \
@@ -79,6 +81,8 @@ $(HARDCODED_DOC_ARTIFACTS): $(HARDCODED_DOC_INPUTS)
 				cp $$f $$g ;\
 		done \
 	fi
+
+$(HARDCODED_DOC_ARTIFACTS): copy_hardcoded_inputs
 
 html: $(PROPINQUITY_OUT_DIR)/assessments/summary.json \
 	  $(PROPINQUITY_OUT_DIR)/assessments/index.html \
