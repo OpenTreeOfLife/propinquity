@@ -1,10 +1,14 @@
-COLLECTIONS_ROOT := $(shell bin/config_checker.py --config=config --property=opentree.collections)
+PROPINQUITY_OUT_DIR ?= .
+export PROPINQUITY_OUT_DIR
+CONFIG_FILENAME=$(PROPINQUITY_OUT_DIR)/config
+
+COLLECTIONS_ROOT := $(shell bin/config_checker.py opentree.collections $(CONFIG_FILENAME) $(HOME)/.opentree)
 export COLLECTIONS_ROOT
 
-PEYOTL_ROOT := $(shell bin/config_checker.py --config=config --property=opentree.peyotl)
+PEYOTL_ROOT := $(shell bin/config_checker.py opentree.peyotl $(CONFIG_FILENAME) $(HOME)/.opentree)
 export PEYOTL_ROOT
 
-OTT_DIR := $(shell bin/config_checker.py --config=config --property=opentree.ott)
+OTT_DIR := $(shell bin/config_checker.py opentree.ott $(CONFIG_FILENAME) $(HOME)/.opentree)
 export OTT_DIR
 
 OTT_FILENAMES=about.json \
@@ -18,32 +22,66 @@ export OTT_FILENAMES
 OTT_FILEPATHS := $(addprefix $(OTT_DIR)/, $(OTT_FILENAMES))
 export OTT_FILEPATHS
 
-PHYLESYSTEM_ROOT := $(shell bin/config_checker.py --config=config --property=opentree.phylesystem)
+PHYLESYSTEM_ROOT := $(shell bin/config_checker.py opentree.phylesystem $(CONFIG_FILENAME) $(HOME)/.opentree)
 export PHYLESYSTEM_ROOT
 
-SYNTHESIS_COLLECTIONS := $(shell bin/config_checker.py --config=config --property=synthesis.collections)
+SYNTHESIS_COLLECTIONS := $(shell bin/config_checker.py synthesis.collections $(CONFIG_FILENAME))
 export SYNTHESIS_COLLECTIONS
 
-INPUT_PHYLO_ARTIFACTS=phylo_input/studies.txt \
-                      phylo_input/study_tree_pairs.txt
+INPUT_PHYLO_ARTIFACTS=$(PROPINQUITY_OUT_DIR)/phylo_input/studies.txt \
+                      $(PROPINQUITY_OUT_DIR)/phylo_input/study_tree_pairs.txt
 
-ARTIFACTS=cleaned_ott/cleaned_ott.tre \
-	  cleaned_phylo/phylo_inputs_cleaned.txt \
-	  exemplified_phylo/nonempty_trees.txt \
-	  subproblems/subproblem-ids.txt \
-	  grafted_solution/grafted_solution_ottnames.tre \
-	  full_supertree/full_supertree.tre \
-	  labelled_supertree/labelled_supertree.tre \
-	  labelled_supertree_ottnames/labelled_supertree_ottnames.tre \
-	  annotated_supertree/annotations.json
+ARTIFACTS=$(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaned_ott.tre \
+	  $(PROPINQUITY_OUT_DIR)/cleaned_phylo/phylo_inputs_cleaned.txt \
+	  $(PROPINQUITY_OUT_DIR)/exemplified_phylo/nonempty_trees.txt \
+	  $(PROPINQUITY_OUT_DIR)/subproblems/subproblem-ids.txt \
+	  $(PROPINQUITY_OUT_DIR)/grafted_solution/grafted_solution_ottnames.tre \
+	  $(PROPINQUITY_OUT_DIR)/full_supertree/full_supertree.tre \
+	  $(PROPINQUITY_OUT_DIR)/labelled_supertree/labelled_supertree.tre \
+	  $(PROPINQUITY_OUT_DIR)/labelled_supertree/labelled_supertree_ottnames.tre \
+	  $(PROPINQUITY_OUT_DIR)/annotated_supertree/annotations.json
 
-all: labelled_supertree/labelled_supertree.tre annotated_supertree/annotations.json
+ASSESSMENT_ARTIFACTS = $(PROPINQUITY_OUT_DIR)/assessments/supertree_degree_distribution.txt \
+	$(PROPINQUITY_OUT_DIR)/assessments/taxonomy_degree_distribution.txt \
+	$(PROPINQUITY_OUT_DIR)/assessments/lost_taxa.txt \
+	$(PROPINQUITY_OUT_DIR)/assessments/summary.json
 
-extra: labelled_supertree/labelled_supertree_ottnames.tre grafted_supertree/grafted_supertree_ottnames.tre
+HTML_ARTIFACTS = $(PROPINQUITY_OUT_DIR)/annotated_supertree/index.html \
+	$(PROPINQUITY_OUT_DIR)/annotated_supertree/index.json \
+	$(PROPINQUITY_OUT_DIR)/assessments/index.html \
+	$(PROPINQUITY_OUT_DIR)/cleaned_ott/index.html \
+	$(PROPINQUITY_OUT_DIR)/cleaned_ott/index.json \
+	$(PROPINQUITY_OUT_DIR)/cleaned_phylo/index.json \
+	$(PROPINQUITY_OUT_DIR)/cleaned_phylo/index.html \
+	$(PROPINQUITY_OUT_DIR)/exemplified_phylo/index.html \
+	$(PROPINQUITY_OUT_DIR)/exemplified_phylo/index.json \
+	$(PROPINQUITY_OUT_DIR)/grafted_solution/index.html \
+	$(PROPINQUITY_OUT_DIR)/grafted_solution/index.json \
+	$(PROPINQUITY_OUT_DIR)/index.html \
+	$(PROPINQUITY_OUT_DIR)/index.json \
+	$(PROPINQUITY_OUT_DIR)/labelled_supertree/index.html \
+	$(PROPINQUITY_OUT_DIR)/labelled_supertree/index.json \
+	$(PROPINQUITY_OUT_DIR)/phylo_input/index.json \
+	$(PROPINQUITY_OUT_DIR)/phylo_input/index.html \
+	$(PROPINQUITY_OUT_DIR)/subproblems/index.html \
+	$(PROPINQUITY_OUT_DIR)/subproblems/index.json \
+	$(PROPINQUITY_OUT_DIR)/subproblem_solutions/index.html \
+	$(PROPINQUITY_OUT_DIR)/subproblem_solutions/index.json \
+	$(PROPINQUITY_OUT_DIR)/phylo_snapshot/index.html \
+	$(PROPINQUITY_OUT_DIR)/phylo_snapshot/index.json 
+
+all: $(PROPINQUITY_OUT_DIR)/labelled_supertree/labelled_supertree.tre \
+	 $(PROPINQUITY_OUT_DIR)/annotated_supertree/annotations.json
+
+extra: $(PROPINQUITY_OUT_DIR)/labelled_supertree/labelled_supertree_ottnames.tre \
+	   $(PROPINQUITY_OUT_DIR)/grafted_solution/grafted_solution_ottnames.tre
 
 clean: clean1 clean2
 	rm -f $(ARTIFACTS)
 	rm -f $(INPUT_PHYLO_ARTIFACTS)
+	rm -f $(ASSESSMENT_ARTIFACTS)
+	rm -f $(HTML_ARTIFACTS)
 
-include Makefile.clean_inputs
-include Makefile.subproblems
+include Makefile.clean_inputs   # contains clean1: target
+include Makefile.subproblems    # contains clean2: target
+include Makefile.docs           # contains html: and check: targets

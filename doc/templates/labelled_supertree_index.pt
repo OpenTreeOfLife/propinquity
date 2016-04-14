@@ -1,0 +1,39 @@
+<html metal:use-macro="load: head.pt">
+<div metal:fill-slot="content" tal:define="basename import: os.path.basename">
+<p>Propinquity output documentation. The top-level docs are <a href="../index.html">here</a>.</p>
+<p>This directory holds the solution tree reattaching the parts of the taxonomy (from <a href="../cleaned_ott/index.html">../cleaned_ott/index.html</a>)
+    which
+    were not covered by any input tree to the grafted solution (see <a href="../grafted_solution/index.html">../grafted_solution/index.html</a>).</p>
+<p>The input grafted solution had ${unprune_stats.input["num_solution_leaves"]} leaves and
+    ${unprune_stats.input["num_solution_splits"]} forking nodes 
+    (and ${unprune_stats.input["num_solution_internals"] - unprune_stats.input["num_solution_splits"]} monotypic nodes).</p>
+<p>The input cleaned taxonomy had ${unprune_stats.input["num_taxonomy_leaves"]} leaves and
+    ${unprune_stats.input["num_taxonomy_splits"]} forking nodes 
+    (and ${unprune_stats.input["num_taxonomy_internals"] - unprune_stats.input["num_taxonomy_splits"]} monotypic nodes).</p>
+<p>${unprune_stats.output["num_leaves_added"]} leaves were added to create the solution.
+    ${unprune_stats.output["num_taxa_rejected"]} taxa were rejected.</p>
+<p>The files of interest in this directory are:
+<ul>
+    <li>the <a href="./labelled_supertree.tre">./labelled_supertree.tre</a> (full solution with names created for non-taxonomic internal nodes).</li>
+    <li>the <a href="./labelled_supertree_ottnames.tre">./labelled_supertree_ottnames.tre</a> the same tree with the name_id format for taxa from OTT.</li>
+    <li>the <a href="./broken_taxa.json">./broken_taxa.json</a> which describes who
+    members of non-monophyletic taxa are spread across the tree.</li>
+    <li>the <a href="./input_output_stats.json">./input_output_stats.json</a> which describes the
+    size of the tree before and after unpruning the taxonomic content.</li>
+    <li>the <a href="./labelled_supertree_out_degree_distribution.txt">./labelled_supertree_out_degree_distribution.txt</a> shows the out-degree frequency distribution
+    for the nodes in the labelled supertree</li>
+</ul>
+
+<p>The next step is to annotate the tree <a href="../annotated_supertree/index.html">../annotated_supertree/index.html</a></p>
+
+<p>The ${len(non_monophyletic_taxa.non_monophyletic_taxa)} taxa from OTT that could not make it into the tree were:</p>
+<table>
+    <tr><th>"broken" taxon</th><th>MRCA</th><th># attachment points</th></tr>
+    <tr tal:repeat="id2dict non_monophyletic_taxa.non_monophyletic_taxa.items()">
+        <td>${id2dict[0]}</td>
+        <td>${id2dict[1]["mrca"]}</td>
+        <td>${len(id2dict[1]["attachment_points"])}</td>
+    </tr>
+</table>
+</div>
+</html>

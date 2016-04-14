@@ -10,7 +10,7 @@ import os
 import codecs
 
 def num_studies():
-    with open('phylo_snapshot/concrete_rank_collection.json') as data_file:
+    with open(os.path.join(out_dir, 'phylo_snapshot/concrete_rank_collection.json')) as data_file:
         snapshot_data = json.load(data_file)
     studies = set()
     for study_tree_object in snapshot_data["decisions"]:
@@ -19,7 +19,7 @@ def num_studies():
     return len(studies)
 
 def num_trees():
-    with open('phylo_snapshot/concrete_rank_collection.json') as data_file:
+    with open(os.path.join(out_dir, 'phylo_snapshot/concrete_rank_collection.json')) as data_file:
         snapshot_data = json.load(data_file)
     trees = set()
     for study_tree_object in snapshot_data["decisions"]:
@@ -31,7 +31,7 @@ def num_trees():
 
 def extract_source_id_map():
     source_id_map = {}
-    with open('phylo_snapshot/concrete_rank_collection.json') as data_file:
+    with open(os.path.join(out_dir, 'phylo_snapshot/concrete_rank_collection.json')) as data_file:
         snapshot_data = json.load(data_file)
     for study_tree_object in snapshot_data["decisions"]:
         study_id = study_tree_object["studyID"]
@@ -41,8 +41,8 @@ def extract_source_id_map():
         source_id_map[name] = {"study_id":study_id, "tree_id":tree_id, "git_sha":git_sha}
     return source_id_map
 
-def extract_version(args):
-    with codecs.open(os.path.join(args.ott_dir, 'version.txt'), 'r', encoding='utf-8') as fo:
+def ott_version(ott_dir):
+    with codecs.open(os.path.join(ott_dir, 'version.txt'), 'r', encoding='utf-8') as fo:
         version = fo.read().strip()
     return version
 
@@ -82,10 +82,67 @@ def root_taxon_name(args, ott_dir):
     root_name = proc.communicate()[0].strip()
     return root_name
 
+def get_git_sha_from_dir(d):
+    head = os.path.join(d, '.git', 'HEAD')
+    head_branch_ref_frag = open(head, 'rU').read().split()[1]
+    head_branch_ref = os.path.join(d, '.git', head_branch_ref_frag)
+    return open(head_branch_ref, 'rU').read().strip()
+
+
+def get_peyotl_version(peyotl_dir):
+    peyotl_version, peyotl_sha = ['unknown'] * 2
+    try:
+        import peyotl
+        peyotl_version = peyotl.__version__
+    except:
+        pass
+    try:
+        peyotl_sha = get_git_sha_from_dir(peyotl_dir)
+    except:
+        raise
+        pass
+    return peyotl_version, peyotl_sha
+
+def get_otc_version():
+    import subprocess
+    import re
+    git_sha, version, boost_version = ['unknown']*3
+    try:
+        out = subprocess.check_output('otc-version-reporter')
+        try:
+            git_sha = re.compile('git_sha *= *([a-zA-Z0-9]+)').search(out).group(1)
+        except:
+            pass
+        try:
+            version = re.compile('version *= *([-._a-zA-Z0-9]+)').search(out).group(1)
+        except:
+            pass
+        try:
+            boost_version = re.compile('BOOST_LIB_VERSION *= *([-._a-zA-Z0-9]+)').search(out).group(1)
+        except:
+            pass
+    except:
+        pass
+    return git_sha, version, boost_version
+
+def get_synth_id(config_filename):
+    p = configparser.SafeConfigParser()
+    try:
+        p.read(config_filename)
+    except:
+        errstream('problem reading "{}"'.format(config_filename))
+        raise
+    try:
+        synth_id = p.get('synthesis', 'synth_id').strip()
+    except:
+        return '<UNKNOWN>'
+    return synth_id
+
 if __name__ == '__main__':
     import argparse
     import sys
     import os
+    errstream = sys.stderr
     description = 'Write a JSON file with some of synthesis tree attributes'
     parser = argparse.ArgumentParser(prog='suppress-dubious', description=description)
     parser.add_argument('--config',
@@ -99,35 +156,61 @@ if __name__ == '__main__':
                         required=False,
                         choices=('cleaning_flags', ),
                         help='which property value should be printed.')
-    parser.add_argument('--ott-dir',
-                        default=os.environ['OTT_DIR'],
+    parser.add_argument('dir',
+                        default='.',
                         type=str,
-                        required=False,
-                        help='directory containing ott files (e.g "taxonomy.tsv")')
+                        nargs='?',
+                        help='prefix for inputs')
     args = parser.parse_args(sys.argv[1:])
-    ott_dir = args.ott_dir
+
+    parsed_config = configparser.SafeConfigParser()
+    try:
+        parsed_config.read(args.config)
+    except:
+        errstream('problem reading "{}"'.format(args.config))
+        raise
+
+    ott_dir = parsed_config.get('opentree', 'ott')
+    out_dir = args.dir
+
+    otc_sha, otc_version, otc_boost_version = get_otc_version()
+
+    peyotl_root = parsed_config.get('opentree', 'peyotl')
+    peyotl_version, peyotl_sha = get_peyotl_version(peyotl_root)
+    
     document = {}
     document["date_completed"] = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    document["tree_id"] = "opentree4.1"
-    document["taxonomy_version"] = extract_version(args)
-    document["run_time"] = "30 minutes"
+    synth_id = get_synth_id(args.config)
+
+    propinquity_sha = 'unknown'
+    try:
+        bin_dir, SCRIPT_NAME = os.path.split(__file__)
+        propinquity_dir = os.path.dirname(bin_dir)
+        propinquity_sha = get_git_sha_from_dir(propinquity_dir)
+    except:
+        pass
+    
+    document["tree_id"] = synth_id
+    document["synth_id"] = synth_id
+    document["taxonomy_version"] = ott_version(ott_dir)
+    document["run_time"] = "15 minutes"
     document["root_taxon_name"] = root_taxon_name(args, ott_dir)
     document["generated_by"] = [
         {"name":"propinquity",
-         "version":"x",
-         "git_sha":"aaa",
-         "url":"link",
+         "version":"N/A",
+         "git_sha":propinquity_sha,
+         "url":"https://github.com/OpenTreeOfLife/propinquity",
          "invocation":"cmd"},
         {"name":"peyotl",
-         "version":"x",
-         "git_sha":"aaa",
-         "url":"link",
-         "invocation":"cmd"},
+         "version":peyotl_version,
+         "git_sha":peyotl_sha,
+         "url":"http://opentreeoflife.github.io/peyotl",
+         "invocation":"N/A"},
         {"name":"otcetera",
-         "version":"x",
-         "git_sha":"aaa",
-         "url":"link",
-         "invocation":"cmd"},
+         "version":otc_version,
+         "git_sha":otc_sha,
+         "url":"https://github.com/OpenTreeOfLife/otcetera",
+         "invocation":"N/A"},
     ]
     document["filtered_flags"] = extract_filtered_flags(args)
     document["source_id_map"] = extract_source_id_map()

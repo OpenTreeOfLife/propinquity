@@ -3,3 +3,4 @@ needs_updating.txt
 *.tre
 *.json
 phylo_inputs_cleaned.txt
+root_ott_id.txt

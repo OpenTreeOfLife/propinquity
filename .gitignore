@@ -1,2 +1,4 @@
 config
-logs
+index.json
+index.html
+config.local

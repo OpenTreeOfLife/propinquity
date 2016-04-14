@@ -11,16 +11,53 @@ datastore and a local copy of the Open Tree of Life Taxonomy. See the [collectio
 [[Sketch]]
 
 ## Setup
+### Inplace build vs output directory
+If `PROPINQUITY_OUT_DIR` is in your environment when you build with 
+propinquity, then that directory will be used as an output for
+the synthetic tree and all of the other artifacts.
+
+If that option is used, then the `Makefile` will expect the output
+directory to contain a file called `config` that holds your build-specific
+configuration settings (see below)
+
+There are 3 small scripts that let you accomplish some common tasks
+without modifying your environment. These scripts take two arguments: a 
+configuration filepath and an output file path. They copy the configuration
+file into the correct spot in the outpu directory, and then trigger the 
+build operation with the appropriate output directory in the env.
+These scripts are:
+  1.  `bin/build_at_dir.sh cfg out` to call the `bin/opentree_rebuild_from_latest.sh` script
+    (which pulls the latest studies and collections from GitHub and then does a complete
+    build)
+  2. `bin/make_at_dir.sh cfg out` which just runs a call to `make` after setting up the env, and
+  3. `bin/clean_at_dir.sh cfg out` which cleans the `out` directory
 
 ### Configuration file
 
-Before you set up other prequisite software, you'll need to initialize your
-`config` file.  You do this by copying an example config file:
+Before you set up other prequisite software, you'll need to initialize a
+`config` file that is expected to exist in your PROPINQUITY_OUT_DIR. The
+default PROPINQUITY_OUT_DIR is the current directory. So the default location
+is simply `./config`
 
-    $ cd propinquity
+If you do NOT want to build to an output directory (see above), then you'll need the
+configuration file to be called `config` in the top or your propinquity directory.
+You can do this by copying an example config file:
+
     $ cp config.example config
 
-This config file contains sections, each of which contain settings for variables,
+If you are using an output file, you can simply use:
+
+    $ cp config.example "${PROPINQUITY_OUT_DIR}/config"
+
+(if you are calling make from your command line) or 
+
+    $ cp config.example myconfig
+
+(if you going to use one of the `bin/build_at_dir.sh myconfig ${PROPINQUITY_OUT_DIR}` invocations
+mentioned above).
+
+
+The config file contains sections, each of which contain settings for variables,
 following the [INI file format](https://en.wikipedia.org/wiki/INI_file).  These
 settings may be tweaked to describe the location of installed
 software, the collections used for synthesis, etc.
@@ -132,23 +169,23 @@ if the variables in the config file are defined as above.
     phylesystem = %(home)s/phylesystem
     ott = %(home)s/ott/ott2.9draft12/
     collections = %(home)s/collections
-    $ bin/config_checker.py --config=config --property=opentree.peyotl
+    $ bin/config_checker.py opentree.peyotl config
     /home/USER/OpenTree/peyotl
-    $ ls $(bin/config_checker.py --config=config --property=opentree.peyotl)
+    $ ls $(bin/config_checker.py opentree.peyotl config)
     ...
     peyotl
     ...
     setup.py
     ...
-    $ bin/config_checker.py --config=config --property=opentree.ott
+    $ bin/config_checker.py opentree.ott config
     /home/USER/OpenTree/ott/ott2.9draft12/
-    $ ls $(bin/config_checker.py --config=config --property=opentree.ott)
+    $ ls $(bin/config_checker.py opentree.ott config)
     ...
     taxonomy.tsv
     ...
-    $ bin/config_checker.py --config=config --property=opentree.phylesystem
+    $ bin/config_checker.py opentree.phylesystem config
     /home/USER/OpenTree/phylesystem
-    $ ls $(bin/config_checker.py --config=config --property=opentree.phylesystem)/shards/phylesystem-1
+    $ ls $(bin/config_checker.py opentree.phylesystem config)/shards/phylesystem-1
     next_study_id.json  README.md  study/
 
 
@@ -157,6 +194,22 @@ if the variables in the config file are defined as above.
 After you have installed the software and tweaked the setting in your `config` file as described above, you may run synthesis just by typing
 
     $ make
+    $ make check
+
+If you have [Chameleon](https://chameleon.readthedocs.org/en/latest/) installed, then
+you can run
+
+    $ make && make check && make html
+
+to create a series of `index.html` files in the output directories that document and 
+  summarize the outputs produced by the pipeline.
+These html files are created using templates and information from JSON files which
+  are produced either by the `make` run or using information gleaned from existing
+  outputs.
+In the latter case, the calculated summaries used in the templating step are also
+  stored in a corresponding `index.json` in the same directory as the `index.html`
+  to make it easy for you to get the data needed to summarize the outputs in a 
+  different manner.
 
 ## Artifacts
 The pipeline produces artifacts at each step of the pipeline. Click on any link below to see more information about the output files in these directories.
@@ -171,13 +224,20 @@ The pipeline produces artifacts at each step of the pipeline. Click on any link 
   1. [subproblems](subproblems/README.md)
   1. [subproblem_solutions](subproblem_solutions/README.md)
   1. [grafted_solution](grafted_solution/README.md)
-  1. [full_supertree](full_supertree/README.md)
   1. [labelled_supertree](labelled_supertree/README.md)
   1. [annotated_supertree](annotated_supertree/README.md)
 
 The final output of synthesis consists of
 * labelled_supertree/labelled_supertre.tre
 * annotated_supertree/annotations.json
+
+For a tree with only tips that occur in study trees:
+* grafted_solution/grafted_solution.tre
+
+For versions of the above trees that include both OTT ids and taxon names,
+* labelled_supertree/labelled_supertree_ottnames.tre
+* grafted_supertree/grafted_supertree_ottnames.tre
+These optional artifacts can be built with the command `make extra`.
 
 ## Sketch
 A cartoon of the pipeline with peyotl tools in pink and otcetera tools in blue.
@@ -196,7 +256,7 @@ In these cases this sketch just shows the most interesting tool.
 
 ```sh
 cd exemplified_phylo
-otc-displayed-stats ../cleaned_ott/cleaned_ott.tre ../full_supertree/full_supertree.tre $(cat nonempty_trees.txt)
+otc-displayed-stats ../cleaned_ott/cleaned_ott.tre ../labelled_supertree/labelled_supertree.tre $(cat nonempty_trees.txt)
 ```
 
 ```sh
