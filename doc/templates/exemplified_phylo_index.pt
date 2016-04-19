@@ -10,13 +10,13 @@ This is accomplished by taking the cleaned input trees (see
 exemplar taxa to represent at for each tip that is mapped to a non-terminal taxon.
 See <a href="https://github.com/OpenTreeOfLife/propinquity/blob/master/exemplified_phylo/README.md"> for details on the procedure</a>.
 </p>
-<p>Below you will find tabular or itemized listings of
+<p>Below you will find tabular or itemized listings of:</p>
 <ul>
     <li><a href="#exemptreefiles">Exemplified tree files</a>
     <li><a href="#treetoidsreplaces">Map of tree to OTT IDs in that tree that were exemplified</a>
     <li><a href="#ottidtoexemplified">Map of exemplified OTT ID to the IDs used to exemplify it</a>
 </ul>
-<a name"exemptreefiles"><p>Exemplified tree files:</p></a>
+<a name="exemptreefiles"><p>Exemplified tree files:</p></a>
 <ul>
     <li><a href="./taxonomy.tre">taxonomy.tre</a> -- the version of the taxonomy pruned down to 
     only contain the exemplar taxa. This taxonomy has ${exemplified_phylo.num_leaves_in_exemplified_taxonomy} leaves.</li>
