@@ -231,6 +231,14 @@ The final output of synthesis consists of
 * labelled_supertree/labelled_supertre.tre
 * annotated_supertree/annotations.json
 
+For a tree with only tips that occur in study trees:
+* grafted_solution/grafted_solution.tre
+
+For versions of the above trees that include both OTT ids and taxon names,
+* labelled_supertree/labelled_supertree_ottnames.tre
+* grafted_supertree/grafted_supertree_ottnames.tre
+These optional artifacts can be built with the command `make extra`.
+
 ## Sketch
 A cartoon of the pipeline with peyotl tools in pink and otcetera tools in blue.
 Input from other components of Open Tree of Life are ovals.
