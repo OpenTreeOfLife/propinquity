@@ -22,6 +22,9 @@
     size of the tree before and after unpruning the taxonomic content.</li>
     <li>the <a href="./labelled_supertree_out_degree_distribution.txt">./labelled_supertree_out_degree_distribution.txt</a> shows the out-degree frequency distribution
     for the nodes in the labelled supertree</li>
+    <li>the <a href="./labelled_supertree_ottnames_without_monotypic.tre">./labelled_supertree_ottnames_without_monotypic.tre</a> (if the file exists) is a version of labelled_supertree_ottnames.tre without any taxa that have only one child.</li>
+    <li>the <a href="./labelled_supertree_simplified_ottnames.tre">./labelled_supertree_simplified_ottnames_without_monotypic.tre</a> (if the file exists) is a version of labelled_supertree_ottnames.tre with names simplified to remove characters that cause problems for some clients (using otc-munge-names). The log for this step will be at <a href="simplified_ottnames.log">simplified_ottnames.log</a></li>
+    <li>the <a href="./labelled_supertree_simplified_ottnames_without_monotypic.tre">./labelled_supertree_simplified_ottnames_without_monotypic.tre</a> (if the file exists) is a version of labelled_supertree_ottnames_without_monotypic.tre with names simplified to remove characters that cause problems for some clients (using otc-munge-names). The log for this step will be at <a href="simplified_ottnames_without_monotypic.log">simplified_ottnames_without_monotypic.log</a></li>
 </ul>
 
 <p>The next step is to annotate the tree <a href="../annotated_supertree/index.html">../annotated_supertree/index.html</a></p>
