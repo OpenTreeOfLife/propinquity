@@ -264,13 +264,30 @@ cd exemplified_phylo
 otc-displayed-stats ../cleaned_ott/cleaned_ott.tre draftversion4.tre $(cat nonempty_trees.txt)
 ```
 
-### To do
-**TODO**: check flags for pruning
+## How the open tree of life synthetic tree is built
 
-**TODO** examine the behavior of nodes with outdegree=1 in inputs
+  1. Follow the setup steps mentioned above to install the prerequisites
 
-**TODO** many of the steps in the Makefile use the presence of a file to signal
-  the successful completion of a step that generates multiple artifacts. I've pretty
-  much been trying to get this pipeline up to the point that Ben Redelings can
-  run otcetera-based tools on the latter stages of the pipeline. So there has been
-  little checking of the logic of each of the make steps is correct for rebuilding.
+  2. It is helpful to have a `config.local` file that has only local filepaths for the prerequisites.
+  for instance on MTH's machine this file contains just:
+    [opentree]
+    home = /home/opentree/Documents
+    peyotl = %(home)s/peyotl
+    phylesystem = %(home)s/phylesystem
+    ott = %(home)s/ott/ott2.9draft12/
+    collections = %(home)s/phylesystem
+
+  3. Edit `config.opentree.synth` to increment the `synth_id` to the next version. 
+
+  4. `git commit -m "version X.XX of synth tree" config.opentree.synth` will create a git commit
+  of the configuration to assist in provenance tracking of the build.
+
+  5. To build the tree at directory `../opentreeX.XX` use:
+
+    cp config.local opentreeX.XX.config
+    cat config.opentree.synth >> opentreeX.XX.config
+    ./bin/build_at_dir.sh opentreeX.XX.config ../opentreeX.XX
+
+That script uses `bin/opentree_rebuild_from_latest.sh` to configure the environment 
+to run `bin/rebuild_from_latest.sh` without you having
+to modify your shell's environment.

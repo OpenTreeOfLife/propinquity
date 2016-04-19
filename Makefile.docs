@@ -38,7 +38,7 @@ $(PROPINQUITY_OUT_DIR)/assessments/taxonomy_degree_distribution.txt: $(PROPINQUI
 
 $(PROPINQUITY_OUT_DIR)/assessments/lost_taxa.txt: $(PROPINQUITY_OUT_DIR)/labelled_supertree/labelled_supertree.tre
 	@if ! test -d $(PROPINQUITY_OUT_DIR)/assessments ; then mkdir -p $(PROPINQUITY_OUT_DIR)/assessments ; fi
-	cd $(PROPINQUITY_OUT_DIR) ; otc-taxonomy-parser \
+	otc-taxonomy-parser \
 	  $$(./bin/config_checker.py opentree.ott $(CONFIG_FILENAME) ) \
 	  --report-lost-taxa \
 	  $(PROPINQUITY_OUT_DIR)/labelled_supertree/labelled_supertree.tre \

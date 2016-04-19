@@ -26,7 +26,6 @@ if ! test -d "${PROPINQUITY_OUT_DIR}/logs"
 then
     mkdir -p "${PROPINQUITY_OUT_DIR}/logs" || exit
 fi
-master="${d}/opentree_rebuild_from_latest.sh"
 shift
 shift
 echo "Calling make $@..."
