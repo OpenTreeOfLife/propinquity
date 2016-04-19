@@ -280,13 +280,14 @@ otc-displayed-stats ../cleaned_ott/cleaned_ott.tre draftversion4.tre $(cat nonem
   3. Edit `config.opentree.synth` to increment the `synth_id` to the next version. 
 
   4. `git commit -m "version X.XX of synth tree" config.opentree.synth` will create a git commit
-  of the configuration to assist in provenance.
+  of the configuration to assist in provenance tracking of the build.
 
   5. To build the tree at directory `../opentreeX.XX` use:
 
-    cp config.local synth.X.XX.config
-    cat config.opentree.synth >> synth.X.XX.config
-    ./bin/build_at_dir.sh synth.X.XX.config ../opentreeX.XX
+    cp config.local opentreeX.XX.config
+    cat config.opentree.synth >> opentreeX.XX.config
+    ./bin/build_at_dir.sh opentreeX.XX.config ../opentreeX.XX
 
-
-
+That script uses `bin/opentree_rebuild_from_latest.sh` to configure the environment 
+to run `bin/rebuild_from_latest.sh` without you having
+to modify your shell's environment.

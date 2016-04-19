@@ -114,7 +114,7 @@ then
     exit 1
 fi
 
-echo -n 'makecheck ' >> "${PROPINQUITY_OUT_DIR}/logs/timestamps" ; date >> "${PROPINQUITY_OUT_DIR}/logs/timestamps"
+echo -n 'make check ' >> "${PROPINQUITY_OUT_DIR}/logs/timestamps" ; date >> "${PROPINQUITY_OUT_DIR}/logs/timestamps"
 if ! make check 2>${PROPINQUITY_OUT_DIR}/logs/log-of-make-check-err.txt \
     > ${PROPINQUITY_OUT_DIR}/logs/log-of-make-check.txt
 then
