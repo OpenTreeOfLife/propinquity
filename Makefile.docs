@@ -52,7 +52,7 @@ $(PROPINQUITY_OUT_DIR)/assessments/summary.json: $(PROPINQUITY_OUT_DIR)/annotate
 	                      $(PROPINQUITY_OUT_DIR)/assessments/lost_taxa.txt
 	@if ! test -d $(PROPINQUITY_OUT_DIR)/assessments ; then mkdir -p $(PROPINQUITY_OUT_DIR)/assessments ; fi
 	@rm -f $(PROPINQUITY_OUT_DIR)/assessments/summary.json 2>/dev/null
-	bash bin/run_assessments.py $(PROPINQUITY_OUT_DIR) $(PROPINQUITY_OUT_DIR)/assessments/summary.json 2>&1 | tee $(PROPINQUITY_OUT_DIR)/assessments/log.txt || true
+	./bin/run_assessments.py $(PROPINQUITY_OUT_DIR) $(PROPINQUITY_OUT_DIR)/assessments/summary.json 2>&1 | tee $(PROPINQUITY_OUT_DIR)/assessments/log.txt || true
 	@ls $(PROPINQUITY_OUT_DIR)/assessments/summary.json >/dev/null
 
 
