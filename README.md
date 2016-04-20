@@ -32,12 +32,51 @@ These scripts are:
   2. `bin/make_at_dir.sh cfg out` which just runs a call to `make` after setting up the env, and
   3. `bin/clean_at_dir.sh cfg out` which cleans the `out` directory
 
-### Configuration file
+### Global Configuration file
 
-Before you set up other prequisite software, you'll need to initialize a
-`config` file that is expected to exist in your PROPINQUITY_OUT_DIR. The
+#### The `~/.opentree` file
+Before you set up other prequisite software, you'll need to initialize
+the global config file. The global config file should be placed in your home
+directory and called `.opentree`.
+
+The global config file contains sections, each of which contain a list of
+variables (See [INI file format](https://en.wikipedia.org/wiki/INI_file)).  The 
+global config file should contain an `[opentree]` section, as in the
+file `config.global.example`:
+
+    [opentree]
+    home = /home/USER/OpenTree
+    peyotl = %(home)s/peyotl
+    phylesystem = %(home)s/phylesystem
+    ott = %(home)s/ott/ott2.9draft12/
+    collections = %(home)s/collections
+
+#### The `home` variable in section `[opentree]`
+If you do install multiple packages under the same parent directory
+(as above),
+you can define a variable such as `home` to point to the parent directory.
+Then you can reference that directory by writing `%(home)s` in other
+variables in the same section.
+
+#### Initializing `~/.opentree`
+You can initialize the global config file by editing a copy of
+`globalconfig.example` and then moving it to your home directory:
+```
+$ cp config.global.example config.global
+... edit config.global here ...
+$ mv config.global ~/.opentree
+```
+
+### Synthesis Configuration file
+
+Before running propinquity, you'll also need to initialize a synthesis
+`config` file that is expected to exist in your PROPINQUITY_OUT_DIR. The 
 default PROPINQUITY_OUT_DIR is the current directory. So the default location
-is simply `./config`
+is simply `./config`.
+
+The synthesis config file does not need to contain the [opentree]
+section.  However, variables set in the synthesis config file will
+override any values set in the global config file.
 
 If you do NOT want to build to an output directory (see above), then you'll need the
 configuration file to be called `config` in the top or your propinquity directory.
@@ -56,47 +95,10 @@ If you are using an output file, you can simply use:
 (if you going to use one of the `bin/build_at_dir.sh myconfig ${PROPINQUITY_OUT_DIR}` invocations
 mentioned above).
 
-
-The config file contains sections, each of which contain settings for variables,
-following the [INI file format](https://en.wikipedia.org/wiki/INI_file).  These
-settings may be tweaked to describe the location of installed
-software, the collections used for synthesis, etc.
-
-The [opentree] section might look like this:
-
-    [opentree]
-    home = /home/USER/OpenTree
-    peyotl = %(home)s/peyotl
-    phylesystem = %(home)s/phylesystem
-    ott = %(home)s/ott/ott2.9draft12/
-    collections = %(home)s/collections
-
-This describes a configuration file the where peyotl, propinquity,
-phylesystem, collections, and the OTT directories are all located
-inside a single `OpenTree` directory. This is not necessary, but is
-one way of doing things.
-
-If you do install multiple packages under the same parent directory,
-you can define a variable such as `home` to point to the parent directory.
-Then you can reference that directory by writing `%(home)s` in other
-variables in the same section.
-
-To save space, from now on we will write {opentree.peyotl} to mean the location of Peyotl
-as defined in the `config` file.  Thus a command line
-
-    $ ls {opentree.ott}/taxonomy.tsv
-
-really means
-
-    $ ls /home/USER/OpenTree/ott/ott2.9draft12/taxonomy.tsv
-
-if the variables in the config file are defined as above.
-
-
 ### Software prerequisites
 
   1. A local version of the OTT taxonomy. See http://files.opentreeoflife.org/ott/
-  with a config entry pointing to it in the `opentree` section.
+  with a config entry in `~/.opentree` pointing to it in the `[opentree]` section.
 
       [opentree]
       ...
@@ -105,7 +107,7 @@ if the variables in the config file are defined as above.
 
 
   1. [peyotl](https://github.com/mtholder/peyotl) should be downloaded and installed
-  with an config entry pointing to it:
+  with a config entry in `~/.opentree` pointing to it:
 
       [opentree]
       ...
@@ -117,25 +119,29 @@ if the variables in the config file are defined as above.
 
 
   1. A local copy of the [phylesystem-1](https://github.com/opentreeoflife/phylesystem-1)
-  repo with a config entry pointing to the parent of the shards directory
+  repo with a config entry in `~/.opentree` pointing to the parent of the shards directory
 
       [opentree]
       ...
       phylesystem = %(home)s/phylesystem
       ...
 
-  The actual `phylesystem-1` repo cloned from git should be in a directory `{opentree.phylesystem}/shards/phylesystem-1`
+  The actual `phylesystem-1` repo cloned from git should be in a
+  directory `{opentree.phylesystem}/DIR/shards/phylesystem-1`, where
+  `{opentree.phylesystem}` is the directory referred to above.
 
 
   1. A local copy of the [collections-1](https://github.com/opentreeoflife/collections-1) repo with a config entry
-  pointing to the parent of the shards directory
+  in `~/.opentree` pointing to the parent of the shards directory
 
       [opentree]
       ...
-      phylesystem = %(home)s/collections
+      collections = %(home)s/collections
       ...
 
-  The actual `collections-1` repo cloned from git should be in a directory `{opentree.collections}/shards/collections-1`
+  The actual `collections-1` repo cloned from git should be in a
+  directory `{opentree.collections}/shards/collections-1`, where
+  `{opentree.collections}` is the directory referred to above. 
 
   1. [otcetera](https://github.com/mtholder/otcetera)
 
@@ -163,29 +169,30 @@ if the variables in the config file are defined as above.
     collections = opentreeoflife/plants opentreeoflife/metazoa opentreeoflife/fungi opentreeoflife/safe-microbes
     root_ott_id = 93302
 
+    $ cat ~/.opentree
     [opentree]
     home = /home/USER/OpenTree
     peyotl = %(home)s/peyotl
     phylesystem = %(home)s/phylesystem
     ott = %(home)s/ott/ott2.9draft12/
     collections = %(home)s/collections
-    $ bin/config_checker.py opentree.peyotl config
+    $ bin/config_checker.py opentree.peyotl config ~/.opentree
     /home/USER/OpenTree/peyotl
-    $ ls $(bin/config_checker.py opentree.peyotl config)
+    $ ls $(bin/config_checker.py opentree.peyotl config ~/.opentree)
     ...
     peyotl
     ...
     setup.py
     ...
-    $ bin/config_checker.py opentree.ott config
+    $ bin/config_checker.py opentree.ott config ~/.opentree
     /home/USER/OpenTree/ott/ott2.9draft12/
-    $ ls $(bin/config_checker.py opentree.ott config)
+    $ ls $(bin/config_checker.py opentree.ott config ~/.opentree)
     ...
     taxonomy.tsv
     ...
-    $ bin/config_checker.py opentree.phylesystem config
+    $ bin/config_checker.py opentree.phylesystem config ~/.opentree
     /home/USER/OpenTree/phylesystem
-    $ ls $(bin/config_checker.py opentree.phylesystem config)/shards/phylesystem-1
+    $ ls $(bin/config_checker.py opentree.phylesystem config ~/.opentree)/shards/phylesystem-1
     next_study_id.json  README.md  study/
 
 
@@ -268,8 +275,9 @@ otc-displayed-stats ../cleaned_ott/cleaned_ott.tre draftversion4.tre $(cat nonem
 
   1. Follow the setup steps mentioned above to install the prerequisites
 
-  2. It is helpful to have a `config.local` file that has only local filepaths for the prerequisites.
+  2. It is helpful to have a `~/.opentree` file that has only local filepaths for the prerequisites.
   for instance on MTH's machine this file contains just:
+  
     [opentree]
     home = /home/opentree/Documents
     peyotl = %(home)s/peyotl
@@ -284,9 +292,7 @@ otc-displayed-stats ../cleaned_ott/cleaned_ott.tre draftversion4.tre $(cat nonem
 
   5. To build the tree at directory `../opentreeX.XX` use:
 
-    cp config.local opentreeX.XX.config
-    cat config.opentree.synth >> opentreeX.XX.config
-    ./bin/build_at_dir.sh opentreeX.XX.config ../opentreeX.XX
+    ./bin/build_at_dir.sh config.opentree.synth ../opentreeX.XX
 
 That script uses `bin/opentree_rebuild_from_latest.sh` to configure the environment 
 to run `bin/rebuild_from_latest.sh` without you having

@@ -1,0 +1,6 @@
+[opentree]
+home = /home/USER/OpenTree
+peyotl = %(home)s/peyotl
+phylesystem = %(home)s/phylesystem
+ott = %(home)s/ott/ott2.9draft12/
+collections = %(home)s/collections
