@@ -36,7 +36,9 @@ clean1:
 # "cleaned_ott" has dubious taxa pruned off. should check against treemachine and smasher versions
 $(PROPINQUITY_OUT_DIR)/cleaned_ott/root_ott_id.txt: $(CONFIG_FILENAME)
 	@if ! test -d $(PROPINQUITY_OUT_DIR)/cleaned_ott ; then mkdir -p $(PROPINQUITY_OUT_DIR)/cleaned_ott ; fi
-	./bin/config_checker.py synthesis.root_ott_id $(CONFIG_FILENAME) > $(PROPINQUITY_OUT_DIR)/cleaned_ott/.raw_root_ott_id.txt
+	if ! ./bin/config_checker.py synthesis.root_ott_id $(CONFIG_FILENAME) > $(PROPINQUITY_OUT_DIR)/cleaned_ott/.raw_root_ott_id.txt ; then \
+	   otc-taxonomy-parser --config $(PROPINQUITY_OUT_DIR)/config -R > $(PROPINQUITY_OUT_DIR)/cleaned_ott/.raw_root_ott_id.txt ; \
+	fi ; \
 	if ! diff $(PROPINQUITY_OUT_DIR)/cleaned_ott/.raw_root_ott_id.txt $(PROPINQUITY_OUT_DIR)/cleaned_ott/root_ott_id.txt 2>/dev/null; then mv $(PROPINQUITY_OUT_DIR)/cleaned_ott/.raw_root_ott_id.txt $(PROPINQUITY_OUT_DIR)/cleaned_ott/root_ott_id.txt ; fi
 
 $(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaning_flags.txt: $(CONFIG_FILENAME)

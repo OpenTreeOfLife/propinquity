@@ -64,3 +64,4 @@ if __name__ == '__main__':
         
     # If no default complain that none of the files have it
     errstream('Could not find a [{}] section with a valid "{}" setting.'.format(props[0],props[1]))
+    sys.exit(1)
