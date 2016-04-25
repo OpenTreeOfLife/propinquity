@@ -1,2 +1,2 @@
-examples/1/newicks/xx_1_t1.tre
-examples/1/newicks/xx_1_t2.tre
+examples/1/newicks/xx_1@t1.tre
+examples/1/newicks/xx_1@t2.tre
