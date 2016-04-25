@@ -9,7 +9,7 @@ config -> "cleaned_ott/cleaning_flags.txt"
 
 "phylo_input/study_tree_pairs.txt" -> "exemplified_phylo/args.txt"
 
-"phylo_input/study_tree_pairs.txt" -> "otc-nonterminalstoexemplars"
+"cleaned_ott/cleaned_ott.tre" -> "otc-nonterminalstoexemplars"
 "exemplified_phylo/args.txt" -> "otc-nonterminalstoexemplars"
 "cleaned_phylo/phylo_inputs_cleaned.txt" -> "otc-nonterminalstoexemplars"
 "otc-nonterminalstoexemplars" -> "exemplified_phylo/nonempty_trees.txt"
