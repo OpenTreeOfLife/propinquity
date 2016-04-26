@@ -59,7 +59,7 @@ do
     fi
     fn="$(basename $i)"
     stem="$(echo $fn | sed -e 's/\.tre$//')"
-    tree_id="$(echo $stem | sed -E 's/^.*_([^_]+)$/\1/')"
+    tree_id="$(echo $stem | sed -E 's/^.*@(.+)$/\1/')"
     echo $tree_id
     echo $stem >> $PROPINQUITY_OUT_DIR/phylo_input/study_tree_pairs.txt
     python "${PEYOTL_ROOT}/scripts/nexson/propinquity_newick_to_nexson.py" "--ids=${tree_id}" $i > $PROPINQUITY_OUT_DIR/phylo_snapshot/"${stem}.json"
