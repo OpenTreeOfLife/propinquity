@@ -55,13 +55,13 @@ echo > phylo_input/study_tree_pairs.txt
 
 echo > phylo_snapshot/concrete_rank_collection.json
 echo > cleaned_phylo/needs_updating.txt
-echo > cleaned_phylo/root_ott_id.txt
+otc-taxonomy-parser -R --config=config > cleaned_phylo/root_ott_id.txt
 echo > cleaned_phylo/cleaning_flags.txt
 
 echo 0 > phylo_snapshot/git_shas.txt
 echo 0 > cleaned_ott/ott_version.txt
 echo > cleaned_ott/cleaning_flags.txt
-echo > cleaned_ott/root_ott_id.txt
+otc-taxonomy-parser -R --config=config > cleaned_ott/root_ott_id.txt
 echo > cleaned_phylo/needs_updating.txt
 cp $phyloranking cleaned_phylo/phylo_inputs_cleaned.txt
 #cp $phyloranking phylo_input/study_tree_pairs.txt
