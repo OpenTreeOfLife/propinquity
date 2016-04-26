@@ -22,21 +22,33 @@ if test -z "$PEYOTL_ROOT" ; then
     exit 1
 fi
 
-echo "[opentree]" > config
-echo "ott=${ottdir}" >> config
-echo >> config
-echo "[synthesis]" >> config
-echo "collections = " >> config
-echo >> config
-echo "[taxonomy]" >> config
-echo "cleaning_flags = " >> config
+PROPINQUITY_OUT_DIR=${PROPINQUITY_OUT_DIR}
 
-touch phylo_input/rank_collection.json
+CONFIG=$PROPINQUITY_OUT_DIR/config
 
-if test -f phylo_input/study_tree_pairs.txt
-then
-    rm phylo_input/study_tree_pairs.txt
-fi
+#mkdir -p $PROPINQUITY_OUT_DIR/phylesystem/shards/phylesystem-1/study/
+
+echo "[opentree]" > $CONFIG
+echo "ott=${ottdir}" >> $CONFIG
+echo "phylesystem=$PROPINQUITY_OUT_DIR/phylesystem" >> $CONFIG
+echo "collections=$PROPINQUITY_OUT_DIR/collections" >> $CONFIG
+echo >> $CONFIG
+echo "[synthesis]" >> $CONFIG
+echo "collections = " >> $CONFIG
+echo >> $CONFIG
+echo "[taxonomy]" >> $CONFIG
+echo "cleaning_flags = " >> $CONFIG
+
+mkdir -p $PROPINQUITY_OUT_DIR/phylo_input
+mkdir -p $PROPINQUITY_OUT_DIR/phylo_snapshot
+
+# 1. fake extraction of collecton list
+touch $PROPINQUITY_OUT_DIR/phylo_input/collections.txt
+
+# 2. fake aggregation of synth collections
+touch $PROPINQUITY_OUT_DIR/phylo_input/rank_collection.json
+
+# 3. fake export of nexson files, and fake generation of study tree pairs
 set -x
 for i in $(cat "${phyloranking}")
 do
@@ -49,28 +61,10 @@ do
     stem="$(echo $fn | sed -e 's/\.tre$//')"
     tree_id="$(echo $stem | sed -E 's/^.*_([^_]+)$/\1/')"
     echo $tree_id
-    echo $stem >> phylo_input/study_tree_pairs.txt
-    python "${PEYOTL_ROOT}/scripts/nexson/propinquity_newick_to_nexson.py" "--ids=${tree_id}" $i > phylo_snapshot/"${stem}.json"
+    echo $stem >> $PROPINQUITY_OUT_DIR/phylo_input/study_tree_pairs.txt
+    python "${PEYOTL_ROOT}/scripts/nexson/propinquity_newick_to_nexson.py" "--ids=${tree_id}" $i > $PROPINQUITY_OUT_DIR/phylo_snapshot/"${stem}.json"
 done
 
-echo > phylo_input/collections.txt
-echo > phylo_input/rank_collection.json
-echo > phylo_input/study_tree_pairs.txt
-
-echo > phylo_snapshot/concrete_rank_collection.json
-echo > cleaned_phylo/needs_updating.txt
-otc-taxonomy-parser -R --config=config > cleaned_phylo/root_ott_id.txt
-echo > cleaned_phylo/cleaning_flags.txt
-
-echo 0 > phylo_snapshot/git_shas.txt
-echo 0 > cleaned_ott/ott_version.txt
-echo > cleaned_ott/cleaning_flags.txt
-otc-taxonomy-parser -R --config=config > cleaned_ott/root_ott_id.txt
-echo > cleaned_phylo/needs_updating.txt
-cp $phyloranking cleaned_phylo/phylo_inputs_cleaned.txt
-#cp $phyloranking phylo_input/study_tree_pairs.txt
-#sed 's/\.tre/\.json/' $phyloranking > cleaned_phylo/needs_updating.txt
-cp $phyloranking exemplified_phylo/args.txt
-
-echo > cleaned_phylo/root_ott_id.txt
-bin/fake-collection.py $(cat "${phyloranking}") > phylo_snapshot/concrete_rank_collection.json
+# 4. fake export_studies_from_collection
+bin/fake-collection.py $(cat "${phyloranking}") > $PROPINQUITY_OUT_DIR/phylo_snapshot/concrete_rank_collection.json
+touch $PROPINQUITY_OUT_DIR/phylo_snapshot/git_shas.txt
