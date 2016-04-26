@@ -11,10 +11,14 @@ then
     echo "build-from-newicks.sh: expecting the second argument to be a file listing the path to the newick files"
     exit 1
 fi
-PEYOTL_ROOT=$(bin/config_checker.py opentree.peyotl config ~/.opentree)
-if test -z "$PEYOTL_ROOT"
-then
-    echo "currently you need to have PEYOTL_ROOT in your env set to your local clone of https://github.com/mtholder/peyotl.git"
+
+if test -z "$PEYOTL_ROOT" ; then
+    PEYOTL_ROOT=$(bin/config_checker.py opentree.peyotl ~/.opentree)
+fi
+
+if test -z "$PEYOTL_ROOT" ; then
+    echo "Currently you need to have PEYOTL_ROOT in your env set to your local clone of https://github.com/mtholder/peyotl.git"
+    echo "Alternatively you can set 'peyotl=...' in section [opentree] in ~/.opentree"
     exit 1
 fi
 
