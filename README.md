@@ -5,10 +5,6 @@ Propinquity is a make-based pipeline for constructing a synthetic tree of life.
 It takes as input a collection of phylogenetic trees from the Open Tree of Life
 datastore and a local copy of the Open Tree of Life Taxonomy. See the [collections documentation](https://github.com/OpenTreeOfLife/opentree/wiki/Working-with-tree-collections) for input on putting trees into collections.
 
-[[Setup]]
-[[Usage]]
-[[Artifacts]]
-[[Sketch]]
 
 ## Setup
 ### Inplace build vs output directory
@@ -277,13 +273,14 @@ otc-displayed-stats ../cleaned_ott/cleaned_ott.tre draftversion4.tre $(cat nonem
 
   2. It is helpful to have a `~/.opentree` file that has only local filepaths for the prerequisites.
   for instance on MTH's machine this file contains just:
-  
+<pre>
     [opentree]
     home = /home/opentree/Documents
     peyotl = %(home)s/peyotl
     phylesystem = %(home)s/phylesystem
     ott = %(home)s/ott/ott2.9draft12/
     collections = %(home)s/phylesystem
+</pre>
 
   3. Edit `config.opentree.synth` to increment the `synth_id` to the next version. 
 
