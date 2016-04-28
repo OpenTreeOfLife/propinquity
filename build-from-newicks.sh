@@ -17,13 +17,22 @@
 #   + We could perhaps put a cleaning_flags file in the example directories...
 #   + Should we then just have a single phylo-rankings.txt file per directory?
 
-ottdir="${OTT_DIR}"
 phyloranking="${1}"
+
+PROPINQUITY_OUT_DIR=${PROPINQUITY_OUT_DIR:-.}
+
+ottdir="${OTT_DIR}"
+if test -z "${ottdir}"
+then
+    ottdir=$(bin/config_checker.py opentree.ott ~/.opentree)
+fi
+
 if test -z "${ottdir}"
 then
     echo "build-from-newicks.sh: expecting OTT_DIR to be in your environment and to specify the taxonomy directory"
     exit 1
 fi
+
 if ! test -d "${ottdir}"
 then
     echo "build-from-newicks.sh: OTT_DIR is set, but is not a directory:"
@@ -45,8 +54,6 @@ if test -z "$PEYOTL_ROOT" ; then
     echo "Alternatively you can set 'peyotl=...' in section [opentree] in ~/.opentree"
     exit 1
 fi
-
-PROPINQUITY_OUT_DIR=${PROPINQUITY_OUT_DIR}
 
 CONFIG=$PROPINQUITY_OUT_DIR/config
 
