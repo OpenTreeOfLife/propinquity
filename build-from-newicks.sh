@@ -19,14 +19,20 @@
 
 ottdir="${OTT_DIR}"
 phyloranking="${1}"
-if ! test -d "${ottdir}"
+if test -z "${ottdir}"
 then
     echo "build-from-newicks.sh: expecting OTT_DIR to be in your environment and to specify the taxonomy directory"
     exit 1
 fi
+if ! test -d "${ottdir}"
+then
+    echo "build-from-newicks.sh: OTT_DIR is set, but is not a directory:"
+    echo "  OTT_DIR=${OTT_DIR}"
+    exit 1
+fi
 if ! test -f "${phyloranking}"
 then
-    echo "build-from-newicks.sh: expecting the second argument to be a file listing the path to the newick files"
+    echo "build-from-newicks.sh: expecting the first argument to be a file listing the path to the newick files"
     exit 1
 fi
 
