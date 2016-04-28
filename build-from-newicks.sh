@@ -66,7 +66,7 @@ echo "[synthesis]" >> $CONFIG
 echo "collections = " >> $CONFIG
 echo >> $CONFIG
 echo "[taxonomy]" >> $CONFIG
-echo "cleaning_flags = " >> $CONFIG
+echo "cleaning_flags = major_rank_conflict,major_rank_conflict_inherited,environmental,unclassified_inherited,unclassified,viral,barren,not_otu,incertae_sedis,incertae_sedis_inherited,extinct_inherited,extinct,hidden,unplaced,unplaced_inherited,was_container,inconsistent,hybrid,merged" >> $CONFIG
 
 mkdir -p $PROPINQUITY_OUT_DIR/phylo_input
 mkdir -p $PROPINQUITY_OUT_DIR/phylo_snapshot
