@@ -1,4 +1,22 @@
 #!/bin/bash
+
+# Usage (example):
+#  $ export PROPINQUITY_OUT_DIR=~/example2
+#  $ export OTT_DIR=$(pwd)/examples/2/taxonomy/
+#  $ make clean && ./build-from-newicks.sh examples/2/taxonomy/three-phylo-rankings.txt
+#  $ make -j2 all extra
+#
+#  -- Continuing with this does not work: --
+#  $ make clean
+#  $ make -j2 all extra
+#
+#  -- It doesn't work because `make clean` removes the fake files.
+#     If we make a fake phylesystem and collections, then it could work.
+#
+# * Right now we hardcode the cleaning flags to "major_rank_conflict,major_rank_conflict_inherited,environmental,unclassified_inherited,unclassified,viral,barren,not_otu,incertae_sedis,incertae_sedis_inherited,extinct_inherited,extinct,hidden,unplaced,unplaced_inherited,was_container,inconsistent,hybrid,merged"
+#   + We could perhaps put a cleaning_flags file in the example directories...
+#   + Should we then just have a single phylo-rankings.txt file per directory?
+
 ottdir="${OTT_DIR}"
 phyloranking="${1}"
 if ! test -d "${ottdir}"
@@ -26,7 +44,12 @@ PROPINQUITY_OUT_DIR=${PROPINQUITY_OUT_DIR}
 
 CONFIG=$PROPINQUITY_OUT_DIR/config
 
-#mkdir -p $PROPINQUITY_OUT_DIR/phylesystem/shards/phylesystem-1/study/
+# 0. It should be actually possible to fake phylesystem & collections repos.
+#    Then we could put the JSON files in there and check them out properly.
+#    To do this propertly we these would need to be git repos.
+#
+# mkdir -p $PROPINQUITY_OUT_DIR/phylesystem/shards/phylesystem-1/study/
+# mkdir -p $PROPINQUITY_OUT_DIR/collections/shards/collections-1/collections-by-owner/
 
 echo "[opentree]" > $CONFIG
 echo "ott=${ottdir}" >> $CONFIG
