@@ -19,6 +19,11 @@
 
 phyloranking="${1}"
 
+if ! test -z "$PROPINQUITY_OUT_DIR" && [ "${PROPINQUITY_OUT_DIR:0:1}" != "/" ] ; then
+    echo -e "build-from-newicks.sh: Error! PROPINQUITY_OUT_DIR=${PROPINQUITY_OUT_DIR} is a relative path!"
+    exit 1
+fi
+
 PROPINQUITY_OUT_DIR=${PROPINQUITY_OUT_DIR:-.}
 
 ottdir="${OTT_DIR}"
@@ -30,6 +35,11 @@ fi
 if test -z "${ottdir}"
 then
     echo "build-from-newicks.sh: expecting OTT_DIR to be in your environment and to specify the taxonomy directory"
+    exit 1
+fi
+
+if [ "${OTT_DIR:0:1}" != "/" ]; then
+    echo -e "build-from-newicks.sh: Error! OTT_DIR=${OTT_DIR} is a relative path!"
     exit 1
 fi
 
@@ -64,6 +74,7 @@ CONFIG=$PROPINQUITY_OUT_DIR/config
 # mkdir -p $PROPINQUITY_OUT_DIR/phylesystem/shards/phylesystem-1/study/
 # mkdir -p $PROPINQUITY_OUT_DIR/collections/shards/collections-1/collections-by-owner/
 
+echo -n "Generating ${PROPINQUITY_OUT_DIR}/config ... "
 echo "[opentree]" > $CONFIG
 echo "ott=${ottdir}" >> $CONFIG
 echo "phylesystem=$PROPINQUITY_OUT_DIR/phylesystem" >> $CONFIG
@@ -74,6 +85,7 @@ echo "collections = " >> $CONFIG
 echo >> $CONFIG
 echo "[taxonomy]" >> $CONFIG
 echo "cleaning_flags = major_rank_conflict,major_rank_conflict_inherited,environmental,unclassified_inherited,unclassified,viral,barren,not_otu,incertae_sedis,incertae_sedis_inherited,extinct_inherited,extinct,hidden,unplaced,unplaced_inherited,was_container,inconsistent,hybrid,merged" >> $CONFIG
+echo "done."
 
 mkdir -p $PROPINQUITY_OUT_DIR/phylo_input
 mkdir -p $PROPINQUITY_OUT_DIR/phylo_snapshot
@@ -85,7 +97,8 @@ touch $PROPINQUITY_OUT_DIR/phylo_input/collections.txt
 touch $PROPINQUITY_OUT_DIR/phylo_input/rank_collection.json
 
 # 3. fake export of nexson files, and fake generation of study tree pairs
-set -x
+echo -n "Generating nexson tree files from newick files ... "
+
 for i in $(cat "${phyloranking}")
 do
     if ! test -f "${i}"
@@ -96,11 +109,14 @@ do
     fn="$(basename $i)"
     stem="$(echo $fn | sed -e 's/\.tre$//')"
     tree_id="$(echo $stem | sed -E 's/^.*@(.+)$/\1/')"
-    echo $tree_id
+#    echo $tree_id
     echo $stem >> $PROPINQUITY_OUT_DIR/phylo_input/study_tree_pairs.txt
     python "${PEYOTL_ROOT}/scripts/nexson/propinquity_newick_to_nexson.py" "--ids=${tree_id}" $i > $PROPINQUITY_OUT_DIR/phylo_snapshot/"${stem}.json"
 done
+echo "done."
 
 # 4. fake export_studies_from_collection
+echo -n "Generating collection JSON for supplied newicks ... "
 bin/fake-collection.py $(cat "${phyloranking}") > $PROPINQUITY_OUT_DIR/phylo_snapshot/concrete_rank_collection.json
 touch $PROPINQUITY_OUT_DIR/phylo_snapshot/git_shas.txt
+echo "done."
