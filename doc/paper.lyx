@@ -3,6 +3,9 @@
 \begin_document
 \begin_header
 \textclass paper
+\begin_preamble
+\usepackage{algorithm,algpseudocode}
+\end_preamble
 \use_default_options true
 \maintain_unincluded_children false
 \language english
@@ -39,9 +42,9 @@
 \use_package stackrel 1
 \use_package stmaryrd 1
 \use_package undertilde 1
-\cite_engine basic
-\cite_engine_type default
-\biblio_style plain
+\cite_engine natbib
+\cite_engine_type authoryear
+\biblio_style plainnat
 \use_bibtopic false
 \use_indices false
 \paperorientation portrait
@@ -88,7 +91,7 @@ authors
 \begin_layout Abstract
 We present a new software pipeline for constructing a summary supertree
  from a taxonomy and a collection of curated phylogenetic inputs.
- This improved pipeline is made up of 
+ This improved pipeline is made up of the software packages 
 \emph on
 propinquity
 \emph default
@@ -105,6 +108,34 @@ peyotl
  The pipeline improves on previous supertree construction methods in that
  it satisfies the criteria of having no unsupported branches, and no unnecessary
  polytomies.
+ The reason for the inclusion and exclusion of each edge is made transparent
+ by an annotations file that we compute
+\begin_inset Foot
+status collapsed
+
+\begin_layout Plain Layout
+This is maybe not exactly true, yet.
+ But the branches that support an include edge are available.
+ 
+\end_layout
+
+\end_inset
+
+
+\begin_inset Foot
+status collapsed
+
+\begin_layout Plain Layout
+We could try to compute clearer reasons for edge non-inclusion: we could
+ determine which summary edges conflict, and report all input edges that
+ support conflicting edges.
+ We could check which supporting input edges conflict with the excluded
+ edge.
+\end_layout
+
+\end_inset
+
+.
  The supertree increases the number of phylogenetic input splits that are
  displayed, while decreasing the number of conflicts between the summary
  tree and the phylogenetic inputs.
@@ -113,7 +144,17 @@ peyotl
 propinquity
 \emph default
  pipeline decreases the amount of computer memory and processing time required
- to construct the synthesis tree by about x-fold.
+ to construct the synthesis tree by about x-fold
+\begin_inset Foot
+status collapsed
+
+\begin_layout Plain Layout
+Here we need to know how long the old pipeline took.
+\end_layout
+
+\end_inset
+
+.
  This prepares the way for the inclusion of many more input trees.
  
 \end_layout
@@ -123,9 +164,208 @@ Background
 \end_layout
 
 \begin_layout Standard
-The Open Tree of Life project is attempting to build a platform for summarizing
+The Open Tree of Life project seeks to build a platform for summarizing
  what is known about phylogenetic relationships across all of Life.
- Presenting an easy-to-interpret summary of trees that have been “curated”
+ The information to be summarized is ingested in the form of a taxonomic
+ tree (the OpenTree Taxonomy) and a collection of curated phylogenetic input
+ trees.
+ These inputs are sourced from phylogenetic trees in published papers that
+ have DOI numbers.
+ Phylogenetic inputs generally have a leaf set that is much smaller than
+ the set of leaves in the taxonomy.
+ We describe a software pipeline that summarizes and integrates these smaller
+ source trees and the taxonomy tree into a single supertree containing all
+ known taxa.
+ We assume that the source trees are rooted, and our supertree is also rooted.
+\end_layout
+
+\begin_layout Paragraph
+Goals
+\end_layout
+
+\begin_layout Standard
+We seek to build a summary supertree that represents its source trees in
+ an easy-to-interpret fashion.
+ In keeping with the desire to have a transparently justifiable supertree,
+ we also produce an annotations file that relates each supertree edge to
+ the input tree edges that support it.
+ In order to aid in interpretation of the supertree, we require that each
+ supertree edge be supported by at least one input tree edge.
+ In addition to aiding interpretability, this requirement keeps the supertree
+ from arbitrarily representing information that comes from none of the input
+ trees.
+ Likewise, we require that the supertree have no unnecessary polytomies.
+ Thus, for each input edge that is 
+\emph on
+not
+\emph default
+ included, we can point to a reason for non-inclusion by showing that the
+ input edge conflicts with some node/edge of the summary tree.
+ We also seek to include all taxa from the taxonomy in the supertree.
+ These optimality criteria help to define what it means for the supertree
+ to represent the input trees, as well as justifying and explaining why
+ various features of the supertree exist.
+ 
+\end_layout
+
+\begin_layout Standard
+We note here that while our supertree satisfies these optimality criteria,
+ there is not necessarily a 
+\emph on
+unique
+\emph default
+ optimum.
+ We also seek to construct a supertree that represents as many input tree
+ edges as possible.
+ Since non-included input tree edges must conflict with the supertree (or
+ they would have been added), this criterion is the same as minimizing the
+ number of input edges that conflict with the taxonomy.
+\end_layout
+
+\begin_layout Paragraph
+Approach
+\end_layout
+
+\begin_layout Standard
+Any approach to supertree construction must deal with the need to adjudicate
+ between conflicting input trees.
+ We choose to deal with conflict by ranking the input trees, and preferring
+ to include edges from higher-ranked trees.
+ Ranking is perhaps questionable, because it does not mediate conflicts
+ based on the relative amount of evidence for each alternative.
+ However, it is a reasonable starting point.
+ This is because it has the benefits of making it easy to see why some groups
+ are included or not (transparency), and because it allows simpler and cleaner
+ algorithms.
+ However, we note that if an edge 
+\begin_inset Formula $c$
+\end_inset
+
+ conflicts with a higher-ranked edge 
+\begin_inset Formula $b$
+\end_inset
+
+, then 
+\begin_inset Formula $b$
+\end_inset
+
+ may still be included in the supertree.
+ This can occur when the higher ranked edge 
+\begin_inset Formula $b$
+\end_inset
+
+ conflicts with a yet-higher ranked edge 
+\begin_inset Formula $a$
+\end_inset
+
+, and thus 
+\begin_inset Formula $b$
+\end_inset
+
+ is not included.
+ In that case, it will be possible for 
+\begin_inset Formula $e$
+\end_inset
+
+ to be represented in the summary tree.
+ 
+\series bold
+Add to example.
+\end_layout
+
+\begin_layout Standard
+In order to produce a comprehensive supertree, we also require that the
+ ranked list of input trees contain a rooted taxonomy tree.
+ Unlike other input trees, this tree is require to contain all taxa, and
+ thus has the maximal leaf set.
+ We make the taxonomy tree the lowest ranked tree.
+ This new formulation is the formulation of the 
+\begin_inset Quotes eld
+\end_inset
+
+taxonomic supertree problem
+\begin_inset Quotes erd
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+In our current formulation, the taxonomy tree is also unique in that the
+ taxonomy is the only source of taxonomic names.
+ Each node in the taxonomy tree corresponds to a named group.
+ Taxonomic groups are identified in the summary supertree by finding a branch
+ (or 
+\begin_inset Quotes eld
+\end_inset
+
+node
+\begin_inset Quotes erd
+\end_inset
+
+) that has exactly the same include|exclude relationship.
+ In keeping with this, the taxonomy supertree can meaningfully possess degree-tw
+o nodes.
+ Although these nodes can be removed without affecting the relationships
+ of the leaves, they do represent nested taxonomic groups that contain exactly
+ one subgroup, such as 
+\series bold
+example
+\series default
+.
+ 
+\end_layout
+
+\begin_layout Subsection
+Non-terminals as tips
+\end_layout
+
+\begin_layout Standard
+Many input trees have tips that are not species, but higher order taxonomic
+ group.
+ In many cases, this means that a phylogenetic analysis was performed with
+ a single species that stands for a larger group.
+ In such cases, we do not want to assume that the group used as a tip is
+ in fact monophyletic.
+ 
+\end_layout
+
+\begin_layout Section
+Algorithmic approach
+\end_layout
+
+\begin_layout Standard
+In order to make the supertree construction more tractable, we prune the
+ taxonomy by removing tips that are not present in any input tree, on the
+ theory that these tips cannot affect conflict resolution, and can easily
+ be added-back after the supertree problem is solved.
+\end_layout
+
+\begin_layout Standard
+We also take a divide-and-conquer approach by dividing the supertree into
+ subproblems along edges of the taxonomy that are uncontested by any of
+ the input trees.
+ This approach therefore forces monophyly for these groups, which might
+ (possibly?) be non-optimal.
+ However, the downsides of this approach seem minimal, compared to the improveme
+nt in scalability.
+ We thus divide the supertree problem into 
+\begin_inset Quotes eld
+\end_inset
+
+subproblems
+\begin_inset Quotes erd
+\end_inset
+
+, and apply our solver to each subproblem.
+\end_layout
+
+\begin_layout Standard
+---
+\end_layout
+
+\begin_layout Standard
+Presenting an easy-to-interpret summary of trees that have been “curated”
  is one component of that effort.
  We seek to find a summary tree that
 \end_layout
@@ -264,6 +504,157 @@ Second, when solving sub-problems, we sequentially incorporate splits from
  Using the BUILD algorithm to construct the subproblem summary tree satisfies
  criterion 3, because trees from the BUILD algorithm do not contain unsupported
  branches.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float algorithm
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+begin{algorithmic}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+Require An ordered list of $M$ splits, $
+\backslash
+mathcal{R} = [R_1, R_2, R_3, 
+\backslash
+ldots, R3, 
+\backslash
+ldots, R_M]$
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+State $
+\backslash
+mathcal{C} = [R_1]$
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+For{each split $i$ in $[2, 3 
+\backslash
+ldots M]$}
+\end_layout
+
+\begin_layout Plain Layout
+
+   
+\backslash
+State $
+\backslash
+mathcal{T} 
+\backslash
+leftarrow 
+\backslash
+mathcal{C} + R_i$ 
+\backslash
+Comment{where `+' means concatenating 2 lists}
+\end_layout
+
+\begin_layout Plain Layout
+
+   
+\backslash
+If{
+\backslash
+textsc{BUILD}$(
+\backslash
+mathcal{T})$ does not return null}
+\end_layout
+
+\begin_layout Plain Layout
+
+      
+\backslash
+State $
+\backslash
+mathcal{C} 
+\backslash
+leftarrow 
+\backslash
+mathcal{T}$
+\end_layout
+
+\begin_layout Plain Layout
+
+   
+\backslash
+EndIf
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+EndFor{}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+State
+\backslash
+Return $
+\backslash
+mathcal{C}$
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+end{algorithmic}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "alg:ConsistentSplitsFromRankedList"
+
+\end_inset
+
+ConsistentSplitsFromRankedList
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Section
@@ -489,6 +880,17 @@ may not display a rooted triplet that is supported and uncontested, if that
 combination
 \emph default
  of other rooted triplets.
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset bibtex
+LatexCommand bibtex
+bibfiles "otcetera"
+options "plainnat"
+
+\end_inset
+
+
 \end_layout
 
 \end_body
