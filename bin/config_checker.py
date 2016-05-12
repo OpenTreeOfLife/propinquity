@@ -14,6 +14,7 @@ def errstream(msg):
 if __name__ == '__main__':
     import argparse
     import os
+    DEFAULT_CONFIG_LOCATION = os.path.expanduser('~/.opentree')
     description = 'Reports the value of a option from the first config file that contains it'
     parser = argparse.ArgumentParser(prog='config_checker.py', description=description)
     parser.add_argument('property',
@@ -23,7 +24,7 @@ if __name__ == '__main__':
 #                        choices=('cleaning_flags', ),
                         help='which property value should be printed, as in taxonomy.cleaning_flags.')
     parser.add_argument('configs',
-                        default=['config',os.path.join(os.environ['HOME'],'.opentree')],
+                        default=['config',DEFAULT_CONFIG_LOCATION],
                         nargs = '*',
                         type=str,
                         help='filepaths for a series of config files (default is ["config","~/.opentree"])')
@@ -38,9 +39,12 @@ if __name__ == '__main__':
     props = prop.split('.')
     if (len(props) != 2):
         errstream("Property '{}' should be of the form section.name".format(prop))
-
+    if os.path.exists(DEFAULT_CONFIG_LOCATION):
+        cf = [DEFAULT_CONFIG_LOCATION] + list(args.configs)
+    else:
+        cf = arg.configs
     # Look through the listed files for the the property
-    for config in args.configs:
+    for config in cf:
         p = configparser.SafeConfigParser()
         try:
             p.read(config)
