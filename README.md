@@ -150,7 +150,7 @@ mentioned above).
       $ ./configure --prefix=$HOME/local
       $ make install
 
-  Now set your PATH to include $HOME/local.    
+  Now set your PATH to include $HOME/local/bin.
 
   1. [tee](https://en.wikipedia.org/wiki/Tee_(command))
 
