@@ -8,7 +8,7 @@ datastore and a local copy of the Open Tree of Life Taxonomy. See the [collectio
 
 ## Setup
 ### Inplace build vs output directory
-If `PROPINQUITY_OUT_DIR` is in your environment when you build with 
+If `PROPINQUITY_OUT_DIR` is in your environment when you build with
 propinquity, then that directory will be used as an output for
 the synthetic tree and all of the other artifacts.
 
@@ -17,9 +17,9 @@ directory to contain a file called `config` that holds your build-specific
 configuration settings (see below)
 
 There are 3 small scripts that let you accomplish some common tasks
-without modifying your environment. These scripts take two arguments: a 
+without modifying your environment. These scripts take two arguments: a
 configuration filepath and an output file path. They copy the configuration
-file into the correct spot in the outpu directory, and then trigger the 
+file into the correct spot in the outpu directory, and then trigger the
 build operation with the appropriate output directory in the env.
 These scripts are:
   1.  `bin/build_at_dir.sh cfg out` to call the `bin/opentree_rebuild_from_latest.sh` script
@@ -36,7 +36,7 @@ the global config file. The global config file should be placed in your home
 directory and called `.opentree`.
 
 The global config file contains sections, each of which contain a list of
-variables (See [INI file format](https://en.wikipedia.org/wiki/INI_file)).  The 
+variables (See [INI file format](https://en.wikipedia.org/wiki/INI_file)).  The
 global config file should contain an `[opentree]` section, as in the
 file `config.global.example`:
 
@@ -66,7 +66,7 @@ $ mv config.global ~/.opentree
 ### Synthesis Configuration file
 
 Before running propinquity, you'll also need to initialize a synthesis
-`config` file that is expected to exist in your PROPINQUITY_OUT_DIR. The 
+`config` file that is expected to exist in your PROPINQUITY_OUT_DIR. The
 default PROPINQUITY_OUT_DIR is the current directory. So the default location
 is simply `./config`.
 
@@ -84,7 +84,7 @@ If you are using an output file, you can simply use:
 
     $ cp config.example "${PROPINQUITY_OUT_DIR}/config"
 
-(if you are calling make from your command line) or 
+(if you are calling make from your command line) or
 
     $ cp config.example myconfig
 
@@ -137,7 +137,7 @@ mentioned above).
 
   The actual `collections-1` repo cloned from git should be in a
   directory `{opentree.collections}/shards/collections-1`, where
-  `{opentree.collections}` is the directory referred to above. 
+  `{opentree.collections}` is the directory referred to above.
 
   1. [otcetera](https://github.com/mtholder/otcetera)
 
@@ -153,6 +153,10 @@ mentioned above).
   Now set your PATH to include $HOME/local/bin.
 
   1. [tee](https://en.wikipedia.org/wiki/Tee_(command))
+
+  1. md5sum
+
+  Not installed by default on OS X. If using homebrew, `brew install md5sha1sum` 
 
 
 ### Example configuration
@@ -204,14 +208,14 @@ you can run
 
     $ make && make check && make html
 
-to create a series of `index.html` files in the output directories that document and 
+to create a series of `index.html` files in the output directories that document and
   summarize the outputs produced by the pipeline.
 These html files are created using templates and information from JSON files which
   are produced either by the `make` run or using information gleaned from existing
   outputs.
 In the latter case, the calculated summaries used in the templating step are also
   stored in a corresponding `index.json` in the same directory as the `index.html`
-  to make it easy for you to get the data needed to summarize the outputs in a 
+  to make it easy for you to get the data needed to summarize the outputs in a
   different manner.
 
 ## Artifacts
@@ -282,7 +286,7 @@ otc-displayed-stats ../cleaned_ott/cleaned_ott.tre draftversion4.tre $(cat nonem
     collections = %(home)s/phylesystem
 </pre>
 
-  3. Edit `config.opentree.synth` to increment the `synth_id` to the next version. 
+  3. Edit `config.opentree.synth` to increment the `synth_id` to the next version.
 
   4. `git commit -m "version X.XX of synth tree" config.opentree.synth` will create a git commit
   of the configuration to assist in provenance tracking of the build.
@@ -291,6 +295,6 @@ otc-displayed-stats ../cleaned_ott/cleaned_ott.tre draftversion4.tre $(cat nonem
 
     ./bin/build_at_dir.sh config.opentree.synth ../opentreeX.XX
 
-That script uses `bin/opentree_rebuild_from_latest.sh` to configure the environment 
+That script uses `bin/opentree_rebuild_from_latest.sh` to configure the environment
 to run `bin/rebuild_from_latest.sh` without you having
 to modify your shell's environment.
