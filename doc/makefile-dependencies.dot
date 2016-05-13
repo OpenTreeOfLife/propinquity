@@ -9,7 +9,7 @@ config -> "cleaned_ott/cleaning_flags.txt"
 
 "phylo_input/study_tree_pairs.txt" -> "exemplified_phylo/args.txt"
 
-"phylo_input/study_tree_pairs.txt" -> "otc-nonterminalstoexemplars"
+"cleaned_ott/cleaned_ott.tre" -> "otc-nonterminalstoexemplars"
 "exemplified_phylo/args.txt" -> "otc-nonterminalstoexemplars"
 "cleaned_phylo/phylo_inputs_cleaned.txt" -> "otc-nonterminalstoexemplars"
 "otc-nonterminalstoexemplars" -> "exemplified_phylo/nonempty_trees.txt"
@@ -25,7 +25,9 @@ config -> "cleaned_ott/cleaning_flags.txt"
 "suppress_by_flag.py" [style=filled, color="#EEBBDD"]
 "suppress_by_flag.py" -> "cleaned_ott/cleaned_ott.tre"
 
-"$(addsuffix .json, $(addprefix $(COLLECTIONS_ROOT)/shards/collections-1/collections-by-owner/, $(SYNTHESIS_COLLECTIONS)))" -> "phylo_input/rank_collection.json"
+"$(addsuffix .json, $(addprefix $(COLLECTIONS_ROOT)/shards/collections-1/collections-by-owner/, $(SYNTHESIS_COLLECTIONS)))" -> "bin/reaggregate_synth_collections.sh"
+"bin/reaggregate_synth_collections.sh" [style=filled, color="#EEBBDD"]
+"bin/reaggregate_synth_collections.sh" -> "phylo_input/rank_collection.json"
 
 "phylo_input/rank_collection.json" -> "collection_export.py --export=studyID"
 "collection_export.py --export=studyID" -> "phylo_input/studies.txt"

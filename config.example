@@ -4,10 +4,3 @@ cleaning_flags = major_rank_conflict,major_rank_conflict_inherited,environmental
 [synthesis]
 collections = opentreeoflife/plants opentreeoflife/metazoa opentreeoflife/fungi opentreeoflife/safe-microbes
 root_ott_id = 93302
-
-[opentree]
-home = /home/bredelings/Devel/OpenTree
-peyotl = %(home)s/peyotl
-phylesystem = %(home)s/phylesystem
-ott = %(home)s/ott/ott2.9draft12/
-collections = %(home)s/collections

@@ -7,6 +7,9 @@ ARTIFACTS += $(PROPINQUITY_OUT_DIR)/subproblems/subproblem-ids.txt \
 	  $(PROPINQUITY_OUT_DIR)/labelled_supertree/labelled_supertree.tre \
 	  $(PROPINQUITY_OUT_DIR)/labelled_supertree/labelled_supertree_out_degree_distribution.txt \
 	  $(PROPINQUITY_OUT_DIR)/labelled_supertree/labelled_supertree_ottnames.tre \
+	  $(PROPINQUITY_OUT_DIR)/labelled_supertree/labelled_supertree_ottnames_without_monotypic.tre \
+	  $(PROPINQUITY_OUT_DIR)/labelled_supertree/labelled_supertree_simplified_ottnames.tre \
+	  $(PROPINQUITY_OUT_DIR)/labelled_supertree/labelled_supertree_simplified_ottnames_without_monotypic.tre \
 	  $(PROPINQUITY_OUT_DIR)/annotated_supertree/annotations.json
 
 
@@ -123,8 +126,29 @@ $(PROPINQUITY_OUT_DIR)/labelled_supertree/labelled_supertree_ottnames.tre: $(PRO
 		$(PROPINQUITY_OUT_DIR)/labelled_supertree/labelled_supertree.tre \
 		--taxonomy=$(OTT_DIR) \
 		--format-tax="%N ott%I" \
-		--del-monotypic \
 		> $(PROPINQUITY_OUT_DIR)/labelled_supertree/labelled_supertree_ottnames.tre
+
+$(PROPINQUITY_OUT_DIR)/labelled_supertree/labelled_supertree_simplified_ottnames.tre: $(PROPINQUITY_OUT_DIR)/labelled_supertree/labelled_supertree_ottnames.tre
+	otc-munge-names \
+		$(PROPINQUITY_OUT_DIR)/labelled_supertree/labelled_supertree_ottnames.tre \
+		>$(PROPINQUITY_OUT_DIR)/labelled_supertree/labelled_supertree_simplified_ottnames.tre \
+		2>$(PROPINQUITY_OUT_DIR)/labelled_supertree/simplified_ottnames.log
+
+$(PROPINQUITY_OUT_DIR)/labelled_supertree/labelled_supertree_simplified_ottnames_without_monotypic.tre: $(PROPINQUITY_OUT_DIR)/labelled_supertree/labelled_supertree_ottnames_without_monotypic.tre
+	otc-munge-names \
+		$(PROPINQUITY_OUT_DIR)/labelled_supertree/labelled_supertree_ottnames_without_monotypic.tre \
+		>$(PROPINQUITY_OUT_DIR)/labelled_supertree/labelled_supertree_simplified_ottnames_without_monotypic.tre \
+		2>$(PROPINQUITY_OUT_DIR)/labelled_supertree/simplified_ottnames_without_monotypic.log
+
+$(PROPINQUITY_OUT_DIR)/labelled_supertree/labelled_supertree_ottnames_without_monotypic.tre: $(PROPINQUITY_OUT_DIR)/labelled_supertree/labelled_supertree.tre
+	@if ! test -d $(PROPINQUITY_OUT_DIR)/labelled_supertree ; then mkdir -p $(PROPINQUITY_OUT_DIR)/labelled_supertree ; fi
+	cd $(PROPINQUITY_OUT_DIR) ; otc-relabel-tree \
+		$(PROPINQUITY_OUT_DIR)/labelled_supertree/labelled_supertree.tre \
+		--taxonomy=$(OTT_DIR) \
+		--format-tax="%N ott%I" \
+		--del-monotypic \
+		> $(PROPINQUITY_OUT_DIR)/labelled_supertree/labelled_supertree_ottnames_without_monotypic.tre
+
 
 # added $(PROPINQUITY_OUT_DIR)/exemplified_phylo/pruned_taxonomy_degree_distribution.txt 
 # to hack in a new annotation at the request of JAR
@@ -148,9 +172,7 @@ $(PROPINQUITY_OUT_DIR)/annotated_supertree/annotations.json: $(PROPINQUITY_OUT_D
 		$(PROPINQUITY_OUT_DIR)/annotated_supertree/preannotations1.json \
 		$(PROPINQUITY_OUT_DIR)/annotated_supertree/annotations1.json
 	@rm $(PROPINQUITY_OUT_DIR)/annotated_supertree/preannotations1.json
-	bin/gen_attributes.py \
-		--config=$(CONFIG_FILENAME) \
-		$(PROPINQUITY_OUT_DIR) \
+	bin/gen_attributes.py $(CONFIG_FILENAME) $(HOME)/.opentree --out-dir=$(PROPINQUITY_OUT_DIR) \
 		> $(PROPINQUITY_OUT_DIR)/annotated_supertree/preannotations2.json
 	bin/merge-json.py \
 		$(PROPINQUITY_OUT_DIR)/annotated_supertree/num_phylo_tips.json \
@@ -174,3 +196,5 @@ clean2:
 	rm -f $(PROPINQUITY_OUT_DIR)/subproblems/*.txt
 	rm -f $(PROPINQUITY_OUT_DIR)/subproblem_solutions/*.tre
 	rm -f $(PROPINQUITY_OUT_DIR)/annotated_supertree/*.json
+	rm -f $(PROPINQUITY_OUT_DIR)/labelled_supertree/simplified_ottnames.log
+	rm -f $(PROPINQUITY_OUT_DIR)/labelled_supertree/simplified_ottnames_without_monotypic.log

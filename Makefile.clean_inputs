@@ -3,8 +3,6 @@ SUPPRESS_FLAG_ARTIFACTS=$(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaned_ott.tre \
 	$(PROPINQUITY_OUT_DIR)/cleaned_ott/ott_version.txt \
 	$(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaning_flags.txt
 
-Makefile.clean_inputs: $(PROPINQUITY_OUT_DIR)/phylo_input/study_tree_pairs.txt
-
 ARTIFACTS += $(SUPPRESS_FLAG_ARTIFACTS) \
 	$(PROPINQUITY_OUT_DIR)/phylo_snapshot/git_shas.txt \
 	$(PROPINQUITY_OUT_DIR)/phylo_snapshot/collections_git_shas.txt \
@@ -36,7 +34,9 @@ clean1:
 # "cleaned_ott" has dubious taxa pruned off. should check against treemachine and smasher versions
 $(PROPINQUITY_OUT_DIR)/cleaned_ott/root_ott_id.txt: $(CONFIG_FILENAME)
 	@if ! test -d $(PROPINQUITY_OUT_DIR)/cleaned_ott ; then mkdir -p $(PROPINQUITY_OUT_DIR)/cleaned_ott ; fi
-	./bin/config_checker.py synthesis.root_ott_id $(CONFIG_FILENAME) > $(PROPINQUITY_OUT_DIR)/cleaned_ott/.raw_root_ott_id.txt
+	if ! ./bin/config_checker.py synthesis.root_ott_id $(CONFIG_FILENAME) > $(PROPINQUITY_OUT_DIR)/cleaned_ott/.raw_root_ott_id.txt 2>/dev/null ; then \
+	   otc-taxonomy-parser --config $(PROPINQUITY_OUT_DIR)/config -R > $(PROPINQUITY_OUT_DIR)/cleaned_ott/.raw_root_ott_id.txt ; \
+	fi ; \
 	if ! diff $(PROPINQUITY_OUT_DIR)/cleaned_ott/.raw_root_ott_id.txt $(PROPINQUITY_OUT_DIR)/cleaned_ott/root_ott_id.txt 2>/dev/null; then mv $(PROPINQUITY_OUT_DIR)/cleaned_ott/.raw_root_ott_id.txt $(PROPINQUITY_OUT_DIR)/cleaned_ott/root_ott_id.txt ; fi
 
 $(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaning_flags.txt: $(CONFIG_FILENAME)
@@ -92,7 +92,7 @@ $(PROPINQUITY_OUT_DIR)/phylo_snapshot/collections_git_shas.txt:
 	if ! diff $(PROPINQUITY_OUT_DIR)/phylo_snapshot/git_shas.txt $(PROPINQUITY_OUT_DIR)/.tmp_collections_git_shas.txt >/dev/null 2>&1 ; then mv $(PROPINQUITY_OUT_DIR)/.tmp_collections_git_shas.txt $(PROPINQUITY_OUT_DIR)/phylo_snapshot/collections_git_shas.txt ; else rm $(PROPINQUITY_OUT_DIR)/.tmp_collections_git_shas.txt ; fi
 
 $(PROPINQUITY_OUT_DIR)/phylo_snapshot/concrete_rank_collection.json: $(PROPINQUITY_OUT_DIR)/phylo_snapshot/git_shas.txt \
-																	 $(PROPINQUITY_OUT_DIR)/phylo_input/rank_collection.json
+								     $(PROPINQUITY_OUT_DIR)/phylo_input/rank_collection.json
 	@if ! test -d $(PROPINQUITY_OUT_DIR)/phylo_snapshot ; then mkdir -p $(PROPINQUITY_OUT_DIR)/phylo_snapshot ; fi
 	$(PEYOTL_ROOT)/scripts/phylesystem/export_studies_from_collection.py \
 	  --phylesystem-par=$(PHYLESYSTEM_ROOT)/shards \
@@ -137,8 +137,8 @@ $(PROPINQUITY_OUT_DIR)/exemplified_phylo/args.txt : $(PROPINQUITY_OUT_DIR)/phylo
 
 # Could we make the exemplified_phylo/*.tre files depend on INDIVIDUAL cleaned_phylo/*.tre files?
 $(PROPINQUITY_OUT_DIR)/exemplified_phylo/nonempty_trees.txt : $(PROPINQUITY_OUT_DIR)/exemplified_phylo/args.txt \
-															  $(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaned_ott.tre \
-															  $(PROPINQUITY_OUT_DIR)/cleaned_phylo/phylo_inputs_cleaned.txt
+							      $(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaned_ott.tre \
+							      $(PROPINQUITY_OUT_DIR)/cleaned_phylo/phylo_inputs_cleaned.txt
 	@if ! test -d $(PROPINQUITY_OUT_DIR)/exemplified_phylo ; then mkdir -p $(PROPINQUITY_OUT_DIR)/exemplified_phylo ; fi
 	cd $(PROPINQUITY_OUT_DIR) ; otc-nonterminals-to-exemplars \
 	  -e$(PROPINQUITY_OUT_DIR)/exemplified_phylo \

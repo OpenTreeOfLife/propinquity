@@ -47,35 +47,38 @@ def ott_version(ott_dir):
     return version
 
 def extract_filtered_flags(args):
-    cf = args.config
-    p = configparser.SafeConfigParser()
-    try:
-        p.read(cf)
-    except:
-        errstream('problem reading "{}"'.format(cf))
-        raise
-    try:
-        clean_ott_flags = p.get('taxonomy', 'cleaning_flags').strip()
-    except:
-        errstream('Could not find a [taxonomy] section with a valid "cleaning_flags" setting.')
-        raise
-    return clean_ott_flags.split(',')
+    return get_property_required(args.configs, 'taxonomy', 'cleaning_flags')
+
+def get_property(configs, section, name):
+    for config in configs:
+        p = configparser.SafeConfigParser()
+        try:
+            p.read(config)
+            return p.get(section,name).strip()
+        except:
+            pass
+
+def get_property_required(configs, section, name):
+    value = get_property(configs, section, name)
+    if value is None:
+        print >> sys.stderr , 'Could not find a [{}] section with a valid "{}" setting.'.format(section,name)
+        sys.exit(0)
+    return value
+
+def get_root_ott_id(args, ott_dir):
+    import subprocess
+    root_ott_id = get_property(args.configs, 'synthesis', 'root_ott_id')
+    if root_ott_id is None:
+       FNULL = open(os.devnull, 'w')
+       proc = subprocess.Popen(["otc-taxonomy-parser", ott_dir,"-R"], stdout=subprocess.PIPE, stderr=FNULL)
+       root_ott_id = proc.communicate()[0].strip()
+    return root_ott_id
 
 def root_taxon_name(args, ott_dir):
     import subprocess
     import os
-    cf = args.config
-    p = configparser.SafeConfigParser()
-    try:
-        p.read(cf)
-    except:
-        errstream('problem reading "{}"'.format(cf))
-        raise
-    try:
-        root_ott_id = p.get('synthesis', 'root_ott_id').strip()
-    except:
-        errstream('Could not find a [synthesis] section with a valid "root_ott_id" setting.')
-        raise
+
+    root_ott_id = get_root_ott_id(args, ott_dir)
 #    root_name = os.system("otc-taxonomy-parser -N",str(root_ott_id)])
     FNULL = open(os.devnull, 'w')
     proc = subprocess.Popen(["otc-taxonomy-parser", ott_dir,"-N",str(root_ott_id)], stdout=subprocess.PIPE, stderr=FNULL)
@@ -125,62 +128,40 @@ def get_otc_version():
         pass
     return git_sha, version, boost_version
 
-def get_synth_id(config_filename):
-    p = configparser.SafeConfigParser()
-    try:
-        p.read(config_filename)
-    except:
-        errstream('problem reading "{}"'.format(config_filename))
-        raise
-    try:
-        synth_id = p.get('synthesis', 'synth_id').strip()
-    except:
-        return '<UNKNOWN>'
+def get_synth_id(args):
+    synth_id = get_property(args.configs, 'synthesis', 'synth_id')
+    if synth_id is None:
+        synth_id = '<UNKNOWN>'
     return synth_id
 
 if __name__ == '__main__':
     import argparse
     import sys
     import os
-    errstream = sys.stderr
     description = 'Write a JSON file with some of synthesis tree attributes'
-    parser = argparse.ArgumentParser(prog='suppress-dubious', description=description)
-    parser.add_argument('--config',
-                        default='config',
+    parser = argparse.ArgumentParser(prog='gen_attributes', description=description)
+    parser.add_argument('configs',
+                        default=['config',os.path.join(os.environ['HOME'],'.opentree')],
+                        nargs = '*',
                         type=str,
-                        required=False,
-                        help='filepath of the config file (default is "config")')
-    parser.add_argument('--property',
-                        default=None,
-                        type=str,
-                        required=False,
-                        choices=('cleaning_flags', ),
-                        help='which property value should be printed.')
-    parser.add_argument('dir',
+                        help='filepaths for a series of config files (default is ["config","~/.opentree"])')
+    parser.add_argument('--out-dir',
                         default='.',
                         type=str,
-                        nargs='?',
                         help='prefix for inputs')
     args = parser.parse_args(sys.argv[1:])
 
-    parsed_config = configparser.SafeConfigParser()
-    try:
-        parsed_config.read(args.config)
-    except:
-        errstream('problem reading "{}"'.format(args.config))
-        raise
-
-    ott_dir = parsed_config.get('opentree', 'ott')
-    out_dir = args.dir
+    ott_dir = get_property_required(args.configs, 'opentree', 'ott')
+    out_dir = args.out_dir
 
     otc_sha, otc_version, otc_boost_version = get_otc_version()
 
-    peyotl_root = parsed_config.get('opentree', 'peyotl')
+    peyotl_root = get_property_required(args.configs, 'opentree', 'peyotl')
     peyotl_version, peyotl_sha = get_peyotl_version(peyotl_root)
     
     document = {}
     document["date_completed"] = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    synth_id = get_synth_id(args.config)
+    synth_id = get_synth_id(args)
 
     propinquity_sha = 'unknown'
     try:
@@ -193,7 +174,7 @@ if __name__ == '__main__':
     document["tree_id"] = synth_id
     document["synth_id"] = synth_id
     document["taxonomy_version"] = ott_version(ott_dir)
-    document["run_time"] = "15 minutes"
+    #document["run_time"] = "15 minutes"
     document["root_taxon_name"] = root_taxon_name(args, ott_dir)
     document["generated_by"] = [
         {"name":"propinquity",
