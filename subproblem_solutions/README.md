@@ -24,4 +24,4 @@ Here the `-n` argument specifies the name of the root node.  The correct
 name for this node can be extracted from the name of the subproblem file,
 as in the script above.
 
-Also see documentation for `otc-solve-subproblem` in otcetera/README.md.
+Also see documentation for `otc-solve-subproblem` in [otcetera/README.md](https://github.com/OpenTreeOfLife/otcetera#solving-a-subproblem).
