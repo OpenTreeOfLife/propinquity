@@ -68,7 +68,7 @@ HTML_ARTIFACTS = $(PROPINQUITY_OUT_DIR)/annotated_supertree/index.html \
 	$(PROPINQUITY_OUT_DIR)/subproblem_solutions/index.html \
 	$(PROPINQUITY_OUT_DIR)/subproblem_solutions/index.json \
 	$(PROPINQUITY_OUT_DIR)/phylo_snapshot/index.html \
-	$(PROPINQUITY_OUT_DIR)/phylo_snapshot/index.json 
+	$(PROPINQUITY_OUT_DIR)/phylo_snapshot/index.json
 
 all: $(PROPINQUITY_OUT_DIR)/labelled_supertree/labelled_supertree.tre \
 	 $(PROPINQUITY_OUT_DIR)/annotated_supertree/annotations.json
