@@ -166,16 +166,23 @@ Background
 \begin_layout Standard
 The Open Tree of Life project seeks to build a platform for summarizing
  what is known about phylogenetic relationships across all of Life.
- The information to be summarized is ingested in the form of a taxonomic
- tree (the OpenTree Taxonomy) with comprehensive coverage and a collection
- of curated phylogenetic input trees.
- These inputs are sourced from phylogenetic trees in published papers that
- have DOI numbers.
- Phylogenetic inputs generally have a leaf set that is much smaller than
- the comprehensive set of leaves in the taxonomy.
- We describe a software pipeline that summarizes and integrates these smaller
- source trees and the taxonomy tree into a single supertree.
- We assume that the source trees are rooted, and our supertree is also rooted.
+ This summary consists of a supertree that transparently and justifiably
+ represents phylogenetic information from a collection of curated phylogenetic
+ input trees along with a taxonomy tree.
+ The taxonomy tree has complete coverage of all leaf taxa that we are working
+ with.
+ The taxonomy tree is provided by the OpenTree Taxonomy.
+ In contrast, the phylogenetic inputs need not include all leaf taxa.
+ Input trees are sourced from phylogenies on publications with DOI numbers.
+ We assume that the taxonomy and input trees are rooted, and our supertree
+ is also rooted.
+\end_layout
+
+\begin_layout Standard
+We describe a software pipeline (propinquity) that summarizes and integrates
+ these smaller source trees and the taxonomy tree into a single supertree.
+ This software pipeline combines tools for manipulating and solving supertrees
+ and supertree subproblems (otcetera).
 \end_layout
 
 \begin_layout Paragraph
@@ -184,12 +191,12 @@ Goals
 
 \begin_layout Standard
 We seek to build a summary supertree that represents its source trees in
- an easy-to-interpret fashion.
- In keeping with the desire to have a transparently justifiable supertree,
- our pipeline also produces an annotations file that relates each supertree
- edge to the input tree edges that support it.
- In order to aid in interpretation of the supertree, we require that each
- supertree edge be supported by at least one input tree edge.
+ an transparent and justifiable fashion.
+ In order to accomplish transparency and justification, our pipeline also
+ produces an annotations file that relates each supertree edge to the input
+ tree edges that support it.
+ To aid in interpretation of the supertree, we require that each supertree
+ edge be supported by at least one input tree edge.
  In addition to aiding interpretability, this requirement keeps the supertree
  from arbitrarily representing information that comes from none of the input
  trees.
