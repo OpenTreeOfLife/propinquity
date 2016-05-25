@@ -166,16 +166,23 @@ Background
 \begin_layout Standard
 The Open Tree of Life project seeks to build a platform for summarizing
  what is known about phylogenetic relationships across all of Life.
- The information to be summarized is ingested in the form of a taxonomic
- tree (the OpenTree Taxonomy) with comprehensive coverage and a collection
- of curated phylogenetic input trees.
- These inputs are sourced from phylogenetic trees in published papers that
- have DOI numbers.
- Phylogenetic inputs generally have a leaf set that is much smaller than
- the comprehensive set of leaves in the taxonomy.
- We describe a software pipeline that summarizes and integrates these smaller
- source trees and the taxonomy tree into a single supertree.
- We assume that the source trees are rooted, and our supertree is also rooted.
+ This summary consists of a supertree that transparently and justifiably
+ represents phylogenetic information from a collection of curated phylogenetic
+ input trees along with a taxonomy tree.
+ The taxonomy tree has complete coverage of all leaf taxa that we are working
+ with.
+ The taxonomy tree is provided by the OpenTree Taxonomy.
+ In contrast, the phylogenetic inputs need not include all leaf taxa.
+ Input trees are sourced from phylogenies on publications with DOI numbers.
+ We assume that the taxonomy and input trees are rooted, and our supertree
+ is also rooted.
+\end_layout
+
+\begin_layout Standard
+We describe a software pipeline (propinquity) that summarizes and integrates
+ these smaller source trees and the taxonomy tree into a single supertree.
+ This software pipeline combines tools for manipulating and solving supertrees
+ and supertree subproblems (otcetera).
 \end_layout
 
 \begin_layout Paragraph
@@ -184,12 +191,12 @@ Goals
 
 \begin_layout Standard
 We seek to build a summary supertree that represents its source trees in
- an easy-to-interpret fashion.
- In keeping with the desire to have a transparently justifiable supertree,
- our pipeline also produces an annotations file that relates each supertree
- edge to the input tree edges that support it.
- In order to aid in interpretation of the supertree, we require that each
- supertree edge be supported by at least one input tree edge.
+ an transparent and justifiable fashion.
+ In order to accomplish transparency and justification, our pipeline also
+ produces an annotations file that relates each supertree edge to the input
+ tree edges that support it.
+ To aid in interpretation of the supertree, we require that each supertree
+ edge be supported by at least one input tree edge.
  In addition to aiding interpretability, this requirement keeps the supertree
  from arbitrarily representing information that comes from none of the input
  trees.
@@ -517,10 +524,10 @@ subproblems
 \end_layout
 
 \begin_layout Standard
----
-\end_layout
+\begin_inset Note Note
+status collapsed
 
-\begin_layout Standard
+\begin_layout Plain Layout
 Presenting an easy-to-interpret summary of trees that have been “curated”
  is one component of that effort.
  We seek to find a summary tree that
@@ -569,7 +576,7 @@ has no unnecessary polytomies:
  the input trees.
 \end_layout
 
-\begin_layout Standard
+\begin_layout Plain Layout
 The point of maximizing the number of displayed groups from input trees,
  and having no unsupported branches, is not to construct an estimate of
  the true tree, but to explain and represent the input trees well.
@@ -585,6 +592,11 @@ supported
  by a phylogenetic input if contracting that branch stops displaying a split
  from that phylogenetic input.
  
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Section
@@ -666,7 +678,7 @@ Second, when solving sub-problems, we sequentially incorporate splits from
 \begin_inset Float algorithm
 wide false
 sideways false
-status open
+status collapsed
 
 \begin_layout Plain Layout
 \begin_inset ERT
@@ -913,7 +925,453 @@ propinquity
 \end_layout
 
 \begin_layout Subsection
-Algorithms
+Export trees from collections
+\end_layout
+
+\begin_layout Standard
+The ranked list of trees is specified as an ordered list of 
+\begin_inset Quotes eld
+\end_inset
+
+collections
+\begin_inset Quotes erd
+\end_inset
+
+.
+ A collection is an ordered list of trees that is versioned using 
+\emph on
+git.
+
+\emph default
+ The ranked list of trees used in synthesis is obtained simply by concatenating
+ the collections in order.
+\end_layout
+
+\begin_layout Labeling
+\labelwidthstring 00.00.0000
+Input: List of collections 
+\begin_inset Formula $\mathcal{C}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Labeling
+\labelwidthstring 00.00.0000
+Output: List of trees 
+\begin_inset Formula $\mathcal{T}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Labeling
+\labelwidthstring 00.00.0000
+Implementation: 
+\emph on
+collection_export.py
+\emph default
+ from peyotl gets (study,tree) pairs
+\end_layout
+
+\begin_layout Subsection
+Prune the reference taxonomy
+\end_layout
+
+\begin_layout Standard
+
+\emph on
+Explanation
+\emph default
+: Not all taxa in OTT are reliable enough to belong in the summary tree.
+ The reference taxonomy producing software flags taxa in several ways (which
+ are listed here TODO: we still need real documentation of the flagging
+ system).
+ 
+\end_layout
+
+\begin_layout Labeling
+\labelwidthstring 00.00.0000
+Input: “raw” reference taxonomy with flags produced by https://github.com/OpenTre
+eOfLife/ reference-taxonomy 
+\end_layout
+
+\begin_layout Labeling
+\labelwidthstring 00.00.0000
+Output: 
+\begin_inset Formula $\mathbb{T}$
+\end_inset
+
+, the complete taxonomy for synthesis with some taxa pruned.
+ This will determine the leaf label set of the final summary tree.
+ 
+\end_layout
+
+\begin_layout Enumerate
+Current Impl.
+ now performed by 
+\emph on
+suppress-by-flag.py
+\emph default
+ from 
+\emph on
+peyotl
+\emph default
+ 
+\end_layout
+
+\begin_layout Enumerate
+Documentation needed on which flags are pruned and why.
+ 
+\end_layout
+
+\begin_layout Enumerate
+We should serve this tree somewhere as it is a crucial input for the rest
+ of the pipeline.
+\end_layout
+
+\begin_layout Subsection
+Snapshot input studies
+\end_layout
+
+\begin_layout Standard
+
+\emph on
+Explanation
+\emph default
+: For a make-based system it would be useful to copy the incoming otNexSON
+ files to a snapshot location if they differ from the version of that study
+ that is already found in that staging location.
+ 
+\end_layout
+
+\begin_layout Labeling
+\labelwidthstring 00.00.0000
+Input: local copy of phylesystem git repo, list of trees (study+tree ID
+ + optional git SHA) to be used 
+\end_layout
+
+\begin_layout Labeling
+\labelwidthstring 00.00.0000
+Output: (1) copies of the otNexSON files from the specified SHA.
+ (2) record of tree identifiers 
+\end_layout
+
+\begin_layout Standard
+Current Impl.: None - similar operation done by gcmdr.
+ TODO for Impl.: Flat file implementation needed URL for output: None
+\end_layout
+
+\begin_layout Subsection
+Snapshot input trees
+\end_layout
+
+\begin_layout Standard
+
+\emph on
+Explanation
+\emph default
+: The study files may contain multiple trees, for a make-base system it
+ would be good to have a timestamped file for each tree 
+\end_layout
+
+\begin_layout Labeling
+\labelwidthstring 00.00.0000
+Input: snapshot of otNexSON from previous step.
+ list of tree identifiers.
+ 
+\end_layout
+
+\begin_layout Labeling
+\labelwidthstring 00.00.0000
+Output: (1) one otNexSON for each tree.
+ The current naming conven- tion of studyID treeID.nexson could be used -
+ there is no need to support multiple git-SHAs per tree.
+ 
+\end_layout
+
+\begin_layout Standard
+Current Impl.: None - similar operation done by gcmdr.
+ TODO for Impl.: Flat file implementation needed URL for output: None
+\end_layout
+
+\begin_layout Subsection
+Pruning of input trees
+\end_layout
+
+\begin_layout Standard
+
+\emph on
+Explanation
+\emph default
+: To improve the chance of having a correct rooting, we prune the trees
+ to just the ingroup.
+ We also prune the tree down such that they contain no more than 1 exemplar
+ of any terminal taxon and there are no cases of the taxon for one tip containin
+g the taxon mapped to another tip.
+ 
+\end_layout
+
+\begin_layout Labeling
+\labelwidthstring 00.00.0000
+Input: snapshot of otNexSON trees from previous step.
+ 
+\end_layout
+
+\begin_layout Labeling
+\labelwidthstring 00.00.0000
+Output: (1) 
+\begin_inset Formula $\mathcal{T}$
+\end_inset
+
+, the input set of tree represented as one newick tree for each input tree
+ with internal node labels that correspond to the node ID in the otNexSON
+ of the MRCA node.
+ (2) a record of the pruning edits performed.
+ 
+\end_layout
+
+\begin_layout Standard
+Current Impl.: None - similar operation done by gcmdr.
+ TODO for Impl.: (1) Flat file implementation needed.
+ (2) record of edits needed.
+ (3) identifiers for the internal nodes would be nice for reporting the
+ provenance of edges in the summary tree.
+ (4) We should serve these trees somewhere as they are crucial inputs for
+ the rest of the pipeline.
+\end_layout
+
+\begin_layout Subsection
+Expand tips mapped to non-terminal taxa
+\end_layout
+
+\begin_layout Standard
+
+\emph on
+Explanation
+\emph default
+: As explained in section 1.6.2 (of otcetera doc), expanding tips that are
+ mapped to non-terminal taxa to the full set of their terminal descendants
+ and attaching these tips to the parent of the taxon should generate a tree
+ that correctly represents what the input tree says (without erroneously
+ claiming that the tree supports monophyly).
+ A clever implementation would note whether a descendant terminal taxon
+ occurs in other trees in the T corpus.
+ If there are multiple terminal descendant taxa in the expansion that only
+ occur in the taxonomy, then it should be fine to let the expansions just
+ contain 1 of these tips, 
+\begin_inset Formula $x$
+\end_inset
+
+.
+ This would mean that the others are pruned in the next step, but will be
+ placed in the correct spot in the final summary tree because they should
+ attach at the same parent node as the single exemplar, 
+\begin_inset Formula $x$
+\end_inset
+
+.
+ Failing to take this optimization will only mean that the pruned taxonomy
+ is too large.
+ 
+\end_layout
+
+\begin_layout Labeling
+\labelwidthstring 00.00.0000
+Input: 
+\begin_inset Formula $\mathbb{T}$
+\end_inset
+
+ and 
+\begin_inset Formula $\mathcal{T}$
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Labeling
+\labelwidthstring 00.00.0000
+Output: 
+\begin_inset Formula $\mathcal{T}_{E}$
+\end_inset
+
+ – the set of phylogenetic inputs expanded such that no leaf is mapped to
+ a non-terminal taxon.
+ 
+\end_layout
+
+\begin_layout Standard
+Current Impl.: None.
+ 
+\end_layout
+
+\begin_layout Standard
+TODO for Impl.:TODO: write this URL for output: 
+\end_layout
+
+\begin_layout Itemize
+We should probably post this set of trees, as many tools don’t deal with
+ tips that are mapped to non-terminal taxa.
+ So these trees may be the most accessible set of inputs for most interested
+ parties.
+\end_layout
+
+\begin_layout Subsection
+Prune taxonomy down to tips represented in 
+\begin_inset Formula $\mathcal{T}_{E}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+
+\emph on
+Explanation
+\emph default
+: This is just an optimization step.
+ Each terminal taxon that is only found in T, can be placed on the final
+ summary tree by creating a tree for the overlapping taxonomic inputs and
+ then grafting on the “taxonomy only” lineages.
+ This pruning makes the inputs for the subsequent steps smaller 
+\end_layout
+
+\begin_layout Labeling
+\labelwidthstring 00.00.0000
+Input: T and T E 
+\end_layout
+
+\begin_layout Labeling
+\labelwidthstring 00.00.0000
+Output: T P the pruned taxonomy 
+\end_layout
+
+\begin_layout Standard
+Current Impl.: otc-prune-taxonomy can perform this TODO for Impl.: URL for
+ output: may want to post this somewhere.
+\end_layout
+
+\begin_layout Subsection
+Decompose the inputs into subproblems of uncontested taxa 
+\end_layout
+
+\begin_layout Standard
+
+\emph on
+Explanation:
+\emph default
+ The decision to force uncontested taxa in the final summary means that
+ we can separate the problems into non-overlapping subproblems.
+ 
+\end_layout
+
+\begin_layout Labeling
+\labelwidthstring 00.00.0000
+Input: 
+\begin_inset Formula $\mathbb{T}_{P}$
+\end_inset
+
+ and 
+\begin_inset Formula $\mathcal{T}_{E}$
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Labeling
+\labelwidthstring 00.00.0000
+Output: subproblems.
+ 
+\end_layout
+
+\begin_layout Standard
+Currently expressed (1) as one newick tree file per subproblem with the
+ name SUBPROBLEMID.tre, and (2) a file called SUBPROBLEMID-tree-names.txt
+ with a treefile name on each line or “TAX- ONOMY” indicating the source
+ of each tree.
+ the SUBPROBLEMID is ‘ott’ followed by the OTT ID.
+ Current Impl.: otc-uncontested-decompose TODO for Impl.: URL for output:
+ http://phylo.bio.ku.edu/ot/export-sub-temp.tar.gz has a snapshot, but those
+ subproblems were not produced with the non-terminal tips expanded to terminals
+ so there is some wonkiness - such tips are pruned if the taxon is contested,
+ but their ID sets still affect the embedding of the deeper nodes in the
+ tree.
+ This needs to be rerun after step 2.5 is completed.
+\end_layout
+
+\begin_layout Subsection
+Simplify Subproblems
+\end_layout
+
+\begin_layout Standard
+
+\emph on
+Explanation:
+\emph default
+ As (to be) described in section 1.9 there are several operations that can
+ be per- formed that will reduce the size of the subproblems but which should
+ not compromise our ability to obtain the same subproblem solution.
+ Many subproblems are trivially solvable, so the tool that does this will
+ also be a crude solver.
+ 
+\end_layout
+
+\begin_layout Labeling
+\labelwidthstring 00.00.0000
+Input: The set of subproblems, a simplified-problems direc- tory, and a
+ solutions directory 
+\end_layout
+
+\begin_layout Labeling
+\labelwidthstring 00.00.0000
+Output: When possible, subproblem solutions and simplifications will be
+ written to the 2 output directories.
+\end_layout
+
+\begin_layout Standard
+Current Impl.: an implementation is started, but far from complete in the
+ supertree branch of peyotl TODO for Impl.:TODO: finish URL for output:
+\end_layout
+
+\begin_layout Subsection
+Solve subproblems (old - merge w/ below)
+\end_layout
+
+\begin_layout Standard
+
+\emph on
+Explanation:
+\emph default
+ Attempt to find an admissible summary tree for the set of summaries that
+ are the Maximum Sum of Weighted Input Phylogenetic Statements Displayed
+ set.
+ We probably want (1) a brute force implementation that we can use for small
+ subproblems so we do not have to worry about errors from finding local
+ optima, and (2) one or more heuristics.
+ 
+\end_layout
+
+\begin_layout Labeling
+\labelwidthstring 00.00.0000
+Input: a “raw” subproblem from step 2.7 or a simplified subproblem from step
+ 2.8.
+ 
+\end_layout
+
+\begin_layout Labeling
+\labelwidthstring 00.00.0000
+Output: a tree for each subproblem - stored in a solutions dir under the
+ name SUBPROBLEMID.tre Current Impl.: treemachine may provide one solver.
+ 
+\end_layout
+
+\begin_layout Standard
+TODO for Impl.: exact impl and, perhaps we need another approximate solver
+ URL for output:
+\end_layout
+
+\begin_layout Subsection
+Solve subproblems (new - merge w/ above)
 \end_layout
 
 \begin_layout Standard
@@ -928,6 +1386,10 @@ For the sub-problem solver, we make iterative use of the BUILD algorithm.
 
 \begin_layout Itemize
 Add algorithm from TEX document.
+\end_layout
+
+\begin_layout Subsection
+Collapse unsupported nodes -- stopped here copying from otcetera doc.
 \end_layout
 
 \begin_layout Section
