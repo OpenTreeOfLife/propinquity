@@ -367,65 +367,11 @@ height_special "totalheight"
 status open
 
 \begin_layout Plain Layout
-Example (#2):
-\end_layout
-
-\begin_layout Itemize
-tree1 has 
-\begin_inset Formula $((a_{1},b),(c,d))$
-\end_inset
-
-.
-\end_layout
-
-\begin_deeper
-\begin_layout Itemize
-\begin_inset Formula $\alpha=a_{1}b|c\,\bullet$
-\end_inset
-
-
-\end_layout
-
-\end_deeper
-\begin_layout Itemize
-tree2 has 
-\begin_inset Formula $((a_{1},c),(b,d))$
-\end_inset
-
-
-\end_layout
-
-\begin_deeper
-\begin_layout Itemize
-\begin_inset Formula $\beta=a_{1}c|b\,\bullet$
-\end_inset
-
-
-\end_layout
-
-\end_deeper
-\begin_layout Itemize
-tree3 has 
-\begin_inset Formula $(((a_{1},a_{2}),a_{3}),b,c)$
-\end_inset
-
-
-\end_layout
-
-\begin_deeper
-\begin_layout Itemize
-\begin_inset Formula $\gamma=a_{1}a_{2}|a_{3}bc\,\bullet$
-\end_inset
-
-
-\end_layout
-
-\begin_layout Plain Layout
 Here 
 \begin_inset Formula $\beta$
 \end_inset
 
- conflict with 
+ conflicts with 
 \begin_inset Formula $\alpha$
 \end_inset
 
@@ -433,27 +379,72 @@ Here
 \begin_inset Formula $\gamma$
 \end_inset
 
- conflicts with 
+, but 
 \begin_inset Formula $\alpha$
 \end_inset
 
-.
- Although actually 
-\begin_inset Formula $\gamma\implies\alpha$
-\end_inset
-
-, since you can get 
-\begin_inset Formula $\alpha$
-\end_inset
-
- from 
+ is consistent with 
 \begin_inset Formula $\gamma$
 \end_inset
 
- by merely removing taxa.
+.
+ For unrooted splits, we have 
 \end_layout
 
-\end_deeper
+\begin_layout Itemize
+\begin_inset Formula $\alpha=A_{1}A_{2}A_{3}|B_{1}B_{2}B_{3}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $\beta=A_{1}B_{1}|A_{2}A_{3}B_{2}B_{3}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $\gamma=A_{1}A_{2}|A_{3}B_{1}B_{2}B_{3}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+We could simplify this to the following, where 
+\begin_inset Formula $\bullet$
+\end_inset
+
+ indicates the root.
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $\alpha=A_{1}A_{2}A_{3}|B_{1}\bullet$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $\beta=A_{1}B_{1}|A_{2}A_{3}\bullet$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $\gamma=A_{1}A_{2}|A_{3}B_{1}\bullet$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+Next: modify example #2 to have this pattern.
+\end_layout
+
 \end_inset
 
 
@@ -973,7 +964,7 @@ import READMEs?
 \begin_inset Float figure
 wide false
 sideways false
-status collapsed
+status open
 
 \begin_layout Plain Layout
 \align center
