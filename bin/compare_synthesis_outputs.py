@@ -102,6 +102,10 @@ def subproblem_diff(dir1,dir2):
     countmismatch = 0
     countmismatch += compare_lists("subproblems",subproblems1,subproblems2,True)
 
+# largest subproblems for each dir
+#def subproblem_distributions(dir1,dir2):
+
+
 def synthesis_tree_diffs(dir1,dir2):
 # file of interest is labelled_supertree/input_output_stats.json
     jsonfile = "{d}/labelled_supertree/input_output_stats.json".format(d=dir1)
@@ -163,5 +167,6 @@ if __name__ == "__main__":
     phylo_input_diff(args.dir1,args.dir2)
     print "\n# Comparing outputs"
     subproblem_diff(args.dir1,args.dir2)
+    #subproblem_distributions(args.dir1,args.dir2)
     broken_taxa_diffs(args.dir1,args.dir2)
     synthesis_tree_diffs(args.dir1,args.dir2)
