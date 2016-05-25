@@ -130,6 +130,15 @@
 
 \end_layout
 
+\begin_layout Standard
+\begin_inset FormulaMacro
+\newcommand{\collections}{\mathcal{C}}
+{\mathcal{C}}
+\end_inset
+
+
+\end_layout
+
 \begin_layout Title
 Title
 \end_layout
@@ -888,7 +897,7 @@ In order to achieve these criteria, we have
 \end_layout
 
 \begin_layout Enumerate
-Start with ranked list of trees
+Export names of trees from collections
 \end_layout
 
 \begin_layout Enumerate
@@ -957,7 +966,7 @@ Generate annotations
 \end_layout
 
 \begin_layout Standard
-import READMEs.
+import READMEs?
 \end_layout
 
 \begin_layout Standard
@@ -1003,11 +1012,11 @@ propinquity
 \end_layout
 
 \begin_layout Subsection
-Export trees from collections
+Export names of trees from collections
 \end_layout
 
 \begin_layout Standard
-The ranked list of trees is specified as an ordered list of 
+The ranked list of tree names is specified as an ordered list of 
 \begin_inset Quotes eld
 \end_inset
 
@@ -1016,13 +1025,13 @@ collections
 \end_inset
 
 .
- A collection is an ordered list of trees that is versioned using 
+ A collection is an ordered list of tree names that is versioned using 
 \emph on
 git.
 
 \emph default
- The ranked list of trees used in synthesis is obtained simply by concatenating
- the collections in order.
+ The ordered list of tree names used in synthesis is obtained simply by
+ concatenating the collections in order.
 \end_layout
 
 \begin_layout Labeling
@@ -1036,11 +1045,7 @@ Input: List of collections
 
 \begin_layout Labeling
 \labelwidthstring 00.00.0000
-Output: List of trees 
-\begin_inset Formula $\phyloinputs$
-\end_inset
-
-
+Output: List of tree names
 \end_layout
 
 \begin_layout Labeling
@@ -1049,7 +1054,12 @@ Implementation:
 \emph on
 collection_export.py
 \emph default
- from peyotl gets (study,tree) pairs
+ from peyotl gets (study,tree) pairs 
+\emph on
+a.k.a.
+ 
+\emph default
+tree names.
 \end_layout
 
 \begin_layout Subsection
@@ -1062,16 +1072,208 @@ Prune the reference taxonomy
 Explanation
 \emph default
 : Not all taxa in OTT are reliable enough to belong in the summary tree.
- The reference taxonomy producing software flags taxa in several ways (which
- are listed here TODO: we still need real documentation of the flagging
- system).
- 
+ The reference taxonomy producing software flags taxa in several ways.
+ Taxa are pruned in the cleaning step if either they or any of their ancestors
+ have these flags.
+ Flags are described here: 
+\begin_inset Flex URL
+status collapsed
+
+\begin_layout Plain Layout
+
+https://github.com/OpenTreeOfLife/reference-taxonomy/wiki/Taxon-flags
+\end_layout
+
+\end_inset
+
+.
+ We currently remove 
+\emph on
+viral
+\emph default
+, 
+\emph on
+extinct
+\begin_inset Foot
+status collapsed
+
+\begin_layout Plain Layout
+I think we should just stop pruning extinct taxa now.
+ Maybe a lot will still be pruned because they are I.C., but its not clear
+ we should prune them because they are extinct.
+\end_layout
+
+\end_inset
+
+, enironmental
+\emph default
+, and 
+\emph on
+hybrid
+\emph default
+ taxa.
+ We also remove taxa that are 
+\emph on
+incertae sedis
+\emph default
+ because they are directly labelled as such, or because their parent taxon
+ is not a good clade.
+ We remove taxa that are not good clades, higher taxa that do not contain
+ any species, and taxa that are below the species level.
+ We also remove some taxa that are hidden by curatorial decision.
+\end_layout
+
+\begin_layout Description
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Plain Layout
+This is the list of cleaning flags for synth 5.0.
+ I removed the 
+\begin_inset Quotes eld
+\end_inset
+
+*_inherited
+\begin_inset Quotes erd
+\end_inset
+
+ versions.
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Flex URL
+status collapsed
+
+\begin_layout Plain Layout
+
+https://github.com/OpenTreeOfLife/reference-taxonomy/wiki/Taxon-flags
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Paragraph
+
+\emph on
+Incertae sedis
+\emph default
+ taxa
+\end_layout
+
+\begin_layout Description
+major_rank_conflict - e.g.
+ a family that has a sibling that's an order; equivalent to "incertae_sedis"
+\end_layout
+
+\begin_layout Description
+unclassified - this is NCBI's way of saying incertae sedis
+\end_layout
+
+\begin_layout Description
+unplaced - similar to incertae_sedis.
+ The taxon had been a child of an inconsistent taxon, but has now been moved
+ to be a child of the mrca of the children of the inconsistent taxon.
+\end_layout
+
+\begin_layout Description
+incertae_sedis - in source taxonomy, was a member of an "incertae sedis"
+ container
+\end_layout
+
+\begin_layout Paragraph
+viral, extinct, environmental, and hybrid taxa
+\end_layout
+
+\begin_layout Description
+environmental - child of an NCBI node whose name contains the word "environmenta
+l"
+\end_layout
+
+\begin_layout Description
+viral - the taxon name suggests that it has something to do with viruses.
+ Also, any node descended from such a node.
+\end_layout
+
+\begin_layout Description
+hybrid - taxon name contains "hybrid" or "x" indicating that it is a hybrid.
+ Also, any node descended from such a node.
+\end_layout
+
+\begin_layout Description
+extinct - node is annotated as extinct (usually but not always by IRMNG)
+\end_layout
+
+\begin_layout Paragraph
+not good clades, or do not contain any species, or are below species level
+\end_layout
+
+\begin_layout Description
+barren - there are only higher taxa at and below this node, no species
+\end_layout
+
+\begin_layout Description
+not_otu - the name suggests that this is not a taxon.
+ Keywords interpreted this way include "unidentified", "unknown", "metagenome",
+ "other sequences", "artificial", "libraries", "tranposons".
+ Also "sp." when at the end of a name.
+ Also, any node descended from such a node.
+\end_layout
+
+\begin_layout Description
+inconsistent - a placeholder or "tombstone" for a taxon that has been removed
+ due to its being inconsistent with higher priority taxa (judged to be not
+ a clade).
+\end_layout
+
+\begin_layout Description
+merged - similar to "inconsistent", but the children were directly placed
+ in a larger taxon
+\end_layout
+
+\begin_layout Description
+
+\series bold
+Suppressed by curatorial decision
+\end_layout
+
+\begin_layout Description
+hidden - marked hidden due to Open Tree curatorial decision (e.g.
+ microbes from GBIF)
+\end_layout
+
+\begin_layout Description
+
+\series bold
+Not mentioned
+\end_layout
+
+\begin_layout Description
+was_container - this used to be a container pseudo-taxon (incertae sedis,
+ unclassified, environmental samples, etc.) but its children have all been
+ flagged and moved to the node's parent
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Labeling
 \labelwidthstring 00.00.0000
-Input: “raw” reference taxonomy with flags produced by https://github.com/OpenTre
-eOfLife/ reference-taxonomy 
+Input: “raw” reference taxonomy with flags produced by 
+\begin_inset Flex URL
+status collapsed
+
+\begin_layout Plain Layout
+
+https://github.com/OpenTreeOfLife/reference-taxonomy
+\end_layout
+
+\end_inset
+
+ 
 \end_layout
 
 \begin_layout Labeling
@@ -1085,27 +1287,30 @@ Output:
  
 \end_layout
 
-\begin_layout Enumerate
-Current Impl.
- now performed by 
+\begin_layout Description
+Impl.
+ performed by 
 \emph on
 suppress-by-flag.py
 \emph default
  from 
 \emph on
 peyotl
-\emph default
- 
 \end_layout
 
-\begin_layout Enumerate
-Documentation needed on which flags are pruned and why.
- 
+\begin_layout Description
+\begin_inset Flex URL
+status open
+
+\begin_layout Plain Layout
+
+http://files.opentreeoflife.org/synthesis/opentree5.0/output/cleaned_ott/cleaned_ot
+t.tre
 \end_layout
 
-\begin_layout Enumerate
-We should serve this tree somewhere as it is a crucial input for the rest
- of the pipeline.
+\end_inset
+
+
 \end_layout
 
 \begin_layout Subsection
@@ -1136,16 +1341,34 @@ Output: (1) copies of the otNexSON files from the specified SHA.
 \end_layout
 
 \begin_layout Standard
-Current Impl.: None - similar operation done by gcmdr.
+Impl.: None - similar operation done by gcmdr.
  
 \end_layout
 
-\begin_layout Standard
-TODO for Impl.: Flat file implementation needed 
+\begin_layout Labeling
+\labelwidthstring 00.00.0000
+TODO
+\begin_inset space ~
+\end_inset
+
+for
+\begin_inset space ~
+\end_inset
+
+Impl.: Flat file implementation needed 
 \end_layout
 
-\begin_layout Standard
-URL for output: None
+\begin_layout Labeling
+\labelwidthstring 00.00.0000
+URL
+\begin_inset space ~
+\end_inset
+
+for
+\begin_inset space ~
+\end_inset
+
+output: None
 \end_layout
 
 \begin_layout Subsection
@@ -1181,12 +1404,30 @@ Current Impl.: None - similar operation done by gcmdr.
  
 \end_layout
 
-\begin_layout Standard
-TODO for Impl.: Flat file implementation needed 
+\begin_layout Labeling
+\labelwidthstring 00.00.0000
+TODO
+\begin_inset space ~
+\end_inset
+
+for
+\begin_inset space ~
+\end_inset
+
+Impl.: Flat file implementation needed 
 \end_layout
 
-\begin_layout Standard
-URL for output: None
+\begin_layout Labeling
+\labelwidthstring 00.00.0000
+URL
+\begin_inset space ~
+\end_inset
+
+for
+\begin_inset space ~
+\end_inset
+
+output: None
 \end_layout
 
 \begin_layout Subsection
@@ -1308,22 +1549,36 @@ Current Impl.: None.
 \end_layout
 
 \begin_layout Standard
-TODO for Impl.:
-\end_layout
-
-\begin_layout Standard
 TODO: write this 
 \end_layout
 
 \begin_layout Standard
-URL for output: 
+URL for output page linking to output trees: 
+\begin_inset Flex URL
+status collapsed
+
+\begin_layout Plain Layout
+
+http://files.opentreeoflife.org/synthesis/opentree5.0/output/exemplified_phylo/inde
+x.html
 \end_layout
 
-\begin_layout Itemize
+\end_inset
+
+
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Plain Layout
 We should probably post this set of trees, as many tools don’t deal with
  tips that are mapped to non-terminal taxa.
  So these trees may be the most accessible set of inputs for most interested
  parties.
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Subsection
@@ -1372,15 +1627,27 @@ Output:
 \end_layout
 
 \begin_layout Standard
-Current Impl.: otc-prune-taxonomy can perform this 
+Current Impl.: 
+\emph on
+otc-nonterminals-to-exemplars
+\emph default
+ does this.
 \end_layout
 
 \begin_layout Standard
-TODO for Impl.: 
+URL for output: 
+\begin_inset Flex URL
+status collapsed
+
+\begin_layout Plain Layout
+
+http://files.opentreeoflife.org/synthesis/opentree5.0/output/exemplified_phylo/taxo
+nomy.tre
 \end_layout
 
-\begin_layout Standard
-URL for output: may want to post this somewhere.
+\end_inset
+
+
 \end_layout
 
 \begin_layout Subsection
@@ -1419,8 +1686,8 @@ Output: subproblems.
 \begin_layout Standard
 Currently expressed (1) as one newick tree file per subproblem with the
  name SUBPROBLEMID.tre, and (2) a file called SUBPROBLEMID-tree-names.txt
- with a treefile name on each line or “TAX- ONOMY” indicating the source
- of each tree.
+ with a treefile name on each line or “TAXONOMY” indicating the source of
+ each tree.
  the SUBPROBLEMID is ‘ott’ followed by the OTT ID.
  
 \end_layout
@@ -1438,12 +1705,18 @@ TODO for Impl.:
 \end_layout
 
 \begin_layout Standard
-URL for output: http://phylo.bio.ku.edu/ot/export-sub-temp.tar.gz has a snapshot,
- but those subproblems were not produced with the non-terminal tips expanded
- to terminals so there is some wonkiness - such tips are pruned if the taxon
- is contested, but their ID sets still affect the embedding of the deeper
- nodes in the tree.
- This needs to be rerun after step 2.5 is completed.
+URL for output: 
+\begin_inset Flex URL
+status collapsed
+
+\begin_layout Plain Layout
+
+http://files.opentreeoflife.org/synthesis/opentree5.0/output/subproblems/index.html
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Subsection
@@ -1451,45 +1724,7 @@ Simplify Subproblems
 \end_layout
 
 \begin_layout Standard
-
-\emph on
-Explanation:
-\emph default
- As (to be) described in section 1.9 there are several operations that can
- be per- formed that will reduce the size of the subproblems but which should
- not compromise our ability to obtain the same subproblem solution.
- Many subproblems are trivially solvable, so the tool that does this will
- also be a crude solver.
- 
-\end_layout
-
-\begin_layout Labeling
-\labelwidthstring 00.00.0000
-Input: The set of subproblems, a simplified-problems direc- tory, and a
- solutions directory 
-\end_layout
-
-\begin_layout Labeling
-\labelwidthstring 00.00.0000
-Output: When possible, subproblem solutions and simplifications will be
- written to the 2 output directories.
-\end_layout
-
-\begin_layout Standard
-Current Impl.: an implementation is started, but far from complete in the
- supertree branch of peyotl 
-\end_layout
-
-\begin_layout Standard
-TODO for Impl.:
-\end_layout
-
-\begin_layout Standard
-TODO: finish 
-\end_layout
-
-\begin_layout Standard
-URL for output:
+We are not really doing this right now.
 \end_layout
 
 \begin_layout Subsection
@@ -1556,7 +1791,7 @@ Collapse unsupported nodes -- stopped here copying from otcetera doc.
 \end_layout
 
 \begin_layout Standard
-We don't need to do this.
+We don't need to do this, because we don't have any unsupported nodes.
 \end_layout
 
 \begin_layout Subsection
@@ -1575,8 +1810,12 @@ Explanation
 \end_inset
 
  ), this is a simple grafting procedure.
+ When a subproblem root and a subproblem tip have the same label, we merge
+ the two nodes.
+ Since a label can only never occur on two subproblem roots or two subproblem
+ tips, we never need to merge more than two nodes.
  Note that each subproblem is supported by the taxonomy (at a minimum),
- so this step cannot in- troduce unsupported groups.
+ so this step cannot introduce unsupported groups.
  
 \end_layout
 
@@ -1610,16 +1849,6 @@ Impl.:
 otc-graft-solutions
 \end_layout
 
-\begin_layout Standard
-This is actually pretty simple: each ott name that survives occurs at most
- once as the root node of a subproblem solution, and at most once as a leaf.
- If a ott id occurs as both a root and a tip, then we merge the root and
- tip node.
- 
-\emph on
-viola!
-\end_layout
-
 \begin_layout Subsection
 Graft the pruned taxonomy-only taxa back onto the tree
 \end_layout
@@ -1627,6 +1856,11 @@ Graft the pruned taxonomy-only taxa back onto the tree
 \begin_layout Standard
 Explanation: “phylo-referencing” style logic can be used to place the taxa
  that were pruned in 2.6 
+\end_layout
+
+\begin_layout Standard
+This is a bit more complicated now that we attach the children of broken
+ taxa at their MRCA.
 \end_layout
 
 \begin_layout Standard
