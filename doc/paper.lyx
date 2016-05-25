@@ -76,6 +76,60 @@
 
 \begin_body
 
+\begin_layout Standard
+\begin_inset FormulaMacro
+\newcommand{\taxonomy}{\mbox{\mathbb{T}}}
+{\mbox{\mathbb{T}}}
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset FormulaMacro
+\newcommand{\prunedTaxonomy}{\taxonomy_{P}}
+{\taxonomy_{P}}
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset FormulaMacro
+\newcommand{\phyloinputs}{\mathcal{T}}
+{\mathcal{T}}
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset FormulaMacro
+\newcommand{\expandedPhylo}{\phyloinputs_{E}}
+{\phyloinputs_{E}}
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset FormulaMacro
+\newcommand{\summaryTree}{\mathbb{S}}
+{\mathbb{S}}
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset FormulaMacro
+\newcommand{\prunedSummary}{\summaryTree_{P}}
+{\summaryTree_{P}}
+\end_inset
+
+
+\end_layout
+
 \begin_layout Title
 Title
 \end_layout
@@ -838,7 +892,7 @@ Start with ranked list of trees
 \end_layout
 
 \begin_layout Enumerate
-Check out phylo inputs from phylesystem
+Check out phylo inputs from phylesystem 
 \end_layout
 
 \begin_layout Enumerate
@@ -847,11 +901,27 @@ Make phylo input snapshot (e.g.
 \end_layout
 
 \begin_layout Enumerate
-clean taxonomy & clean phylo inputs (in parallel)
+clean taxonomy 
+\begin_inset Formula $\to\taxonomy$
+\end_inset
+
+
 \end_layout
 
 \begin_layout Enumerate
-Replace non-terminals with exemplars
+clean phylo inputs (in parallel) 
+\begin_inset Formula $\to\phyloinputs$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Enumerate
+Replace non-terminals with exemplars 
+\begin_inset Formula $\to\expandedPhylo$
+\end_inset
+
+
 \end_layout
 
 \begin_layout Enumerate
@@ -863,11 +933,19 @@ Solve subproblems
 \end_layout
 
 \begin_layout Enumerate
-Regraft subproblems
+Regraft subproblems 
+\begin_inset Formula $\to\prunedSummary$
+\end_inset
+
+
 \end_layout
 
 \begin_layout Enumerate
-Unprune the solution
+Unprune the solution 
+\begin_inset Formula $\to\summaryTree$
+\end_inset
+
+
 \end_layout
 
 \begin_layout Enumerate
@@ -959,7 +1037,7 @@ Input: List of collections
 \begin_layout Labeling
 \labelwidthstring 00.00.0000
 Output: List of trees 
-\begin_inset Formula $\mathcal{T}$
+\begin_inset Formula $\phyloinputs$
 \end_inset
 
 
@@ -999,7 +1077,7 @@ eOfLife/ reference-taxonomy
 \begin_layout Labeling
 \labelwidthstring 00.00.0000
 Output: 
-\begin_inset Formula $\mathbb{T}$
+\begin_inset Formula $\taxonomy$
 \end_inset
 
 , the complete taxonomy for synthesis with some taxa pruned.
@@ -1059,7 +1137,15 @@ Output: (1) copies of the otNexSON files from the specified SHA.
 
 \begin_layout Standard
 Current Impl.: None - similar operation done by gcmdr.
- TODO for Impl.: Flat file implementation needed URL for output: None
+ 
+\end_layout
+
+\begin_layout Standard
+TODO for Impl.: Flat file implementation needed 
+\end_layout
+
+\begin_layout Standard
+URL for output: None
 \end_layout
 
 \begin_layout Subsection
@@ -1092,7 +1178,15 @@ Output: (1) one otNexSON for each tree.
 
 \begin_layout Standard
 Current Impl.: None - similar operation done by gcmdr.
- TODO for Impl.: Flat file implementation needed URL for output: None
+ 
+\end_layout
+
+\begin_layout Standard
+TODO for Impl.: Flat file implementation needed 
+\end_layout
+
+\begin_layout Standard
+URL for output: None
 \end_layout
 
 \begin_layout Subsection
@@ -1121,7 +1215,7 @@ Input: snapshot of otNexSON trees from previous step.
 \begin_layout Labeling
 \labelwidthstring 00.00.0000
 Output: (1) 
-\begin_inset Formula $\mathcal{T}$
+\begin_inset Formula $\phyloinputs$
 \end_inset
 
 , the input set of tree represented as one newick tree for each input tree
@@ -1133,7 +1227,11 @@ Output: (1)
 
 \begin_layout Standard
 Current Impl.: None - similar operation done by gcmdr.
- TODO for Impl.: (1) Flat file implementation needed.
+ 
+\end_layout
+
+\begin_layout Standard
+TODO for Impl.: (1) Flat file implementation needed.
  (2) record of edits needed.
  (3) identifiers for the internal nodes would be nice for reporting the
  provenance of edges in the summary tree.
@@ -1156,7 +1254,11 @@ Explanation
  that correctly represents what the input tree says (without erroneously
  claiming that the tree supports monophyly).
  A clever implementation would note whether a descendant terminal taxon
- occurs in other trees in the T corpus.
+ occurs in other trees in the 
+\begin_inset Formula $\phyloinputs$
+\end_inset
+
+ corpus.
  If there are multiple terminal descendant taxa in the expansion that only
  occur in the taxonomy, then it should be fine to let the expansions just
  contain 1 of these tips, 
@@ -1179,11 +1281,11 @@ Explanation
 \begin_layout Labeling
 \labelwidthstring 00.00.0000
 Input: 
-\begin_inset Formula $\mathbb{T}$
+\begin_inset Formula $\taxonomy$
 \end_inset
 
  and 
-\begin_inset Formula $\mathcal{T}$
+\begin_inset Formula $\phyloinputs$
 \end_inset
 
  
@@ -1192,7 +1294,7 @@ Input:
 \begin_layout Labeling
 \labelwidthstring 00.00.0000
 Output: 
-\begin_inset Formula $\mathcal{T}_{E}$
+\begin_inset Formula $\expandedPhylo$
 \end_inset
 
  – the set of phylogenetic inputs expanded such that no leaf is mapped to
@@ -1206,7 +1308,15 @@ Current Impl.: None.
 \end_layout
 
 \begin_layout Standard
-TODO for Impl.:TODO: write this URL for output: 
+TODO for Impl.:
+\end_layout
+
+\begin_layout Standard
+TODO: write this 
+\end_layout
+
+\begin_layout Standard
+URL for output: 
 \end_layout
 
 \begin_layout Itemize
@@ -1218,7 +1328,7 @@ We should probably post this set of trees, as many tools don’t deal with
 
 \begin_layout Subsection
 Prune taxonomy down to tips represented in 
-\begin_inset Formula $\mathcal{T}_{E}$
+\begin_inset Formula $\expandedPhylo$
 \end_inset
 
 
@@ -1230,25 +1340,47 @@ Prune taxonomy down to tips represented in
 Explanation
 \emph default
 : This is just an optimization step.
- Each terminal taxon that is only found in T, can be placed on the final
- summary tree by creating a tree for the overlapping taxonomic inputs and
- then grafting on the “taxonomy only” lineages.
+ Each terminal taxon that is only found in 
+\begin_inset Formula $\taxonomy$
+\end_inset
+
+, can be placed on the final summary tree by creating a tree for the overlapping
+ taxonomic inputs and then grafting on the “taxonomy only” lineages.
  This pruning makes the inputs for the subsequent steps smaller 
 \end_layout
 
 \begin_layout Labeling
 \labelwidthstring 00.00.0000
-Input: T and T E 
+Input: 
+\begin_inset Formula $\taxonomy$
+\end_inset
+
+ and 
+\begin_inset Formula $\expandedPhylo$
+\end_inset
+
+
 \end_layout
 
 \begin_layout Labeling
 \labelwidthstring 00.00.0000
-Output: T P the pruned taxonomy 
+Output: 
+\begin_inset Formula $\prunedTaxonomy$
+\end_inset
+
+ the pruned taxonomy 
 \end_layout
 
 \begin_layout Standard
-Current Impl.: otc-prune-taxonomy can perform this TODO for Impl.: URL for
- output: may want to post this somewhere.
+Current Impl.: otc-prune-taxonomy can perform this 
+\end_layout
+
+\begin_layout Standard
+TODO for Impl.: 
+\end_layout
+
+\begin_layout Standard
+URL for output: may want to post this somewhere.
 \end_layout
 
 \begin_layout Subsection
@@ -1268,11 +1400,11 @@ Explanation:
 \begin_layout Labeling
 \labelwidthstring 00.00.0000
 Input: 
-\begin_inset Formula $\mathbb{T}_{P}$
+\begin_inset Formula $\prunedTaxonomy$
 \end_inset
 
  and 
-\begin_inset Formula $\mathcal{T}_{E}$
+\begin_inset Formula $\expandedPhylo$
 \end_inset
 
  
@@ -1290,12 +1422,27 @@ Currently expressed (1) as one newick tree file per subproblem with the
  with a treefile name on each line or “TAX- ONOMY” indicating the source
  of each tree.
  the SUBPROBLEMID is ‘ott’ followed by the OTT ID.
- Current Impl.: otc-uncontested-decompose TODO for Impl.: URL for output:
- http://phylo.bio.ku.edu/ot/export-sub-temp.tar.gz has a snapshot, but those
- subproblems were not produced with the non-terminal tips expanded to terminals
- so there is some wonkiness - such tips are pruned if the taxon is contested,
- but their ID sets still affect the embedding of the deeper nodes in the
- tree.
+ 
+\end_layout
+
+\begin_layout Standard
+Current Impl.: 
+\emph on
+otc-uncontested-decompose
+\emph default
+ 
+\end_layout
+
+\begin_layout Standard
+TODO for Impl.: 
+\end_layout
+
+\begin_layout Standard
+URL for output: http://phylo.bio.ku.edu/ot/export-sub-temp.tar.gz has a snapshot,
+ but those subproblems were not produced with the non-terminal tips expanded
+ to terminals so there is some wonkiness - such tips are pruned if the taxon
+ is contested, but their ID sets still affect the embedding of the deeper
+ nodes in the tree.
  This needs to be rerun after step 2.5 is completed.
 \end_layout
 
@@ -1330,7 +1477,19 @@ Output: When possible, subproblem solutions and simplifications will be
 
 \begin_layout Standard
 Current Impl.: an implementation is started, but far from complete in the
- supertree branch of peyotl TODO for Impl.:TODO: finish URL for output:
+ supertree branch of peyotl 
+\end_layout
+
+\begin_layout Standard
+TODO for Impl.:
+\end_layout
+
+\begin_layout Standard
+TODO: finish 
+\end_layout
+
+\begin_layout Standard
+URL for output:
 \end_layout
 
 \begin_layout Subsection
@@ -1340,9 +1499,9 @@ Solve subproblems (old - merge w/ below)
 \begin_layout Standard
 
 \emph on
-Explanation:
+Explanation
 \emph default
- Attempt to find an admissible summary tree for the set of summaries that
+: Attempt to find an admissible summary tree for the set of summaries that
  are the Maximum Sum of Weighted Input Phylogenetic Statements Displayed
  set.
  We probably want (1) a brute force implementation that we can use for small
@@ -1367,7 +1526,11 @@ Output: a tree for each subproblem - stored in a solutions dir under the
 
 \begin_layout Standard
 TODO for Impl.: exact impl and, perhaps we need another approximate solver
- URL for output:
+ 
+\end_layout
+
+\begin_layout Standard
+URL for output:
 \end_layout
 
 \begin_layout Subsection
@@ -1390,6 +1553,163 @@ Add algorithm from TEX document.
 
 \begin_layout Subsection
 Collapse unsupported nodes -- stopped here copying from otcetera doc.
+\end_layout
+
+\begin_layout Standard
+We don't need to do this.
+\end_layout
+
+\begin_layout Subsection
+Assemble pruned summary tree from subproblem solutions
+\end_layout
+
+\begin_layout Standard
+
+\emph on
+Explanation
+\emph default
+: Because the problems do not overlap, and the file names match the tip
+ labels (when a tip of one subproblem is actually an uncontested non-terminal
+ taxon in 
+\begin_inset Formula $\prunedTaxonomy$
+\end_inset
+
+ ), this is a simple grafting procedure.
+ Note that each subproblem is supported by the taxonomy (at a minimum),
+ so this step cannot in- troduce unsupported groups.
+ 
+\end_layout
+
+\begin_layout Labeling
+\labelwidthstring 00.00.0000
+Input: the solutions directory holding all of the subproblem solution trees.
+ 
+\end_layout
+
+\begin_layout Labeling
+\labelwidthstring 00.00.0000
+Output: 
+\begin_inset Formula $\prunedSummary$
+\end_inset
+
+ – the summary tree pruned down to the leaf set of 
+\begin_inset Formula $\prunedTaxonomy$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Labeling
+\labelwidthstring 00.00.0000
+Current
+\begin_inset space ~
+\end_inset
+
+Impl.: 
+\emph on
+otc-graft-solutions
+\end_layout
+
+\begin_layout Standard
+This is actually pretty simple: each ott name that survives occurs at most
+ once as the root node of a subproblem solution, and at most once as a leaf.
+ If a ott id occurs as both a root and a tip, then we merge the root and
+ tip node.
+ 
+\emph on
+viola!
+\end_layout
+
+\begin_layout Subsection
+Graft the pruned taxonomy-only taxa back onto the tree
+\end_layout
+
+\begin_layout Standard
+Explanation: “phylo-referencing” style logic can be used to place the taxa
+ that were pruned in 2.6 
+\end_layout
+
+\begin_layout Standard
+Input: 
+\begin_inset Formula $\prunedSummary$
+\end_inset
+
+ and 
+\begin_inset Formula $\taxonomy$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Output: 
+\begin_inset Formula $\summaryTree$
+\end_inset
+
+ – the final summary tree 
+\end_layout
+
+\begin_layout Standard
+Current Impl.: None
+\end_layout
+
+\begin_layout Standard
+TODO for Impl.:
+\end_layout
+
+\begin_layout Standard
+TODO: write this
+\end_layout
+
+\begin_layout Subsection
+Create annotations for nodes in 
+\begin_inset Formula $\summaryTree$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+
+\emph on
+Explanation
+\emph default
+: At minimum, we would want statements of which input nodes support which
+ nodes in S.
+ But we could also noted nodes displayed, nodes in conflict, and whether
+ or not the node was constrained because it was a contested taxon.
+ 
+\end_layout
+
+\begin_layout Standard
+Input: 
+\begin_inset Formula $\summaryTree$
+\end_inset
+
+ and 
+\begin_inset Formula $\expandedPhylo$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Output: some as yet undefined format for expressing these annotations.
+ 
+\end_layout
+
+\begin_layout Standard
+Current Impl.: 
+\emph on
+otc-annotate-synth
+\end_layout
+
+\begin_layout Standard
+TODO for Impl.
+\end_layout
+
+\begin_layout Standard
+TODO: write this
 \end_layout
 
 \begin_layout Section
