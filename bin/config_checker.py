@@ -24,7 +24,7 @@ if __name__ == '__main__':
 #                        choices=('cleaning_flags', ),
                         help='which property value should be printed, as in taxonomy.cleaning_flags.')
     parser.add_argument('configs',
-                        default=['config',DEFAULT_CONFIG_LOCATION],
+                        default=['config'],
                         nargs = '*',
                         type=str,
                         help='filepaths for a series of config files (default is ["config","~/.opentree"])')
@@ -40,7 +40,7 @@ if __name__ == '__main__':
     if (len(props) != 2):
         errstream("Property '{}' should be of the form section.name".format(prop))
     if os.path.exists(DEFAULT_CONFIG_LOCATION):
-        cf = [DEFAULT_CONFIG_LOCATION] + list(args.configs)
+        cf = list(args.configs) + [DEFAULT_CONFIG_LOCATION]
     else:
         cf = arg.configs
     # Look through the listed files for the the property
