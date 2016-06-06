@@ -1942,6 +1942,135 @@ Example
 \end_layout
 
 \begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Figures/ex_2@tree1.tre.svg
+	width 35text%
+	rotateOrigin center
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Tree 1
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset space \hfill{}
+\end_inset
+
+
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Figures/ex_2@tree2.tre.svg
+	width 29text%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Tree 2
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset space \hfill{}
+\end_inset
+
+
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Figures/cleaned_ott.tre.svg
+	width 31text%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Taxonomy Tree
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Input trees and taxonomy tree
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
 We should have a small example: taxonomy and a couple of trees.
  I guess the example should illustrate the idea of uncontested decomposition?
  Maybe about 8 taxa, 1 contested node, 1 uncontested node?
@@ -1949,6 +2078,10 @@ We should have a small example: taxonomy and a couple of trees.
 
 \begin_layout Standard
 We could also have an example thats 
+\begin_inset space \hfill{}
+\end_inset
+
+
 \end_layout
 
 \begin_layout Section
@@ -1995,6 +2128,10 @@ We also increase the number of displayed input splits from 35439 to 39713,
 \begin_layout Standard
 Additionally, our pipeline now produces a tree with annotations about which
  input trees support each node in the summary tree.
+\end_layout
+
+\begin_layout Paragraph
+CPU time versus sub-problem size
 \end_layout
 
 \begin_layout Section
