@@ -26,6 +26,11 @@ fi
 
 PROPINQUITY_OUT_DIR=${PROPINQUITY_OUT_DIR:-.}
 
+if ! test -d "${PROPINQUITY_OUT_DIR}"
+then
+    mkdir "${PROPINQUITY_OUT_DIR}" || exit
+fi
+
 ottdir="${OTT_DIR}"
 if test -z "${ottdir}"
 then
