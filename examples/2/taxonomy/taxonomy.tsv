@@ -1,5 +1,5 @@
 uid	|	parent_uid	|	name	|	rank	|	sourceinfo	|	uniqname	|	flags	|	
-17	|		|	Exampleroot	|		|		|		|		|	
+17	|		|	root	|		|		|		|		|	
 999999	|	17	|	Nototuexample	|		|		|		|	not_otu	|	
 16	|	17	|	F	|		|		|		|		|	
 15	|	17	|	E	|		|		|		|		|	
@@ -7,8 +7,8 @@ uid	|	parent_uid	|	name	|	rank	|	sourceinfo	|	uniqname	|	flags	|
 13	|	14	|	A	|		|		|		|		|	
 12	|	13	|	A12	|		|		|		|		|	
 1	|	12	|	A1	|		|		|		|		|	
-2	|	13	|	A2	|		|		|		|		|	
-3	|	12	|	A3	|		|		|		|		|	
+2	|	12	|	A2	|		|		|		|		|	
+3	|	13	|	A3	|		|		|		|		|	
 4	|	14	|	B	|		|		|		|		|	
 5	|	14	|	C	|		|		|		|		|	
 6	|	14	|	D	|		|		|		|		|	

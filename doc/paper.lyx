@@ -400,7 +400,19 @@ We could simplify this to the following, where
 \end_layout
 
 \begin_layout Plain Layout
-Next: modify example #2 to have this pattern.
+Next: modify example #2 to have this pattern 
+\begin_inset Formula $\to$
+\end_inset
+
+done.
+\end_layout
+
+\begin_layout Plain Layout
+Next: remove 
+\begin_inset Formula $D$
+\end_inset
+
+ from ex_2@tree1 and ex_2@tree2, then regenerate figures.
 \end_layout
 
 \end_inset
@@ -1325,6 +1337,131 @@ Snapshot input trees
 \end_layout
 
 \begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Figures/ex_2@tree1.tre.svg
+	width 35text%
+	rotateOrigin center
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Tree 1
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset space \hfill{}
+\end_inset
+
+
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Figures/ex_2@tree2.tre.svg
+	width 29text%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Tree 2
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset space \hfill{}
+\end_inset
+
+
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Figures/cleaned_ott.tre.svg
+	width 31text%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Taxonomy Tree
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Input trees and taxonomy tree
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
 
 \emph on
 Explanation
@@ -1431,6 +1568,131 @@ TODO for Impl.: (1) Flat file implementation needed.
 
 \begin_layout Subsection
 Expand tips mapped to non-terminal taxa
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Figures/exemplified_phylo/ex_2@tree1.tre.svg
+	width 35text%
+	rotateOrigin center
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Tree 1
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset space \hfill{}
+\end_inset
+
+
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Figures/exemplified_phylo/ex_2@tree2.tre.svg
+	width 29text%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Tree 2
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset space \hfill{}
+\end_inset
+
+
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Figures/exemplified_phylo/taxonomy.tre.svg
+	width 31text%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Taxonomy Tree
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Exemplified Input trees and taxonomy tree
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -1604,6 +1866,134 @@ Decompose the inputs into subproblems of uncontested taxa
 \end_layout
 
 \begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename Figures/exemplified_phylo/taxonomy.tre2.svg
+	width 40text%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Uncontested edges
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+(((ott1,ott2,ott3),ott4),(ott5,ott6));
+\end_layout
+
+\begin_layout Plain Layout
+((ott1,ott4),(ott2,ott5,ott6));
+\end_layout
+
+\begin_layout Plain Layout
+(((ott1,ott2)ott12,ott3)ott13,ott4,ott5,ott6)ott14; 
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Subproblem 14
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+(ott14,ott15);
+\end_layout
+
+\begin_layout Plain Layout
+((ott11,(ott15,ott16)),ott14);
+\end_layout
+
+\begin_layout Plain Layout
+(ott11,ott14,ott15,ott16);
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Subproblem 17
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Subproblems
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
 
 \emph on
 Explanation:
@@ -1669,29 +2059,140 @@ http://files.opentreeoflife.org/synthesis/opentree5.0/output/subproblems/index.h
 \end_layout
 
 \begin_layout Subsection
-Simplify Subproblems
+Solve subproblems 
 \end_layout
 
 \begin_layout Standard
-We are not really doing this right now.
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+((((ott1,ott2)ott12,ott3)ott13,ott4),(ott5,ott6))ott14;
 \end_layout
 
-\begin_layout Subsection
-Solve subproblems (old - merge w/ below)
+\begin_layout Plain Layout
+((((A1,A2)A12,A3)A,B),(C,D))ABCD; 
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Solution to subproblem 14
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+(ott14,((ott15,ott16),ott11))ott17; 
+\end_layout
+
+\begin_layout Plain Layout
+(ABCD,((E,F),G))root;
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Solution to subproblem 17
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Solutions
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
-
-\emph on
-Explanation
-\emph default
-: Attempt to find an admissible summary tree for the set of summaries that
- are the Maximum Sum of Weighted Input Phylogenetic Statements Displayed
- set.
- We probably want (1) a brute force implementation that we can use for small
- subproblems so we do not have to worry about errors from finding local
- optima, and (2) one or more heuristics.
- 
+For the sub-problem solver, we make iterative use of the BUILD algorithm.
+ We process input trees in order of their priority.
+ We use the BUILD algorithm to determine whether a given split in an input
+ tree is consistent with the splits we have kept so far.
+ If the new split is consistent, then we add it to the set.
+ After considering all input trees, and the taxonomy, we use the BUILD algorithm
+ to construct a tree from the set of consistent splits.
 \end_layout
 
 \begin_layout Labeling
@@ -1709,42 +2210,52 @@ Output: a tree for each subproblem - stored in a solutions dir under the
 \end_layout
 
 \begin_layout Standard
-TODO for Impl.: exact impl and, perhaps we need another approximate solver
- 
-\end_layout
+See Algorithm 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "alg:ConsistentSplitsFromRankedList"
 
-\begin_layout Standard
-URL for output:
-\end_layout
+\end_inset
 
-\begin_layout Subsection
-Solve subproblems (new - merge w/ above)
-\end_layout
-
-\begin_layout Standard
-For the sub-problem solver, we make iterative use of the BUILD algorithm.
- We process input trees in order of their priority.
- We use the BUILD algorithm to determine whether a given split in an input
- tree is consistent with the splits we have kept so far.
- If the new split is consistent, then we add it to the set.
- After considering all input trees, and the taxonomy, we use the BUILD algorithm
- to construct a tree from the set of consistent splits.
-\end_layout
-
-\begin_layout Itemize
-Add algorithm from TEX document.
-\end_layout
-
-\begin_layout Subsection
-Collapse unsupported nodes -- stopped here copying from otcetera doc.
-\end_layout
-
-\begin_layout Standard
-We don't need to do this, because we don't have any unsupported nodes.
+.
 \end_layout
 
 \begin_layout Subsection
 Assemble pruned summary tree from subproblem solutions
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename Figures/grafted_solution/grafted_solution_ottnames.tre.svg
+	width 40text%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Uncontested edges
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -1978,7 +2489,7 @@ Tree 2
 \begin_inset Float figure
 wide false
 sideways false
-status open
+status collapsed
 
 \begin_layout Plain Layout
 \begin_inset Graphics
@@ -2036,10 +2547,6 @@ We should have a small example: taxonomy and a couple of trees.
 
 \begin_layout Standard
 We could also have an example thats 
-\begin_inset space \hfill{}
-\end_inset
-
-
 \end_layout
 
 \begin_layout Section
