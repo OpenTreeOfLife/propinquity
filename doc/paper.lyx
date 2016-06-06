@@ -187,16 +187,23 @@ Background
 \begin_layout Standard
 The Open Tree of Life project seeks to build a platform for summarizing
  what is known about phylogenetic relationships across all of Life.
- This summary consists of a supertree that transparently and justifiably
- represents phylogenetic information from a collection of curated phylogenetic
- input trees along with a taxonomy tree.
- The taxonomy tree has complete coverage of all leaf taxa that we are working
- with.
- The taxonomy tree is provided by the OpenTree Taxonomy.
- In contrast, the phylogenetic inputs need not include all leaf taxa.
- Input trees are sourced from phylogenies on publications with DOI numbers.
- We assume that the taxonomy and input trees are rooted, and our supertree
- is also rooted.
+ Specifically, the project builds a summary tree from a comprehensive taxonomic
+ tree and a set of published trees.
+ The summary tree is intended to transparently and justifiably represent
+ phylogenetic information from these inputs.
+ The taxonomic tree is provided by the Open Tree Taxonomy (OTT hereafter,
+ publication in preparation).
+ The phylogenetic inputs are published trees that have been curated to align
+ the tips to OTT and to identify the correct rooting (see 
+\begin_inset CommandInset citation
+LatexCommand citet
+key "McTavishEtAt2015"
+
+\end_inset
+
+for further details); these trees do not include all leaf taxa.
+ The taxonomic, input phylogenetics trees are rooted, and summary supertree
+ are rooted.
 \end_layout
 
 \begin_layout Standard
