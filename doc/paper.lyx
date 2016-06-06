@@ -152,74 +152,32 @@ authors
 \end_layout
 
 \begin_layout Abstract
-We present a new software pipeline for constructing a summary supertree
- from a taxonomy and a collection of curated phylogenetic inputs.
- This pipeline is made up of the software packages 
-\emph on
-propinquity
-\emph default
-, 
-\emph on
-otcetera
-\emph default
-, and 
+We present a new supertree method and software implementation that enables
+ rapid estimation of a summary tree on the scale of millions of leaves.
+ This software pipeline is made up of three components: 
 \emph on
 peyotl
 \emph default
-.
- It is free software and is available from github.
- The pipeline improves on previous supertree construction methods in that
- it satisfies the criteria of having no unsupported branches, and no unnecessary
- polytomies.
- The reason for the inclusion and exclusion of each edge is made transparent
- by an annotations file that we compute
-\begin_inset Foot
-status collapsed
-
-\begin_layout Plain Layout
-This is maybe not exactly true, yet.
- But the branches that support an include edge are available.
+ - a python library for basic manipulating phylogenetic and taxonomic informatio
+n; 
+\emph on
+otcetera
+\emph default
+ - a set of C++ tools that perform most of the steps of the pipeline; and
  
-\end_layout
-
-\end_inset
-
-
-\begin_inset Foot
-status collapsed
-
-\begin_layout Plain Layout
-We could try to compute clearer reasons for edge non-inclusion: we could
- determine which summary edges conflict, and report all input edges that
- support conflicting edges.
- We could check which supporting input edges conflict with the excluded
- edge.
-\end_layout
-
-\end_inset
-
-.
- The supertree increases the number of phylogenetic input splits that are
- displayed, while decreasing the number of conflicts between the summary
- tree and the phylogenetic inputs.
- The 
 \emph on
 propinquity
 \emph default
- pipeline decreases the amount of computer memory and processing time required
- to construct the synthesis tree by about x-fold
-\begin_inset Foot
-status collapsed
-
-\begin_layout Plain Layout
-Here we need to know how long the old pipeline took.
-\end_layout
-
-\end_inset
-
-.
- This prepares the way for the inclusion of many more input trees.
- 
+ - a make-based scaffold for producing the summary tree.
+ All of the components are free software and are available on GitHub.
+ This pipeline is currently used by the Open Tree of Life project to produce
+ version 5 of that project's synthentic tree.
+ The propinquity-based pipeline improves on previous supertree construction
+ methods because it produces no unsupported branches, and it avoids no unnecessa
+ry polytomies.
+ In addition to producing a tree, the pipeline writes an annotations file
+ that reports which grouping in the input trees support each of the groupings
+ in the supertree.
 \end_layout
 
 \begin_layout Section
