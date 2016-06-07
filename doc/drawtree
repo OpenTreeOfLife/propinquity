@@ -35,6 +35,7 @@ if(("--help" %in% args) || error) {
       --output=filename        - a PDF output file
       --width=someValue        - width in inches
       --height=someValue       - height in inches
+      --format=someValue       - SVG or PDF
 
       Plotting arguments:
       --type=someValue         - numeric, blah blah
@@ -56,8 +57,13 @@ tree = read.tree(input)
 plotArgs = list(tree)
 
 ## Set output file if not given
+if (!("format" %in% names(argsL)))
+    argsL$format = "PDF"
+
+format = tolower(argsL$format)
+    
 if (!("output" %in% names(argsL)))
-   argsL$output = paste0(argsL$input, ".pdf")
+   argsL$output = paste0(basename(argsL$input), "." , format)
 
 if ("type" %in% names(argsL))
     plotArgs$type = argsL$type
@@ -72,12 +78,18 @@ if ("width" %in% names(argsL))
 if ("height" %in% names(argsL))
     w = argsL$height
 
-
 print(argsL)
 print(plotArgs)
 
 output = argsL$output
 
-pdf(output,width=w,height=h)
+if (format == "pdf") {
+    pdf(output,width=w,height=h)
+} else if (format == "svg") {
+    svg(output,width=w,height=h)
+} else {
+    stop("Don't recognize format")
+}
+
 do.call(plot,plotArgs) #plot(tree,type="cladogram",edge.width=argsL$edge.width)
 
