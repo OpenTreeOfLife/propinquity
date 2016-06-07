@@ -35,11 +35,12 @@ if(("--help" %in% args) || error) {
       --output=filename        - a PDF output file
       --width=someValue        - width in inches
       --height=someValue       - height in inches
-      --format=someValue       - SVG or PDF
+      --format=PDF             - SVG or PDF
 
       Plotting arguments:
       --type=someValue         - numeric, blah blah
       --edge.width=someValue   - character, blah blah
+      --show.node.label=BOOL   - boolean, show internal node labels
 
       Other arguments:
       --help                   - print this text
@@ -54,7 +55,7 @@ if(("--help" %in% args) || error) {
 require(ape)
 input = argsL$input
 tree = read.tree(input)
-plotArgs = list(tree)
+plotArgs = list(tree,no.margin=TRUE)
 
 ## Set output file if not given
 if (!("format" %in% names(argsL)))
@@ -71,18 +72,23 @@ if ("type" %in% names(argsL))
 if ("edge.width" %in% names(argsL))
     plotArgs$edge.width = argsL$edge.width
 
-w = 7
-h = 5
+if ("show.node.label" %in% names(argsL))
+    plotArgs$show.node.label = argsL$show.node.label
+
+w = 0.20*max(node.depth(tree)) +2
+h = length(tree$tip.label)*0.35
 if ("width" %in% names(argsL))
-    w = argsL$width
+    w = as.numeric(argsL$width)
 if ("height" %in% names(argsL))
-    w = argsL$height
+    h = as.numeric(argsL$height)
 
 print(argsL)
 print(plotArgs)
 
 output = argsL$output
 
+#par(oma=c(0,0,0,0))
+#par(mar=c(0,0,0,0))   
 if (format == "pdf") {
     pdf(output,width=w,height=h)
 } else if (format == "svg") {
