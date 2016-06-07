@@ -1,0 +1,83 @@
+#!/usr/bin/Rscript
+
+## Read arguments
+args = commandArgs(trailingOnly=T)
+
+## Default setting when no arguments passed
+if(length(args) < 1) {
+  args <- c("--help")
+}
+ 
+## Parse arguments (we expect the form --arg=value)
+parseArgs <- function(x) strsplit(sub("^--", "", x), "=")
+argsDF <- as.data.frame(do.call("rbind", parseArgs(args)))
+argsL <- as.list(as.character(argsDF$V2))
+#print("argsL")
+#print(argsL)
+#print("argsDF$V1")
+#print(argsDF$V1)
+#print("argsDF$V2")
+#print(argsDF$V2)
+names(argsL) <- argsDF$V1
+
+## Error conditions
+error = FALSE
+error = error || !("input" %in% names(argsL))
+
+## Help section
+if(("--help" %in% args) || error) {
+  cat("The R Script
+ 
+      Input arguments:
+      --input=filename         - a newick input file
+
+      Output arguments
+      --output=filename        - a PDF output file
+      --width=someValue        - width in inches
+      --height=someValue       - height in inches
+
+      Plotting arguments:
+      --type=someValue         - numeric, blah blah
+      --edge.width=someValue   - character, blah blah
+
+      Other arguments:
+      --help                   - print this text
+ 
+      Example:
+      ./drawtree --input=<newick> --type=cladogram\n\n")
+ 
+  q(save="no")
+}
+
+
+require(ape)
+input = argsL$input
+tree = read.tree(input)
+plotArgs = list(tree)
+
+## Set output file if not given
+if (!("output" %in% names(argsL)))
+   argsL$output = paste0(argsL$input, ".pdf")
+
+if ("type" %in% names(argsL))
+    plotArgs$type = argsL$type
+
+if ("edge.width" %in% names(argsL))
+    plotArgs$edge.width = argsL$edge.width
+
+w = 7
+h = 5
+if ("width" %in% names(argsL))
+    w = argsL$width
+if ("height" %in% names(argsL))
+    w = argsL$height
+
+
+print(argsL)
+print(plotArgs)
+
+output = argsL$output
+
+pdf(output,width=w,height=h)
+do.call(plot,plotArgs) #plot(tree,type="cladogram",edge.width=argsL$edge.width)
+
