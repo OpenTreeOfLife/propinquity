@@ -1,9 +1,9 @@
 {
- "date_completed": "2016-06-07 16:05:29",
+ "date_completed": "2016-06-08 15:52:47",
  "filtered_flags": "major_rank_conflict,major_rank_conflict_inherited,environmental,unclassified_inherited,unclassified,viral,barren,not_otu,incertae_sedis,incertae_sedis_inherited,extinct_inherited,extinct,hidden,unplaced,unplaced_inherited,was_container,inconsistent,hybrid,merged",
  "generated_by": [
   {
-   "git_sha": "391345992475b7fedae4cbc97551adf4f4ce691f",
+   "git_sha": "a6f151e49a248f18f9130bfdcbafe8bcf7889575",
    "invocation": "cmd",
    "name": "propinquity",
    "url": "https://github.com/OpenTreeOfLife/propinquity",
