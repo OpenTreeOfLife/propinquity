@@ -22,3 +22,12 @@ draw grafted_solution/grafted_solution_ottnames.tre --show.node.label=TRUE
 draw subproblems/14/1.tre
 draw subproblems/14/2.tre
 draw subproblems/14/3.tre
+
+draw subproblems/17/1.tre
+draw subproblems/17/2.tre
+draw subproblems/17/3.tre
+
+draw subproblem_solutions/ott14.tre
+draw subproblem_solutions/ott17.tre
+
+draw labelled_supertree/labelled_supertree.tre

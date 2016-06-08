@@ -1666,7 +1666,7 @@ Tree 2
 \begin_inset Float figure
 wide false
 sideways false
-status open
+status collapsed
 
 \begin_layout Plain Layout
 \begin_inset Graphics
@@ -2131,13 +2131,13 @@ Decompose the inputs into subproblems of uncontested taxa
 \begin_inset Float figure
 wide false
 sideways false
-status collapsed
+status open
 
 \begin_layout Plain Layout
 \align center
 \begin_inset Graphics
-	filename Figures/exemplified_phylo/taxonomy.tre2.svg
-	width 40text%
+	filename Figures/exemplified_phylo_taxonomy_uncontested.tre.svg
+	width 35text%
 
 \end_inset
 
@@ -2148,7 +2148,13 @@ status collapsed
 \begin_inset Caption Standard
 
 \begin_layout Plain Layout
-Uncontested edges
+Uncontested edges.
+ Here the taxon 
+\emph on
+ABCD
+\emph default
+ is uncontested.
+ The edge to the ABCD node is colored red.
 \end_layout
 
 \end_inset
@@ -2171,22 +2177,44 @@ sideways false
 status open
 
 \begin_layout Plain Layout
-(((ott1,ott2,ott3),ott4),(ott5,ott6));
-\end_layout
+\begin_inset Graphics
+	filename Figures/subproblems/14/1.tre.svg
+	width 30text%
 
-\begin_layout Plain Layout
-((ott1,ott4),(ott2,ott5,ott6));
-\end_layout
+\end_inset
 
-\begin_layout Plain Layout
-(((ott1,ott2)ott12,ott3)ott13,ott4,ott5,ott6)ott14; 
+
+\begin_inset space \hfill{}
+\end_inset
+
+
+\begin_inset Graphics
+	filename Figures/subproblems/14/2.tre.svg
+	width 30text%
+
+\end_inset
+
+
+\begin_inset space \hfill{}
+\end_inset
+
+
+\begin_inset Graphics
+	filename Figures/subproblems/14/3.tre.svg
+	width 30text%
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Plain Layout
 \begin_inset Caption Standard
 
 \begin_layout Plain Layout
-Subproblem 14
+Subproblem 
+\emph on
+ABCD
 \end_layout
 
 \end_inset
@@ -2206,22 +2234,44 @@ sideways false
 status open
 
 \begin_layout Plain Layout
-(ott14,ott15);
-\end_layout
+\begin_inset Graphics
+	filename Figures/subproblems/17/1.tre.svg
+	width 30text%
 
-\begin_layout Plain Layout
-((ott11,(ott15,ott16)),ott14);
-\end_layout
+\end_inset
 
-\begin_layout Plain Layout
-(ott11,ott14,ott15,ott16);
+
+\begin_inset space \hfill{}
+\end_inset
+
+
+\begin_inset Graphics
+	filename Figures/subproblems/17/2.tre.svg
+	width 30text%
+
+\end_inset
+
+
+\begin_inset space \hfill{}
+\end_inset
+
+
+\begin_inset Graphics
+	filename Figures/subproblems/17/3.tre.svg
+	width 30text%
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Plain Layout
 \begin_inset Caption Standard
 
 \begin_layout Plain Layout
-Subproblem 17
+Subproblem 
+\emph on
+root
 \end_layout
 
 \end_inset
@@ -2243,10 +2293,6 @@ Subproblems
 
 \end_inset
 
-
-\end_layout
-
-\begin_layout Plain Layout
 
 \end_layout
 
@@ -2334,29 +2380,12 @@ status open
 \begin_inset Float figure
 wide false
 sideways false
-status open
+status collapsed
 
 \begin_layout Plain Layout
-\begin_inset Box Frameless
-position "t"
-hor_pos "c"
-has_inner_box 1
-inner_pos "t"
-use_parbox 0
-use_makebox 0
-width "100col%"
-special "none"
-height "1in"
-height_special "totalheight"
-status open
-
-\begin_layout Plain Layout
-((((ott1,ott2)ott12,ott3)ott13,ott4),(ott5,ott6))ott14;
-\end_layout
-
-\begin_layout Plain Layout
-((((A1,A2)A12,A3)A,B),(C,D))ABCD; 
-\end_layout
+\begin_inset Graphics
+	filename Figures/subproblem_solutions/ott14.tre.svg
+	width 45text%
 
 \end_inset
 
@@ -2378,35 +2407,19 @@ Solution to subproblem 14
 \end_inset
 
 
-\end_layout
+\begin_inset space \hfill{}
+\end_inset
 
-\begin_layout Plain Layout
+
 \begin_inset Float figure
 wide false
 sideways false
-status open
+status collapsed
 
 \begin_layout Plain Layout
-\begin_inset Box Frameless
-position "t"
-hor_pos "c"
-has_inner_box 1
-inner_pos "t"
-use_parbox 0
-use_makebox 0
-width "100col%"
-special "none"
-height "1in"
-height_special "totalheight"
-status open
-
-\begin_layout Plain Layout
-(ott14,((ott15,ott16),ott11))ott17; 
-\end_layout
-
-\begin_layout Plain Layout
-(ABCD,((E,F),G))root;
-\end_layout
+\begin_inset Graphics
+	filename Figures/subproblem_solutions/ott17.tre.svg
+	width 45text%
 
 \end_inset
 
@@ -2434,7 +2447,9 @@ Solution to subproblem 17
 \begin_inset Caption Standard
 
 \begin_layout Plain Layout
-Solutions
+Solutions.
+ Each solution tree has a taxon at the root (although it is not currently
+ shown in the figure).
 \end_layout
 
 \end_inset
@@ -2507,11 +2522,45 @@ status open
 \begin_inset Caption Standard
 
 \begin_layout Plain Layout
-Uncontested edges
+Grafted solution.
+ The nodes E and F are monotypic here, but will end up being polytypic after
+ unpruning is performed.
 \end_layout
 
 \end_inset
 
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Support for each node in the tree.
+ How do we show this?
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
 
 \end_layout
 
@@ -2573,6 +2622,42 @@ otc-graft-solutions
 
 \begin_layout Subsection
 Graft the pruned taxonomy-only taxa back onto the tree
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename Figures/labelled_supertree/labelled_supertree.tre.svg
+	width 40text%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Unpruned tree with internal taxa.
+ Nodes E2, F2, and D have been re-added to the tree.
+ The nodes E and F are no longer monotypic.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard

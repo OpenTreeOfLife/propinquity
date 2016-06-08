@@ -11,9 +11,9 @@
    id="svg2"
    version="1.1"
    inkscape:version="0.91 r13725"
-   sodipodi:docname="taxonomy.tre.svg"
+   sodipodi:docname="exemplified_phylo_taxonomy.tre.svg"
    width="448.55078"
-   height="623.98535">
+   height="569.84375">
   <metadata
      id="metadata99">
     <rdf:RDF>
@@ -35,17 +35,17 @@
      guidetolerance="10"
      inkscape:pageopacity="0"
      inkscape:pageshadow="2"
-     inkscape:window-width="640"
-     inkscape:window-height="480"
+     inkscape:window-width="1610"
+     inkscape:window-height="929"
      id="namedview97"
      showgrid="false"
      fit-margin-top="0"
      fit-margin-left="0"
      fit-margin-right="0"
      fit-margin-bottom="0"
-     inkscape:zoom="2.36"
+     inkscape:zoom="0.834386"
      inkscape:cx="44"
-     inkscape:cy="572.1416"
+     inkscape:cy="272.10063"
      inkscape:window-x="0"
      inkscape:window-y="27"
      inkscape:window-maximized="0"
@@ -54,248 +54,228 @@
   <defs
      id="genericDefs" />
   <g
-     id="g5"
+     id="g13"
+     style="stroke-width:3;stroke-linecap:butt;text-rendering:optimizeLegibility"
      transform="translate(-6,1.84375)">
-    <g
-       style="font-size:10px;font-family:sans-serif;stroke-linecap:round;stroke-linejoin:round;text-rendering:optimizeLegibility"
-       id="g7">
-      <line
-         y2="607"
-         style="fill:none"
-         x1="189.57179"
-         x2="241.42821"
-         y1="607"
-         id="line9" />
-      <text
-         x="207.54829"
-         xml:space="preserve"
-         y="622"
-         style="stroke:none"
-         id="text11">0.5</text>
-    </g>
-    <g
-       style="stroke-width:3;stroke-linecap:butt;text-rendering:optimizeLegibility"
-       id="g13">
-      <path
-         style="fill:none"
-         d="m 217.5742,561 -103.7128,0 0,0"
-         id="path15"
-         inkscape:connector-curvature="0" />
-      <path
-         style="fill:none"
-         d="m 425,323.1429 -103.7129,0 0,39.6428"
-         id="path17"
-         inkscape:connector-curvature="0" />
-      <path
-         style="fill:none"
-         d="m 321.2871,243.8571 -103.7129,0 0,59.4643"
-         id="path19"
-         inkscape:connector-curvature="0" />
-      <path
-         style="fill:none"
-         d="m 217.5742,85.2857 -103.7128,0 0,99.1072"
-         id="path21"
-         inkscape:connector-curvature="0" />
-      <path
-         style="fill:none"
-         d="m 217.5742,303.3214 -103.7128,0 0,-118.9285"
-         id="path23"
-         inkscape:connector-curvature="0" />
-      <path
-         style="fill:none"
-         d="m 113.8614,184.3929 -103.7129,0 0,123.8839"
-         id="path25"
-         inkscape:connector-curvature="0" />
-      <path
-         style="fill:none"
-         d="m 425,402.4286 -103.7129,0 0,-39.6429"
-         id="path27"
-         inkscape:connector-curvature="0" />
-      <path
-         style="fill:none"
-         d="m 217.5742,164.5714 -103.7128,0 0,19.8215"
-         id="path29"
-         inkscape:connector-curvature="0" />
-      <path
-         style="fill:none"
-         d="m 6,308.2768 4.1485,0"
-         id="path31"
-         inkscape:connector-curvature="0" />
-      <path
-         style="fill:none"
-         d="m 113.8614,561 -103.7129,0 0,-252.7232"
-         id="path33"
-         inkscape:connector-curvature="0" />
-      <path
-         style="fill:none"
-         d="m 217.5742,481.7143 -103.7128,0 0,0"
-         id="path35"
-         inkscape:connector-curvature="0" />
-      <path
-         style="fill:none"
-         d="m 321.2871,362.7857 -103.7129,0 0,-59.4643"
-         id="path37"
-         inkscape:connector-curvature="0" />
-      <path
-         style="fill:none"
-         d="m 113.8614,6 -103.7129,0 0,302.2768"
-         id="path39"
-         inkscape:connector-curvature="0" />
-      <path
-         style="fill:none"
-         d="m 113.8614,481.7143 -103.7129,0 0,-173.4375"
-         id="path41"
-         inkscape:connector-curvature="0" />
-      <text
-         x="0"
-         y="19"
-         transform="translate(222.5743,549)"
-         style="font-size:20px;font-family:sans-serif;stroke:none"
-         xml:space="preserve"
-         id="text43">F1</text>
-    </g>
-    <g
-       transform="translate(222.5743,469.7143)"
-       style="font-size:20px;font-family:sans-serif;stroke-width:3;stroke-linecap:butt;text-rendering:optimizeLegibility"
-       id="g45">
-      <text
-         x="0"
-         xml:space="preserve"
-         y="19"
-         style="stroke:none"
-         id="text47">E1</text>
-    </g>
-    <g
-       transform="translate(430,311.1429)"
-       style="font-size:20px;font-family:sans-serif;stroke-width:3;stroke-linecap:butt;text-rendering:optimizeLegibility"
-       id="g49">
-      <text
-         x="0"
-         xml:space="preserve"
-         y="19"
-         style="stroke:none"
-         id="text51">A1</text>
-    </g>
-    <g
-       transform="translate(326.2871,231.8571)"
-       style="font-size:20px;font-family:sans-serif;stroke-width:3;stroke-linecap:butt;text-rendering:optimizeLegibility"
-       id="g53">
-      <text
-         x="0"
-         xml:space="preserve"
-         y="19"
-         style="stroke:none"
-         id="text55">A3</text>
-    </g>
-    <g
-       transform="translate(222.5743,73.2857)"
-       style="font-size:20px;font-family:sans-serif;stroke-width:3;stroke-linecap:butt;text-rendering:optimizeLegibility"
-       id="g57">
-      <text
-         x="0"
-         xml:space="preserve"
-         y="19"
-         style="stroke:none"
-         id="text59">B</text>
-    </g>
-    <g
-       transform="translate(118.8614,-6)"
-       style="font-size:20px;font-family:sans-serif;stroke-width:3;stroke-linecap:butt;text-rendering:optimizeLegibility"
-       id="g61">
-      <text
-         x="0"
-         xml:space="preserve"
-         y="19"
-         style="stroke:none"
-         id="text63">G</text>
-    </g>
-    <g
-       transform="translate(430,390.4286)"
-       style="font-size:20px;font-family:sans-serif;stroke-width:3;stroke-linecap:butt;text-rendering:optimizeLegibility"
-       id="g65">
-      <text
-         x="0"
-         xml:space="preserve"
-         y="19"
-         style="stroke:none"
-         id="text67">A2</text>
-    </g>
-    <g
-       transform="translate(222.5743,152.5714)"
-       style="font-size:20px;font-family:sans-serif;stroke-width:3;stroke-linecap:butt;text-rendering:optimizeLegibility"
-       id="g69">
-      <text
-         x="0"
-         xml:space="preserve"
-         y="19"
-         style="stroke:none"
-         id="text71">C</text>
-    </g>
-    <g
-       transform="translate(118.8614,549)"
-       style="font-size:20px;font-family:sans-serif;stroke-width:3;stroke-linecap:butt;text-rendering:optimizeLegibility"
-       id="g73">
-      <text
-         x="0"
-         xml:space="preserve"
-         y="19"
-         style="stroke:none"
-         id="text75">F</text>
-    </g>
-    <g
-       transform="translate(222.5743,291.3214)"
-       style="font-size:20px;font-family:sans-serif;stroke-width:3;stroke-linecap:butt;text-rendering:optimizeLegibility"
-       id="g77">
-      <text
-         x="0"
-         xml:space="preserve"
-         y="19"
-         style="stroke:none"
-         id="text79">A</text>
-    </g>
-    <g
-       transform="translate(118.8614,172.3929)"
-       style="font-size:20px;font-family:sans-serif;stroke-width:3;stroke-linecap:butt;text-rendering:optimizeLegibility"
-       id="g81">
-      <text
-         x="0"
-         xml:space="preserve"
-         y="19"
-         style="stroke:none"
-         id="text83">ABCD</text>
-    </g>
-    <g
-       transform="translate(326.2871,350.7857)"
-       style="font-size:20px;font-family:sans-serif;stroke-width:3;stroke-linecap:butt;text-rendering:optimizeLegibility"
-       id="g85">
-      <text
-         x="0"
-         xml:space="preserve"
-         y="19"
-         style="stroke:none"
-         id="text87">A12</text>
-    </g>
-    <g
-       transform="translate(118.8614,469.7143)"
-       style="font-size:20px;font-family:sans-serif;stroke-width:3;stroke-linecap:butt;text-rendering:optimizeLegibility"
-       id="g89">
-      <text
-         x="0"
-         xml:space="preserve"
-         y="19"
-         style="stroke:none"
-         id="text91">E</text>
-    </g>
-    <g
-       transform="translate(15.1485,296.2768)"
-       style="font-size:20px;font-family:sans-serif;stroke-width:3;stroke-linecap:butt;text-rendering:optimizeLegibility"
-       id="g93">
-      <text
-         x="0"
-         xml:space="preserve"
-         y="19"
-         style="stroke:none"
-         id="text95">root</text>
-    </g>
+    <path
+       inkscape:connector-curvature="0"
+       id="path15"
+       d="m 217.5742,561 -103.7128,0 0,0"
+       style="fill:none" />
+    <path
+       inkscape:connector-curvature="0"
+       id="path17"
+       d="m 425,323.1429 -103.7129,0 0,39.6428"
+       style="fill:none" />
+    <path
+       inkscape:connector-curvature="0"
+       id="path19"
+       d="m 321.2871,243.8571 -103.7129,0 0,59.4643"
+       style="fill:none" />
+    <path
+       inkscape:connector-curvature="0"
+       id="path21"
+       d="m 217.5742,85.2857 -103.7128,0 0,99.1072"
+       style="fill:none" />
+    <path
+       inkscape:connector-curvature="0"
+       id="path23"
+       d="m 217.5742,303.3214 -103.7128,0 0,-118.9285"
+       style="fill:none" />
+    <path
+       inkscape:connector-curvature="0"
+       id="path25"
+       d="m 113.8614,184.3929 -103.7129,0 0,123.8839"
+       style="fill:none" />
+    <path
+       inkscape:connector-curvature="0"
+       id="path27"
+       d="m 425,402.4286 -103.7129,0 0,-39.6429"
+       style="fill:none" />
+    <path
+       inkscape:connector-curvature="0"
+       id="path29"
+       d="m 217.5742,164.5714 -103.7128,0 0,19.8215"
+       style="fill:none" />
+    <path
+       inkscape:connector-curvature="0"
+       id="path31"
+       d="m 6,308.2768 4.1485,0"
+       style="fill:none" />
+    <path
+       inkscape:connector-curvature="0"
+       id="path33"
+       d="m 113.8614,561 -103.7129,0 0,-252.7232"
+       style="fill:none" />
+    <path
+       inkscape:connector-curvature="0"
+       id="path35"
+       d="m 217.5742,481.7143 -103.7128,0 0,0"
+       style="fill:none" />
+    <path
+       inkscape:connector-curvature="0"
+       id="path37"
+       d="m 321.2871,362.7857 -103.7129,0 0,-59.4643"
+       style="fill:none" />
+    <path
+       inkscape:connector-curvature="0"
+       id="path39"
+       d="m 113.8614,6 -103.7129,0 0,302.2768"
+       style="fill:none" />
+    <path
+       inkscape:connector-curvature="0"
+       id="path41"
+       d="m 113.8614,481.7143 -103.7129,0 0,-173.4375"
+       style="fill:none" />
+    <text
+       id="text43"
+       xml:space="preserve"
+       style="font-size:20px;font-family:sans-serif;stroke:none"
+       transform="translate(222.5743,549)"
+       y="19"
+       x="0">F1</text>
+  </g>
+  <g
+     id="g45"
+     style="font-size:20px;font-family:sans-serif;stroke-width:3;stroke-linecap:butt;text-rendering:optimizeLegibility"
+     transform="translate(216.5743,471.55805)">
+    <text
+       id="text47"
+       style="stroke:none"
+       y="19"
+       xml:space="preserve"
+       x="0">E1</text>
+  </g>
+  <g
+     id="g49"
+     style="font-size:20px;font-family:sans-serif;stroke-width:3;stroke-linecap:butt;text-rendering:optimizeLegibility"
+     transform="translate(424,312.98665)">
+    <text
+       id="text51"
+       style="stroke:none"
+       y="19"
+       xml:space="preserve"
+       x="0">A1</text>
+  </g>
+  <g
+     id="g53"
+     style="font-size:20px;font-family:sans-serif;stroke-width:3;stroke-linecap:butt;text-rendering:optimizeLegibility"
+     transform="translate(320.2871,233.70085)">
+    <text
+       id="text55"
+       style="stroke:none"
+       y="19"
+       xml:space="preserve"
+       x="0">A3</text>
+  </g>
+  <g
+     id="g57"
+     style="font-size:20px;font-family:sans-serif;stroke-width:3;stroke-linecap:butt;text-rendering:optimizeLegibility"
+     transform="translate(216.5743,75.12945)">
+    <text
+       id="text59"
+       style="stroke:none"
+       y="19"
+       xml:space="preserve"
+       x="0">B</text>
+  </g>
+  <g
+     id="g61"
+     style="font-size:20px;font-family:sans-serif;stroke-width:3;stroke-linecap:butt;text-rendering:optimizeLegibility"
+     transform="translate(112.8614,-4.15625)">
+    <text
+       id="text63"
+       style="stroke:none"
+       y="19"
+       xml:space="preserve"
+       x="0">G</text>
+  </g>
+  <g
+     id="g65"
+     style="font-size:20px;font-family:sans-serif;stroke-width:3;stroke-linecap:butt;text-rendering:optimizeLegibility"
+     transform="translate(424,392.27235)">
+    <text
+       id="text67"
+       style="stroke:none"
+       y="19"
+       xml:space="preserve"
+       x="0">A2</text>
+  </g>
+  <g
+     id="g69"
+     style="font-size:20px;font-family:sans-serif;stroke-width:3;stroke-linecap:butt;text-rendering:optimizeLegibility"
+     transform="translate(216.5743,154.41515)">
+    <text
+       id="text71"
+       style="stroke:none"
+       y="19"
+       xml:space="preserve"
+       x="0">C</text>
+  </g>
+  <g
+     id="g73"
+     style="font-size:20px;font-family:sans-serif;stroke-width:3;stroke-linecap:butt;text-rendering:optimizeLegibility"
+     transform="translate(112.8614,550.84375)">
+    <text
+       id="text75"
+       style="stroke:none"
+       y="19"
+       xml:space="preserve"
+       x="0">F</text>
+  </g>
+  <g
+     id="g77"
+     style="font-size:20px;font-family:sans-serif;stroke-width:3;stroke-linecap:butt;text-rendering:optimizeLegibility"
+     transform="translate(216.5743,293.16515)">
+    <text
+       id="text79"
+       style="stroke:none"
+       y="19"
+       xml:space="preserve"
+       x="0">A</text>
+  </g>
+  <g
+     id="g81"
+     style="font-size:20px;font-family:sans-serif;stroke-width:3;stroke-linecap:butt;text-rendering:optimizeLegibility"
+     transform="translate(112.8614,174.23665)">
+    <text
+       id="text83"
+       style="stroke:none"
+       y="19"
+       xml:space="preserve"
+       x="0">ABCD</text>
+  </g>
+  <g
+     id="g85"
+     style="font-size:20px;font-family:sans-serif;stroke-width:3;stroke-linecap:butt;text-rendering:optimizeLegibility"
+     transform="translate(320.2871,352.62945)">
+    <text
+       id="text87"
+       style="stroke:none"
+       y="19"
+       xml:space="preserve"
+       x="0">A12</text>
+  </g>
+  <g
+     id="g89"
+     style="font-size:20px;font-family:sans-serif;stroke-width:3;stroke-linecap:butt;text-rendering:optimizeLegibility"
+     transform="translate(112.8614,471.55805)">
+    <text
+       id="text91"
+       style="stroke:none"
+       y="19"
+       xml:space="preserve"
+       x="0">E</text>
+  </g>
+  <g
+     id="g93"
+     style="font-size:20px;font-family:sans-serif;stroke-width:3;stroke-linecap:butt;text-rendering:optimizeLegibility"
+     transform="translate(9.1485,298.12055)">
+    <text
+       id="text95"
+       style="stroke:none"
+       y="19"
+       xml:space="preserve"
+       x="0">root</text>
   </g>
 </svg>
