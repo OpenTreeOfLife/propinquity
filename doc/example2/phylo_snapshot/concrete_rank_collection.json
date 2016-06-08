@@ -1,0 +1,25 @@
+{
+    "name": "", 
+    "contributors": [], 
+    "creator": {
+        "login": "", 
+        "name": ""
+    }, 
+    "url": "", 
+    "queries": [], 
+    "decisions": [
+        {
+            "treeID": "tree1", 
+            "SHA": 0, 
+            "name": "ex_2@tree1.tre", 
+            "studyID": "ex_2"
+        }, 
+        {
+            "treeID": "tree2", 
+            "SHA": 0, 
+            "name": "ex_2@tree2.tre", 
+            "studyID": "ex_2"
+        }
+    ], 
+    "description": "generated from newicks"
+}

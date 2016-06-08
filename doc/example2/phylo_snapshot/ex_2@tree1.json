@@ -1,0 +1,145 @@
+{
+"nexml": {
+"@about": "#study", 
+"@generator": "Open Tree API", 
+"@id": "study", 
+"@nexml2json": "1.2.1", 
+"@nexmljson": "http://purl.org/opentree/nexson", 
+"@version": "0.9", 
+"@xmlns": {
+"$": "http://www.nexml.org/2009", 
+"nex": "http://www.nexml.org/2009", 
+"ot": "http://purl.org/opentree-terms#", 
+"xhtml": "http://www.w3.org/1999/xhtml/vocab#", 
+"xsd": "http://www.w3.org/2001/XMLSchema#", 
+"xsi": "http://www.w3.org/2001/XMLSchema-instance"
+}, 
+"^ot:otusElementOrder": [
+"otus1"
+], 
+"^ot:treesElementOrder": [
+"trees1"
+], 
+"otusById": {
+"otus1": {
+"otuById": {
+"otu10": {
+"^ot:originalLabel": "E ott15", 
+"^ot:ottId": 15, 
+"^ot:ottTaxonName": "E ott15"
+}, 
+"otu5": {
+"^ot:originalLabel": "a1 ott1", 
+"^ot:ottId": 1, 
+"^ot:ottTaxonName": "a1 ott1"
+}, 
+"otu6": {
+"^ot:originalLabel": "a2 ott2", 
+"^ot:ottId": 2, 
+"^ot:ottTaxonName": "a2 ott2"
+}, 
+"otu7": {
+"^ot:originalLabel": "a3 ott3", 
+"^ot:ottId": 3, 
+"^ot:ottTaxonName": "a3 ott3"
+}, 
+"otu8": {
+"^ot:originalLabel": "b ott4", 
+"^ot:ottId": 4, 
+"^ot:ottTaxonName": "b ott4"
+}, 
+"otu9": {
+"^ot:originalLabel": "c ott5", 
+"^ot:ottId": 5, 
+"^ot:ottTaxonName": "c ott5"
+}
+}
+}
+}, 
+"treesById": {
+"trees1": {
+"@otus": "otus1", 
+"^ot:treeElementOrder": [
+"tree1"
+], 
+"treeById": {
+"tree1": {
+"^ot:rootNodeId": "node1", 
+"edgeBySourceId": {
+"node1": {
+"edge10": {
+"@source": "node1", 
+"@target": "node10"
+}, 
+"edge2": {
+"@source": "node1", 
+"@target": "node2"
+}
+}, 
+"node2": {
+"edge3": {
+"@source": "node2", 
+"@target": "node3"
+}, 
+"edge9": {
+"@source": "node2", 
+"@target": "node9"
+}
+}, 
+"node3": {
+"edge4": {
+"@source": "node3", 
+"@target": "node4"
+}, 
+"edge8": {
+"@source": "node3", 
+"@target": "node8"
+}
+}, 
+"node4": {
+"edge5": {
+"@source": "node4", 
+"@target": "node5"
+}, 
+"edge6": {
+"@source": "node4", 
+"@target": "node6"
+}, 
+"edge7": {
+"@source": "node4", 
+"@target": "node7"
+}
+}
+}, 
+"nodeById": {
+"node1": {
+"@root": true
+}, 
+"node10": {
+"@otu": "otu10"
+}, 
+"node2": {}, 
+"node3": {}, 
+"node4": {}, 
+"node5": {
+"@otu": "otu5"
+}, 
+"node6": {
+"@otu": "otu6"
+}, 
+"node7": {
+"@otu": "otu7"
+}, 
+"node8": {
+"@otu": "otu8"
+}, 
+"node9": {
+"@otu": "otu9"
+}
+}
+}
+}
+}
+}
+}
+}
