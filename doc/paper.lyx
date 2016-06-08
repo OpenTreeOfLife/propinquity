@@ -173,8 +173,8 @@ propinquity
  This pipeline is currently used by the Open Tree of Life project to produce
  version 5 of that project's synthentic tree.
  The propinquity-based pipeline improves on previous supertree construction
- methods because it produces no unsupported branches, and it avoids no unnecessa
-ry polytomies.
+ methods because it produces no unsupported branches, and it avoids unnecessary
+ polytomies.
  In addition to producing a tree, the pipeline writes an annotations file
  that reports which grouping in the input trees support each of the groupings
  in the supertree.
