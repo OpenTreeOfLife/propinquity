@@ -1,0 +1,126 @@
+{
+  "nodes": {
+    "mrcaott1ott4": {
+      "conflicts_with": {
+        "ex_2@tree2": [
+          "node6"
+        ]
+      },
+      "supported_by": {
+        "ex_2@tree1": "node3"
+      }
+    },
+    "mrcaott7ott11": {
+      "supported_by": {
+        "ex_2@tree2": "node9"
+      },
+      "terminal": {
+        "ex_2@tree1": "node10"
+      }
+    },
+    "mrcaott7ott9": {
+      "supported_by": {
+        "ex_2@tree2": "node10"
+      },
+      "terminal": {
+        "ex_2@tree1": "node10"
+      }
+    },
+    "ott1": {
+      "terminal": {
+        "ex_2@tree1": "node5",
+        "ex_2@tree2": "node4"
+      }
+    },
+    "ott11": {
+      "terminal": {
+        "ex_2@tree2": "node13"
+      }
+    },
+    "ott12": {
+      "conflicts_with": {
+        "ex_2@tree2": [
+          "node6",
+          "node3"
+        ]
+      },
+      "resolves": {
+        "ex_2@tree1": "node4"
+      }
+    },
+    "ott13": {
+      "conflicts_with": {
+        "ex_2@tree2": [
+          "node6",
+          "node3"
+        ]
+      },
+      "supported_by": {
+        "ex_2@tree1": "node4"
+      }
+    },
+    "ott14": {
+      "supported_by": {
+        "ex_2@tree1": "node2",
+        "ex_2@tree2": "node2"
+      },
+      "was_constrained": true,
+      "was_uncontested": true
+    },
+    "ott15": {
+      "terminal": {
+        "ex_2@tree1": "node10",
+        "ex_2@tree2": "node11"
+      }
+    },
+    "ott16": {
+      "terminal": {
+        "ex_2@tree2": "node12"
+      }
+    },
+    "ott17": {
+      "was_constrained": true,
+      "was_uncontested": true
+    },
+    "ott2": {
+      "terminal": {
+        "ex_2@tree1": "node6",
+        "ex_2@tree2": "node8"
+      }
+    },
+    "ott3": {
+      "terminal": {
+        "ex_2@tree1": "node7"
+      }
+    },
+    "ott4": {
+      "terminal": {
+        "ex_2@tree1": "node8",
+        "ex_2@tree2": "node5"
+      }
+    },
+    "ott5": {
+      "terminal": {
+        "ex_2@tree1": "node9",
+        "ex_2@tree2": "node7"
+      }
+    },
+    "ott7": {
+      "terminal": {
+        "ex_2@tree1": "node10",
+        "ex_2@tree2": "node11"
+      }
+    },
+    "ott9": {
+      "terminal": {
+        "ex_2@tree2": "node12"
+      }
+    }
+  },
+  "num_tips": 11,
+  "root_ott_id": 17,
+  "sources": [
+    "ex_2@tree1",
+    "ex_2@tree2"
+  ]
+}

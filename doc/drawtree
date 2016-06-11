@@ -53,8 +53,10 @@ if(("--help" %in% args) || error) {
 
 
 require(ape)
+require(phytools)
 input = argsL$input
-tree = read.tree(input)
+#tree = read.tree(input)
+tree = read.newick(input)
 plotArgs = list(tree,no.margin=TRUE)
 
 ## Set output file if not given
@@ -73,7 +75,7 @@ if ("edge.width" %in% names(argsL))
     plotArgs$edge.width = argsL$edge.width
 
 if ("show.node.label" %in% names(argsL))
-    plotArgs$show.node.label = argsL$show.node.label
+    plotArgs$show.node.label = as.logical(argsL$show.node.label)
 
 w = 0.20*max(node.depth(tree)) +2
 h = length(tree$tip.label)*0.35
@@ -88,7 +90,7 @@ print(plotArgs)
 output = argsL$output
 
 #par(oma=c(0,0,0,0))
-#par(mar=c(0,0,0,0))   
+#par(mar=c(0,0,0,0))
 if (format == "pdf") {
     pdf(output,width=w,height=h)
 } else if (format == "svg") {
@@ -97,5 +99,5 @@ if (format == "pdf") {
     stop("Don't recognize format")
 }
 
-do.call(plot,plotArgs) #plot(tree,type="cladogram",edge.width=argsL$edge.width)
+do.call(plotTree,plotArgs) #plot(tree,type="cladogram",edge.width=argsL$edge.width)
 

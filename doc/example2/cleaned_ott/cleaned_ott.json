@@ -1,0 +1,40 @@
+{
+"flags_to_prune": [
+"major_rank_conflict", 
+"major_rank_conflict_inherited", 
+"environmental", 
+"unclassified_inherited", 
+"unclassified", 
+"viral", 
+"barren", 
+"not_otu", 
+"incertae_sedis", 
+"incertae_sedis_inherited", 
+"extinct_inherited", 
+"extinct", 
+"hidden", 
+"unplaced", 
+"unplaced_inherited", 
+"was_container", 
+"inconsistent", 
+"hybrid", 
+"merged"
+], 
+"num_monotypic_nodes": 0, 
+"num_nodes": 17, 
+"num_non_leaf_nodes": 6, 
+"num_non_leaf_nodes_with_multiple_children": 6, 
+"num_pruned_anc_nodes": 1, 
+"num_tips": 11, 
+"pruned": {
+"not_otu": {
+"anc_ott_id_pruned": [
+999999
+], 
+"flags_causing_prune": [
+"not_otu"
+]
+}
+}, 
+"version": "exampletaxonomy"
+}

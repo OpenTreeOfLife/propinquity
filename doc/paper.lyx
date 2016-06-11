@@ -196,7 +196,7 @@ The Open Tree of Life project seeks to build a platform for summarizing
  The phylogenetic inputs are published trees that have been curated to align
  the tips to OTT and to identify the correct rooting (see 
 \begin_inset CommandInset citation
-LatexCommand citet
+LatexCommand citealt
 key "McTavishEtAt2015"
 
 \end_inset
@@ -1785,11 +1785,11 @@ status open
 \begin_inset Float figure
 wide false
 sideways false
-status collapsed
+status open
 
 \begin_layout Plain Layout
 \begin_inset Graphics
-	filename Figures/ex_2@tree1.tre.svg
+	filename Figures/cleaned_phylo/ex_2@tree1.tre.svg
 	width 35text%
 	rotateOrigin center
 
@@ -1820,11 +1820,11 @@ Tree 1
 \begin_inset Float figure
 wide false
 sideways false
-status collapsed
+status open
 
 \begin_layout Plain Layout
 \begin_inset Graphics
-	filename Figures/ex_2@tree2.tre.svg
+	filename Figures/cleaned_phylo/ex_2@tree2.tre.svg
 	width 29text%
 
 \end_inset
@@ -1854,11 +1854,11 @@ Tree 2
 \begin_inset Float figure
 wide false
 sideways false
-status collapsed
+status open
 
 \begin_layout Plain Layout
 \begin_inset Graphics
-	filename Figures/cleaned_ott.tre.svg
+	filename Figures/cleaned_ott/cleaned_ott.tre.svg
 	width 31text%
 
 \end_inset
@@ -2088,11 +2088,11 @@ Tree 2
 \begin_inset Float figure
 wide false
 sideways false
-status collapsed
+status open
 
 \begin_layout Plain Layout
 \begin_inset Graphics
-	filename Figures/exemplified_phylo/taxonomy.tre.svg
+	filename Figures/exemplified_phylo_taxonomy.tre.svg
 	width 31text%
 
 \end_inset
@@ -2104,7 +2104,11 @@ status collapsed
 \begin_inset Caption Standard
 
 \begin_layout Plain Layout
-Taxonomy Tree
+Pruned taxonomy tree 
+\begin_inset Formula $\prunedTaxonomy$
+\end_inset
+
+
 \end_layout
 
 \end_inset
@@ -2121,7 +2125,14 @@ Taxonomy Tree
 \begin_inset Caption Standard
 
 \begin_layout Plain Layout
-Exemplified Input trees and taxonomy tree
+Exemplified Input trees and taxonomy tree.
+ E in tree1 is exemplified by E1.
+ Pruned taxa are E2, F2, and D.
+ E and F remain as monotypic taxa in the pruned taxonomy 
+\begin_inset Formula $\prunedTaxonomy$
+\end_inset
+
+.
 \end_layout
 
 \end_inset
@@ -2859,11 +2870,11 @@ status open
 \begin_inset Float figure
 wide false
 sideways false
-status collapsed
+status open
 
 \begin_layout Plain Layout
 \begin_inset Graphics
-	filename Figures/ex_2@tree1.tre.svg
+	filename Figures/cleaned_phylo/ex_2@tree1.tre.svg
 	width 35text%
 	rotateOrigin center
 
@@ -2894,11 +2905,11 @@ Tree 1
 \begin_inset Float figure
 wide false
 sideways false
-status collapsed
+status open
 
 \begin_layout Plain Layout
 \begin_inset Graphics
-	filename Figures/ex_2@tree2.tre.svg
+	filename Figures/cleaned_phylo/ex_2@tree2.tre.svg
 	width 29text%
 
 \end_inset
@@ -2928,11 +2939,11 @@ Tree 2
 \begin_inset Float figure
 wide false
 sideways false
-status collapsed
+status open
 
 \begin_layout Plain Layout
 \begin_inset Graphics
-	filename Figures/cleaned_ott.tre.svg
+	filename Figures/cleaned_ott/cleaned_ott.tre.svg
 	width 31text%
 
 \end_inset
