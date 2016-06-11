@@ -204,11 +204,9 @@ key "McTavishEtAt2015"
 for further details); these trees do not include all leaf taxa.
  The taxonomic, input phylogenetics trees are rooted, and summary supertree
  are rooted.
-\end_layout
-
-\begin_layout Standard
-We describe a software pipeline (propinquity) that summarizes and integrates
- these smaller source trees and the taxonomy tree into a single supertree.
+ Here we describe the software pipeline (propinquity) that summarizes and
+ integrates these smaller source trees and the taxonomy tree into a single
+ supertree.
  This software pipeline combines tools for manipulating and solving supertrees
  and supertree subproblems (otcetera).
 \end_layout
@@ -218,17 +216,451 @@ Goals
 \end_layout
 
 \begin_layout Standard
-We seek to build a summary supertree that represents its source trees in
- an transparent and justifiable fashion.
+Translating the goals of the Open Tree of Life's summary tree into an explicit
+ set of criteria is not trivial.
+ The summary supertree should represent the phylogenetic information from
+ source trees in an transparent and justifiable fashion, and we would like
+ to allow users to correct errors in the supertree by improving the input
+ information.
  In order to accomplish transparency and justification, our pipeline also
  produces an annotations file that relates each supertree edge to the input
  tree edges that support it.
- To aid in interpretation of the supertree, we require that each supertree
- edge be supported by at least one input tree edge.
+ We require that each edge in the supertree be supported by at least one
+ input tree edge.
  In addition to aiding interpretability, this requirement keeps the supertree
  from arbitrarily representing information that comes from none of the input
  trees.
- Likewise, we require that the supertree have no unnecessary polytomies.
+ Of course, in a supertree analysis, the full tree will imply some relationships
+ for subsets of the taxa that are not found in any input tree.
+ So, the meaning of 
+\begin_inset Quotes eld
+\end_inset
+
+supported by
+\begin_inset Quotes erd
+\end_inset
+
+ needs some clarification.
+ 
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+subsubsection*{Notation and terminology}
+\end_layout
+
+\end_inset
+
+ - this should be a section, but I don't know how to do that in LyX.
+\end_layout
+
+\begin_layout Standard
+Let 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+$
+\backslash
+summaryTree$
+\end_layout
+
+\end_inset
+
+ denote a supertree, and 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+$T_i$
+\end_layout
+
+\end_inset
+
+ denote the 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+$i$
+\end_layout
+
+\end_inset
+
+th input tree.
+ The set of taxa that are mapped to the tips tree 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+$T_i$
+\end_layout
+
+\end_inset
+
+ is 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+$
+\backslash
+mathcal{L}(i)$
+\end_layout
+
+\end_inset
+
+.
+ 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+$
+\backslash
+summaryTree(i)$
+\end_layout
+
+\end_inset
+
+ denotes the summary tree induced by tip nodes that are mapped to taxa in
+ 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+$
+\backslash
+mathcal{L}(i)$
+\end_layout
+
+\end_inset
+
+ and the most recent common ancestor of those leaves, and any other node
+ that is an ancestor of some but not all of these leaves.
+ We say that edge 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+$j$
+\end_layout
+
+\end_inset
+
+ of the supertree is compatible with an input tree, 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+$T_i$
+\end_layout
+
+\end_inset
+
+ if edge 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+$j$
+\end_layout
+
+\end_inset
+
+ either is not included in the induced tree 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+$
+\backslash
+summaryTree(i)$
+\end_layout
+
+\end_inset
+
+ or none of the edges in the 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+$T_i$
+\end_layout
+
+\end_inset
+
+ are in conflict with the edge 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+$j$
+\end_layout
+
+\end_inset
+
+ in the induced tree.
+ Reversing the orientation, we can consider whether or not an edge in an
+ input tree is displayed by the 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+$
+\backslash
+summaryTree$
+\end_layout
+
+\end_inset
+
+.
+ A node, 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+$j$
+\end_layout
+
+\end_inset
+
+, in an input tree 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+$T_i$
+\end_layout
+
+\end_inset
+
+ will be denoted 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+$V(i, j)$
+\end_layout
+
+\end_inset
+
+.
+ For any such node there is a set of taxa that are mapped to the tips that
+ are tips that descend from the node; this set of taxa can be denoted 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+$
+\backslash
+mathcal{L}(i, j)$
+\end_layout
+
+\end_inset
+
+.
+ If the set of tip-mapped taxa for any node in 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+$
+\backslash
+summaryTree(i)$
+\end_layout
+
+\end_inset
+
+ is identical to 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+$
+\backslash
+mathcal{L}(i, j)$
+\end_layout
+
+\end_inset
+
+, then we say that 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+$
+\backslash
+summaryTree$
+\end_layout
+
+\end_inset
+
+ displays node 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+$j$
+\end_layout
+
+\end_inset
+
+ of 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+$T_i$
+\end_layout
+
+\end_inset
+
+.
+ We say that the summary displays edge 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+$j$
+\end_layout
+
+\end_inset
+
+ if the summary tree displays the child node of edge 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+$j$
+\end_layout
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+An appealing goal for the summarization would be to find the supertree that
+ displays the largest number of input tree edges.
+ This is probably an 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+$NP$
+\end_layout
+
+\end_inset
+
+-hard problem.
+ Furthermore, despite being easy to state, this formulation does not seem
+ to present biologists who use the summarization tool with an obvious avenue
+ for fixing perceived problems with the summary tree.
+ For example, a grouping that was expected may not be present in the supertree,
+ but it may not conflict with any of the input groupings which are displayed.
+ This can happen because displaying both 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+$V(i_1, j_1)$
+\end_layout
+
+\end_inset
+
+ and 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+$V(i_2, j_2)$
+\end_layout
+
+\end_inset
+
+ in a summary tree may only be possible by displaying a grouping that is
+ present in no input tree.
+ All other factors being equal, if this implied grouping conflicts with
+ input node 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+$V(i_3,j_3)$
+\end_layout
+
+\end_inset
+
+, then 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+$V(i_3,j_3)$
+\end_layout
+
+\end_inset
+
+ will not be displayed in the summary tree, but a biologist will not necessarily
+ know how to fix this problem.
+ One solution is to use a ranking of groupings.
+ If an expert were quite confident in the 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+$V(i_3,j_3)$
+\end_layout
+
+\end_inset
+
+, then she could assign that input node a high ranking.
+ A supertree that used ranks could then recover this grouping even if its
+ inclusion lowered the total number of input nodes that are displayed by
+ the summary tree.
+\end_layout
+
+\begin_layout Standard
+The supertree should be as resolved as possible - in other words, it should
+ have no unnecessary polytomies.
  Thus, for each input edge that is 
 \emph on
 not
