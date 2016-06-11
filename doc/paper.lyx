@@ -184,7 +184,15 @@ propinquity
  - a make-based scaffold for producing the summary tree.
  All of the components are free software and are available on GitHub.
  This pipeline is currently used by the Open Tree of Life project to produce
- version 5 of that project's synthentic tree.
+ version 5 of that project's 
+\begin_inset Quotes eld
+\end_inset
+
+synthetic tree
+\begin_inset Quotes erd
+\end_inset
+
+.
  The propinquity-based pipeline improves on previous supertree construction
  methods because it produces no unsupported branches, and it avoids unnecessary
  polytomies.
@@ -200,8 +208,8 @@ Background
 \begin_layout Standard
 The Open Tree of Life project seeks to build a platform for summarizing
  what is known about phylogenetic relationships across all of Life.
- Specifically, the project builds a summary tree from a comprehensive taxonomic
- tree and a set of published trees.
+ One primary goal of the project is to build a summary tree from a comprehensive
+ taxonomic tree and a set of published trees.
  The summary tree is intended to transparently and justifiably represent
  phylogenetic information from these inputs.
  The taxonomic tree is provided by the Open Tree Taxonomy (OTT hereafter,
