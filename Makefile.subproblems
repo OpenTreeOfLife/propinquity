@@ -128,6 +128,12 @@ $(PROPINQUITY_OUT_DIR)/labelled_supertree/labelled_supertree_ottnames.tre: $(PRO
 		--format-tax="%N ott%I" \
 		> $(PROPINQUITY_OUT_DIR)/labelled_supertree/labelled_supertree_ottnames.tre
 
+# Not currently used.  This is a placeholder rule to keep track of how to use otc-relabel-tree for this purpose.
+$(PROPINQUITY_OUT_DIR)/labelled_supertree/labelled_supertree_simplified_ottnames2.tre: $(PROPINQUITY_OUT_DIR)/labelled_supertree/labelled_supertree_ottnames.tre
+	otc-relabel-tree --replace "/,\(\):;\[\]\{\}\'\t\n/ /" \
+		$(PROPINQUITY_OUT_DIR)/labelled_supertree/labelled_supertree_ottnames.tre \
+		>$(PROPINQUITY_OUT_DIR)/labelled_supertree/labelled_supertree_simplified_ottnames2.tre
+
 $(PROPINQUITY_OUT_DIR)/labelled_supertree/labelled_supertree_simplified_ottnames.tre: $(PROPINQUITY_OUT_DIR)/labelled_supertree/labelled_supertree_ottnames.tre
 	otc-munge-names \
 		$(PROPINQUITY_OUT_DIR)/labelled_supertree/labelled_supertree_ottnames.tre \
