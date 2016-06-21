@@ -4,43 +4,49 @@
 
 import simplejson as json
 import argparse
-import glob,os
+import glob,os,re
+import requests
 
 # generic function to compare two lists: number of items in each,
 # items in first but not second and items in second but not first
+# if verbose = True, then print contents of lists, not just number diffs
 def compare_lists(type,list1,list2,verbose=False):
     s1 = set(list1)
     s2 = set(list2)
     if s1 != s2:
-        if (verbose):
-            print "{t}: ".format(t=type)
-            # simple length check
-            if len(s1) != len(s2):
-                print " {l1} in dir1; {l2} in dir2".format(
-                    l1=len(s1),l2=len(s2)
-                    )
-            common = s1.intersection(s2)
-            if len(common) > 0:
-                print " in common = {l}".format(t=type,l=len(common))
-            diff1 = s1.difference(s2)
-            if len(diff1) > 0:
-                print " in dir1 but not dir2 = {l}".format(t=type,l=len(diff1))
-            diff2 = s2.difference(s1)
-            if len(diff2) > 0:
-                print " in dir2 but not dir1 = {l}".format(t=type,l=len(diff2))
+        print "{t}: ".format(t=type)
+        # simple length check
+        if len(s1) != len(s2):
+            print " {l1} in run1; {l2} in run2".format(
+                l1=len(s1),l2=len(s2)
+                )
+        common = s1.intersection(s2)
+        if len(common) > 0:
+            print " in common = {l}".format(t=type,l=len(common))
+        diff1 = s1.difference(s2)
+        if len(diff1) > 0:
+            print " in run1 but not run2 = {l}".format(t=type,l=len(diff1))
+            if (verbose):
+                print " {t} in run1 but not run2:".format(t=type)
+                print ', '.join(diff1)
+        diff2 = s2.difference(s1)
+        if len(diff2) > 0:
+            print " in run2 but not run1 = {l}".format(t=type,l=len(diff2))
+            if (verbose):
+                print " {t} in run2 but not run1:".format(t=type)
+                print ', '.join(diff2)
         return 1
     else:
-        if (verbose):
-            print "{t}: no differences".format(t=type)
+        print "{t}: no differences".format(t=type)
         return 0
 
 # list of collections, list of trees, compare SHAs
 # look at phylo_snapshot/concrete_rank_collection.json for each run
-def config_diffs(dir1,dir2):
+def config_diffs(run1,run2):
     # get the data from both top-level index.json files
-    jsonfile = "{d}/index.json".format(d=dir1)
+    jsonfile = "{d}/index.json".format(d=run1)
     jsondata1 = json.load(open(jsonfile, 'r'))['config']
-    jsonfile = "{d}/index.json".format(d=dir2)
+    jsonfile = "{d}/index.json".format(d=run2)
     jsondata2 = json.load(open(jsonfile, 'r'))['config']
 
     countmismatch = 0
@@ -54,8 +60,8 @@ def config_diffs(dir1,dir2):
     collections2 = jsondata2["collections"]
     if (compare_lists("collections",collections1,collections2,False)):
         countmismatch += 1
-        print "{d} collections: {c}".format(d=dir1,c=collections1)
-        print "{d} collections: {c}".format(d=dir2,c=collections2)
+        print "{d} collections: {c}".format(d=run1,c=collections1)
+        print "{d} collections: {c}".format(d=run2,c=collections2)
 
     # do flags match
     flags1 = jsondata1["taxonomy_cleaning_flags"]
@@ -67,106 +73,164 @@ def config_diffs(dir1,dir2):
 
 # check the lists of input trees
 # does not check SHAs, just study@tree lists
-def phylo_input_diff(dir1,dir2):
+def phylo_input_diff(run1,run2):
     # get the data from the phylo_input study_tree_pairs.txt files
-    treefile = "{d}/phylo_input/study_tree_pairs.txt".format(d=dir1)
+    treefile = "{d}/phylo_input/study_tree_pairs.txt".format(d=run1)
     treedata1 = open(treefile, 'r').read().splitlines()
-    treefile = "{d}/phylo_input/study_tree_pairs.txt".format(d=dir2)
+    treefile = "{d}/phylo_input/study_tree_pairs.txt".format(d=run2)
     treedata2 = open(treefile, 'r').read().splitlines()
     countmismatch = 0
     countmismatch += compare_lists("input trees",treedata1,treedata2,True)
 
     # check lists of non-empty tree files after cleaning
-    searchstr = "{d}/cleaned_phylo/*[0-9].tre".format(d=dir1)
+    searchstr = "{d}/cleaned_phylo/*[0-9].tre".format(d=run1)
     nonempty1 = []
     for f in glob.glob(searchstr):
         if os.stat(f).st_size != 0:
             nonempty1.append(os.path.basename(f))
-    searchstr = "{d}/cleaned_phylo/*[0-9].tre".format(d=dir2)
+    searchstr = "{d}/cleaned_phylo/*[0-9].tre".format(d=run2)
     nonempty2 = []
     for f in glob.glob(searchstr):
         if os.stat(f).st_size != 0:
             nonempty2.append(os.path.basename(f))
-    countmismatch += compare_lists('non-empty trees',nonempty1,nonempty2,True)
+    countmismatch += compare_lists('non-empty trees',nonempty1,nonempty2,False)
 
     if (countmismatch == 0):
         print "no differences in input trees"
 
 # number (and size) of subproblems
-def subproblem_diff(dir1,dir2):
+def subproblem_diff(run1,run2):
     # number of subproblems
-    subpfile = "{d}/subproblems/subproblem-ids.txt".format(d=dir1)
+    subpfile = "{d}/subproblems/subproblem-ids.txt".format(d=run1)
     subproblems1 = open(subpfile, 'r').read().splitlines()
-    subpfile = "{d}/subproblems/subproblem-ids.txt".format(d=dir2)
+    subpfile = "{d}/subproblems/subproblem-ids.txt".format(d=run2)
     subproblems2 = open(subpfile, 'r').read().splitlines()
     countmismatch = 0
-    countmismatch += compare_lists("subproblems",subproblems1,subproblems2,True)
+    countmismatch += compare_lists("subproblems",subproblems1,subproblems2,False)
 
-# largest subproblems for each dir
-#def subproblem_distributions(dir1,dir2):
+# Summary of subproblem size distributions
+# Relevent file is subproblem_solutions/solution-degree-distributions.txt
+def subproblem_distributions(run1,run2):
+    fn = "subproblem_solutions/solution-degree-distributions.txt"
+    datafile1 = "{d}/{f}".format(d=run1,f=fn)
+    data1 = read_subproblem_file(datafile1)
+    datafile2 = "{d}/{f}".format(d=run2,f=fn)
+    data2 = read_subproblem_file(datafile2)
+    # summarize based on some arbitrary limits on ntips
+    # trivial < 3, small < 20, med < 100-499, large > 500
+    limits = [3,20,500]
 
+    print "subproblem size summary:"
+    print " run,trivial,small,med,large"
+    print " ---------------------------"
+    size_summary("run1",limits,data1)
+    size_summary("run2",limits,data2)
 
-def synthesis_tree_diffs(dir1,dir2):
+def size_summary(run,limits,data):
+    summary = {'trivial':0,'small':0, 'med':0, 'large':0}
+    for tree in data.keys():
+        size = int(data[tree])
+        if size<limits[0]:
+            summary['trivial'] += 1
+        elif size<limits[1]:
+            summary['small'] += 1
+        elif size<limits[2]:
+            summary['med'] += 1
+        else:
+            summary['large'] += 1
+    summary_str = " {r},{a},{b},{c},{d}".format(
+        r = run,
+        a=summary['trivial'],
+        b=summary['small'],
+        c=summary['med'],
+        d=summary['large']
+    )
+    print summary_str
+
+# Parsing logic from gen_degree_dist fn in document_outputs.py
+# return dict where keys are subproblems and values are number of tips
+def read_subproblem_file(fn):
+    header = re.compile(r'Out-degree\S+Count')
+    found_tree = False
+    data = {}
+    currentTree = ""
+    with open(fn, 'rU') as inp:
+        for line in inp:
+            line = line.strip()
+            if line.endswith('tre'):
+                currentTree = line
+                found_tree = True
+            if found_tree:
+                if line.startswith('0'):
+                    row = line.split()
+                    data[currentTree] = row[1]
+                    currentTree = False
+    return data
+
+def synthesis_tree_diffs(run1,run2):
 # file of interest is labelled_supertree/input_output_stats.json
-    jsonfile = "{d}/labelled_supertree/input_output_stats.json".format(d=dir1)
+    jsonfile = "{d}/labelled_supertree/input_output_stats.json".format(d=run1)
     data1 = json.load(open(jsonfile, 'r'))
-    jsonfile = "{d}/labelled_supertree/input_output_stats.json".format(d=dir2)
+    jsonfile = "{d}/labelled_supertree/input_output_stats.json".format(d=run2)
     data2 = json.load(open(jsonfile, 'r'))
-    print "\n#Synthetic tree summary"
-    print "stat,run1,run2,difference"
-    print "-------------------------"
-    print "taxonomy tips,{n1},{n2},{d}".format(
-        n1=data1['input']['num_taxonomy_leaves'],
-        n2=data2['input']['num_taxonomy_leaves'],
-        d=int(data1['input']['num_taxonomy_leaves'])-int(data2['input']['num_taxonomy_leaves'])
-    )
-    print "phylogeny tips,{n1},{n2},{d}".format(
-        n1=data1['output']['num_leaves_added'],
-        n2=data2['output']['num_leaves_added'],
-        d=int(data1['output']['num_leaves_added'])-int(data2['output']['num_leaves_added'])
-    )
-    print "total tips,{n1},{n2},{d}".format(
-        n1=data1['input']['num_solution_leaves'],
-        n2=data2['input']['num_solution_leaves'],
-        d=int(data1['input']['num_solution_leaves'])-int(data2['input']['num_solution_leaves'])
-    )
-    print "forking nodes,{n1},{n2},{d}".format(
-        n1=data1['input']['num_solution_splits'],
-        n2=data2['input']['num_solution_splits'],
-        d=int(data1['input']['num_solution_splits'])-int(data2['input']['num_solution_splits'])
-    )
-    print "broken taxa,{n1},{n2},{d}".format(
-        n1=data1['output']['num_taxa_rejected'],
-        n2=data2['output']['num_taxa_rejected'],
-        d=int(data1['output']['num_taxa_rejected'])-int(data2['output']['num_taxa_rejected'])
-    )
+    print "\n# Synthetic tree summary"
+    print "statistic,run1,run2,difference"
+    print "-------------------------------"
+    # number of taxonomy tips
+    tips1 = data1['output']['num_leaves_added']
+    tips2 = data2['output']['num_leaves_added']
+    diff = int(tips1-tips2)
+    print "taxonomy tips,{n1},{n2},{d}".format(n1=tips1,n2=tips2, d=diff)
 
-def broken_taxa_diffs(dir1,dir2):
+    # number of phylogeny leaves
+    tips1 = data1['input']['num_solution_leaves']
+    tips2 = data2['input']['num_solution_leaves']
+    diff = int(tips1-tips2)
+    print "phylogeny tips,{n1},{n2},{d}".format(n1=tips1,n2=tips2, d=diff)
+
+    # resolved nodes
+    nodes1 = data1['input']['num_solution_splits']
+    nodes2 = data2['input']['num_solution_splits']
+    diff = int(nodes1-nodes2)
+    print "forking nodes,{n1},{n2},{d}".format(n1=nodes1,n2=nodes2,d=diff)
+
+    # broken taxa
+    taxa1 = data1['output']['num_taxa_rejected']
+    taxa2 = data2['output']['num_taxa_rejected']
+    diff = int(taxa1-taxa2)
+    print "broken taxa,{n1},{n2},{d}".format(n1=taxa1,n2=taxa2,d=diff)
+
+def broken_taxa_diffs(run1,run2):
 # file of interest is labelled_supertree/broken_taxa.json
-    jsonfile = "{d}/labelled_supertree/broken_taxa.json".format(d=dir1)
+    jsonfile = "{d}/labelled_supertree/broken_taxa.json".format(d=run1)
     broken_taxa1 = json.load(open(jsonfile, 'r'))['non_monophyletic_taxa'].keys()
-    jsonfile = "{d}/labelled_supertree/broken_taxa.json".format(d=dir2)
+    jsonfile = "{d}/labelled_supertree/broken_taxa.json".format(d=run2)
     broken_taxa2 = json.load(open(jsonfile, 'r'))['non_monophyletic_taxa'].keys()
     countmismatch = 0
     countmismatch += compare_lists("broken taxa",broken_taxa1,broken_taxa2,True)
 
+# def get_taxon_name(id):
+#     method_url = "https://api.opentreeoflife.org/v3/taxonomy/taxon_info"
+#     data =
+
 if __name__ == "__main__":
     # get command line arguments (the two directories to compare)
     parser = argparse.ArgumentParser(description='set up database tables')
-    parser.add_argument('dir1',
+    parser.add_argument('run1',
         help='path to the first output directory'
         )
-    parser.add_argument('dir2',
+    parser.add_argument('run2',
         help='path to the second output directory'
         )
     args = parser.parse_args()
-    print "run 1 output: {d}".format(d=args.dir1)
-    print "run 2 output: {d}".format(d=args.dir2)
+    print "run 1 output: {d}".format(d=args.run1)
+    print "run 2 output: {d}".format(d=args.run2)
     print "\n# Comparing inputs"
-    config_diffs(args.dir1,args.dir2)
-    phylo_input_diff(args.dir1,args.dir2)
-    print "\n# Comparing outputs"
-    subproblem_diff(args.dir1,args.dir2)
-    #subproblem_distributions(args.dir1,args.dir2)
-    broken_taxa_diffs(args.dir1,args.dir2)
-    synthesis_tree_diffs(args.dir1,args.dir2)
+    config_diffs(args.run1,args.run2)
+    phylo_input_diff(args.run1,args.run2)
+    print "\n# Comparing subproblems"
+    subproblem_diff(args.run1,args.run2)
+    subproblem_distributions(args.run1,args.run2)
+    print "\n# Comparing broken taxa"
+    broken_taxa_diffs(args.run1,args.run2)
+    synthesis_tree_diffs(args.run1,args.run2)
