@@ -26,7 +26,5 @@ then
 else
     mkdir "${exportdir}" || exit
 fi
-otc-uncontested-decompose -e"${exportdir}" $@ || exit
-cd "${exportdir}"
-ls *.tre | sort > "${dumpedidfile}"
+otc-uncontested-decompose -e"${exportdir}" -x"${dumpedidfile}" $@ || exit
 

@@ -27,7 +27,7 @@ $(PROPINQUITY_OUT_DIR)/subproblems/dumped-subproblem-ids.txt: $(PROPINQUITY_OUT_
 	@if ! test -d $(PROPINQUITY_OUT_DIR)/subproblems ; then mkdir -p $(PROPINQUITY_OUT_DIR)/subproblems ; fi
 	./bin/run-subproblem-finder.sh \
 	  $(PROPINQUITY_OUT_DIR)/subproblems/scratch \
-	  ../dumped-subproblem-ids.txt \
+	  $(PROPINQUITY_OUT_DIR)/subproblems/dumped-subproblem-ids.txt \
 	  $(PROPINQUITY_OUT_DIR)/exemplified_phylo/taxonomy.tre \
 	  -f$(PROPINQUITY_OUT_DIR)/subproblems/scratch/args.txt
 
