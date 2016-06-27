@@ -34,6 +34,22 @@ class Extensible(object):
 def errstream(msg):
     sys.stderr.write('{n}: ERROR: {m}\n'.format(n=SCRIPT_NAME, m=msg))
 
+def get_property(configs, section, name):
+    for config in configs:
+        p = configparser.SafeConfigParser()
+        try:
+            p.read(config)
+            return p.get(section,name).strip()
+        except:
+            pass
+
+def get_property_required(configs, section, name):
+    value = get_property(configs, section, name)
+    if value is None:
+        print >> sys.stderr , 'Could not find a [{}] section with a valid "{}" setting.'.format(section,name)
+        sys.exit(0)
+    return value
+
 def parse_config(config_filepath):
     parsed_config = configparser.SafeConfigParser()
     try:
@@ -42,15 +58,17 @@ def parse_config(config_filepath):
         errstream('problem reading "{}"'.format(config_filepath))
         raise
     config = Extensible()
+    DEFAULT_CONFIG_LOCATION = os.path.expanduser('~/.opentree')
     config.config_filepath = os.path.abspath(config_filepath)
-    config.taxonomy_cleaning_flags = [i.strip() for i in parsed_config.get('taxonomy', 'cleaning_flags').split(',')]
+    config_filepaths = [config.config_filepath, DEFAULT_CONFIG_LOCATION]
+    config.taxonomy_cleaning_flags = [i.strip() for i in get_property(config_filepaths, 'taxonomy', 'cleaning_flags').split(',')]
     config.taxonomy_cleaning_flags.sort()
-    config.collections = [i.strip() for i in parsed_config.get('synthesis', 'collections').strip().split()]
-    config.root_ott_id = parsed_config.getint('synthesis', 'root_ott_id')
-    config.peyotl_root = parsed_config.get('opentree', 'peyotl')
-    config.phylesystem_root = parsed_config.get('opentree', 'phylesystem')
-    config.collections_root = parsed_config.get('opentree', 'collections')
-    config.ott_root = parsed_config.get('opentree', 'ott')
+    config.collections = [i.strip() for i in get_property(config_filepaths, 'synthesis', 'collections').strip().split()]
+    config.root_ott_id = get_property(config_filepaths, 'synthesis', 'root_ott_id')
+    config.peyotl_root = get_property(config_filepaths, 'opentree', 'peyotl')
+    config.phylesystem_root = get_property(config_filepaths, 'opentree', 'phylesystem')
+    config.collections_root = get_property(config_filepaths, 'opentree', 'collections')
+    config.ott_root = get_property(config_filepaths, 'opentree', 'ott')
     ott_version_file = os.path.join(config.ott_root, 'version.txt')
     config.ott_version = codecs.open(ott_version_file, 'rU', encoding='utf-8').read().strip()
     ott_major_pat = re.compile('^([0-9.]+)[a-z]?.*')
@@ -169,6 +187,7 @@ def render_top_index(container, template, html_out, json_out):
                             phylo_input=container.phylo_input,
                             exemplified_phylo=container.exemplified_phylo))
 
+# Note: these render commands could in theory be replaced by Jim with cooler HTML output or something.
 def render_phylo_input_index(container, template, html_out, json_out):
     write_as_json({'phylo_input' : container.phylo_input.__dict__}, json_out)
     html_out.write(template(phylo_input=container.phylo_input))
