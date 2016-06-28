@@ -222,6 +222,48 @@ def render_annotated_supertree_index(container, template, html_out, json_out):
 def render_assessments_index(container, template, html_out, json_out):
     html_out.write(template(assessments=container.assessments))
 
+def node_label2obj(nl):
+    '''Node labels in cleaned input trees are quirky, this tries to parse them...'''
+    el = {'label': nl}
+    if not nl:
+        #Resolution of a polytomy during otc-uncontested-decompose can result in new nodes with empty labels
+        return el
+    ott_id = None
+    name = None
+    node_id = None
+    if nl.endswith(' '):
+        # Most nodes internals have no OTT Id so they end with a space
+        nnl = nl[:-1]
+        sn = nnl.split('_')
+        assert len(sn) > 1
+        name = '_'.join(sn[:-1])
+        node_id = sn[-1]
+    else:
+        delim = '_'
+        sn = nl.split(delim)
+        if len(sn) > 1:
+            if len(sn) <= 2:
+                sys.exit('problem:\n"{}"\n'.format(nl))
+            assert len(sn) > 2
+        else:
+            # Some have "nodeID ottID"
+            delim = ' '
+            sn = nl.split(delim)
+        if len(sn) > 2:
+            name = delim.join(sn[:-2])
+            node_id = sn[-2]
+            ott_id = sn[-1]
+        else:
+            assert len(sn) == 2
+            node_id, ott_id = sn
+    if ott_id:
+        el['ott'] = ott_id
+    if name:
+        el['name'] = name
+    if node_id:
+        el['node_id'] = node_id
+    return el
+
 class DocGen(object):
     def __init__(self, propinquity_dir, supertree_output_dir, config_filepath):
         self.top_output_dir = supertree_output_dir
@@ -272,6 +314,30 @@ class DocGen(object):
     def read_subproblems(self):
         d = os.path.join(self.top_output_dir, 'subproblems')
         blob = Extensible()
+        conf_tax_json_fp = os.path.join(d, 'contesting-trees.json')
+        conf_tax_info = read_as_json(conf_tax_json_fp)
+        externalized_conf_tax_info = {}
+        for ott_id, tree2node_info_list in conf_tax_info.items():
+            tr_ob_li = []
+            externalized_conf_tax_info[ott_id] = tr_ob_li
+            for study_tree_fn, node_info_list in tree2node_info_list.items():
+                study_id, tree_id = propinquity_fn_to_study_tree(study_tree_fn)
+                cf_nl = []
+                tre_obj = {'study_id': study_id,
+                           'tree_id': tree_id,
+                           'tree_filename': study_tree_fn,
+                           'conflicting_nodes': cf_nl}
+                tr_ob_li.append(tre_obj)
+                if len(node_info_list) < 2:
+                    raise RuntimeError('read_subproblems < 2 node info elements for taxon ID = {}'.format(ott_id))
+                for node_info in node_info_list:
+                    rcfn = node_info['children_from_taxon']
+                    cfn = [node_label2obj(i) for i in rcfn]
+                    el = {'parent': node_label2obj(node_info['parent']),
+                          'children_from_taxon': cfn
+                         }
+                    cf_nl.append(el)
+        blob.contested_taxa = externalized_conf_tax_info
         blob.tree_files = stripped_nonempty_lines(os.path.join(d, 'subproblem-ids.txt'))
         id2num_leaves = {}
         for el in self.subproblem_solutions.subproblem_num_leaves_num_internal_nodes:

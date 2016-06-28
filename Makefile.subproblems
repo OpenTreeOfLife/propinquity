@@ -19,8 +19,6 @@ $(PROPINQUITY_OUT_DIR)/subproblems/scratch/args.txt: $(PROPINQUITY_OUT_DIR)/exem
 	| sed -e "s:^:$(PROPINQUITY_OUT_DIR)/exemplified_phylo/:g" \
 	> $(PROPINQUITY_OUT_DIR)/subproblems/scratch/args.txt
 
-# Note that run-subproblem-finder.sh is odd in that the second arg is relative to the first arg.
-
 $(PROPINQUITY_OUT_DIR)/subproblems/dumped-subproblem-ids.txt: $(PROPINQUITY_OUT_DIR)/exemplified_phylo/taxonomy.tre \
 															  $(PROPINQUITY_OUT_DIR)/subproblems/scratch/args.txt \
 															  $(PROPINQUITY_OUT_DIR)/exemplified_phylo/nonempty_trees.txt
@@ -28,6 +26,7 @@ $(PROPINQUITY_OUT_DIR)/subproblems/dumped-subproblem-ids.txt: $(PROPINQUITY_OUT_
 	./bin/run-subproblem-finder.sh \
 	  $(PROPINQUITY_OUT_DIR)/subproblems/scratch \
 	  $(PROPINQUITY_OUT_DIR)/subproblems/dumped-subproblem-ids.txt \
+	  $(PROPINQUITY_OUT_DIR)/subproblems/contesting-trees.json \
 	  $(PROPINQUITY_OUT_DIR)/exemplified_phylo/taxonomy.tre \
 	  -f$(PROPINQUITY_OUT_DIR)/subproblems/scratch/args.txt
 
