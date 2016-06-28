@@ -2367,7 +2367,7 @@ status open
 \begin_inset Float figure
 wide false
 sideways false
-status collapsed
+status open
 
 \begin_layout Plain Layout
 \begin_inset Graphics
@@ -2383,7 +2383,9 @@ status collapsed
 \begin_inset Caption Standard
 
 \begin_layout Plain Layout
-Solution to subproblem 14
+Solution to subproblem 
+\emph on
+ABCD
 \end_layout
 
 \end_inset
@@ -2417,7 +2419,9 @@ status collapsed
 \begin_inset Caption Standard
 
 \begin_layout Plain Layout
-Solution to subproblem 17
+Solution to subproblem 
+\emph on
+root
 \end_layout
 
 \end_inset
