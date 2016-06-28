@@ -31,13 +31,18 @@ do
     sn="${src_dir}/${b}-tree-names.txt"
     if test -f "${dt}" -a -f "${dm}" -a -f "${dn}"
     then
-        if diff "${dm}" "${sm}" >/dev/null 2>&1
+	# diff return 1 if files are different, but success/true is "0" for bash!
+        if ! diff "${dm}" "${sm}" >/dev/null 2>&1
         then
+#	    echo "moving ${st} (diff)"
             cp "${st}" "${dt}" || exit
             cp "${sn}" "${dn}" || exit
             cp "${sm}" "${dm}" || exit
+#	else
+#	    echo "leaving ${st} ${dm} ${sm} (diff)"
         fi
     else
+#	echo "moving ${st}"
         cp "${st}" "${dt}" || exit
         cp "${sn}" "${dn}" || exit
         cp "${sm}" "${dm}" || exit
