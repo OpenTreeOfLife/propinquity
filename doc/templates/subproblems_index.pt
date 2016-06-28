@@ -48,7 +48,7 @@ not contested, there would only be one internal node that fit those criterion, b
 in contested taxa for there are multiple.</p>
 <ul>
     <li tal:repeat="ott_all_trees subproblems.contested_taxa.items()">
-      <a href="https://tree.opentreeoflife.org/taxonomy/browse?id=${ott_all_trees[0]}">${ott_all_trees[0]}</a> contested by:
+      <a href="https://tree.opentreeoflife.org/taxonomy/browse?id=${ott_all_trees[0]}">ott${ott_all_trees[0]}</a> contested by:
       <ul>
         <li tal:repeat="tree_bundle ott_all_trees[1]">
         <a href="https://tree.opentreeoflife.org/curator/study/view/${tree_bundle['study_id']}/?tab=trees&tree=${tree_bundle['tree_id']}" target="_blank">tree "${tree_bundle['tree_id']}"" of study "${tree_bundle['study_id']}"</a>
