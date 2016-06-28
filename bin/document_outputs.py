@@ -319,6 +319,8 @@ class DocGen(object):
         externalized_conf_tax_info = {}
         for ott_id, tree2node_info_list in conf_tax_info.items():
             tr_ob_li = []
+            if ott_id.startswith('ott'):
+                ott_id = ott_id[3:]
             externalized_conf_tax_info[ott_id] = tr_ob_li
             for study_tree_fn, node_info_list in tree2node_info_list.items():
                 study_id, tree_id = propinquity_fn_to_study_tree(study_tree_fn)
