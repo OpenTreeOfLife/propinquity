@@ -326,63 +326,26 @@ th input tree.
 \end_inset
 
  are in conflict with the edge 
-\begin_inset ERT
-status open
-
-\begin_layout Plain Layout
-
-$j$
-\end_layout
-
+\begin_inset Formula $j$
 \end_inset
 
  in the induced tree.
  Reversing the orientation, we can consider whether or not an edge in an
  input tree is displayed by the 
-\begin_inset ERT
-status open
-
-\begin_layout Plain Layout
-
-$
-\backslash
-summaryTree$
-\end_layout
-
+\begin_inset Formula $\summaryTree$
 \end_inset
 
 .
  A node, 
-\begin_inset ERT
-status open
-
-\begin_layout Plain Layout
-
-$j$
-\end_layout
-
+\begin_inset Formula $j$
 \end_inset
 
 , in an input tree 
-\begin_inset ERT
-status open
-
-\begin_layout Plain Layout
-
-$T_i$
-\end_layout
-
+\begin_inset Formula $T_{i}$
 \end_inset
 
  will be denoted 
-\begin_inset ERT
-status open
-
-\begin_layout Plain Layout
-
-$V(i, j)$
-\end_layout
-
+\begin_inset Formula $V(i,j)$
 \end_inset
 
 .
@@ -393,87 +356,32 @@ $V(i, j)$
 
 .
  If the set of tip-mapped taxa for any node in 
-\begin_inset ERT
-status open
-
-\begin_layout Plain Layout
-
-$
-\backslash
-summaryTree(i)$
-\end_layout
-
+\begin_inset Formula $\summaryTree(i)$
 \end_inset
 
  is identical to 
-\begin_inset ERT
-status open
-
-\begin_layout Plain Layout
-
-$
-\backslash
-mathcal{L}(i, j)$
-\end_layout
-
+\begin_inset Formula $\mathcal{L}(i,j)$
 \end_inset
 
 , then we say that 
-\begin_inset ERT
-status open
-
-\begin_layout Plain Layout
-
-$
-\backslash
-summaryTree$
-\end_layout
-
+\begin_inset Formula $\summaryTree$
 \end_inset
 
  displays node 
-\begin_inset ERT
-status open
-
-\begin_layout Plain Layout
-
-$j$
-\end_layout
-
+\begin_inset Formula $j$
 \end_inset
 
  of 
-\begin_inset ERT
-status open
-
-\begin_layout Plain Layout
-
-$T_i$
-\end_layout
-
+\begin_inset Formula $T_{i}$
 \end_inset
 
 .
  We say that the summary displays edge 
-\begin_inset ERT
-status open
-
-\begin_layout Plain Layout
-
-$j$
-\end_layout
-
+\begin_inset Formula $j$
 \end_inset
 
  if the summary tree displays the child node of edge 
-\begin_inset ERT
-status open
-
-\begin_layout Plain Layout
-
-$j$
-\end_layout
-
+\begin_inset Formula $j$
 \end_inset
 
 .
@@ -484,14 +392,7 @@ $j$
 An appealing goal for the summarization would be to find the supertree that
  displays the largest number of input tree edges.
  This is probably an 
-\begin_inset ERT
-status open
-
-\begin_layout Plain Layout
-
-$NP$
-\end_layout
-
+\begin_inset Formula $NP$
 \end_inset
 
 -hard problem.
@@ -501,67 +402,32 @@ $NP$
  For example, a grouping that was expected may not be present in the supertree,
  but it may not conflict with any of the input groupings which are displayed.
  This can happen because displaying both 
-\begin_inset ERT
-status open
-
-\begin_layout Plain Layout
-
-$V(i_1, j_1)$
-\end_layout
-
+\begin_inset Formula $V(i_{1},j_{1})$
 \end_inset
 
  and 
-\begin_inset ERT
-status open
-
-\begin_layout Plain Layout
-
-$V(i_2, j_2)$
-\end_layout
-
+\begin_inset Formula $V(i_{2},j_{2})$
 \end_inset
 
  in a summary tree may only be possible by displaying a grouping that is
  present in no input tree.
  All other factors being equal, if this implied grouping conflicts with
  input node 
-\begin_inset ERT
-status open
-
-\begin_layout Plain Layout
-
-$V(i_3,j_3)$
-\end_layout
-
+\begin_inset Formula $V(i_{3},j_{3})$
 \end_inset
 
 , then 
-\begin_inset ERT
-status open
-
-\begin_layout Plain Layout
-
-$V(i_3,j_3)$
-\end_layout
-
+\begin_inset Formula $V(i_{3},j_{3})$
 \end_inset
 
  will not be displayed in the summary tree, but a biologist will not necessarily
  know how to fix this problem.
  One solution is to use a ranking of groupings.
  If an expert were quite confident in the 
-\begin_inset ERT
-status open
-
-\begin_layout Plain Layout
-
-$V(i_3,j_3)$
-\end_layout
-
+\begin_inset Formula $V(i_{3},j_{3})$
 \end_inset
 
-, then she could assign that input node a high ranking.
+ grouping, then she could assign that input node a high ranking.
  A supertree that used ranks could then recover this grouping even if its
  inclusion lowered the total number of input nodes that are displayed by
  the summary tree.
