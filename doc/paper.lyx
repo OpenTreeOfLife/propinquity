@@ -196,7 +196,7 @@ synthetic tree
  in the supertree.
 \end_layout
 
-\begin_layout Section
+\begin_layout Section*
 Background
 \end_layout
 
@@ -234,8 +234,12 @@ otcetera
 ).
 \end_layout
 
-\begin_layout Paragraph
+\begin_layout Subsection*
 Goals
+\end_layout
+
+\begin_layout Subsubsection*
+Each grouping is supported by at least one input
 \end_layout
 
 \begin_layout Standard
@@ -267,8 +271,16 @@ supported by
  
 \end_layout
 
-\begin_layout Subsubsection*
-Notation and terminology
+\begin_layout Paragraph*
+Notation and terminology – 
+\begin_inset Quotes eld
+\end_inset
+
+supported by
+\begin_inset Quotes erd
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -385,7 +397,135 @@ th input tree.
 \end_inset
 
 .
+ We say that edge 
+\begin_inset Formula $j$
+\end_inset
+
+ of the summary tree is supported by 
+\begin_inset Formula $V(i,k)$
+\end_inset
+
+ if the summary tree displays 
+\begin_inset Formula $V(i,k)$
+\end_inset
+
+, but if we contracted edge 
+\begin_inset Formula $j$
+\end_inset
+
+ then the resulting tree would no longer display 
+\begin_inset Formula $V(i,k)$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+Note that stating that a node in the summary tree is supported by an input
+ does not imply that every descendant of that node must be present nor that
+ every taxon that is not a descendant must be excluded in order to display
+ the node.
+ Consider the problem shown in figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:toyambig"
+
+\end_inset
+
+; panels (a) and (b) show 2 input trees.
+ Because taxa A and E do not occur together in either input, there is some
+ uncertainty about where to place them.
+ By our terminology, either output shown in (c) or (d) would be characterized
+ as a tree that displays all of the input groupings and which has no unsupported
+ groups.
+ So clearly these criteria are insufficient to specify a unique solution,
+ and users of the output tree need to be aware that it may be possible for
+ some taxa to 
+\begin_inset Quotes eld
+\end_inset
+
+float
+\begin_inset Quotes erd
+\end_inset
+
+ to multiple positions.
  
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+(a)
+\begin_inset Graphics
+	filename Figures/toy_ambig/abcd.svg
+
+\end_inset
+
+(b)
+\begin_inset Graphics
+	filename Figures/toy_ambig/bcde.svg
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+(c)
+\begin_inset Graphics
+	filename Figures/toy_ambig/soln1.svg
+
+\end_inset
+
+(d)
+\begin_inset Graphics
+	filename Figures/toy_ambig/soln2.svg
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+An example demonstrating that our definition of 
+\begin_inset Quotes eld
+\end_inset
+
+supported by
+\begin_inset Quotes erd
+\end_inset
+
+ does not imply entire composition of a grouping.
+ (a) and (b) show 2 input trees and (c) and (d) depict trees that each display
+ each of the groupings in the input trees and which have no unsupported
+ nodes.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:toyambig"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard

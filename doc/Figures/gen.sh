@@ -31,3 +31,8 @@ draw subproblem_solutions/ott14.tre
 draw subproblem_solutions/ott17.tre
 
 draw labelled_supertree/labelled_supertree.tre
+
+for f in abcd bcde soln1 soln2
+do
+    $DRAWTREE --input=toy_ambig/${f}.tre --output=toy_ambig/${f}.svg --edge.width=3 "$@" --format=svg
+done
