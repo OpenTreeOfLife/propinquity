@@ -713,6 +713,92 @@ name "fig:pairwisecompat"
 
 \end_layout
 
+\begin_layout Standard
+Any approach to supertree construction must deal with the need to adjudicate
+ between conflicting input trees.
+ We choose to deal with conflict by ranking the input trees, and preferring
+ to include edges from higher-ranked trees.
+ Ranking is perhaps questionable because it does not mediate conflicts based
+ on the relative amount of evidence for each alternative.
+ However, it is a reasonable starting point.
+ This is because it has the benefits of making it easy to see why some groups
+ are included or not (transparency), and because it allows simpler and cleaner
+ algorithms.
+ However, we note that if an edge 
+\begin_inset Formula $c$
+\end_inset
+
+ conflicts with a higher-ranked edge 
+\begin_inset Formula $b$
+\end_inset
+
+, then 
+\begin_inset Formula $c$
+\end_inset
+
+ may still be included in the supertree.
+ This can occur when the higher ranked edge 
+\begin_inset Formula $b$
+\end_inset
+
+ conflicts with a yet-higher ranked edge 
+\begin_inset Formula $a$
+\end_inset
+
+, and thus 
+\begin_inset Formula $b$
+\end_inset
+
+ is not included.
+ In that case, it will be possible for 
+\begin_inset Formula $c$
+\end_inset
+
+ to be represented in the summary tree.
+ 
+\end_layout
+
+\begin_layout Standard
+In order to produce a comprehensive supertree, we also require that the
+ ranked list of rooted input trees and taxonomy tree.
+ Unlike other input trees, this tree is require to contain all taxa, and
+ thus has the maximal leaf set.
+ We make the taxonomy tree the lowest ranked tree.
+ This new formulation is the formulation of the 
+\begin_inset Quotes eld
+\end_inset
+
+taxonomic supertree problem
+\begin_inset Quotes erd
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+In our current formulation, the taxonomy tree is also unique in that the
+ taxonomy is the only source of taxonomic names.
+ Each node in the taxonomy tree corresponds to a named group.
+ Taxonomic groups may have the same name, but each node in the taxonomy
+ tree is identified by a unique number (its OTT Id).
+ Taxonomic groups are identified in the summary supertree by finding a branch
+ (or 
+\begin_inset Quotes eld
+\end_inset
+
+node
+\begin_inset Quotes erd
+\end_inset
+
+) that has exactly the same include|exclude relationship.
+ In keeping with this, the taxonomy supertree can meaningfully possess degree-tw
+o nodes.
+ Although these nodes can be removed without affecting the relationships
+ of the leaves, they do represent nested taxonomic groups that contain exactly
+ one subgroup.
+ The taxonomy is also used to determine which tips are terminal taxa.
+\end_layout
+
 \begin_layout Subsubsection*
 Goal 3: Contain no unnecessary polytomies
 \end_layout
@@ -764,6 +850,14 @@ d) would result in tree which displays only one input grouping.
 Goal 4: Display as many input nodes as feasible
 \end_layout
 
+\begin_layout Standard
+We also seek to construct a supertree that represents as many input tree
+ edges as possible.
+ Since non-included input tree edges must conflict with the supertree (or
+ they would have been added), this criterion is the same as minimizing the
+ number of input edges that conflict with the taxonomy.
+\end_layout
+
 \begin_layout Subsubsection*
 Summary of goals
 \end_layout
@@ -776,117 +870,166 @@ These optimality criteria help to define what it means for the supertree
  three optimality criteria and is a greedy approximation of a solution to
  the fourth goal.
  It is not guaranteed to display as many input nodes as possible.
- Even if the summary tree does accomplish goal 3, it is not necessarily
+ Even if the summary tree does accomplish goal 4, it is not necessarily
  a 
 \emph on
 unique
 \emph default
  optimum.
- We also seek to construct a supertree that represents as many input tree
- edges as possible.
- Since non-included input tree edges must conflict with the supertree (or
- they would have been added), this criterion is the same as minimizing the
- number of input edges that conflict with the taxonomy.
 \end_layout
 
-\begin_layout Paragraph
-Approach
+\begin_layout Subsection*
+Preprocessing of inputs
 \end_layout
 
 \begin_layout Standard
-Any approach to supertree construction must deal with the need to adjudicate
- between conflicting input trees.
- We choose to deal with conflict by ranking the input trees, and preferring
- to include edges from higher-ranked trees.
- Ranking is perhaps questionable because it does not mediate conflicts based
- on the relative amount of evidence for each alternative.
- However, it is a reasonable starting point.
- This is because it has the benefits of making it easy to see why some groups
- are included or not (transparency), and because it allows simpler and cleaner
- algorithms.
- However, we note that if an edge 
-\begin_inset Formula $c$
-\end_inset
-
- conflicts with a higher-ranked edge 
-\begin_inset Formula $b$
-\end_inset
-
-, then 
-\begin_inset Formula $b$
-\end_inset
-
- may still be included in the supertree.
- This can occur when the higher ranked edge 
-\begin_inset Formula $b$
-\end_inset
-
- conflicts with a yet-higher ranked edge 
-\begin_inset Formula $a$
-\end_inset
-
-, and thus 
-\begin_inset Formula $b$
-\end_inset
-
- is not included.
- In that case, it will be possible for 
-\begin_inset Formula $e$
-\end_inset
-
- to be represented in the summary tree.
+Propinquity was designed to function as a part of the Open Tree of Life
+ software architecture, so the first few steps of the pipeline involve transform
+ing artifacts from that project into a set rooted trees and a phylogenetic
+ taxonomy.
  
 \end_layout
 
-\begin_layout Standard
-In order to produce a comprehensive supertree, we also require that the
- ranked list of input trees contain a rooted taxonomy tree.
- Unlike other input trees, this tree is require to contain all taxa, and
- thus has the maximal leaf set.
- We make the taxonomy tree the lowest ranked tree.
- This new formulation is the formulation of the 
-\begin_inset Quotes eld
-\end_inset
-
-taxonomic supertree problem
-\begin_inset Quotes erd
-\end_inset
-
-.
+\begin_layout Subsubsection*
+Pruning of the taxonomy
 \end_layout
 
 \begin_layout Standard
-In our current formulation, the taxonomy tree is also unique in that the
- taxonomy is the only source of taxonomic names.
- Each node in the taxonomy tree corresponds to a named group.
- Taxonomic groups are identified in the summary supertree by finding a branch
- (or 
+The taxonomy referred to as 
 \begin_inset Quotes eld
 \end_inset
 
-node
+OTT
 \begin_inset Quotes erd
 \end_inset
 
-) that has exactly the same include|exclude relationship.
- In keeping with this, the taxonomy supertree can meaningfully possess degree-tw
-o nodes.
- Although these nodes can be removed without affecting the relationships
- of the leaves, they do represent nested taxonomic groups that contain exactly
- one subgroup, such as 
-\series bold
-example
-\series default
-.
+ is a hierarchy of taxonomic names that contains a phylogenetic taxonomy.
+ An OTT ID has a position in the hierarchy, a taxonomic name, and set of
+ references to the same name in different taxonomies.
+ In addition, the ID may also be associated with a set of flags that can
+ indicate that the taxon may be questionable.
+ These flags can either encode information taken from an input taxonomy
+ (for example, taxa the NCBI refers to as 
+\begin_inset Quotes eld
+\end_inset
+
+unplaced
+\begin_inset Quotes erd
+\end_inset
+
+ are assigned an 
+\begin_inset Quotes eld
+\end_inset
+
+unplaced
+\begin_inset Quotes erd
+\end_inset
+
+ flag) or can arise because of some form of conflict during taxonomy constructio
+n (for example, if two taxonomies disagree on the name for a taxon, then
+ the taxon will be merged and the name will be retained without any descendants;
+ this name will have an OTT Id, but will be flagged as 
+\begin_inset Quotes eld
+\end_inset
+
+empty
+\begin_inset Quotes erd
+\end_inset
+
+).
+ Propinquity prunes the OTTaxonomy down to a more reliable, tree-like taxonomy
+ by pruning off parts of the tree that are flagged with suspicious flags.
+ The set of flags that lead to a subtree of the taxonomy being pruned is
+ under the control of the user (the set of flags used by the Open Tree of
+ Life project can be found in the 
+\family typewriter
+config.opentree.synth
+\family default
+ file in the propinquity repository).
+ For the purpose of the rest of the pipeline, an OTT Id that has been pruned
+ from the taxonomy will be treated in the same way as invalid OTT Id.
+ The output of this step is stored in propinquity's 
+\family typewriter
+cleaned_ott
+\family default
+ subdirectory; this operation only needs to be performed when the OTT or
+ the pruning flags change.
+\end_layout
+
+\begin_layout Subsubsection*
+Pruning input phylogenetic trees
+\end_layout
+
+\begin_layout Standard
+The phylesystem API(
+\begin_inset CommandInset citation
+LatexCommand citet
+key "McTavishEtAt2015"
+
+\end_inset
+
+) of Open Tree allows users to curate published estimates of trees and create
+ ranked collections of these trees.
+ Early steps in the propinquity pipeline manipulate the phylogenetic input
+ trees to improve their usability and reliability.
+ Frequently, phylogenetic estimates are rooted using the outgroup criterion,
+ which is an assumption about the monophyly of the ingroup taxa.
+ Because the rooting of the branches in the outgroup portion of the tree
+ is often uncertain, data curators can identify the ingroup node of the
+ tree; propinquity uses this annotation to prune off the outgroup taxa.
+\end_layout
+
+\begin_layout Standard
+Frequently, not all tips in a phylogenetic input will not have been mapped
+ to a taxon in the current version OTT.
+ Unmapped leaves are pruned from each phylogenetic input.
+ In some case, the OTT has changed and a taxon has been unambiguously mapped
+ to another taxon.
+ This can occur when multiple species in one version of the taxonomy are
  
+\begin_inset Quotes eld
+\end_inset
+
+lumped
+\begin_inset Quotes erd
+\end_inset
+
+ into a single taxon in a subsequent version.
+ OTT maintains a set of 
+\begin_inset Quotes eld
+\end_inset
+
+forwarding
+\begin_inset Quotes erd
+\end_inset
+
+ statements about IDs that have been removed but can be mapped to an existing
+ taxon; propinquity uses these statements to update the OTU mapping of input
+ trees.
 \end_layout
 
 \begin_layout Standard
-The taxonomy is used to determine which tips are terminal taxa.
+Finally some leaves are mapped to taxa that occur more than once in the
+ tree, or taxa that have ancestors represented as tips of the tree.
+ In these cases, leaves are pruned to assure that tips are mapped to unique
+ taxa that are not nested.
+ In the case of nested taxa, the tip mapped to the higher level taxon is
+ retained.
+ In the case of duplicate occurrences of an OTT taxon, propinquity checks
+ to see if a data curator has selected one of the taxa to be the exemplar
+ for the taxon.
+ If this selection has not been made, then the node with the lexicographically
+ lowest ID is chosen to exemplify the taxon.
+ This choice is arbitrary, but repeatable.
+ The pruned phylogenetic inputs are stored in a 
+\family typewriter
+cleaned_phylo
+\family default
+ subdirectory of propinquity.
 \end_layout
 
-\begin_layout Subsection
-Non-terminals as tips
+\begin_layout Subsubsection*
+Exemplifying tips mapped to higher taxa
 \end_layout
 
 \begin_layout Standard
