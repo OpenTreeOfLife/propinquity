@@ -32,7 +32,14 @@ draw subproblem_solutions/ott17.tre
 
 draw labelled_supertree/labelled_supertree.tre
 
+d=toy_ambig
 for f in abcd bcde soln1 soln2
 do
-    $DRAWTREE --input=toy_ambig/${f}.tre --output=toy_ambig/${f}.svg --edge.width=3 "$@" --format=svg
+    $DRAWTREE --input=${d}/${f}.tre --output=${d}/${f}.svg --edge.width=3 "$@" --format=svg
+done
+
+d=toy_pairwise_compat
+for f in abc acd bcd s12 s13 s23
+do
+    $DRAWTREE --input=${d}/${f}.tre --output=${d}/${f}.svg --edge.width=3 "$@" --format=svg
 done

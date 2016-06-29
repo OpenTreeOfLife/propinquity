@@ -238,10 +238,6 @@ otcetera
 Goals
 \end_layout
 
-\begin_layout Subsubsection*
-Each grouping is supported by at least one input
-\end_layout
-
 \begin_layout Standard
 Translating the goals of the Open Tree of Life's summary tree into an explicit
  set of criteria is not trivial.
@@ -249,10 +245,38 @@ Translating the goals of the Open Tree of Life's summary tree into an explicit
  source trees in an transparent and justifiable fashion, and we would like
  to allow users to correct errors in the supertree by improving the input
  information.
+ A more formal statement of the goals is to produce a tree which:
+\end_layout
+
+\begin_layout Enumerate
+displays no unsupported groups,
+\end_layout
+
+\begin_layout Enumerate
+defers to groupings from higher ranked trees in the case of conflict, 
+\end_layout
+
+\begin_layout Enumerate
+contain no unnecessary polytomies, and
+\end_layout
+
+\begin_layout Enumerate
+displays as many groupings from input trees as possible.
+\end_layout
+
+\begin_layout Standard
+These goals are described more fully below.
  In order to accomplish transparency and justification, our pipeline also
- produces an annotations file that relates each supertree edge to the input
- tree edges that support it.
- We require that each edge in the supertree be supported by at least one
+ produces annotations files with information about conflict and support.
+ 
+\end_layout
+
+\begin_layout Subsubsection*
+Goal 1: Each grouping is supported by at least one input
+\end_layout
+
+\begin_layout Standard
+We require that each edge in the supertree be supported by at least one
  input tree edge.
  In addition to aiding interpretability, this requirement keeps the supertree
  from arbitrarily representing information that comes from none of the input
@@ -529,6 +553,22 @@ name "fig:toyambig"
 \end_layout
 
 \begin_layout Standard
+One of our aims in supertree construction is to minimize the amount of informati
+on in the supertree that does not come from single input trees.
+ In general, we permit information that comes not from any individual input
+ tree, but comes from combinations of input trees.
+ However, we seek to exclude information that comes from none of the input
+ trees.
+ This motivates the criterion of not having any unsupported edges, since
+ these edges could be removed without decreasing the support from any input
+ tree.
+\end_layout
+
+\begin_layout Subsubsection*
+Goal 2: Tree ranking
+\end_layout
+
+\begin_layout Standard
 An appealing goal for the summarization would be to find the supertree that
  displays the largest number of input tree edges.
  This is probably an 
@@ -539,8 +579,9 @@ An appealing goal for the summarization would be to find the supertree that
  Furthermore, despite being easy to state, this formulation does not seem
  to present biologists who use the summarization tool with an obvious avenue
  for fixing perceived problems with the summary tree.
- For example, a grouping that was expected may not be present in the supertree,
- but it may not conflict with any of the input groupings which are displayed.
+ For example, a grouping that a biolgist expected may not be present in
+ the supertree, but it may not conflict with any of the input groupings
+ which are displayed.
  This can happen because displaying both 
 \begin_inset Formula $V(i_{1},j_{1})$
 \end_inset
@@ -569,8 +610,111 @@ An appealing goal for the summarization would be to find the supertree that
 
  grouping, then she could assign that input node a high ranking.
  A supertree that used ranks could then recover this grouping even if its
- inclusion lowered the total number of input nodes that are displayed by
- the summary tree.
+ inclusion did not increase the total number of input nodes that are displayed
+ by the summary tree.
+ Figure (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:pairwisecompat"
+
+\end_inset
+
+) shows an example of 3 input trees for which there is no pairwise incompatibili
+ty, but no solution displays all of the input groups; alternative rankings
+ of inputs can result in one of three summary trees shown in panels (d-f).
+ 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+(a)
+\begin_inset Graphics
+	filename Figures/toy_pairwise_compat/abc.svg
+
+\end_inset
+
+(b)
+\begin_inset Graphics
+	filename Figures/toy_pairwise_compat/acd.svg
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+(c)
+\begin_inset Graphics
+	filename Figures/toy_pairwise_compat/bcd.svg
+
+\end_inset
+
+(d)
+\begin_inset Graphics
+	filename Figures/toy_pairwise_compat/s12.svg
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+(e)
+\begin_inset Graphics
+	filename Figures/toy_pairwise_compat/s13.svg
+
+\end_inset
+
+(f)
+\begin_inset Graphics
+	filename Figures/toy_pairwise_compat/s23.svg
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+An example of 3 input trees shown in (a), (b), and (c) which do not conflict
+ in a pairwise manner, but cannot be jointly displayed in one tree.
+ The 3 solution trees are shown in panels (d-f).
+ Panel (d) for ranking the tree in (c) lowest.
+ Panel (e) shows the solution if the tree in (b) has the lowest rank.
+ Panel (f) shows the solution if the tree in (a) is ranked lowest.
+ Each of the solutions displays 2 of the 3 input groupings.
+ 
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:pairwisecompat"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection*
+Goal 3: Contain no unnecessary polytomies
 \end_layout
 
 \begin_layout Standard
@@ -582,28 +726,58 @@ not
 \emph default
  included, we can point to a reason for non-inclusion by showing that the
  input edge conflicts with some node/edge of the summary tree.
- We also seek to include all taxa from the taxonomy in the supertree.
- These optimality criteria help to define what it means for the supertree
+ Note, that the requirement do not display unsupported groups leads to some
+ 
+\begin_inset Quotes eld
+\end_inset
+
+necessary
+\begin_inset Quotes erd
+\end_inset
+
+ polytomies.
+ For example any resolution of the polytomy shown in figure (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:pairwisecompat"
+
+\end_inset
+
+e) would continue to display the same 2 input groups, but the additional
+ grouping would be unsupported, because the unresolved tree already displays
+ the 2 input groups.
+ Thus, the additional group would be unsupported and the unresolved tree
+ would be preferred by our criterion.
+ However, collapsing either internal edge of the tree shown in figure (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:pairwisecompat"
+
+\end_inset
+
+d) would result in tree which displays only one input grouping.
+ This tree would contain an unnecessary polytomy, because the polytomy would
+ permit refinement to the depicted tree which displays more input groupings.
+\end_layout
+
+\begin_layout Subsubsection*
+Goal 4: Display as many input nodes as feasible
+\end_layout
+
+\begin_layout Subsubsection*
+Summary of goals
+\end_layout
+
+\begin_layout Standard
+These optimality criteria help to define what it means for the supertree
  to represent the input trees, as well as justifying and explaining why
  various features of the supertree exist.
- 
-\end_layout
-
-\begin_layout Standard
-One of our aims in supertree construction is to minimize the amount of informati
-on in the supertree that does not come from single input trees.
- In general, we permit information that comes not from any individual input
- tree, but comes from combinations of input trees.
- However, we seek to exclude information that comes from none of the input
- trees.
- This motivates the criterion of not having any unsupported edges, since
- these edges could be removed without decreasing the support from any input
- tree.
-\end_layout
-
-\begin_layout Standard
-We note here that while our supertree satisfies these optimality criteria,
- there is not necessarily a 
+ The pipeline described below produces asupertree that satisfies the first
+ three optimality criteria and is a greedy approximation of a solution to
+ the fourth goal.
+ It is not guaranteed to display as many input nodes as possible.
+ Even if the summary tree does accomplish goal 3, it is not necessarily
+ a 
 \emph on
 unique
 \emph default
