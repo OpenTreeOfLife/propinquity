@@ -196,7 +196,7 @@ synthetic tree
  in the supertree.
 \end_layout
 
-\begin_layout Section
+\begin_layout Section*
 Background
 \end_layout
 
@@ -234,7 +234,7 @@ otcetera
 ).
 \end_layout
 
-\begin_layout Paragraph
+\begin_layout Subsection*
 Goals
 \end_layout
 
@@ -245,10 +245,38 @@ Translating the goals of the Open Tree of Life's summary tree into an explicit
  source trees in an transparent and justifiable fashion, and we would like
  to allow users to correct errors in the supertree by improving the input
  information.
+ A more formal statement of the goals is to produce a tree which:
+\end_layout
+
+\begin_layout Enumerate
+displays no unsupported groups,
+\end_layout
+
+\begin_layout Enumerate
+defers to groupings from higher ranked trees in the case of conflict, 
+\end_layout
+
+\begin_layout Enumerate
+contain no unnecessary polytomies, and
+\end_layout
+
+\begin_layout Enumerate
+displays as many groupings from input trees as possible.
+\end_layout
+
+\begin_layout Standard
+These goals are described more fully below.
  In order to accomplish transparency and justification, our pipeline also
- produces an annotations file that relates each supertree edge to the input
- tree edges that support it.
- We require that each edge in the supertree be supported by at least one
+ produces annotations files with information about conflict and support.
+ 
+\end_layout
+
+\begin_layout Subsubsection*
+Goal 1: Each grouping is supported by at least one input
+\end_layout
+
+\begin_layout Standard
+We require that each edge in the supertree be supported by at least one
  input tree edge.
  In addition to aiding interpretability, this requirement keeps the supertree
  from arbitrarily representing information that comes from none of the input
@@ -267,8 +295,16 @@ supported by
  
 \end_layout
 
-\begin_layout Subsubsection*
-Notation and terminology
+\begin_layout Paragraph*
+Notation and terminology – 
+\begin_inset Quotes eld
+\end_inset
+
+supported by
+\begin_inset Quotes erd
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -326,63 +362,26 @@ th input tree.
 \end_inset
 
  are in conflict with the edge 
-\begin_inset ERT
-status open
-
-\begin_layout Plain Layout
-
-$j$
-\end_layout
-
+\begin_inset Formula $j$
 \end_inset
 
  in the induced tree.
  Reversing the orientation, we can consider whether or not an edge in an
  input tree is displayed by the 
-\begin_inset ERT
-status open
-
-\begin_layout Plain Layout
-
-$
-\backslash
-summaryTree$
-\end_layout
-
+\begin_inset Formula $\summaryTree$
 \end_inset
 
 .
  A node, 
-\begin_inset ERT
-status open
-
-\begin_layout Plain Layout
-
-$j$
-\end_layout
-
+\begin_inset Formula $j$
 \end_inset
 
 , in an input tree 
-\begin_inset ERT
-status open
-
-\begin_layout Plain Layout
-
-$T_i$
-\end_layout
-
+\begin_inset Formula $T_{i}$
 \end_inset
 
  will be denoted 
-\begin_inset ERT
-status open
-
-\begin_layout Plain Layout
-
-$V(i, j)$
-\end_layout
-
+\begin_inset Formula $V(i,j)$
 \end_inset
 
 .
@@ -393,194 +392,164 @@ $V(i, j)$
 
 .
  If the set of tip-mapped taxa for any node in 
-\begin_inset ERT
-status open
-
-\begin_layout Plain Layout
-
-$
-\backslash
-summaryTree(i)$
-\end_layout
-
+\begin_inset Formula $\summaryTree(i)$
 \end_inset
 
  is identical to 
-\begin_inset ERT
-status open
-
-\begin_layout Plain Layout
-
-$
-\backslash
-mathcal{L}(i, j)$
-\end_layout
-
+\begin_inset Formula $\mathcal{L}(i,j)$
 \end_inset
 
 , then we say that 
-\begin_inset ERT
-status open
-
-\begin_layout Plain Layout
-
-$
-\backslash
-summaryTree$
-\end_layout
-
+\begin_inset Formula $\summaryTree$
 \end_inset
 
  displays node 
-\begin_inset ERT
-status open
-
-\begin_layout Plain Layout
-
-$j$
-\end_layout
-
+\begin_inset Formula $j$
 \end_inset
 
  of 
-\begin_inset ERT
-status open
-
-\begin_layout Plain Layout
-
-$T_i$
-\end_layout
-
+\begin_inset Formula $T_{i}$
 \end_inset
 
 .
  We say that the summary displays edge 
-\begin_inset ERT
-status open
-
-\begin_layout Plain Layout
-
-$j$
-\end_layout
-
+\begin_inset Formula $j$
 \end_inset
 
  if the summary tree displays the child node of edge 
-\begin_inset ERT
-status open
-
-\begin_layout Plain Layout
-
-$j$
-\end_layout
-
+\begin_inset Formula $j$
 \end_inset
 
 .
+ We say that edge 
+\begin_inset Formula $j$
+\end_inset
+
+ of the summary tree is supported by 
+\begin_inset Formula $V(i,k)$
+\end_inset
+
+ if the summary tree displays 
+\begin_inset Formula $V(i,k)$
+\end_inset
+
+, but if we contracted edge 
+\begin_inset Formula $j$
+\end_inset
+
+ then the resulting tree would no longer display 
+\begin_inset Formula $V(i,k)$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+Note that stating that a node in the summary tree is supported by an input
+ does not imply that every descendant of that node must be present nor that
+ every taxon that is not a descendant must be excluded in order to display
+ the node.
+ Consider the problem shown in figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:toyambig"
+
+\end_inset
+
+; panels (a) and (b) show 2 input trees.
+ Because taxa A and E do not occur together in either input, there is some
+ uncertainty about where to place them.
+ By our terminology, either output shown in (c) or (d) would be characterized
+ as a tree that displays all of the input groupings and which has no unsupported
+ groups.
+ So clearly these criteria are insufficient to specify a unique solution,
+ and users of the output tree need to be aware that it may be possible for
+ some taxa to 
+\begin_inset Quotes eld
+\end_inset
+
+float
+\begin_inset Quotes erd
+\end_inset
+
+ to multiple positions.
  
 \end_layout
 
 \begin_layout Standard
-An appealing goal for the summarization would be to find the supertree that
- displays the largest number of input tree edges.
- This is probably an 
-\begin_inset ERT
+\begin_inset Float figure
+wide false
+sideways false
 status open
 
 \begin_layout Plain Layout
+(a)
+\begin_inset Graphics
+	filename Figures/toy_ambig/abcd.svg
 
-$NP$
+\end_inset
+
+(b)
+\begin_inset Graphics
+	filename Figures/toy_ambig/bcde.svg
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+(c)
+\begin_inset Graphics
+	filename Figures/toy_ambig/soln1.svg
+
+\end_inset
+
+(d)
+\begin_inset Graphics
+	filename Figures/toy_ambig/soln2.svg
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+An example demonstrating that our definition of 
+\begin_inset Quotes eld
+\end_inset
+
+supported by
+\begin_inset Quotes erd
+\end_inset
+
+ does not imply entire composition of a grouping.
+ (a) and (b) show 2 input trees and (c) and (d) depict trees that each display
+ each of the groupings in the input trees and which have no unsupported
+ nodes.
 \end_layout
 
 \end_inset
 
--hard problem.
- Furthermore, despite being easy to state, this formulation does not seem
- to present biologists who use the summarization tool with an obvious avenue
- for fixing perceived problems with the summary tree.
- For example, a grouping that was expected may not be present in the supertree,
- but it may not conflict with any of the input groupings which are displayed.
- This can happen because displaying both 
-\begin_inset ERT
-status open
+
+\end_layout
 
 \begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:toyambig"
 
-$V(i_1, j_1)$
+\end_inset
+
+
 \end_layout
 
 \end_inset
 
- and 
-\begin_inset ERT
-status open
 
-\begin_layout Plain Layout
-
-$V(i_2, j_2)$
-\end_layout
-
-\end_inset
-
- in a summary tree may only be possible by displaying a grouping that is
- present in no input tree.
- All other factors being equal, if this implied grouping conflicts with
- input node 
-\begin_inset ERT
-status open
-
-\begin_layout Plain Layout
-
-$V(i_3,j_3)$
-\end_layout
-
-\end_inset
-
-, then 
-\begin_inset ERT
-status open
-
-\begin_layout Plain Layout
-
-$V(i_3,j_3)$
-\end_layout
-
-\end_inset
-
- will not be displayed in the summary tree, but a biologist will not necessarily
- know how to fix this problem.
- One solution is to use a ranking of groupings.
- If an expert were quite confident in the 
-\begin_inset ERT
-status open
-
-\begin_layout Plain Layout
-
-$V(i_3,j_3)$
-\end_layout
-
-\end_inset
-
-, then she could assign that input node a high ranking.
- A supertree that used ranks could then recover this grouping even if its
- inclusion lowered the total number of input nodes that are displayed by
- the summary tree.
-\end_layout
-
-\begin_layout Standard
-The supertree should be as resolved as possible - in other words, it should
- have no unnecessary polytomies.
- Thus, for each input edge that is 
-\emph on
-not
-\emph default
- included, we can point to a reason for non-inclusion by showing that the
- input edge conflicts with some node/edge of the summary tree.
- We also seek to include all taxa from the taxonomy in the supertree.
- These optimality criteria help to define what it means for the supertree
- to represent the input trees, as well as justifying and explaining why
- various features of the supertree exist.
- 
 \end_layout
 
 \begin_layout Standard
@@ -595,22 +564,153 @@ on in the supertree that does not come from single input trees.
  tree.
 \end_layout
 
-\begin_layout Standard
-We note here that while our supertree satisfies these optimality criteria,
- there is not necessarily a 
-\emph on
-unique
-\emph default
- optimum.
- We also seek to construct a supertree that represents as many input tree
- edges as possible.
- Since non-included input tree edges must conflict with the supertree (or
- they would have been added), this criterion is the same as minimizing the
- number of input edges that conflict with the taxonomy.
+\begin_layout Subsubsection*
+Goal 2: Tree ranking
 \end_layout
 
-\begin_layout Paragraph
-Approach
+\begin_layout Standard
+An appealing goal for the summarization would be to find the supertree that
+ displays the largest number of input tree edges.
+ This is probably an 
+\begin_inset Formula $NP$
+\end_inset
+
+-hard problem.
+ Furthermore, despite being easy to state, this formulation does not seem
+ to present biologists who use the summarization tool with an obvious avenue
+ for fixing perceived problems with the summary tree.
+ For example, a grouping that a biolgist expected may not be present in
+ the supertree, but it may not conflict with any of the input groupings
+ which are displayed.
+ This can happen because displaying both 
+\begin_inset Formula $V(i_{1},j_{1})$
+\end_inset
+
+ and 
+\begin_inset Formula $V(i_{2},j_{2})$
+\end_inset
+
+ in a summary tree may only be possible by displaying a grouping that is
+ present in no input tree.
+ All other factors being equal, if this implied grouping conflicts with
+ input node 
+\begin_inset Formula $V(i_{3},j_{3})$
+\end_inset
+
+, then 
+\begin_inset Formula $V(i_{3},j_{3})$
+\end_inset
+
+ will not be displayed in the summary tree, but a biologist will not necessarily
+ know how to fix this problem.
+ One solution is to use a ranking of groupings.
+ If an expert were quite confident in the 
+\begin_inset Formula $V(i_{3},j_{3})$
+\end_inset
+
+ grouping, then she could assign that input node a high ranking.
+ A supertree that used ranks could then recover this grouping even if its
+ inclusion did not increase the total number of input nodes that are displayed
+ by the summary tree.
+ Figure (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:pairwisecompat"
+
+\end_inset
+
+) shows an example of 3 input trees for which there is no pairwise incompatibili
+ty, but no solution displays all of the input groups; alternative rankings
+ of inputs can result in one of three summary trees shown in panels (d-f).
+ 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+(a)
+\begin_inset Graphics
+	filename Figures/toy_pairwise_compat/abc.svg
+
+\end_inset
+
+(b)
+\begin_inset Graphics
+	filename Figures/toy_pairwise_compat/acd.svg
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+(c)
+\begin_inset Graphics
+	filename Figures/toy_pairwise_compat/bcd.svg
+
+\end_inset
+
+(d)
+\begin_inset Graphics
+	filename Figures/toy_pairwise_compat/s12.svg
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+(e)
+\begin_inset Graphics
+	filename Figures/toy_pairwise_compat/s13.svg
+
+\end_inset
+
+(f)
+\begin_inset Graphics
+	filename Figures/toy_pairwise_compat/s23.svg
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+An example of 3 input trees shown in (a), (b), and (c) which do not conflict
+ in a pairwise manner, but cannot be jointly displayed in one tree.
+ The 3 solution trees are shown in panels (d-f).
+ Panel (d) for ranking the tree in (c) lowest.
+ Panel (e) shows the solution if the tree in (b) has the lowest rank.
+ Panel (f) shows the solution if the tree in (a) is ranked lowest.
+ Each of the solutions displays 2 of the 3 input groupings.
+ 
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:pairwisecompat"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -633,7 +733,7 @@ Any approach to supertree construction must deal with the need to adjudicate
 \end_inset
 
 , then 
-\begin_inset Formula $b$
+\begin_inset Formula $c$
 \end_inset
 
  may still be included in the supertree.
@@ -651,7 +751,7 @@ Any approach to supertree construction must deal with the need to adjudicate
 
  is not included.
  In that case, it will be possible for 
-\begin_inset Formula $e$
+\begin_inset Formula $c$
 \end_inset
 
  to be represented in the summary tree.
@@ -660,7 +760,7 @@ Any approach to supertree construction must deal with the need to adjudicate
 
 \begin_layout Standard
 In order to produce a comprehensive supertree, we also require that the
- ranked list of input trees contain a rooted taxonomy tree.
+ ranked list of rooted input trees and taxonomy tree.
  Unlike other input trees, this tree is require to contain all taxa, and
  thus has the maximal leaf set.
  We make the taxonomy tree the lowest ranked tree.
@@ -679,6 +779,8 @@ taxonomic supertree problem
 In our current formulation, the taxonomy tree is also unique in that the
  taxonomy is the only source of taxonomic names.
  Each node in the taxonomy tree corresponds to a named group.
+ Taxonomic groups may have the same name, but each node in the taxonomy
+ tree is identified by a unique number (its OTT Id).
  Taxonomic groups are identified in the summary supertree by finding a branch
  (or 
 \begin_inset Quotes eld
@@ -693,20 +795,241 @@ node
 o nodes.
  Although these nodes can be removed without affecting the relationships
  of the leaves, they do represent nested taxonomic groups that contain exactly
- one subgroup, such as 
-\series bold
-example
-\series default
-.
- 
+ one subgroup.
+ The taxonomy is also used to determine which tips are terminal taxa.
+\end_layout
+
+\begin_layout Subsubsection*
+Goal 3: Contain no unnecessary polytomies
 \end_layout
 
 \begin_layout Standard
-The taxonomy is used to determine which tips are terminal taxa.
+The supertree should be as resolved as possible - in other words, it should
+ have no unnecessary polytomies.
+ Thus, for each input edge that is 
+\emph on
+not
+\emph default
+ included, we can point to a reason for non-inclusion by showing that the
+ input edge conflicts with some node/edge of the summary tree.
+ Note, that the requirement do not display unsupported groups leads to some
+ 
+\begin_inset Quotes eld
+\end_inset
+
+necessary
+\begin_inset Quotes erd
+\end_inset
+
+ polytomies.
+ For example any resolution of the polytomy shown in figure (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:pairwisecompat"
+
+\end_inset
+
+e) would continue to display the same 2 input groups, but the additional
+ grouping would be unsupported, because the unresolved tree already displays
+ the 2 input groups.
+ Thus, the additional group would be unsupported and the unresolved tree
+ would be preferred by our criterion.
+ However, collapsing either internal edge of the tree shown in figure (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:pairwisecompat"
+
+\end_inset
+
+d) would result in tree which displays only one input grouping.
+ This tree would contain an unnecessary polytomy, because the polytomy would
+ permit refinement to the depicted tree which displays more input groupings.
 \end_layout
 
-\begin_layout Subsection
-Non-terminals as tips
+\begin_layout Subsubsection*
+Goal 4: Display as many input nodes as feasible
+\end_layout
+
+\begin_layout Standard
+We also seek to construct a supertree that represents as many input tree
+ edges as possible.
+ Since non-included input tree edges must conflict with the supertree (or
+ they would have been added), this criterion is the same as minimizing the
+ number of input edges that conflict with the taxonomy.
+\end_layout
+
+\begin_layout Subsubsection*
+Summary of goals
+\end_layout
+
+\begin_layout Standard
+These optimality criteria help to define what it means for the supertree
+ to represent the input trees, as well as justifying and explaining why
+ various features of the supertree exist.
+ The pipeline described below produces asupertree that satisfies the first
+ three optimality criteria and is a greedy approximation of a solution to
+ the fourth goal.
+ It is not guaranteed to display as many input nodes as possible.
+ Even if the summary tree does accomplish goal 4, it is not necessarily
+ a 
+\emph on
+unique
+\emph default
+ optimum.
+\end_layout
+
+\begin_layout Subsection*
+Preprocessing of inputs
+\end_layout
+
+\begin_layout Standard
+Propinquity was designed to function as a part of the Open Tree of Life
+ software architecture, so the first few steps of the pipeline involve transform
+ing artifacts from that project into a set rooted trees and a phylogenetic
+ taxonomy.
+ 
+\end_layout
+
+\begin_layout Subsubsection*
+Pruning of the taxonomy
+\end_layout
+
+\begin_layout Standard
+The taxonomy referred to as 
+\begin_inset Quotes eld
+\end_inset
+
+OTT
+\begin_inset Quotes erd
+\end_inset
+
+ is a hierarchy of taxonomic names that contains a phylogenetic taxonomy.
+ An OTT ID has a position in the hierarchy, a taxonomic name, and set of
+ references to the same name in different taxonomies.
+ In addition, the ID may also be associated with a set of flags that can
+ indicate that the taxon may be questionable.
+ These flags can either encode information taken from an input taxonomy
+ (for example, taxa the NCBI refers to as 
+\begin_inset Quotes eld
+\end_inset
+
+unplaced
+\begin_inset Quotes erd
+\end_inset
+
+ are assigned an 
+\begin_inset Quotes eld
+\end_inset
+
+unplaced
+\begin_inset Quotes erd
+\end_inset
+
+ flag) or can arise because of some form of conflict during taxonomy constructio
+n (for example, if two taxonomies disagree on the name for a taxon, then
+ the taxon will be merged and the name will be retained without any descendants;
+ this name will have an OTT Id, but will be flagged as 
+\begin_inset Quotes eld
+\end_inset
+
+empty
+\begin_inset Quotes erd
+\end_inset
+
+).
+ Propinquity prunes the OTTaxonomy down to a more reliable, tree-like taxonomy
+ by pruning off parts of the tree that are flagged with suspicious flags.
+ The set of flags that lead to a subtree of the taxonomy being pruned is
+ under the control of the user (the set of flags used by the Open Tree of
+ Life project can be found in the 
+\family typewriter
+config.opentree.synth
+\family default
+ file in the propinquity repository).
+ For the purpose of the rest of the pipeline, an OTT Id that has been pruned
+ from the taxonomy will be treated in the same way as invalid OTT Id.
+ The output of this step is stored in propinquity's 
+\family typewriter
+cleaned_ott
+\family default
+ subdirectory; this operation only needs to be performed when the OTT or
+ the pruning flags change.
+\end_layout
+
+\begin_layout Subsubsection*
+Pruning input phylogenetic trees
+\end_layout
+
+\begin_layout Standard
+The phylesystem API(
+\begin_inset CommandInset citation
+LatexCommand citet
+key "McTavishEtAt2015"
+
+\end_inset
+
+) of Open Tree allows users to curate published estimates of trees and create
+ ranked collections of these trees.
+ Early steps in the propinquity pipeline manipulate the phylogenetic input
+ trees to improve their usability and reliability.
+ Frequently, phylogenetic estimates are rooted using the outgroup criterion,
+ which is an assumption about the monophyly of the ingroup taxa.
+ Because the rooting of the branches in the outgroup portion of the tree
+ is often uncertain, data curators can identify the ingroup node of the
+ tree; propinquity uses this annotation to prune off the outgroup taxa.
+\end_layout
+
+\begin_layout Standard
+Frequently, not all tips in a phylogenetic input will not have been mapped
+ to a taxon in the current version OTT.
+ Unmapped leaves are pruned from each phylogenetic input.
+ In some case, the OTT has changed and a taxon has been unambiguously mapped
+ to another taxon.
+ This can occur when multiple species in one version of the taxonomy are
+ 
+\begin_inset Quotes eld
+\end_inset
+
+lumped
+\begin_inset Quotes erd
+\end_inset
+
+ into a single taxon in a subsequent version.
+ OTT maintains a set of 
+\begin_inset Quotes eld
+\end_inset
+
+forwarding
+\begin_inset Quotes erd
+\end_inset
+
+ statements about IDs that have been removed but can be mapped to an existing
+ taxon; propinquity uses these statements to update the OTU mapping of input
+ trees.
+\end_layout
+
+\begin_layout Standard
+Finally some leaves are mapped to taxa that occur more than once in the
+ tree, or taxa that have ancestors represented as tips of the tree.
+ In these cases, leaves are pruned to assure that tips are mapped to unique
+ taxa that are not nested.
+ In the case of nested taxa, the tip mapped to the higher level taxon is
+ retained.
+ In the case of duplicate occurrences of an OTT taxon, propinquity checks
+ to see if a data curator has selected one of the taxa to be the exemplar
+ for the taxon.
+ If this selection has not been made, then the node with the lexicographically
+ lowest ID is chosen to exemplify the taxon.
+ This choice is arbitrary, but repeatable.
+ The pruned phylogenetic inputs are stored in a 
+\family typewriter
+cleaned_phylo
+\family default
+ subdirectory of propinquity.
+\end_layout
+
+\begin_layout Subsubsection*
+Exemplifying tips mapped to higher taxa
 \end_layout
 
 \begin_layout Standard
