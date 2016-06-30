@@ -878,8 +878,12 @@ unique
  optimum.
 \end_layout
 
+\begin_layout Section*
+Description of the propinquity pipeline
+\end_layout
+
 \begin_layout Subsection*
-Preprocessing of inputs
+Preprocessing steps
 \end_layout
 
 \begin_layout Standard
@@ -887,7 +891,34 @@ Propinquity was designed to function as a part of the Open Tree of Life
  software architecture, so the first few steps of the pipeline involve transform
 ing artifacts from that project into a set rooted trees and a phylogenetic
  taxonomy.
- 
+ The phylesystem API(
+\begin_inset CommandInset citation
+LatexCommand citet
+key "McTavishEtAt2015"
+
+\end_inset
+
+) of Open Tree allows users to curate published estimates of trees and create
+ ranked collections of these trees.
+ Early steps in the propinquity pipeline manipulate the phylogenetic input
+ trees to improve their usability and reliability.
+ The first steps of the pipeline (see Figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:pipeline"
+
+\end_inset
+
+) collect a list trees to include (in the 
+\family typewriter
+phylo_input
+\family default
+ subdirectory) and story copies of these files (in the 
+\family typewriter
+phylo_snapshot
+\family default
+ subdirectory) to make it easier to replicate the operation (because the
+ collection of trees and the tree files change due to curation).
 \end_layout
 
 \begin_layout Subsubsection*
@@ -961,18 +992,7 @@ Pruning input phylogenetic trees
 \end_layout
 
 \begin_layout Standard
-The phylesystem API(
-\begin_inset CommandInset citation
-LatexCommand citet
-key "McTavishEtAt2015"
-
-\end_inset
-
-) of Open Tree allows users to curate published estimates of trees and create
- ranked collections of these trees.
- Early steps in the propinquity pipeline manipulate the phylogenetic input
- trees to improve their usability and reliability.
- Frequently, phylogenetic estimates are rooted using the outgroup criterion,
+Frequently, phylogenetic estimates are rooted using the outgroup criterion,
  which is an assumption about the monophyly of the ingroup taxa.
  Because the rooting of the branches in the outgroup portion of the tree
  is often uncertain, data curators can identify the ingroup node of the
@@ -1512,19 +1532,27 @@ status open
 \begin_inset Caption Standard
 
 \begin_layout Plain Layout
-Data flow through the 
+Organization of the 
 \emph on
 propinquity
 \emph default
  pipeline.
+ Each pentagon labels a program (blue for otcetera-based tools and red for
+ python scripts in the propinquity or peyotl repository) that performs the
+ important operations in each step.
+ The output of each step corresponds to a subdirectory of the propinquity
+ system which will hold the output artifacts for the step.
 \end_layout
 
 \end_inset
 
 
-\end_layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:pipeline"
 
-\begin_layout Plain Layout
+\end_inset
+
 
 \end_layout
 
