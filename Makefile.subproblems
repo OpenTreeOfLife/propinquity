@@ -80,7 +80,7 @@ $(PROPINQUITY_OUT_DIR)/grafted_solution/grafted_solution.tre: $(PROPINQUITY_OUT_
 	sed "s:^:$(PROPINQUITY_OUT_DIR)/subproblem_solutions/:" \
 		$(PROPINQUITY_OUT_DIR)/subproblem_solutions/solution-ids.txt \
 		> $(PROPINQUITY_OUT_DIR)/subproblem_solutions/paths.txt
-	cd $(PROPINQUITY_OUT_DIR) ; otc-graft-solutions $$(cat $(PROPINQUITY_OUT_DIR)/subproblem_solutions/paths.txt) \
+	cd $(PROPINQUITY_OUT_DIR) ; otc-graft-solutions -f$(PROPINQUITY_OUT_DIR)/subproblem_solutions/paths.txt \
 		> $(PROPINQUITY_OUT_DIR)/grafted_solution/.grafted_solution.tre && \
 	mv $(PROPINQUITY_OUT_DIR)/grafted_solution/.grafted_solution.tre \
 	   $(PROPINQUITY_OUT_DIR)/grafted_solution/grafted_solution.tre
