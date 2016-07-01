@@ -51,8 +51,10 @@ def config_diffs(run1,run2):
 
     countmismatch = 0
     # do roots match
-    if (jsondata1["root_ott_id"] != jsondata2["root_ott_id"]):
-        print "root id1 ({r1} != root id2 ({r2}))"
+    root1 = int(jsondata1["root_ott_id"])
+    root2 = int(jsondata2["root_ott_id"])
+    if root1 != root2:
+        print "root id1 ({r1}) != root id2 ({r2})".format(r1=root1,r2=root2)
         countmismatch += 1
 
     # do collections match

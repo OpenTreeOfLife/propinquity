@@ -117,7 +117,7 @@ def get_peyotl_version(peyotl_dir):
 
 def get_runtime_configuration(config_filepath):
     config = parse_config(config_filepath)
-    x = get_otc_version() 
+    x = get_otc_version()
     config.otc_sha, config.otc_version, config.otc_boost_version = x
     x = get_peyotl_version(config.peyotl_root)
     config.peyotl_version, config.peyotl_sha = x
@@ -131,7 +131,7 @@ def stripped_nonempty_lines(fn):
             ls = line.strip()
             if ls:
                 x.append(ls)
-    return x    
+    return x
 
 def parse_subproblem_solutions_degree_dist(fn):
     x = []
@@ -175,8 +175,8 @@ def gen_degree_dist(fn):
                     assert len(row) == 2
                     dd.append([int(i) for i in row])
         if rfn:
-            yield rfn, dd     
-    
+            yield rfn, dd
+
 def write_as_json(obj, out_stream):
     json.dump(obj, out_stream, indent=2, sort_keys=True, separators=(',', ': '))
     out_stream.write('\n')
@@ -226,7 +226,8 @@ def node_label2obj(nl):
     '''Node labels in cleaned input trees are quirky, this tries to parse them...'''
     el = {'label': nl}
     if not nl:
-        #Resolution of a polytomy during otc-uncontested-decompose can result in new nodes with empty labels
+        # Resolution of a polytomy during otc-uncontested-decompose can result
+        # in new nodes with empty labels
         return el
     ott_id = None
     name = None
@@ -254,8 +255,11 @@ def node_label2obj(nl):
             node_id = sn[-2]
             ott_id = sn[-1]
         else:
-            assert len(sn) == 2
-            node_id, ott_id = sn
+            if len(sn) == 1:
+                ott_id = sn
+            else:
+                assert len(sn) == 2
+                node_id, ott_id = sn
     if ott_id:
         el['ott'] = ott_id
     if name:
@@ -468,4 +472,3 @@ if __name__ == '__main__':
     prefix_dir = args.dir
     dg = DocGen(propinquity_dir, prefix_dir, args.config)
     dg.render()
-
