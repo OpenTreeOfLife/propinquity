@@ -218,20 +218,19 @@ key "McTavishEtAt2015"
 \end_inset
 
  for further details); these trees do not include all leaf taxa.
- The taxonomic, input phylogenetics trees are rooted, and summary supertree
- are rooted.
+ The inputs (taxonomy and phylogenetic trees) and the output summary supertree
+ are all rooted.
  Here we describe the software pipeline (
 \emph on
 propinquity
 \emph default
 ) that summarizes and integrates these smaller source trees and the taxonomy
- tree into a single supertree.
- This software pipeline combines tools for manipulating and solving supertrees
- and supertree subproblems (
+ tree into a single supertree and the noteworth tools for manipulating and
+ solving supertrees in the 
 \emph on
 otcetera
 \emph default
-).
+ package.
 \end_layout
 
 \begin_layout Subsection*
@@ -242,7 +241,7 @@ Goals
 Translating the goals of the Open Tree of Life's summary tree into an explicit
  set of criteria is not trivial.
  The summary supertree should represent the phylogenetic information from
- source trees in an transparent and justifiable fashion, and we would like
+ source trees in a transparent and justifiable fashion, and we would like
  to allow users to correct errors in the supertree by improving the input
  information.
  A more formal statement of the goals is to produce a tree which:
@@ -361,7 +360,7 @@ th input tree.
 \begin_inset Formula $T_{i}$
 \end_inset
 
- are in conflict with the edge 
+ are in conflict with edge 
 \begin_inset Formula $j$
 \end_inset
 
@@ -386,7 +385,29 @@ th input tree.
 
 .
  For any such node there is a set of taxa that are mapped to the tips that
- are tips that descend from the node; this set of taxa can be denoted 
+ are tips that descend from the node.
+ This set of taxa can be denoted 
+\begin_inset Formula $\mathcal{L}(i,j)$
+\end_inset
+
+ and will be referred to as the include set of the node.
+ The 
+\begin_inset Quotes eld
+\end_inset
+
+exclude set
+\begin_inset Quotes erd
+\end_inset
+
+ of 
+\begin_inset Formula $V(i,j)$
+\end_inset
+
+ is the set of tax in 
+\begin_inset Formula $\mathcal{L}(i)$
+\end_inset
+
+ but not in 
 \begin_inset Formula $\mathcal{L}(i,j)$
 \end_inset
 
@@ -554,9 +575,9 @@ name "fig:toyambig"
 
 \begin_layout Standard
 One of our aims in supertree construction is to minimize the amount of informati
-on in the supertree that does not come from single input trees.
- In general, we permit information that comes not from any individual input
- tree, but comes from combinations of input trees.
+on in the supertree that does not come from input trees.
+ We permit information that comes from combinations of input trees, but
+ not any single input tree.
  However, we seek to exclude information that comes from none of the input
  trees.
  This motivates the criterion of not having any unsupported edges, since
