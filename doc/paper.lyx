@@ -812,8 +812,7 @@ node
 \end_inset
 
 ) that has exactly the same include|exclude relationship.
- In keeping with this, the taxonomy supertree can meaningfully possess degree-tw
-o nodes.
+ The taxonomy supertree can meaningfully possess degree-two nodes.
  Although these nodes can be removed without affecting the relationships
  of the leaves, they do represent nested taxonomic groups that contain exactly
  one subgroup.
@@ -887,7 +886,7 @@ Summary of goals
 These optimality criteria help to define what it means for the supertree
  to represent the input trees, as well as justifying and explaining why
  various features of the supertree exist.
- The pipeline described below produces asupertree that satisfies the first
+ The pipeline described below produces a supertree that satisfies the first
  three optimality criteria and is a greedy approximation of a solution to
  the fourth goal.
  It is not guaranteed to display as many input nodes as possible.
@@ -943,7 +942,7 @@ phylo_snapshot
 \end_layout
 
 \begin_layout Subsubsection*
-Pruning of the taxonomy
+Pruning questionable taxa from the taxonomy
 \end_layout
 
 \begin_layout Standard
@@ -984,7 +983,7 @@ n (for example, if two taxonomies disagree on the name for a taxon, then
 \begin_inset Quotes eld
 \end_inset
 
-empty
+barren
 \begin_inset Quotes erd
 \end_inset
 
@@ -1009,7 +1008,7 @@ cleaned_ott
 \end_layout
 
 \begin_layout Subsubsection*
-Pruning input phylogenetic trees
+Pruning problematically mapped tips from input phylogenetic trees
 \end_layout
 
 \begin_layout Standard
@@ -1075,23 +1074,28 @@ Exemplifying tips mapped to higher taxa
 
 \begin_layout Standard
 Many input trees have tips that are not terminal taxa, but higher order
- taxonomic groups.
- We seek to transform these input trees into a standardized form with no
- non-terminal tips by adding or replacing nodes with their terminal descendant
- taxa.
+ taxonomic group.
+ It is not clear how to interpret a tip in a phylogenetic estimate that
+ is labelled with the name of a higher taxon.
+ Several scenarios can lead to these cases: the data for the tip could have
+ been by creating a chimeric set of character scoring from constituent taxa,
+ it may not have been possible to identify the species sampled precisely,
+ or the researcher may simply have used a higher taxonomic name because
+ he/she assumed that the taxon is monophyletic and the higher level name
+ is more recognizable.
+ Rather than allowing the ambiguity about interpretation of the higher-taxon
+ mapped tips to propagate throughout the entire pipeline, we transform the
+ input trees by replacing higher taxa at tips with set of terminal taxon
+ exemplars for each taxon.
  One approach would be to simply determine all descendant terminal taxa
  and attach them as children of the problematic tip.
- However, this changes the nonterminal tip into the parent of a clade that
- represents a claim of monophyly for the taxon.
-\end_layout
-
-\begin_layout Standard
-This might well not be the case.
- Often in such cases a single exemplar of the nonterminal taxon was used
- as a tip, and we don't know which one this was.
- Our approach to this problem is to transform the input tree by instead
- attaching all descendant tips to the parent of the nonterminal tip, and
- removing the nonterminal tip.
+ However, this would create a rather than a tip; subsequent steps in the
+ supertree would interpret the clade as a claim of monophyly for the taxon.
+ The input tree may not have tested monophyly of the clade, so this interpretati
+on is unwarranted.
+ We avoid it by attaching exemplar taxa as child nodes of the higher taxonomic
+ tip but then collapsing the edge between the node that connected the higher
+ taxon to its parent.
  Thus, if 
 \begin_inset Formula $A$
 \end_inset
@@ -1104,19 +1108,78 @@ and
 \begin_inset Formula $a_{2}$
 \end_inset
 
-, we would replace the clade 
-\begin_inset Formula $(A,b,c)$
+ and 
+\begin_inset Formula $B$
+\end_inset
+
+ is a non-terminal taxon containing terminal descendants 
+\begin_inset Formula $b_{1}$
+\end_inset
+
+and 
+\begin_inset Formula $b_{2}$
+\end_inset
+
+ we would replace the subtree 
+\begin_inset Formula $((A,B),c)$
 \end_inset
 
  with 
-\begin_inset Formula $(a_{1},a_{2},b,c)$
+\begin_inset Formula $((a_{1},a_{2},b_{1},b_{2}),c)$
 \end_inset
 
- instead of the clade 
-\begin_inset Formula $((a_{1},a_{2})A,b_{1},b_{2})$
+ instead of the subtree 
+\begin_inset Formula $(((a_{1},a_{2})A,(b_{1},b_{2})B),c)$
 \end_inset
 
 .
+\end_layout
+
+\begin_layout Standard
+As will be discussed below, if a taxon is only present in the taxonomy (not
+ in any of the input trees), then it can be pruned from the taxonomy for
+ the construction of the supertree and then grafted back on to the summary
+ tree later.
+ Performing this pruning reduces the size of the supertree problem, reducing
+ the running time of the pipeline.
+ Similarly, when we expand a higher taxon in the exemplification step, we
+ can omit members of the taxon if they do not occur in any of the phylogenetic
+ inputs.
+ If there are no members of the higher taxon sampled in any other input
+ tree, then we arbitrarily choose one terminal taxon to represent the higher
+ taxon.
+ During the exemplification step, a tool from otcetera (
+\family typewriter
+otc-nonterminals-to-exemplars
+\family default
+) reads the taxonomy and all of the 
+\begin_inset Quotes eld
+\end_inset
+
+cleaned
+\begin_inset Quotes erd
+\end_inset
+
+ phylogenetic estimates from the previous step.
+ Reading all of the inputs is necessary to assure that each higher taxon
+ is replaced with the same set of exemplars regardless of which tree the
+ higher taxon occurs in, and that the exemplars for a higher taxon is the
+ union on the set of descendant terminal taxa that have been sampled in
+ a phylogenetic input.
+ In addition to producing the set of 
+\begin_inset Quotes eld
+\end_inset
+
+exemplified
+\begin_inset Quotes erd
+\end_inset
+
+ phylogenetic inputs, this step also produced a pruned down version of the
+ taxonomy that only contains tips that are present in at least one phylogenetic
+ input.
+ In version 5.0 of the Open Tree of Life synthetic tree, this version of
+ the taxonomic tree contained only 43,196 leaves (while the flag-cleaned
+ version of OTT had 2,424,255 leaves).
 \end_layout
 
 \begin_layout Section
@@ -1125,9 +1188,10 @@ Algorithmic approach
 
 \begin_layout Standard
 In order to make the supertree construction more tractable, we prune the
- taxonomy by removing tips that are not present in any input tree, on the
- theory that these tips cannot affect conflict resolution, and can easily
- be added-back after the supertree problem is solved.
+ taxonomy by removing tips that are not present in any input tree, because
+ these tips do affect conflict resolution using our system of displaying
+ as many high ranked input groupings as possible.
+ The taxa can easily be added-back after the supertree problem is solved.
 \end_layout
 
 \begin_layout Standard
@@ -1135,7 +1199,7 @@ We also take a divide-and-conquer approach by dividing the supertree into
  subproblems along edges of the taxonomy that are uncontested by any of
  the input trees.
  This approach therefore forces monophyly for these groups, which might
- (possibly?) be non-optimal.
+ (possibly?) be .
  However, the downsides of this approach seem minimal, compared to the improveme
 nt in scalability.
  We thus divide the supertree problem into 
