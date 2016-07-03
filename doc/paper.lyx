@@ -196,7 +196,7 @@ synthetic tree
  in the supertree.
 \end_layout
 
-\begin_layout Section*
+\begin_layout Section
 Background
 \end_layout
 
@@ -233,7 +233,7 @@ otcetera
  package.
 \end_layout
 
-\begin_layout Subsection*
+\begin_layout Subsection
 Goals
 \end_layout
 
@@ -270,7 +270,7 @@ These goals are described more fully below.
  
 \end_layout
 
-\begin_layout Subsubsection*
+\begin_layout Subsubsection
 Goal 1: Each grouping is supported by at least one input
 \end_layout
 
@@ -585,7 +585,7 @@ on in the supertree that does not come from input trees.
  tree.
 \end_layout
 
-\begin_layout Subsubsection*
+\begin_layout Subsubsection
 Goal 2: Tree ranking
 \end_layout
 
@@ -819,7 +819,7 @@ node
  The taxonomy is also used to determine which tips are terminal taxa.
 \end_layout
 
-\begin_layout Subsubsection*
+\begin_layout Subsubsection
 Goal 3: Contain no unnecessary polytomies
 \end_layout
 
@@ -866,7 +866,7 @@ d) would result in tree which displays only one input grouping.
  permit refinement to the depicted tree which displays more input groupings.
 \end_layout
 
-\begin_layout Subsubsection*
+\begin_layout Subsubsection
 Goal 4: Display as many input nodes as feasible
 \end_layout
 
@@ -878,7 +878,7 @@ We also seek to construct a supertree that represents as many input tree
  number of input edges that conflict with the taxonomy.
 \end_layout
 
-\begin_layout Subsubsection*
+\begin_layout Subsubsection
 Summary of goals
 \end_layout
 
@@ -896,13 +896,20 @@ These optimality criteria help to define what it means for the supertree
 unique
 \emph default
  optimum.
+ The pipeline takes a greedy approach to producing a summary tree by attempting
+ to add groupings from the trees in order of the trees ranking.
+ This can be viewed as a greedy solution to the problem of finding the tree
+ with the maximum sum displayed groups' weighted scores criterion (described
+ in the appendix A) where the weights from the trees are so extreme that
+ displaying one group from a highly ranked tree is preferred to displaying
+ all of the groupings from lower ranked trees.
 \end_layout
 
-\begin_layout Section*
+\begin_layout Section
 Description of the propinquity pipeline
 \end_layout
 
-\begin_layout Subsection*
+\begin_layout Subsection
 Preprocessing steps
 \end_layout
 
@@ -941,7 +948,7 @@ phylo_snapshot
  collection of trees and the tree files change due to curation).
 \end_layout
 
-\begin_layout Subsubsection*
+\begin_layout Subsubsection
 Pruning questionable taxa from the taxonomy
 \end_layout
 
@@ -1007,7 +1014,7 @@ cleaned_ott
  the pruning flags change.
 \end_layout
 
-\begin_layout Subsubsection*
+\begin_layout Subsubsection
 Pruning problematically mapped tips from input phylogenetic trees
 \end_layout
 
@@ -1068,7 +1075,7 @@ cleaned_phylo
  subdirectory of propinquity.
 \end_layout
 
-\begin_layout Subsubsection*
+\begin_layout Subsubsection
 Exemplifying tips mapped to higher taxa
 \end_layout
 
@@ -1166,7 +1173,48 @@ cleaned
  higher taxon occurs in, and that the exemplars for a higher taxon is the
  union on the set of descendant terminal taxa that have been sampled in
  a phylogenetic input.
- In addition to producing the set of 
+\end_layout
+
+\begin_layout Subsection
+Summary tree construction
+\end_layout
+
+\begin_layout Standard
+After the preprocessing steps, the inputs have been converted to a set of
+ rooted phylogenetic estimates in which each leave is mapped to a terminal
+ taxon in the exemplified taxonomic tree.
+ The goal of the remainder of the pipeline is to construct a tree that maximizes
+ the sum displayed groups' weighted scores criterion.
+ 
+\end_layout
+
+\begin_layout Subsubsection
+Temporarily pruning leaves mapped to taxa found in only one tree
+\end_layout
+
+\begin_layout Standard
+First we prune the taxonomy by removing tips that are not present in any
+ input tree.
+ The tips pruned in this step will be grafted back onto the skeleton of
+ the summary tree in a subsequent step.
+ The theorem in Appendix B proves that a terminal taxon that is represented
+ in only one input can be pruned and then regrafted onto the solution without
+ affecting which nodes are displayed by the final summary tree.
+ Thus, this procedure does not impede our ability to find a good summary
+ tree.
+ Removing these tips produces a smaller input to the rest of the pipeline,
+ which reduces running times.
+ 
+\end_layout
+
+\begin_layout Standard
+This step is actually performed by the 
+\family typewriter
+otc-nonterminals-to-exemplars
+\family default
+ tool that was mentioned in the last step of the pre-processing portion
+ of the pipeline.
+ After producing the set of 
 \begin_inset Quotes eld
 \end_inset
 
@@ -1174,24 +1222,11 @@ exemplified
 \begin_inset Quotes erd
 \end_inset
 
- phylogenetic inputs, this step also produced a pruned down version of the
- taxonomy that only contains tips that are present in at least one phylogenetic
- input.
+ phylogenetic inputs, this tool exports a pruned down version of the taxonomy
+ that only contains tips that are present in at least one phylogenetic input.
  In version 5.0 of the Open Tree of Life synthetic tree, this version of
  the taxonomic tree contained only 43,196 leaves (while the flag-cleaned
  version of OTT had 2,424,255 leaves).
-\end_layout
-
-\begin_layout Section
-Algorithmic approach
-\end_layout
-
-\begin_layout Standard
-In order to make the supertree construction more tractable, we prune the
- taxonomy by removing tips that are not present in any input tree, because
- these tips do affect conflict resolution using our system of displaying
- as many high ranked input groupings as possible.
- The taxa can easily be added-back after the supertree problem is solved.
 \end_layout
 
 \begin_layout Standard
@@ -1515,8 +1550,8 @@ ConsistentSplitsFromRankedList
 
 \end_layout
 
-\begin_layout Section
-Pipeline
+\begin_layout Standard
+Outline...
 \end_layout
 
 \begin_layout Standard
@@ -3624,6 +3659,66 @@ may not display a rooted triplet that is supported and uncontested, if that
 combination
 \emph default
  of other rooted triplets.
+\end_layout
+
+\begin_layout Section
+Appendix A: the maximum sum displayed groups' weighted scores criterion
+\end_layout
+
+\begin_layout Standard
+If 
+\begin_inset Formula $\mathcal{W}$
+\end_inset
+
+ is a weighting function that maps any input tree's internal node to a non-negat
+ive number.
+ If 
+\begin_inset Formula $I(\mathbb{S},i,j)$
+\end_inset
+
+ is an indicator function that is 1 if summary tree 
+\begin_inset Formula $\mathbb{S}$
+\end_inset
+
+ displays the node 
+\begin_inset Formula $V(i,j)$
+\end_inset
+
+ and 0 otherwise then: 
+\begin_inset Formula $SDGWS(\mathbb{S})=\sum_{i}\sum_{j}I(\mathbb{S},i,j)\mathcal{W}(i,j)$
+\end_inset
+
+ is the 
+\begin_inset Quotes eld
+\end_inset
+
+sum of displayed groups' weighted scores
+\begin_inset Quotes erd
+\end_inset
+
+ for a tree where 
+\begin_inset Formula $i$
+\end_inset
+
+ indexes all of the input trees and 
+\begin_inset Formula $j$
+\end_inset
+
+ indexes each non-root internal node in tree 
+\begin_inset Formula $i$
+\end_inset
+
+.
+ The summary tree constructed by the propinquity pipeline is a greedy heuristic
+ for finding a tree that maximizes this score when the weights for a node
+ are determined by the tree's weight and the difference in weighting is
+ so large that displaying one node from a highly ranked tree is preferred
+ to displaying all of the nodes in the trees with lower rank.
+\end_layout
+
+\begin_layout Section
+Appendix B: proof that pruning and regrafting taxa mapped to only one input
+ does not affect the optimal set of displayed nodes
 \end_layout
 
 \begin_layout Standard
