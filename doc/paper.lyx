@@ -365,8 +365,12 @@ th input tree.
 \end_inset
 
  in the induced tree.
- Reversing the orientation, we can consider whether or not an edge in an
- input tree is displayed by the 
+ 
+\end_layout
+
+\begin_layout Standard
+We can consider whether or not an edge in an input tree is displayed by
+ the 
 \begin_inset Formula $\summaryTree$
 \end_inset
 
@@ -460,6 +464,21 @@ exclude set
 
  then the resulting tree would no longer display 
 \begin_inset Formula $V(i,k)$
+\end_inset
+
+.
+ Operationally, we can find the most recent common ancestor (MRCA) node
+ for the include set of 
+\begin_inset Formula $V(i,j)$
+\end_inset
+
+; the summary tree displays 
+\begin_inset Formula $V(i,j)$
+\end_inset
+
+ if and only if that MRCA node is not an ancestor of any member of the exclude
+ set of 
+\begin_inset Formula $V(i,j)$
 \end_inset
 
 .
@@ -1198,8 +1217,8 @@ First we prune the taxonomy by removing tips that are not present in any
  The tips pruned in this step will be grafted back onto the skeleton of
  the summary tree in a subsequent step.
  The theorem in Appendix B proves that a terminal taxon that is represented
- in only one input can be pruned and then regrafted onto the solution without
- affecting which nodes are displayed by the final summary tree.
+ in the taxaonomy, then it can be pruned and then regrafted onto the solution
+ without affecting which nodes are displayed by the final summary tree.
  Thus, this procedure does not impede our ability to find a good summary
  tree.
  Removing these tips produces a smaller input to the rest of the pipeline,
@@ -3714,11 +3733,107 @@ sum of displayed groups' weighted scores
  are determined by the tree's weight and the difference in weighting is
  so large that displaying one node from a highly ranked tree is preferred
  to displaying all of the nodes in the trees with lower rank.
+ Preference for this tree is referred to as the maximum sum displayed groups'
+ weighted scores criterion (MSDGWS criterion).
 \end_layout
 
 \begin_layout Section
-Appendix B: proof that pruning and regrafting taxa mapped to only one input
+Appendix B: proof that pruning and regrafting taxa mapped to the taxonomy
  does not affect the optimal set of displayed nodes
+\end_layout
+
+\begin_layout Standard
+(I'm not sure that we need to prove this,...)
+\end_layout
+
+\begin_layout Standard
+Let 
+\begin_inset Formula $\mathbb{S}$
+\end_inset
+
+ denote a tree that is optimal according to the MSDGWS criterion, and 
+\begin_inset Formula $\mathcal{D}(\mathbb{S},\mathcal{T})$
+\end_inset
+
+ denote a set of groups (from the trees in 
+\begin_inset Formula $\mathcal{T})$
+\end_inset
+
+ that are displayed by that 
+\begin_inset Formula $\mathbb{S}$
+\end_inset
+
+.
+ Let 
+\begin_inset Formula $\mathcal{A}_{i}$
+\end_inset
+
+ denote a set of leaves that are present in only one of the input trees.
+ If 
+\begin_inset Formula $\mathcal{P}(\mathcal{T},A_{i})$
+\end_inset
+
+ is a set of input trees identical to 
+\begin_inset Formula $\mathcal{T}$
+\end_inset
+
+, except that the taxa in 
+\begin_inset Formula $\mathcal{A}_{i}$
+\end_inset
+
+have been pruned from the 
+\begin_inset Formula $i$
+\end_inset
+
+th input tree.
+ The supertree procedure of the propinquity involves decomposing the problem
+ into uncontested to taxa and then building up the maximal set of groups
+ that can be displayed using a greedy approach that starts with an empty
+ set and adds a grouping if it can be displayed with the previously accepted
+ groups.
+ Thus, 
+\begin_inset Formula $\mathcal{D}(\mathbb{S},\mathcal{T})$
+\end_inset
+
+ is built up by iterating through the inputs in ranked order.
+ 
+\end_layout
+
+\begin_layout Standard
+First we note that, by definition, the taxonomy itself does not contest
+ any of the taxa.
+ Thus the set of uncontested taxa is the same when constructing a supertree
+ from 
+\begin_inset Formula $\mathcal{T}$
+\end_inset
+
+ or from 
+\begin_inset Formula $\mathcal{P}(\mathcal{T},A_{i})$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+If 
+\begin_inset Formula $\mathcal{D}(\mathbb{S},\mathcal{T},x)$
+\end_inset
+
+ denotes the set of displayed groups in the greedy procedure inputs 1 up
+ to input tree 
+\begin_inset Formula $x$
+\end_inset
+
+, then we can note that 
+\begin_inset Formula $\mathcal{D}(\mathbb{S},\mathcal{T},i-1)=\mathcal{D}(\mathbb{S},\mathcal{P}(\mathcal{T},A_{i}),i-1)$
+\end_inset
+
+ by virtue of the fact that the first 
+\begin_inset Formula $i-1$
+\end_inset
+
+ inputs are unchanged by the pruning.
+ 
 \end_layout
 
 \begin_layout Standard
