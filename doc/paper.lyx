@@ -370,7 +370,7 @@ th input tree.
 
 \begin_layout Standard
 We can consider whether or not an edge in an input tree is displayed by
- the 
+ 
 \begin_inset Formula $\summaryTree$
 \end_inset
 
@@ -486,9 +486,9 @@ exclude set
 
 \begin_layout Standard
 Note that stating that a node in the summary tree is supported by an input
- does not imply that every descendant of that node must be present nor that
- every taxon that is not a descendant must be excluded in order to display
- the node.
+ does not imply that every descendant of that node must be present in the
+ input nor that every taxon that is not a descendant must be excluded in
+ order to display the node.
  Consider the problem shown in figure 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -523,15 +523,15 @@ sideways false
 status open
 
 \begin_layout Plain Layout
-(a)
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
 \begin_inset Graphics
 	filename Figures/toy_ambig/abcd.svg
-
-\end_inset
-
-(b)
-\begin_inset Graphics
-	filename Figures/toy_ambig/bcde.svg
+	width 45text%
 
 \end_inset
 
@@ -539,15 +539,117 @@ status open
 \end_layout
 
 \begin_layout Plain Layout
-(c)
-\begin_inset Graphics
-	filename Figures/toy_ambig/soln1.svg
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+
+\end_layout
 
 \end_inset
 
-(d)
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset space \hfill{}
+\end_inset
+
+
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Figures/toy_ambig/bcde.svg
+	width 45text%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Figures/toy_ambig/soln1.svg
+	width 45text%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset space \hfill{}
+\end_inset
+
+
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
 \begin_inset Graphics
 	filename Figures/toy_ambig/soln2.svg
+	width 45text%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
 
 \end_inset
 
@@ -669,7 +771,7 @@ ty, but no solution displays all of the input groups; alternative rankings
 \begin_inset Float figure
 wide false
 sideways false
-status open
+status collapsed
 
 \begin_layout Plain Layout
 (a)
@@ -937,14 +1039,14 @@ Propinquity was designed to function as a part of the Open Tree of Life
  software architecture, so the first few steps of the pipeline involve transform
 ing artifacts from that project into a set rooted trees and a phylogenetic
  taxonomy.
- The phylesystem API(
+ The phylesystem API 
 \begin_inset CommandInset citation
-LatexCommand citet
+LatexCommand citep
 key "McTavishEtAt2015"
 
 \end_inset
 
-) of Open Tree allows users to curate published estimates of trees and create
+ of Open Tree allows users to curate published estimates of trees and create
  ranked collections of these trees.
  Early steps in the propinquity pipeline manipulate the phylogenetic input
  trees to improve their usability and reliability.
@@ -959,7 +1061,7 @@ reference "fig:pipeline"
 \family typewriter
 phylo_input
 \family default
- subdirectory) and story copies of these files (in the 
+ subdirectory) and store copies of these files (in the 
 \family typewriter
 phylo_snapshot
 \family default
@@ -1046,10 +1148,10 @@ Frequently, phylogenetic estimates are rooted using the outgroup criterion,
 \end_layout
 
 \begin_layout Standard
-Frequently, not all tips in a phylogenetic input will not have been mapped
- to a taxon in the current version OTT.
+Frequently, not all tips in a phylogenetic input will have been mapped to
+ a taxon in the current version OTT.
  Unmapped leaves are pruned from each phylogenetic input.
- In some case, the OTT has changed and a taxon has been unambiguously mapped
+ In some cases, the OTT has changed and a taxon has been unambiguously mapped
  to another taxon.
  This can occur when multiple species in one version of the taxonomy are
  
@@ -1100,7 +1202,7 @@ Exemplifying tips mapped to higher taxa
 
 \begin_layout Standard
 Many input trees have tips that are not terminal taxa, but higher order
- taxonomic group.
+ taxonomic groups.
  It is not clear how to interpret a tip in a phylogenetic estimate that
  is labelled with the name of a higher taxon.
  Several scenarios can lead to these cases: the data for the tip could have
@@ -1111,12 +1213,13 @@ Many input trees have tips that are not terminal taxa, but higher order
  is more recognizable.
  Rather than allowing the ambiguity about interpretation of the higher-taxon
  mapped tips to propagate throughout the entire pipeline, we transform the
- input trees by replacing higher taxa at tips with set of terminal taxon
+ input trees by replacing higher taxa at tips with a set of terminal taxon
  exemplars for each taxon.
  One approach would be to simply determine all descendant terminal taxa
  and attach them as children of the problematic tip.
- However, this would create a rather than a tip; subsequent steps in the
- supertree would interpret the clade as a claim of monophyly for the taxon.
+ However, this would create a clade rather than a tip; subsequent steps
+ in the supertree would interpret the clade as a claim of monophyly for
+ the taxon.
  The input tree may not have tested monophyly of the clade, so this interpretati
 on is unwarranted.
  We avoid it by attaching exemplar taxa as child nodes of the higher taxonomic
@@ -1130,7 +1233,7 @@ on is unwarranted.
 \begin_inset Formula $a_{1}$
 \end_inset
 
-and 
+ and 
 \begin_inset Formula $a_{2}$
 \end_inset
 
@@ -1142,7 +1245,7 @@ and
 \begin_inset Formula $b_{1}$
 \end_inset
 
-and 
+ and 
 \begin_inset Formula $b_{2}$
 \end_inset
 
@@ -1216,9 +1319,16 @@ First we prune the taxonomy by removing tips that are not present in any
  input tree.
  The tips pruned in this step will be grafted back onto the skeleton of
  the summary tree in a subsequent step.
- The theorem in Appendix B proves that a terminal taxon that is represented
- in the taxaonomy, then it can be pruned and then regrafted onto the solution
- without affecting which nodes are displayed by the final summary tree.
+ The theorem in Appendix 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:Proof-that-pruning"
+
+\end_inset
+
+ proves that a terminal taxon that is represented in the taxaonomy, then
+ it can be pruned and then regrafted onto the solution without affecting
+ which nodes are displayed by the final summary tree.
  Thus, this procedure does not impede our ability to find a good summary
  tree.
  Removing these tips produces a smaller input to the rest of the pipeline,
@@ -3681,7 +3791,14 @@ combination
 \end_layout
 
 \begin_layout Section
-Appendix A: the maximum sum displayed groups' weighted scores criterion
+\start_of_appendix
+\begin_inset CommandInset label
+LatexCommand label
+name "sec:The-maximum-sum"
+
+\end_inset
+
+The maximum sum displayed groups' weighted scores criterion
 \end_layout
 
 \begin_layout Standard
@@ -3738,8 +3855,14 @@ sum of displayed groups' weighted scores
 \end_layout
 
 \begin_layout Section
-Appendix B: proof that pruning and regrafting taxa mapped to the taxonomy
- does not affect the optimal set of displayed nodes
+\begin_inset CommandInset label
+LatexCommand label
+name "sec:Proof-that-pruning"
+
+\end_inset
+
+Proof that pruning and regrafting taxa mapped to the taxonomy does not affect
+ the optimal set of displayed nodes
 \end_layout
 
 \begin_layout Standard
