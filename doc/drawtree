@@ -77,7 +77,7 @@ plot.singletons = function (tree)
     }
     X <- nodeHeights(cw)
     plot.new()
-    par(mar = c(0.1, 0.1, 0.1, 0.1))
+    par(mar = c(0.0, 0.0, 0.0, 0.0))
     pp <- par("pin")[1]
     sw <- par("cex") * (max(strwidth(cw$tip.label, units = "inches"))) + 
         1.37 * par("cex") * strwidth("W", units = "inches")
@@ -85,7 +85,7 @@ plot.singletons = function (tree)
         sw - pp)^2, H = X, sw = sw, pp = pp, interval = c(0, 
         1e+06))$minimum
     xlim <- c(min(X), max(X) + sw/alp)
-    plot.window(xlim = xlim, ylim = c(1, max(y)))
+    plot.window(xlim = xlim, ylim = c(1, max(y)+sw/alp))
 #    axis(1, at = c(0, max(X)), labels = FALSE)
 #    axis(2, at = 1:max(y), labels = FALSE)
     for (i in 1:nrow(X)) lines(X[i, ], rep(y[cw$edge[i, 2]], 
@@ -143,8 +143,8 @@ if ("edge.width" %in% names(argsL))
 if ("show.node.label" %in% names(argsL))
     plotArgs$show.node.label = as.logical(argsL$show.node.label)
 
-w = 0.20*max(node.depth(tree)) +2
-h = length(tree$tip.label)*0.35
+w = 0.40*max(node.depth(tree)) +2
+h = length(tree$tip.label)*0.50
 if ("width" %in% names(argsL))
     w = as.numeric(argsL$width)
 if ("height" %in% names(argsL))
