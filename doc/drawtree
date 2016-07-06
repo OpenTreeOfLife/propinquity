@@ -103,21 +103,24 @@ plot.singletons = function (tree)
     for (i in 1:nrow(X)) points(X[i, 2], y[cw$edge[i, 2]],
                                 pch = 21, bg = "gray")
     for (i in 1:n) text(X[which(cw$edge[, 2] == i), 2], y[i], 
-        tree$tip.label[i], pos = 4, offset = 0.3)
-    m <- length(tree$node.label)
-    for (i in 1:m)
+        tree$tip.label[i], pos = 4, offset = 0.4)
+    if (! is.null(tree$node.label))
     {
+        m <- length(tree$node.label)
+        for (i in 1:m)
+        {
 #        print(tree$node.label[i])
 #        print(n+i)
-        x = X[which(cw$edge[, 2] == n+i), 2]
-        if (length(x) == 0)
-        {
-            x = 0.0
-            points(x, y[n+i], pch=21,bg="gray")
-        }
+            x = X[which(cw$edge[, 2] == n+i), 2]
+            if (length(x) == 0)
+            {
+                x = 0.0
+                points(x, y[n+i], pch=21,bg="gray")
+            }
 #        print(x)
 #        print(y[n+i])
-        text(x, y[n+i], tree$node.label[i], pos = 4, offset = 0.3)
+            text(x, y[n+i], tree$node.label[i], pos = 4, offset = 0.4)
+        }
     }
 }
 
@@ -126,6 +129,20 @@ environment(plot.singletons) = environment(plotTree.singletons)
 input = argsL$input
 #tree = read.tree(input)
 tree = read.newick(input)
+if (! is.null(tree$node.label))
+{
+    for(i in 1:length(tree$node.label))
+    {
+	print(tree$node.label[i])
+	tree$node.label[i] = gsub("'","",tree$node.label[i])
+	print(tree$node.label[i])
+	if (substr(tree$node.label[i],1,5) == "_node")
+	{
+            tree$node.label[i] = ""
+	}
+    }
+}
+
 plotArgs = list(tree,no.margin=TRUE)
 
 ## Set output file if not given
