@@ -146,8 +146,8 @@ if ("edge.width" %in% names(argsL))
 if ("show.node.label" %in% names(argsL))
     plotArgs$show.node.label = as.logical(argsL$show.node.label)
 
-w = 0.40*max(node.depth(tree)) +2
-h = length(tree$tip.label)*0.50
+w = 0.40*max(node.depth(tree)) + 2
+h = length(tree$tip.label)*0.50+0.35
 if ("width" %in% names(argsL))
     w = as.numeric(argsL$width)
 if ("height" %in% names(argsL))
