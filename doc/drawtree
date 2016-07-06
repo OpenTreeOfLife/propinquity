@@ -77,7 +77,10 @@ plot.singletons = function (tree)
     }
     X <- nodeHeights(cw)
     plot.new()
-    par(mar = c(0.0, 0.0, 0.0, 0.0))
+
+    # increase text size, line width
+    par(mar = c(0.0, 0.0, 0.0, 0.0),cex=1.5, lwd=1.5)
+
     pp <- par("pin")[1]
     sw <- par("cex") * (max(strwidth(cw$tip.label, units = "inches"))) + 
         1.37 * par("cex") * strwidth("W", units = "inches")
