@@ -627,7 +627,7 @@ status collapsed
 \begin_inset Float figure
 wide false
 sideways false
-status open
+status collapsed
 
 \begin_layout Plain Layout
 \begin_inset Graphics
@@ -771,18 +771,52 @@ ty, but no solution displays all of the input groups; alternative rankings
 \begin_inset Float figure
 wide false
 sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Float figure
+wide false
+sideways false
 status collapsed
 
 \begin_layout Plain Layout
-(a)
 \begin_inset Graphics
 	filename Figures/toy_pairwise_compat/abc.svg
+	scale 60
 
 \end_inset
 
-(b)
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Input Tree 1
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset space \hfill{}
+\end_inset
+
+
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
 \begin_inset Graphics
 	filename Figures/toy_pairwise_compat/acd.svg
+	scale 60
 
 \end_inset
 
@@ -790,15 +824,33 @@ status collapsed
 \end_layout
 
 \begin_layout Plain Layout
-(c)
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Input Tree 2
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset space \hfill{}
+\end_inset
+
+
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
 \begin_inset Graphics
 	filename Figures/toy_pairwise_compat/bcd.svg
-
-\end_inset
-
-(d)
-\begin_inset Graphics
-	filename Figures/toy_pairwise_compat/s12.svg
+	scale 60
 
 \end_inset
 
@@ -806,15 +858,117 @@ status collapsed
 \end_layout
 
 \begin_layout Plain Layout
-(e)
-\begin_inset Graphics
-	filename Figures/toy_pairwise_compat/s13.svg
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Input tree 3
+\end_layout
 
 \end_inset
 
-(f)
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Figures/toy_pairwise_compat/s12.svg
+	scale 60
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset space \hfill{}
+\end_inset
+
+
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Figures/toy_pairwise_compat/s13.svg
+	scale 60
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset space \hfill{}
+\end_inset
+
+
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
 \begin_inset Graphics
 	filename Figures/toy_pairwise_compat/s23.svg
+	scale 60
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
 
 \end_inset
 
@@ -2189,7 +2343,7 @@ status open
 \begin_layout Plain Layout
 \begin_inset Graphics
 	filename Figures/cleaned_phylo/ex_2@tree1.tre.svg
-	width 35text%
+	scale 40
 	rotateOrigin center
 
 \end_inset
@@ -2219,12 +2373,12 @@ Tree 1
 \begin_inset Float figure
 wide false
 sideways false
-status open
+status collapsed
 
 \begin_layout Plain Layout
 \begin_inset Graphics
 	filename Figures/cleaned_phylo/ex_2@tree2.tre.svg
-	width 29text%
+	scale 40
 
 \end_inset
 
@@ -2258,7 +2412,7 @@ status collapsed
 \begin_layout Plain Layout
 \begin_inset Graphics
 	filename Figures/cleaned_ott/cleaned_ott.tre.svg
-	width 31text%
+	scale 40
 
 \end_inset
 
@@ -2423,7 +2577,7 @@ status collapsed
 \begin_layout Plain Layout
 \begin_inset Graphics
 	filename Figures/exemplified_phylo/ex_2@tree1.tre.svg
-	width 35text%
+	scale 40
 	rotateOrigin center
 
 \end_inset
@@ -2458,7 +2612,7 @@ status collapsed
 \begin_layout Plain Layout
 \begin_inset Graphics
 	filename Figures/exemplified_phylo/ex_2@tree2.tre.svg
-	width 29text%
+	scale 40
 
 \end_inset
 
@@ -2487,12 +2641,12 @@ Tree 2
 \begin_inset Float figure
 wide false
 sideways false
-status open
+status collapsed
 
 \begin_layout Plain Layout
 \begin_inset Graphics
-	filename Figures/exemplified_phylo_taxonomy.tre.svg
-	width 31text%
+	filename Figures/exemplified_phylo/taxonomy.tre.svg
+	scale 40
 
 \end_inset
 
@@ -2964,15 +3118,19 @@ sideways false
 status open
 
 \begin_layout Plain Layout
+\begin_inset space \hfill{}
+\end_inset
+
+
 \begin_inset Float figure
 wide false
 sideways false
-status open
+status collapsed
 
 \begin_layout Plain Layout
 \begin_inset Graphics
 	filename Figures/subproblem_solutions/ott14.tre.svg
-	width 45text%
+	scale 45
 
 \end_inset
 
@@ -3008,7 +3166,7 @@ status collapsed
 \begin_layout Plain Layout
 \begin_inset Graphics
 	filename Figures/subproblem_solutions/ott17.tre.svg
-	width 45text%
+	scale 45
 
 \end_inset
 
@@ -3029,6 +3187,10 @@ root
 
 \end_layout
 
+\end_inset
+
+
+\begin_inset space \hfill{}
 \end_inset
 
 
@@ -3102,7 +3264,7 @@ status open
 \align center
 \begin_inset Graphics
 	filename Figures/grafted_solution/grafted_solution_ottnames.tre.svg
-	width 40text%
+	scale 50
 
 \end_inset
 
@@ -3225,7 +3387,7 @@ status open
 \align center
 \begin_inset Graphics
 	filename Figures/labelled_supertree/labelled_supertree.tre.svg
-	width 40text%
+	scale 50
 
 \end_inset
 
@@ -3363,7 +3525,7 @@ status open
 \begin_layout Plain Layout
 \begin_inset Graphics
 	filename Figures/cleaned_phylo/ex_2@tree1.tre.svg
-	width 35text%
+	scale 40
 	rotateOrigin center
 
 \end_inset
@@ -3398,7 +3560,7 @@ status open
 \begin_layout Plain Layout
 \begin_inset Graphics
 	filename Figures/cleaned_phylo/ex_2@tree2.tre.svg
-	width 29text%
+	scale 40
 
 \end_inset
 
@@ -3432,7 +3594,7 @@ status open
 \begin_layout Plain Layout
 \begin_inset Graphics
 	filename Figures/cleaned_ott/cleaned_ott.tre.svg
-	width 31text%
+	scale 40
 
 \end_inset
 
