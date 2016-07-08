@@ -50,6 +50,12 @@ def config_diffs(run1,run2):
     jsondata2 = json.load(open(jsonfile, 'r'))['config']
 
     countmismatch = 0
+    # do ott versions match
+    ott1 = jsondata1['ott_version']
+    ott2 = jsondata2['ott_version']
+    if (ott1 != ott2):
+        print "run1 ott ({v1}) != run2 ott ({v2})".format(v1=ott1,v2=ott2)
+        
     # do roots match
     root1 = int(jsondata1["root_ott_id"])
     root2 = int(jsondata2["root_ott_id"])
@@ -152,7 +158,6 @@ def size_summary(run,limits,data):
 # Parsing logic from gen_degree_dist fn in document_outputs.py
 # return dict where keys are subproblems and values are number of tips
 def read_subproblem_file(fn):
-    header = re.compile(r'Out-degree\S+Count')
     found_tree = False
     data = {}
     currentTree = ""
@@ -181,28 +186,28 @@ def synthesis_tree_diffs(run1,run2):
     # number of taxonomy tips
     tips1 = data1['output']['num_leaves_added']
     tips2 = data2['output']['num_leaves_added']
-    diff = int(tips1-tips2)
+    diff = int(tips2-tips1)
     print "taxonomy tips,{n1},{n2},{d}".format(n1=tips1,n2=tips2, d=diff)
 
     # number of phylogeny leaves
     tips1 = data1['input']['num_solution_leaves']
     tips2 = data2['input']['num_solution_leaves']
-    diff = int(tips1-tips2)
+    diff = int(tips2-tips1)
     print "phylogeny tips,{n1},{n2},{d}".format(n1=tips1,n2=tips2, d=diff)
 
     # resolved nodes
     nodes1 = data1['input']['num_solution_splits']
     nodes2 = data2['input']['num_solution_splits']
-    diff = int(nodes1-nodes2)
+    diff = int(nodes2-nodes1)
     print "forking nodes,{n1},{n2},{d}".format(n1=nodes1,n2=nodes2,d=diff)
 
     # broken taxa
     taxa1 = data1['output']['num_taxa_rejected']
     taxa2 = data2['output']['num_taxa_rejected']
-    diff = int(taxa1-taxa2)
+    diff = int(taxa2-taxa1)
     print "broken taxa,{n1},{n2},{d}".format(n1=taxa1,n2=taxa2,d=diff)
 
-def broken_taxa_diffs(run1,run2):
+def broken_taxa_diffs(run1,run2,names=False):
 # file of interest is labelled_supertree/broken_taxa.json
     jsonfile = "{d}/labelled_supertree/broken_taxa.json".format(d=run1)
     broken_taxa1 = json.load(open(jsonfile, 'r'))['non_monophyletic_taxa'].keys()
@@ -210,10 +215,32 @@ def broken_taxa_diffs(run1,run2):
     broken_taxa2 = json.load(open(jsonfile, 'r'))['non_monophyletic_taxa'].keys()
     countmismatch = 0
     countmismatch += compare_lists("broken taxa",broken_taxa1,broken_taxa2,True)
+    if (names):
+        s1 = set(broken_taxa1)
+        s2 = set(broken_taxa2)
+        # names in 2 but not in 1 (the 'newly broken names')
+        diff = s2.difference(s1)
+        broken_names={}
+        for i in diff:
+            taxon_name=get_taxon_name(i)
+            if (taxon_name):
+                broken_names[i]=taxon_name
+        print broken_names
 
-# def get_taxon_name(id):
-#     method_url = "https://api.opentreeoflife.org/v3/taxonomy/taxon_info"
-#     data =
+# note that ottid is in form 'ott####'
+def get_taxon_name(ottid):
+    pattern = re.compile(r'ott')
+    int_id = re.sub(pattern,'',ottid)
+    method_url = "https://api.opentreeoflife.org/v3/taxonomy/taxon_info"
+    header = {'content-type':'application/json'}
+    payload = {"ott_id":int_id}
+    r = requests.post(method_url,headers=header,data=json.dumps(payload))
+    try:
+        taxon_name = r.json()['name']
+        return taxon_name
+    except KeyError:
+        print "no name returned for {id}".format(id=ottid)
+    #print '{i}:{n}'.format(i=ottid,n=taxon_name)
 
 if __name__ == "__main__":
     # get command line arguments (the two directories to compare)
@@ -234,5 +261,5 @@ if __name__ == "__main__":
     subproblem_diff(args.run1,args.run2)
     subproblem_distributions(args.run1,args.run2)
     print "\n# Comparing broken taxa"
-    broken_taxa_diffs(args.run1,args.run2)
+    broken_taxa_diffs(args.run1,args.run2,True)
     synthesis_tree_diffs(args.run1,args.run2)
