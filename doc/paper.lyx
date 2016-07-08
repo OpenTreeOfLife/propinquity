@@ -4070,7 +4070,11 @@ have been pruned from the
 \begin_inset Formula $i$
 \end_inset
 
-th input tree.
+th input tree, 
+\begin_inset Formula $T_{i}$
+\end_inset
+
+.
  The supertree procedure of the propinquity involves decomposing the problem
  into uncontested to taxa and then building up the maximal set of groups
  that can be displayed using a greedy approach that starts with an empty
@@ -4118,9 +4122,131 @@ If
 \end_inset
 
  inputs are unchanged by the pruning.
- 
+ The procedure for grafting taxa from 
+\begin_inset Formula $\mathcal{A}_{i}$
+\end_inset
+
+on to the solution 
+\begin_inset Formula $S$
+\end_inset
+
+ is:
 \end_layout
 
+\begin_layout Enumerate
+Initialize a set 
+\begin_inset Formula $A=\mathcal{A}_{i}$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Enumerate
+While 
+\begin_inset Formula $A$
+\end_inset
+
+ is not empty:
+\end_layout
+
+\begin_deeper
+\begin_layout Enumerate
+select one taxon 
+\begin_inset Formula $x$
+\end_inset
+
+ from 
+\begin_inset Formula $A$
+\end_inset
+
+.
+ Find the node the node in 
+\begin_inset Formula $T_{i}$
+\end_inset
+
+ that maps to taxon 
+\begin_inset Formula $x$
+\end_inset
+
+.
+ Start at that node and walk rootward to find 
+\begin_inset Formula $y$
+\end_inset
+
+ the deepest node in the tree that contains tips mapped entirely to taxa
+ in 
+\begin_inset Formula $\mathcal{A}_{i}$
+\end_inset
+
+.
+ This node could be a leaf or an internal.
+ Let 
+\begin_inset Formula $z$
+\end_inset
+
+ denote its parent.
+\end_layout
+
+\begin_layout Enumerate
+Use 
+\begin_inset Formula $\mathcal{C}$
+\end_inset
+
+ to denote the set of all taxa that are mapped to tips descending from 
+\begin_inset Formula $z$
+\end_inset
+
+ but which are not in the set 
+\begin_inset Formula $A$
+\end_inset
+
+.
+ 
+\begin_inset Formula $\mathcal{C}$
+\end_inset
+
+ cannot be empty but could contain only one taxon.
+\end_layout
+
+\begin_layout Enumerate
+Use 
+\begin_inset Formula $\mathcal{B}$
+\end_inset
+
+ to denote the set of all of the taxa that are mapped to tips descending
+ from 
+\begin_inset Formula $y$
+\end_inset
+
+.
+ Remove every member of 
+\begin_inset Formula $\mathcal{B}$
+\end_inset
+
+ from 
+\begin_inset Formula $A$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Enumerate
+Find 
+\begin_inset Formula $w$
+\end_inset
+
+ a node in 
+\begin_inset Formula $S$
+\end_inset
+
+ that is the MRCA of the tips that are mapped to the taxa in 
+\begin_inset Formula $\mathcal{C}.$
+\end_inset
+
+
+\end_layout
+
+\end_deeper
 \begin_layout Standard
 \begin_inset CommandInset bibtex
 LatexCommand bibtex
