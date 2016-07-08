@@ -43,3 +43,9 @@ for f in abc acd bcd s12 s13 s23
 do
     $DRAWTREE --input=${d}/${f}.tre --output=${d}/${f}.svg --edge.width=3 "$@" --format=svg
 done
+
+d=uncontested_worsens_score
+for f in ab1c acd2 tax opt returned
+do
+    $DRAWTREE --input=${d}/${f}.tre --output=${d}/${f}.svg --edge.width=3 "$@" --format=svg
+done
