@@ -45,7 +45,7 @@ do
 done
 
 d=uncontested_worsens_score
-for f in ab1c acd2 tax opt returned
+for f in ab1c acb2 tax opt returned
 do
     $DRAWTREE --input=${d}/${f}.tre --output=${d}/${f}.svg --edge.width=3 "$@" --format=svg
 done

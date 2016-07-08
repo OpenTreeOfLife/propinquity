@@ -777,7 +777,7 @@ status open
 \begin_inset Float figure
 wide false
 sideways false
-status collapsed
+status open
 
 \begin_layout Plain Layout
 \begin_inset Graphics
@@ -1555,6 +1555,7 @@ contests taxon
 .
  Thus, polytomies in an input tree are treated as soft polytomies, and a
  taxon is not contested merely because it is not displayed by an input tree.
+ 
 \end_layout
 
 \begin_layout Standard
@@ -1574,12 +1575,84 @@ reference "sec:Decompose-algorithm"
  of the taxonomy and corresponding slices through each relevant input tree.
  Each uncontested non-terminal and non-root taxon will show up in two subproblem
 s: it will be the root of its own subproblem and it will be tip in the subproble
-m that covers the next slice deeper in the tree In version 5.0 of the summary
- tree, this procedure produced 5,545 subproblems, but only 1,586 of these
- were non-trivial.
+m that covers the next slice deeper in the tree.
+ Note that decomposition into uncontested groups does not necessarily allow
+ us to find the tree that maximizes the MSDGWS score.
+ For example, see figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:decompose-worsens"
+
+\end_inset
+
+; that example is a variant of the situation shown in figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:pairwisecompat"
+
+\end_inset
+
+.
+ In this case the groupings from each of the phylogenetic estimates, shown
+ in panels (a) and (b), could be displayed.
+ That solution is shown in panel (d), it displays 2 of the 3 input splits,
+ but is optimal because no solution displays all 3 input groupings and the
+ depicted solution displays the 2 highest ranked groupings.
+ However, neither of the trees shown in panels (a) or (b) contest the taxon
+ 
+\begin_inset Formula $B$
+\end_inset
+
+ shown in the taxonomy (panel (c)).
+ Thus, when using our decomposition, the branches leading to taxa 
+\begin_inset Formula $B1$
+\end_inset
+
+and 
+\begin_inset Formula $B2$
+\end_inset
+
+ in the input phylogenetic trees would be sliced during the decomposition,
+ and relabelled to refer to taxon 
+\begin_inset Formula $B$
+\end_inset
+
+.
+ This taxonomically-informed interpretation of the inputs views the two
+ phylogenetic inputs as in conflict; so the solution returned by propinquity
+ would defer to the higher ranked tree.
+ The tree shown in panel (e) would be returned.
+ This example arises from the fact that the trees in (a) and (b) jointly
+ contest taxon 
+\begin_inset Formula $B$
+\end_inset
+
+, but neither contests taxon 
+\begin_inset Formula $B$
+\end_inset
+
+ when the trees are considered in isolation.
+ Despite the fact that the use of 
+\family typewriter
+otc-uncontested-decompose
+\family default
+ can worsen the final score of the summary tree, we use this approach in
+ propinquity because it makes the construction of the tree faster and it
+ is easy for users to correct issues caused by incorrect taxa being constrained
+ to be monophyletic.
+ By adding a tree (even a low-ranked tree) that constests a taxon to the
+ corpus of input trees , then the next synthetic tree will no longer consider
+ the taxon to be uncontested.
+ Thus the procedure encourages curation of more phylogenetic inputs as a
+ means of improving the summary tree.
+\end_layout
+
+\begin_layout Standard
+In version 5.0 of the summary tree, this decomposition procedure produced
+ 5,545 subproblems, but only 1,586 of these were non-trivial.
  If a subproblem contains only two tips it is trivial; 2,443 subproblems
  were trivial in this way.
- Similary if subproblem contains only 2 trees it is trivial because the
+ Similary, if subproblem contains only 2 trees it is trivial because the
  solution will simply be all of the groupings from the first tree combined
  with all of the groupings from the second tree that are compatible with
  the first tree; 2,838 subproblems were trivial in this way.
@@ -1591,25 +1664,85 @@ m that covers the next slice deeper in the tree In version 5.0 of the summary
 \end_layout
 
 \begin_layout Standard
-Note that decomposition into uncontested groups does not necessarily allow
- us to find the tree that maximizes the MSDGWS score.
- 
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+(a)
+\begin_inset Graphics
+	filename Figures/uncontested_worsens_score/ab1c.svg
+	scale 60
+
+\end_inset
+
+ (b) 
+\begin_inset Graphics
+	filename Figures/uncontested_worsens_score/acb2.svg
+	scale 60
+
+\end_inset
+
+(c)
+\begin_inset Graphics
+	filename Figures/uncontested_worsens_score/tax.svg
+	scale 60
+
+\end_inset
+
+
 \end_layout
 
-\begin_layout Standard
-approach therefore forces monophyly for these groups, which might (possibly?)
- be .
- However, the downsides of this approach seem minimal, compared to the improveme
-nt in scalability.
- We thus divide the supertree problem into 
-\begin_inset Quotes eld
+\begin_layout Plain Layout
+(d) 
+\begin_inset Graphics
+	filename Figures/uncontested_worsens_score/opt.svg
+	scale 60
+
 \end_inset
 
-subproblems
-\begin_inset Quotes erd
+(e)
+\begin_inset Graphics
+	filename Figures/uncontested_worsens_score/returned.svg
+	scale 60
+
 \end_inset
 
-, and apply our solver to each subproblem.
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+An example with three input trees: the highest ranked phylogenetic input
+ panel (a), the second ranked phylogenetic input (b), and the taxonomy in
+ panel (c).
+ The summary tree in panel (d) has the highest possible score, but the summary
+ shown in panel (e) would be returned from the pipeline that uses uncontested
+ taxon decomposition.
+\end_layout
+
+\end_inset
+
+
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:decompose-worsens"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
