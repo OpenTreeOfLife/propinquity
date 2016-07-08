@@ -1461,7 +1461,22 @@ After the preprocessing steps, the inputs have been converted to a set of
  taxon in the exemplified taxonomic tree.
  The goal of the remainder of the pipeline is to construct a tree that maximizes
  the sum displayed groups' weighted scores criterion.
+ This is accomplished in five steps: (1) reducing the tree size by pruning
+ off tips not represented in any phylogenetic estimate; (2) dividing the
+ full problem into subproblems based on uncontested taxa, (3) constructing
+ a summary solution for each subproblem by greedily creating a maximally-sized
+ list of groupings that can all be displayed simultaneously; (4) grafting
+ the subproblem solutions into a single supertree; and (5) grafting (or
  
+\begin_inset Quotes eld
+\end_inset
+
+unpruning
+\begin_inset Quotes erd
+\end_inset
+
+) the taxonomy-only taxa onto the solution to produce a complete summary
+ tree.
 \end_layout
 
 \begin_layout Subsubsection
@@ -1508,16 +1523,82 @@ exemplified
  phylogenetic inputs, this tool exports a pruned down version of the taxonomy
  that only contains tips that are present in at least one phylogenetic input.
  In version 5.0 of the Open Tree of Life synthetic tree, this version of
- the taxonomic tree contained only 43,196 leaves (while the flag-cleaned
+ the taxonomic tree contained only 41,226 leaves (while the flag-cleaned
  version of OTT had 2,424,255 leaves).
 \end_layout
 
+\begin_layout Subsubsection
+Subproblem decomposition
+\end_layout
+
 \begin_layout Standard
-We also take a divide-and-conquer approach by dividing the supertree into
- subproblems along edges of the taxonomy that are uncontested by any of
- the input trees.
- This approach therefore forces monophyly for these groups, which might
- (possibly?) be .
+For the sake of efficiency, propinquity uses a divide-and-conquer approach
+ to construct the supertree.
+ Subproblems are identified by searching through the taxonomy to find any
+ taxa are uncontested by any single input tree.
+ Here we say that input tree 
+\begin_inset Formula $T_{i}$
+\end_inset
+
+contests taxon 
+\begin_inset Formula $x$
+\end_inset
+
+ in the pruned taxonomy, if the taxa in 
+\begin_inset Formula $x$
+\end_inset
+
+ are not monophyletic in every resolution of tree 
+\begin_inset Formula $T_{i}$
+\end_inset
+
+.
+ Thus, polytomies in an input tree are treated as soft polytomies, and a
+ taxon is not contested merely because it is not displayed by an input tree.
+\end_layout
+
+\begin_layout Standard
+This operation is performed by the 
+\family typewriter
+otc-uncontested-decompose
+\family default
+ tool in otcetera; see appendix 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:Decompose-algorithm"
+
+\end_inset
+
+ for a description of the algorithm.
+ The output is a series of subproblems each of which corresponds to a slice
+ of the taxonomy and corresponding slices through each relevant input tree.
+ Each uncontested non-terminal and non-root taxon will show up in two subproblem
+s: it will be the root of its own subproblem and it will be tip in the subproble
+m that covers the next slice deeper in the tree In version 5.0 of the summary
+ tree, this procedure produced 5,545 subproblems, but only 1,586 of these
+ were non-trivial.
+ If a subproblem contains only two tips it is trivial; 2,443 subproblems
+ were trivial in this way.
+ Similary if subproblem contains only 2 trees it is trivial because the
+ solution will simply be all of the groupings from the first tree combined
+ with all of the groupings from the second tree that are compatible with
+ the first tree; 2,838 subproblems were trivial in this way.
+ The subproblem with the largest number of tips contained 953 tips.
+ The largest subproblem, in terms of the number of input trees (including
+ the taxonomic tree) that were relevant, had 18 trees.
+ Without decomposition, the supertree problem would have had 512 input trees
+ and 41,226 leaves.
+\end_layout
+
+\begin_layout Standard
+Note that decomposition into uncontested groups does not necessarily allow
+ us to find the tree that maximizes the MSDGWS score.
+ 
+\end_layout
+
+\begin_layout Standard
+approach therefore forces monophyly for these groups, which might (possibly?)
+ be .
  However, the downsides of this approach seem minimal, compared to the improveme
 nt in scalability.
  We thus divide the supertree problem into 
@@ -1533,7 +1614,7 @@ subproblems
 
 \begin_layout Standard
 \begin_inset Note Note
-status collapsed
+status open
 
 \begin_layout Plain Layout
 Presenting an easy-to-interpret summary of trees that have been “curated”
@@ -4014,6 +4095,164 @@ sum of displayed groups' weighted scores
  to displaying all of the nodes in the trees with lower rank.
  Preference for this tree is referred to as the maximum sum displayed groups'
  weighted scores criterion (MSDGWS criterion).
+\end_layout
+
+\begin_layout Section
+\begin_inset CommandInset label
+LatexCommand label
+name "sec:Decompose-algorithm"
+
+\end_inset
+
+Description of the decomposition algorithm of otc-uncontested-decompose
+\end_layout
+
+\begin_layout Standard
+The input is the pruned taxonomy and exemplifed phylogenetic inputs described
+ above.
+ The tool creates a multigraph by starting witha graph is isomorphic to
+ the taxonomic tree and adding nodes and edges to that graph in a proceudre
+ that we refer to as 
+\begin_inset Quotes eld
+\end_inset
+
+embedding
+\begin_inset Quotes erd
+\end_inset
+
+ the input trees into the taxonomy.
+ A node is introduced for each node in an input tree, and these nodes are
+ mapped the MRCA nodes in the taxonomic graph.
+ In other words, for any node 
+\begin_inset Formula $y$
+\end_inset
+
+ in an input tree with a set of descendants, 
+\begin_inset Formula $\mathcal{C},$
+\end_inset
+
+ we find the most tipward node 
+\begin_inset Formula $z$
+\end_inset
+
+ in the taxonomic graph that is an ancestor to all of the taxa in 
+\begin_inset Formula $\mathcal{C}$
+\end_inset
+
+; let 
+\begin_inset Formula $m(y)=z$
+\end_inset
+
+ refer to this mapping, and 
+\begin_inset Formula $m^{\prime}(z)=y$
+\end_inset
+
+ refer to the reverse mapping.
+ Each edge 
+\begin_inset Formula $e_{ij}$
+\end_inset
+
+ in a source tree 
+\begin_inset Formula $i$
+\end_inset
+
+ connects ancestor to its descendant, 
+\begin_inset Formula $a(e_{ij})\rightarrow d(e_{ij})$
+\end_inset
+
+.
+ The edges are introduced into the graph.
+ We also introduce new edges to create a from 
+\begin_inset Formula $m(a(e_{ij}))$
+\end_inset
+
+ through its descendants to 
+\begin_inset Formula $m(d(e_{ij}))$
+\end_inset
+
+; we denote this path 
+\begin_inset Formula $p(e_{ij})$
+\end_inset
+
+ and refer to the edges in the path as 
+\begin_inset Quotes eld
+\end_inset
+
+embedding edges for tree 
+\begin_inset Formula $i$
+\end_inset
+
+
+\begin_inset Quotes erd
+\end_inset
+
+.
+ Note, that this is a path through the taxonomic nodes, while the edge 
+\begin_inset Formula $e_{ij}$
+\end_inset
+
+ connects source tree nodes.
+ The mapping between 
+\begin_inset Formula $e_{ij}$
+\end_inset
+
+ and 
+\begin_inset Formula $p(e_{ij})$
+\end_inset
+
+ is stored, and the edges are labelled with the index 
+\begin_inset Formula $i$
+\end_inset
+
+ so that it is clear which tree created them.
+\end_layout
+
+\begin_layout Standard
+Because the taxonomic tree is highly unresolved, it is frequently the case
+ that 
+\begin_inset Formula $m(a(e_{ij}))$
+\end_inset
+
+ is the same node as 
+\begin_inset Formula $m(d(e_{ij}))$
+\end_inset
+
+; in these cases the embedding edge is a loop.
+ This situation occurs whenever edge 
+\begin_inset Formula $e_{ij}$
+\end_inset
+
+ can resolve part of the polytomy represented by a taxon.
+\end_layout
+
+\begin_layout Standard
+After every input tree has been embedded into the graph, we perform postorder
+ traversal over the taxonomic tree underlies the graph.
+ For any internal node (each of which corresponds to a non-terminal taxon)
+ we determine wether or not it is contested by examining each input tree.
+ We can determine tree 
+\begin_inset Formula $i$
+\end_inset
+
+ contests the taxon represented by taxonomic node 
+\begin_inset Formula $x$
+\end_inset
+
+ by looking at the parents of all of the embedding edges for tree 
+\begin_inset Formula $i$
+\end_inset
+
+ that have 
+\begin_inset Formula $x$
+\end_inset
+
+ as a daughter.
+ If there are more than one parent nodes in this set of embedding edges,
+ then tree 
+\begin_inset Formula $i$
+\end_inset
+
+ contests that taxon.
 \end_layout
 
 \begin_layout Section
