@@ -1860,61 +1860,7 @@ supported
 
 \end_layout
 
-\begin_layout Section
-Algorithmic approach
-\end_layout
-
-\begin_layout Standard
-We also make the following tactical choices
-\end_layout
-
-\begin_layout Enumerate
-
-\series bold
-conflict
-\series default
- is resolved by ranking the input trees; splits from higher ranked trees
- over-rule conflicting splits from lower-ranked trees, unless the split
- from the higher-ranked tree is itself over-ruled by a split from an even
- high ranked tree.
-\end_layout
-
-\begin_layout Enumerate
-a 
-\series bold
-taxonomy-based supertree
-\series default
-.
- This is a novel name for a special form of the supertree problem.
- A taxonomy-based supertree has at least one input (the taxonomic tree)
- which is complete.
- the taxonomy is considered the lowest-ranked input.
-\end_layout
-
-\begin_layout Standard
-In order to achieve these goals, we have made the following algorithmic
- choices:
-\end_layout
-
-\begin_layout Subsection
-Problem decomposition
-\end_layout
-
-\begin_layout Standard
-First, all branches in the taxonomy that are not contested by any of the
- input trees are automatically accepted into the summary tree.
- Given these branches, the supertree problem may then be decomposed into
- smaller problems delimited by the uncontested taxonomy branches as boundaries.
- Each sub-problem is characterized by a ranked sequence of subtrees that
- are derived from regions of phylogenetic inputs that fall between the boundarie
-s.
- The smaller problems size then makes tractable a variety of strategies
- to solve the sub-problems, and decreases the amount of computer memory
- and processing time that is required.
- 
-\end_layout
-
-\begin_layout Subsection
+\begin_layout Subsubsection
 Subproblem solution
 \end_layout
 
