@@ -952,19 +952,6 @@ floating
 \end_layout
 
 \begin_layout Standard
-\begin_inset Note Note
-status open
-
-\begin_layout Plain Layout
-
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
 \begin_inset Float figure
 wide false
 sideways false
@@ -1169,33 +1156,45 @@ An appealing goal for the summarization would be to find the supertree that
  Furthermore, despite being easy to state, this formulation does not seem
  to present biologists who use the summarization tool with an obvious avenue
  for fixing perceived problems with the summary tree.
- For example, a grouping that a biolgist expected may not be present in
+ For example, a grouping that a biologist expected may not be present in
  the supertree, but it may not conflict with any of the input groupings
  which are displayed.
- This can happen because displaying both 
-\begin_inset Formula $V(i_{1},j_{1})$
+ This can happen because displaying both node 
+\begin_inset Formula $j_{1}$
 \end_inset
 
- and 
-\begin_inset Formula $V(i_{2},j_{2})$
+ from 
+\begin_inset Formula $T_{i_{1}}$
+\end_inset
+
+ and node 
+\begin_inset Formula $j_{2}$
+\end_inset
+
+ from tree 
+\begin_inset Formula $T_{i_{2}}$
 \end_inset
 
  in a summary tree may only be possible by displaying a grouping that is
  present in no input tree.
  All other factors being equal, if this implied grouping conflicts with
  input node 
-\begin_inset Formula $V(i_{3},j_{3})$
+\begin_inset Formula $j_{3}$
+\end_inset
+
+ in tree 
+\begin_inset Formula $T_{i_{3}}$
 \end_inset
 
 , then 
-\begin_inset Formula $V(i_{3},j_{3})$
+\begin_inset Formula $j_{3}$
 \end_inset
 
  will not be displayed in the summary tree, but a biologist will not necessarily
  know how to fix this problem.
  One solution is to use a ranking of groupings.
  If an expert were quite confident in the 
-\begin_inset Formula $V(i_{3},j_{3})$
+\begin_inset Formula $j_{3}$
 \end_inset
 
  grouping, then she could assign that input node a high ranking.
