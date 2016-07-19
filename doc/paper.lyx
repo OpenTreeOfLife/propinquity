@@ -1502,10 +1502,10 @@ Any approach to supertree construction must deal with the need to adjudicate
 \end_layout
 
 \begin_layout Standard
-In order to produce a comprehensive supertree, we also require that the
- ranked list of rooted input trees and taxonomy tree.
- Unlike other input trees, this tree is require to contain all taxa, and
- thus has the maximal leaf set.
+In order to produce a comprehensive supertree, we also require a rooted
+ taxonomy tree in addition to the ranked list of rooted input trees.
+ Unlike other input trees, the taxonomy tree is required to contain all
+ taxa, and thus has the maximal leaf set.
  We make the taxonomy tree the lowest ranked tree.
  This new formulation is the formulation of the 
 \begin_inset Quotes eld
@@ -1597,7 +1597,7 @@ We also seek to construct a supertree that represents as many input tree
  edges as possible.
  Since non-included input tree edges must conflict with the supertree (or
  they would have been added), this criterion is the same as minimizing the
- number of input edges that conflict with the taxonomy.
+ number of input edges that conflict with the supertree.
 \end_layout
 
 \begin_layout Subsubsection
@@ -1805,7 +1805,7 @@ Exemplifying tips mapped to higher taxa
 Many input trees have tips that are not terminal taxa, but higher order
  taxonomic groups.
  It is not clear how to interpret a tip in a phylogenetic estimate that
- is labelled with the name of a higher taxon.
+ is labeled with the name of a higher taxon.
  Several scenarios can lead to these cases: the data for the tip could have
  been by creating a chimeric set of character scoring from constituent taxa,
  it may not have been possible to identify the species sampled precisely,
@@ -1919,7 +1919,7 @@ Summary tree construction
 
 \begin_layout Standard
 After the preprocessing steps, the inputs have been converted to a set of
- rooted phylogenetic estimates in which each leave is mapped to a terminal
+ rooted phylogenetic estimates in which each leaf is mapped to a terminal
  taxon in the exemplified taxonomic tree.
  The goal of the remainder of the pipeline is to construct a tree that maximizes
  the sum displayed groups' weighted scores criterion.
@@ -1957,7 +1957,7 @@ reference "sec:Proof-that-pruning"
 
 \end_inset
 
- proves that a terminal taxon that is represented in the taxaonomy, then
+ proves that a terminal taxon that is represented in the taxonomy, then
  it can be pruned and then regrafted onto the solution without affecting
  which nodes are displayed by the final summary tree.
  Thus, this procedure does not impede our ability to find a good summary
@@ -1996,13 +1996,13 @@ Subproblem decomposition
 \begin_layout Standard
 For the sake of efficiency, propinquity uses a divide-and-conquer approach
  to construct the supertree.
- Subproblems are identified by searching through the taxonomy to find any
- taxa are uncontested by any single input tree.
+ Subproblems are identified by searching through the taxonomy tree to find
+ any taxa are not contested by any single input tree.
  Here we say that input tree 
 \begin_inset Formula $T_{i}$
 \end_inset
 
-contests taxon 
+ contests taxon 
 \begin_inset Formula $x$
 \end_inset
 
@@ -2010,7 +2010,7 @@ contests taxon
 \begin_inset Formula $x$
 \end_inset
 
- are not monophyletic in every resolution of tree 
+ are non-monophyletic in every resolution of tree 
 \begin_inset Formula $T_{i}$
 \end_inset
 
@@ -2033,7 +2033,7 @@ reference "sec:Decompose-algorithm"
 \end_inset
 
  for a description of the algorithm.
- The output is a series of subproblems each of which corresponds to a slice
+ The output is a series of subproblems, each of which corresponds to a slice
  of the taxonomy and corresponding slices through each relevant input tree.
  Each uncontested non-terminal and non-root taxon will show up in two subproblem
 s: it will be the root of its own subproblem and it will be tip in the subproble
@@ -2070,12 +2070,12 @@ reference "fig:pairwisecompat"
 \begin_inset Formula $B1$
 \end_inset
 
-and 
+ and 
 \begin_inset Formula $B2$
 \end_inset
 
  in the input phylogenetic trees would be sliced during the decomposition,
- and relabelled to refer to taxon 
+ and relabeled to refer to taxon 
 \begin_inset Formula $B$
 \end_inset
 
@@ -2102,7 +2102,7 @@ otc-uncontested-decompose
  propinquity because it makes the construction of the tree faster and it
  is easy for users to correct issues caused by incorrect taxa being constrained
  to be monophyletic.
- By adding a tree (even a low-ranked tree) that constests a taxon to the
+ By adding a tree (even a low-ranked tree) that contests a taxon to the
  corpus of input trees , then the next synthetic tree will no longer consider
  the taxon to be uncontested.
  Thus the procedure encourages curation of more phylogenetic inputs as a
@@ -2114,8 +2114,8 @@ reference "fig:detect-uncontested-example"
 
 \end_inset
 
- shows highlights the taxa that are not contested by the input shown in
- figure 
+ highlights the taxa that are not contested by the input shown in figure
+ 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "fig:exemplify-example"
@@ -2138,8 +2138,8 @@ In version 5.0 of the summary tree, this decomposition procedure produced
  5,545 subproblems, but only 1,586 of these were non-trivial.
  If a subproblem contains only two tips it is trivial; 2,443 subproblems
  were trivial in this way.
- Similary, if subproblem contains only 2 trees it is trivial because the
- solution will simply be all of the groupings from the first tree combined
+ Similarly, if a subproblem contains only 2 trees it is trivial because
+ the solution will simply be all of the groupings from the first tree combined
  with all of the groupings from the second tree that are compatible with
  the first tree; 2,838 subproblems were trivial in this way.
  The subproblem with the largest number of tips contained 953 tips.
