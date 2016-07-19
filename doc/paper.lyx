@@ -1867,18 +1867,78 @@ Subproblem solution
 \begin_layout Standard
 Second, when solving sub-problems, we sequentially incorporate splits from
  trees in order of ranking, retaining splits that are compatible with the
- current set of splits.
+ current set of splits (Alg 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "alg:ConsistentSplitsFromRankedList"
+
+\end_inset
+
+).
  The order of splits from the same tree is not specified by this approach,
  and we incorporate splits in post-order.
- We make use of the BUILD algorithm to assess compatibility.
+ We make use of the BUILD algorithm 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "AhoSSU1981"
+
+\end_inset
+
+ to assess compatibility.
  This strategy avoids unnecessary polytomies, since splits of later input
  trees are only rejected from the summary supertree if they conflict with
  higher-priority splits.
+ 
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+The BUILD algorithm as originally stated takes inputs as a collection of
+ rooted triplets, instead of a collection general rooted splits.
+ We modify the implementation slightly to avoid representing a split in
+ terms of rooted triplets.
+ The order of the implementation is this 
+\begin_inset Formula $O(?)$
+\end_inset
+
+ (number of splits,
+\end_layout
+
+\end_inset
+
  Finally, we use the BUILD algorithm to construct a supertree displaying
  all of the splits in the set of compatible splits.
  Using the BUILD algorithm to construct the subproblem summary tree satisfies
  criterion 3, because trees from the BUILD algorithm do not contain unsupported
  branches.
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+Splits are either entirely retained or entirely discarded - consistent rooted
+ triplets from conflicting splits are not retained.
+ However, when unpruning taxonomy-only taxa, we make an attempt to break
+ ties in a way that preserves some partial information from conflicting
+ splits by attaching taxa from conflicting splits at their common ancestor.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+asdf
+\end_layout
+
+\begin_layout Standard
+So, for solving subproblems, we use the BUILD algorithm.
+ The BUILD algorithm takes a collection of rooted triplets as input, and
+ constructs a consistent tree if possible.
+\end_layout
+
+\begin_layout Subsection
+Outline
 \end_layout
 
 \begin_layout Standard
@@ -2030,10 +2090,6 @@ ConsistentSplitsFromRankedList
 \end_inset
 
 
-\end_layout
-
-\begin_layout Standard
-Outline...
 \end_layout
 
 \begin_layout Standard
