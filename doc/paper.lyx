@@ -375,21 +375,8 @@ We can consider whether or not an edge in an input tree is displayed by
 \end_inset
 
 .
- A node, 
-\begin_inset Formula $j$
-\end_inset
-
-, in an input tree 
-\begin_inset Formula $T_{i}$
-\end_inset
-
- will be denoted 
-\begin_inset Formula $V(i,j)$
-\end_inset
-
-.
  For any such node there is a set of taxa that are mapped to the tips that
- are tips that descend from the node.
+ descend from the node.
  This set of taxa can be denoted 
 \begin_inset Formula $\mathcal{L}(i,j)$
 \end_inset
@@ -404,10 +391,14 @@ exclude set
 \end_inset
 
  of 
-\begin_inset Formula $V(i,j)$
+\begin_inset Formula $j$
 \end_inset
 
- is the set of tax in 
+ in 
+\begin_inset Formula $T_{i}$
+\end_inset
+
+ is the set of taxa in 
 \begin_inset Formula $\mathcal{L}(i)$
 \end_inset
 
@@ -437,7 +428,11 @@ exclude set
 \end_inset
 
 .
- We say that the summary displays edge 
+ We say that the summary 
+\emph on
+displays
+\emph default
+ edge 
 \begin_inset Formula $j$
 \end_inset
 
@@ -447,41 +442,462 @@ exclude set
 
 .
  We say that edge 
+\begin_inset Formula $k$
+\end_inset
+
+ of the summary tree is 
+\emph on
+supported by
+\emph default
+ node 
 \begin_inset Formula $j$
 \end_inset
 
- of the summary tree is supported by 
-\begin_inset Formula $V(i,k)$
+ in 
+\begin_inset Formula $T_{i}$
 \end_inset
 
- if the summary tree displays 
-\begin_inset Formula $V(i,k)$
+ if the summary tree displays node 
+\begin_inset Formula $j$
 \end_inset
 
 , but if we contracted edge 
-\begin_inset Formula $j$
+\begin_inset Formula $k$
 \end_inset
 
- then the resulting tree would no longer display 
-\begin_inset Formula $V(i,k)$
+ then the modified summary tree would no longer display node 
+\begin_inset Formula $k$
 \end_inset
 
 .
  Operationally, we can find the most recent common ancestor (MRCA) node
- for the include set of 
-\begin_inset Formula $V(i,j)$
+ of 
+\begin_inset Formula $\mathcal{L}(i,j)$
+\end_inset
+
+ in 
+\begin_inset Formula $\summaryTree$
 \end_inset
 
 ; the summary tree displays 
-\begin_inset Formula $V(i,j)$
+\begin_inset Formula $j$
 \end_inset
 
  if and only if that MRCA node is not an ancestor of any member of the exclude
  set of 
-\begin_inset Formula $V(i,j)$
+\begin_inset Formula $j$
 \end_inset
 
 .
+ 
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Plain Layout
+We can consider whether or not an edge in an input tree is displayed by
+ the summary tree.
+ Each edge 
+\begin_inset Formula $\boldsymbol{e}=(e_{1,}e_{2})$
+\end_inset
+
+ in any tree 
+\begin_inset Formula $t$
+\end_inset
+
+ goes from 
+\begin_inset Formula $e_{1}$
+\end_inset
+
+ to 
+\begin_inset Formula $e_{2}$
+\end_inset
+
+, where 
+\begin_inset Formula $e_{1}$
+\end_inset
+
+ is the rootward node.
+ Let 
+\begin_inset Formula $\taxonomy$
+\end_inset
+
+ denote a taxonomy tree, let 
+\begin_inset Formula $\summaryTree$
+\end_inset
+
+ denote a supertree, and 
+\begin_inset Formula $T_{i}$
+\end_inset
+
+ denote the 
+\begin_inset Formula $i$
+\end_inset
+
+th input tree.
+ Every node 
+\begin_inset Formula $k$
+\end_inset
+
+ in the taxonomy tree denotes a taxon, and every leaf node of 
+\begin_inset Formula $\summaryTree$
+\end_inset
+
+ and 
+\begin_inset Formula $T_{i}$
+\end_inset
+
+ correspond to a taxon.
+ In addition some, but not all of internal nodes of 
+\begin_inset Formula $\summaryTree$
+\end_inset
+
+ correspond to a taxon.
+ The set of taxa that are mapped to the tips of a tree 
+\begin_inset Formula $t$
+\end_inset
+
+ is 
+\begin_inset Formula $\mathcal{L}(t)$
+\end_inset
+
+, and the set of taxa that are mapped to tips that descend from a node 
+\begin_inset Formula $n$
+\end_inset
+
+ is 
+\begin_inset Formula $\mathcal{L}(n)$
+\end_inset
+
+.
+ We assocate the edge 
+\begin_inset Formula $\boldsymbol{e}$
+\end_inset
+
+ with its tipward node 
+\begin_inset Formula $e_{2}$
+\end_inset
+
+ and define 
+\begin_inset Formula $\mathcal{L}(\boldsymbol{e})$
+\end_inset
+
+ to be the tip taxa 
+\begin_inset Formula $\mathcal{L}(e_{2})$
+\end_inset
+
+ that are on the tipward side of 
+\begin_inset Formula $\boldsymbol{e}$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Plain Layout
+We can consider the information content of an edge 
+\begin_inset Formula $\boldsymbol{e}$
+\end_inset
+
+ in a tree 
+\begin_inset Formula $t$
+\end_inset
+
+ in terms of the split 
+\begin_inset Formula $\sigma(\boldsymbol{e})$
+\end_inset
+
+ associated with that edge.
+ Each edge 
+\begin_inset Formula $\boldsymbol{e}$
+\end_inset
+
+ in tree 
+\begin_inset Formula $t$
+\end_inset
+
+ divides tip taxa into two groups when cut.
+ The group 
+\begin_inset Formula $\mathcal{L}(\boldsymbol{e})$
+\end_inset
+
+ that are on the tipward side of 
+\begin_inset Formula $\boldsymbol{e}$
+\end_inset
+
+ will be referred to as the 
+\begin_inset Quotes eld
+\end_inset
+
+include set
+\begin_inset Quotes erd
+\end_inset
+
+ of the edge.
+ The rest of the taxa in are referred to as the 
+\begin_inset Quotes eld
+\end_inset
+
+exclude set
+\begin_inset Quotes erd
+\end_inset
+
+ of 
+\begin_inset Formula $\boldsymbol{e}$
+\end_inset
+
+.
+ The split 
+\begin_inset Formula $\sigma(\boldsymbol{e})$
+\end_inset
+
+ represents the division of the include group from the exclude group by
+ the edge 
+\begin_inset Formula $\boldsymbol{e}$
+\end_inset
+
+, and we write
+\begin_inset Formula 
+\begin{align*}
+\sigma(\boldsymbol{e}) & =\sigma_{1}(e)|\bullet\sigma_{2}(e)\\
+ & =\mathcal{L}(\boldsymbol{e})|\bullet\mathcal{L}(t)-\mathcal{L}(\boldsymbol{e}).
+\end{align*}
+
+\end_inset
+
+The symbol 
+\begin_inset Formula $\bullet$
+\end_inset
+
+ represents the root node and indicates that the root is on the same side
+ of 
+\begin_inset Formula $\boldsymbol{e}$
+\end_inset
+
+ as the exclude set.
+ 
+\end_layout
+
+\begin_layout Plain Layout
+Compatibility for a group of splits means that it is possible for all splits
+ to occur on edges of a single tree.
+ Two rooted splits 
+\begin_inset Formula $\boldsymbol{\alpha}=\alpha_{1}|\bullet\alpha_{2}$
+\end_inset
+
+ and 
+\begin_inset Formula $\boldsymbol{\beta}=\beta_{1}|\bullet\beta_{2}$
+\end_inset
+
+ are pairwise compatible if at least one of 
+\begin_inset Formula $\alpha_{1}\cap\beta_{1}$
+\end_inset
+
+ or 
+\begin_inset Formula $\alpha_{1}\cap\beta_{2}$
+\end_inset
+
+ or 
+\begin_inset Formula $\alpha_{2}\cap\beta_{1}$
+\end_inset
+
+ are empty, and incompatible otherwise.
+ This is true even if the total taxon set of 
+\begin_inset Formula $\boldsymbol{\alpha}$
+\end_inset
+
+ and 
+\begin_inset Formula $\boldsymbol{\beta}$
+\end_inset
+
+ are different, which might occur if 
+\begin_inset Formula $\boldsymbol{\alpha}$
+\end_inset
+
+ and 
+\begin_inset Formula $\boldsymbol{\beta}$
+\end_inset
+
+ are splits on edge of different trees.
+ For two splits 
+\begin_inset Formula $\boldsymbol{\alpha}$
+\end_inset
+
+ and 
+\begin_inset Formula $\boldsymbol{\beta}$
+\end_inset
+
+ we say that 
+\begin_inset Formula $\boldsymbol{\alpha}$
+\end_inset
+
+ 
+\begin_inset Quotes eld
+\end_inset
+
+implies
+\begin_inset Quotes erd
+\end_inset
+
+ 
+\begin_inset Formula $\boldsymbol{\beta}$
+\end_inset
+
+ if 
+\begin_inset Formula $\beta_{1}\subseteq\alpha_{1}$
+\end_inset
+
+ and 
+\begin_inset Formula $\beta_{2}\subseteq\alpha_{2}$
+\end_inset
+
+.
+ Likewise, for some leaf set 
+\begin_inset Formula $L$
+\end_inset
+
+ we use 
+\begin_inset Formula $\alpha|_{L}$
+\end_inset
+
+ to indicate the restriction of 
+\begin_inset Formula $\alpha$
+\end_inset
+
+ to 
+\begin_inset Formula $L$
+\end_inset
+
+:
+\begin_inset Formula 
+\begin{align*}
+\alpha_{L} & =\alpha_{1}\cap L|\bullet\alpha_{2}\cap L.
+\end{align*}
+
+\end_inset
+
+We say that edge 
+\begin_inset Formula $\boldsymbol{e}$
+\end_inset
+
+ of the supertree is compatible with an input tree 
+\begin_inset Formula $T_{i}$
+\end_inset
+
+ if the split 
+\begin_inset Formula $\sigma(\boldsymbol{e})|_{\mathcal{L}(T_{i})}$
+\end_inset
+
+ is compatible with the split 
+\begin_inset Formula $\sigma(\boldsymbol{f})$
+\end_inset
+
+ induced by each edge 
+\begin_inset Formula $\boldsymbol{f}$
+\end_inset
+
+ of 
+\begin_inset Formula $T_{i}$
+\end_inset
+
+.
+ In this case, compatibility with each edge implies separately implies joint
+ compatibility will all edges of 
+\begin_inset Formula $T_{i}$
+\end_inset
+
+, so that 
+\begin_inset Formula $T_{i}$
+\end_inset
+
+ either contains 
+\begin_inset Formula $\sigma(\boldsymbol{e})|_{\mathcal{L}(T_{i})}$
+\end_inset
+
+ or can be extended to contain such an edge.
+\end_layout
+
+\begin_layout Plain Layout
+If the 
+\begin_inset Formula $\sigma(\boldsymbol{e})$
+\end_inset
+
+ implies 
+\begin_inset Formula $\sigma(\boldsymbol{f})$
+\end_inset
+
+ for any edge 
+\begin_inset Formula $\boldsymbol{e}\in\summaryTree$
+\end_inset
+
+ and 
+\begin_inset Formula $\boldsymbol{f}\in T_{i}$
+\end_inset
+
+ then we say that 
+\begin_inset Formula $\summaryTree$
+\end_inset
+
+ displays edge 
+\begin_inset Formula $\boldsymbol{f}$
+\end_inset
+
+ of 
+\begin_inset Formula $T_{i}$
+\end_inset
+
+.
+ We say that edge 
+\series bold
+e
+\series default
+ of the summary tree is supported by 
+\series bold
+
+\begin_inset Formula $\boldsymbol{f}$
+\end_inset
+
+
+\series default
+ in 
+\begin_inset Formula $T_{i}$
+\end_inset
+
+ if the summary tree displays 
+\begin_inset Formula $\boldsymbol{f}$
+\end_inset
+
+, but if we contracted edge 
+\begin_inset Formula $\boldsymbol{e}$
+\end_inset
+
+ then the resulting tree would no longer display 
+\begin_inset Formula $\boldsymbol{f}$
+\end_inset
+
+.
+ Operationally, we can find the most recent common ancestor (MRCA) node
+ in the summary tree for the include set of 
+\series bold
+
+\begin_inset Formula $\boldsymbol{f}$
+\end_inset
+
+
+\series default
+; the summary tree displays 
+\begin_inset Formula $\boldsymbol{f}$
+\end_inset
+
+ if and only if that MRCA node is not an ancestor of any member of the exclude
+ set of 
+\begin_inset Formula $\boldsymbol{f}$
+\end_inset
+
+.
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -514,6 +930,38 @@ float
 
  to multiple positions.
  
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+Our current method of solving subproblems (BUILD) places each 
+\begin_inset Quotes eld
+\end_inset
+
+floating
+\begin_inset Quotes erd
+\end_inset
+
+ subtree as close to the root as possible.
+ However, when reattaching taxonomy-only subtrees, we do not do this.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
