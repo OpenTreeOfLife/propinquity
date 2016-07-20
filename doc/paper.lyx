@@ -2573,6 +2573,103 @@ floating
  However, the MRCA-based unpruner does not.
 \end_layout
 
+\begin_layout Standard
+
+\series bold
+Note:
+\series default
+ whenever we pass a split down into a subgroup, we effectively chop off
+ any elements of the exclude group that are not part of the subgroup.
+ Since the exclude group is not used to partition the groups in a sub-problem,
+ truncating the exclude group to remove these member affects the course
+ of the BUILD algorithm not at all.
+ Therefore, the BUILD algorithm effectively constructs a reduced exclude
+ set for each split that would lead to the same output.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+Proof that every partition satisfies at least one split when the splits
+ are compatible:
+\end_layout
+
+\begin_layout Standard
+- If this is not the case, then all splits that lead to the partition will
+ survive to the next level of recursion.
+ In that case, the next level of BUILD will form a single group, leading
+ to a single group, and then to failure, indicating incompatibility.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+Proof that subtrees cannot be moved rootward without violating a split:
+\end_layout
+
+\begin_layout Standard
+- Suppose that some subtree 
+\begin_inset Formula $A$
+\end_inset
+
+ forms part of a subtree 
+\begin_inset Formula $G$
+\end_inset
+
+.
+ Then 
+\begin_inset Formula $A$
+\end_inset
+
+ must have a sister subtree 
+\begin_inset Formula $B$
+\end_inset
+
+, and 
+\begin_inset Formula $G$
+\end_inset
+
+ must have a sister subtree 
+\begin_inset Formula $X$
+\end_inset
+
+, so that the BUILD tree contains a subtree of the form 
+\begin_inset Formula $((A,B,\ldots)G,X,\ldots)S$
+\end_inset
+
+.
+ In order for 
+\begin_inset Formula $G$
+\end_inset
+
+ to form a component in the subtree, there must be a split of the form 
+\begin_inset Formula $ab\ldots|c\ldots$
+\end_inset
+
+, where 
+\begin_inset Formula $c$
+\end_inset
+
+ is in 
+\begin_inset Formula $S$
+\end_inset
+
+.
+ However, if we move 
+\begin_inset Formula $A$
+\end_inset
+
+ up to the level of 
+\begin_inset Formula $G$
+\end_inset
+
+ to form 
+\begin_inset Formula $((B,\ldots)G,A,X,\ldots)S$
+\end_inset
+
+, then such a split cannot be satisfied.
+\end_layout
+
 \begin_layout Subsubsection
 Solution grafting
 \end_layout
