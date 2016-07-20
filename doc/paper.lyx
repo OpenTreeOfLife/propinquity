@@ -1224,7 +1224,7 @@ status open
 \begin_inset Float figure
 wide false
 sideways false
-status open
+status collapsed
 
 \begin_layout Plain Layout
 \begin_inset Graphics
@@ -1802,19 +1802,19 @@ Exemplifying tips mapped to higher taxa
 \end_layout
 
 \begin_layout Standard
-Many input trees have tips that are not terminal taxa, but higher order
+Many input trees have tips that are not terminal taxa, but higher-order
  taxonomic groups.
  It is not clear how to interpret a tip in a phylogenetic estimate that
  is labeled with the name of a higher taxon.
  Several scenarios can lead to these cases: the data for the tip could have
- been by creating a chimeric set of character scoring from constituent taxa,
- it may not have been possible to identify the species sampled precisely,
+ been created by merging a chimeric set of character scores from constituent
+ taxa; it may not have been possible to identify the species sampled precisely;
  or the researcher may simply have used a higher taxonomic name because
  he/she assumed that the taxon is monophyletic and the higher level name
  is more recognizable.
  Rather than allowing the ambiguity about interpretation of the higher-taxon
  mapped tips to propagate throughout the entire pipeline, we transform the
- input trees by replacing higher taxa at tips with a set of terminal taxon
+ input trees by replacing higher taxa at tips with a set of terminal-taxon
  exemplars for each taxon.
  One approach would be to simply determine all descendant terminal taxa
  and attach them as children of the problematic tip.
@@ -2156,21 +2156,81 @@ sideways false
 status open
 
 \begin_layout Plain Layout
-(a)
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
 \begin_inset Graphics
 	filename Figures/uncontested_worsens_score/ab1c.svg
 	scale 60
 
 \end_inset
 
- (b) 
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset space \hfill{}
+\end_inset
+
+
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+ 
 \begin_inset Graphics
 	filename Figures/uncontested_worsens_score/acb2.svg
 	scale 60
 
 \end_inset
 
-(c)
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset space \hfill{}
+\end_inset
+
+
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
 \begin_inset Graphics
 	filename Figures/uncontested_worsens_score/tax.svg
 	scale 60
@@ -2181,18 +2241,92 @@ status open
 \end_layout
 
 \begin_layout Plain Layout
-(d) 
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset space \hfill{}
+\end_inset
+
+
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
 \begin_inset Graphics
 	filename Figures/uncontested_worsens_score/opt.svg
 	scale 60
 
 \end_inset
 
-(e)
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset space \hfill{}
+\end_inset
+
+
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
 \begin_inset Graphics
 	filename Figures/uncontested_worsens_score/returned.svg
 	scale 60
 
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset space \hfill{}
 \end_inset
 
 
@@ -2233,7 +2367,7 @@ name "fig:decompose-worsens"
 
 \begin_layout Standard
 \begin_inset Note Note
-status open
+status collapsed
 
 \begin_layout Plain Layout
 Presenting an easy-to-interpret summary of trees that have been “curated”
@@ -2335,43 +2469,108 @@ key "AhoSSU1981"
  This strategy avoids unnecessary polytomies, since splits of later input
  trees are only rejected from the summary supertree if they conflict with
  higher-priority splits.
- 
-\begin_inset Note Note
-status open
-
-\begin_layout Plain Layout
-The BUILD algorithm as originally stated takes inputs as a collection of
- rooted triplets, instead of a collection general rooted splits.
- We modify the implementation slightly to avoid representing a split in
- terms of rooted triplets.
- The order of the implementation is this 
-\begin_inset Formula $O(?)$
-\end_inset
-
- (number of splits,
-\end_layout
-
-\end_inset
-
  Finally, we use the BUILD algorithm to construct a supertree displaying
  all of the splits in the set of compatible splits.
  Using the BUILD algorithm to construct the subproblem summary tree satisfies
  criterion 3, because trees from the BUILD algorithm do not contain unsupported
  branches.
-\begin_inset Note Note
-status open
+\end_layout
 
-\begin_layout Plain Layout
-Splits are either entirely retained or entirely discarded - consistent rooted
- triplets from conflicting splits are not retained.
+\begin_layout Standard
+The BUILD algorithm as originally stated by 
+\begin_inset CommandInset citation
+LatexCommand citet
+key "AhoSSU1981"
+
+\end_inset
+
+ applies to a collection of rooted triplets.
+ Instead of decomposing input splits into a collection of rooted triplets,
+ we instead modify the BUILD algorithm slightly to apply directly to larger
+ rooted splits.
+ The modified BUILD algorithm constructs a tree compatible with a collection
+ of rooted splits, and returns failure if such a tree does not exist.
+ The algorithm begins by partitioning the leaf set into subgroups, where
+ two leaves are assigned to the same subgroup if they are both in the include
+ set of any input triplet.
+ The include set of every split is thus contained in a single subgroup.
+ If the exclude set is disjoint with that subgroup, then the split is satisfied
+ by the partition and is discarded.
+ Otherwise, the split is associated with the group that contains its include
+ set.
+ The BUILD algorithm is then recursively applied to each subgroup of the
+ partition that has a non-empty set of splits assigned to it, and this recursive
+ partitioning creates a tree.
+ If at any level of recursion the partitioning stage yields only one group,
+ then the algorithm returns failure, and the collection of splits are not
+ compatible.
+\end_layout
+
+\begin_layout Standard
+This modified algorithm recovers the original BUILD algorithm of only rooted
+ triplets are supplied as input.
+ When larger splits are supplied as input, the algorithm should still be
+ correct, since the results are the same as you would expect if you actually
+ decomposed each split into all implied triplets.
+\end_layout
+
+\begin_layout Standard
+The order of the algorithm is 
+\begin_inset Formula $O(N^{2}+LN)$
+\end_inset
+
+, where 
+\begin_inset Formula $N$
+\end_inset
+
+ is the number of input splits and 
+\begin_inset Formula $L$
+\end_inset
+
+ is the number of leaves.
+ This is because the merge operation has a cost that is 
+\begin_inset Formula $O(N+L)$
+\end_inset
+
+, and there can be at most 
+\begin_inset Formula $N$
+\end_inset
+
+ merge operations.
+ In case all the inputs are triplets, the cost is 
+\begin_inset Formula $O(N^{2})$
+\end_inset
+
+ because the number of leaves is proportional to the number of triplets.
+ Some published work has attempted to decrease this order by sharing work
+ between the different levels of recursion.
+ However, it is not clear if this is right, since it is based on an algorithm
+ that might not work.
+\end_layout
+
+\begin_layout Standard
+In this approach splits are either entirely retained or entirely discarded
+ - consistent rooted triplets from conflicting splits are not retained.
  However, when unpruning taxonomy-only taxa, we make an attempt to break
  ties in a way that preserves some partial information from conflicting
  splits by attaching taxa from conflicting splits at their common ancestor.
 \end_layout
 
+\begin_layout Standard
+
+\series bold
+Claim:
+\series default
+ the BUILD algorithm places 
+\begin_inset Quotes eld
 \end_inset
 
+floating
+\begin_inset Quotes erd
+\end_inset
 
+ taxa as rootward as possible.
+ However, the MRCA-based unpruner does not.
 \end_layout
 
 \begin_layout Subsection
