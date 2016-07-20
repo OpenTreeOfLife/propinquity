@@ -2643,11 +2643,27 @@ Proof that subtrees cannot be moved rootward without violating a split:
 \end_inset
 
  to form a component in the subtree, there must be a split of the form 
-\begin_inset Formula $ab\ldots|c\ldots$
+\begin_inset Formula $ab\ldots|s\ldots$
 \end_inset
 
 , where 
-\begin_inset Formula $c$
+\begin_inset Formula $a$
+\end_inset
+
+ is in 
+\begin_inset Formula $A$
+\end_inset
+
+, 
+\begin_inset Formula $B$
+\end_inset
+
+ is in 
+\begin_inset Formula $B$
+\end_inset
+
+ and 
+\begin_inset Formula $s$
 \end_inset
 
  is in 
