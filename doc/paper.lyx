@@ -2573,6 +2573,28 @@ floating
  However, the MRCA-based unpruner does not.
 \end_layout
 
+\begin_layout Subsubsection
+Solution grafting
+\end_layout
+
+\begin_layout Standard
+Since each uncontested taxon that is used for decomposition occurs in one
+ subproblem as a leaf node, and one subproblem as a root node, ungrafting
+ simply consists of merging these two nodes.
+\end_layout
+
+\begin_layout Subsubsection
+Unpruning
+\end_layout
+
+\begin_layout Subsubsection
+Naming unnamed nodes
+\end_layout
+
+\begin_layout Subsubsection
+Annotation
+\end_layout
+
 \begin_layout Subsection
 asdf
 \end_layout
