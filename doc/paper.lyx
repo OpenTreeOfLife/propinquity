@@ -2498,7 +2498,8 @@ reference "alg:ConsistentSplitsFromRankedList"
 
 ).
  The order of splits from the same tree is not specified by this approach,
- and we incorporate splits in post-order.
+ and we incorporate splits using one of the possible post-order traversals
+ of the tree.
  We make use of the BUILD algorithm 
 \begin_inset CommandInset citation
 LatexCommand citep
