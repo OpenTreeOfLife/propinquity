@@ -207,7 +207,7 @@ The Open Tree of Life project seeks to build a platform for summarizing
  taxonomic tree and a set of published trees.
  The summary tree is intended to transparently and justifiably represent
  phylogenetic information from these inputs.
- The taxonomic tree is provided by the Open Tree Taxonomy (OTT hereafter,
+ The taxonomic tree is derived from the Open Tree Taxonomy (OTT hereafter,
  publication in preparation).
  The phylogenetic inputs are published trees that have been curated to align
  the tips to OTT and to identify the correct rooting (see 
@@ -295,7 +295,7 @@ supported by
 \end_layout
 
 \begin_layout Paragraph*
-Notation and terminology – 
+Notation, terminology, and the definition of 
 \begin_inset Quotes eld
 \end_inset
 
@@ -381,7 +381,15 @@ We can consider whether or not an edge in an input tree is displayed by
 \begin_inset Formula $\mathcal{L}(i,j)$
 \end_inset
 
- and will be referred to as the include set of the node.
+ and will be referred to as the 
+\begin_inset Quotes eld
+\end_inset
+
+include set
+\begin_inset Quotes erd
+\end_inset
+
+ of the node.
  The 
 \begin_inset Quotes eld
 \end_inset
@@ -491,7 +499,7 @@ supported by
 .
  
 \begin_inset Note Note
-status collapsed
+status open
 
 \begin_layout Plain Layout
 We can consider whether or not an edge in an input tree is displayed by
@@ -912,12 +920,39 @@ reference "fig:toyambig"
 
 \end_inset
 
-; panels (a) and (b) show 2 input trees.
+; panels (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:toyambig"
+
+\end_inset
+
+a) and (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:toyambig"
+
+\end_inset
+
+b) show 2 input trees.
  Because taxa A and E do not occur together in either input, there is some
  uncertainty about where to place them.
- By our terminology, either output shown in (c) or (d) would be characterized
- as a tree that displays all of the input groupings and which has no unsupported
- groups.
+ By our terminology, either output shown in (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:toyambig"
+
+\end_inset
+
+c) or (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:toyambig"
+
+\end_inset
+
+d) would be characterized as a tree that displays all of the input groupings
+ and which has no unsupported groups.
  So clearly these criteria are insufficient to specify a unique solution,
  and users of the output tree need to be aware that it may be possible for
  some taxa to 
@@ -1152,49 +1187,49 @@ An appealing goal for the summarization would be to find the supertree that
 \begin_inset Formula $NP$
 \end_inset
 
--hard problem.
- Furthermore, despite being easy to state, this formulation does not seem
- to present biologists who use the summarization tool with an obvious avenue
- for fixing perceived problems with the summary tree.
+-hard problem TODO:REF.
+ Furthermore, despite being easy to state, this formulation does not provide
+ biologists who use the summarization tool with an obvious avenue for fixing
+ perceived problems with the summary tree.
  For example, a grouping that a biologist expected may not be present in
  the supertree, but it may not conflict with any of the input groupings
  which are displayed.
  This can happen because displaying both node 
-\begin_inset Formula $j_{1}$
+\begin_inset Formula $a$
 \end_inset
 
  from 
-\begin_inset Formula $T_{i_{1}}$
+\begin_inset Formula $T_{1}$
 \end_inset
 
  and node 
-\begin_inset Formula $j_{2}$
+\begin_inset Formula $b$
 \end_inset
 
  from tree 
-\begin_inset Formula $T_{i_{2}}$
+\begin_inset Formula $T_{2}$
 \end_inset
 
  in a summary tree may only be possible by displaying a grouping that is
  present in no input tree.
  All other factors being equal, if this implied grouping conflicts with
  input node 
-\begin_inset Formula $j_{3}$
+\begin_inset Formula $c$
 \end_inset
 
  in tree 
-\begin_inset Formula $T_{i_{3}}$
+\begin_inset Formula $T_{3}$
 \end_inset
 
 , then 
-\begin_inset Formula $j_{3}$
+\begin_inset Formula $c$
 \end_inset
 
  will not be displayed in the summary tree, but a biologist will not necessarily
  know how to fix this problem.
  One solution is to use a ranking of groupings.
  If an expert were quite confident in the 
-\begin_inset Formula $j_{3}$
+\begin_inset Formula $x$
 \end_inset
 
  grouping, then she could assign that input node a high ranking.
@@ -1461,8 +1496,9 @@ Any approach to supertree construction must deal with the need to adjudicate
  between conflicting input trees.
  We choose to deal with conflict by ranking the input trees, and preferring
  to include edges from higher-ranked trees.
- Ranking is perhaps questionable because it does not mediate conflicts based
- on the relative amount of evidence for each alternative.
+ The merits of using tree ranking are questionable because the system does
+ not mediate conflicts based on the relative amount of evidence for each
+ alternative.
  However, it is a reasonable starting point.
  This is because it has the benefits of making it easy to see why some groups
  are included or not (transparency), and because it allows simpler and cleaner
