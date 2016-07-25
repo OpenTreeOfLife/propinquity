@@ -1590,7 +1590,7 @@ not
 \emph default
  included, we can point to a reason for non-inclusion by showing that the
  input edge conflicts with some node/edge of the summary tree.
- Note, that the requirement do not display unsupported groups leads to some
+ Note, that the requirement to not display unsupported groups leads to some
  
 \begin_inset Quotes eld
 \end_inset
@@ -1753,8 +1753,8 @@ barren
 \end_inset
 
 ).
- Propinquity prunes the OTTaxonomy down to a more reliable, tree-like taxonomy
- by pruning off parts of the tree that are flagged with suspicious flags.
+ Propinquity prunes the OTT down to a more reliable taxonomy by pruning
+ off parts of the tree that are flagged with suspicious flags.
  The set of flags that lead to a subtree of the taxonomy being pruned is
  under the control of the user (the set of flags used by the Open Tree of
  Life project can be found in the 
@@ -1902,10 +1902,9 @@ on is unwarranted.
 \end_layout
 
 \begin_layout Standard
-As will be discussed below, if a taxon is only present in the taxonomy (not
- in any of the input trees), then it can be pruned from the taxonomy for
- the construction of the supertree and then grafted back on to the summary
- tree later.
+As discussed below, if a taxon is only present in the taxonomy (not in any
+ of the input trees), then it can be pruned from the taxonomy for the constructi
+on of the supertree and then grafted back on to the summary tree later.
  Performing this pruning reduces the size of the supertree problem, reducing
  the running time of the pipeline.
  Similarly, when we expand a higher taxon in the exemplification step, we
@@ -1946,7 +1945,7 @@ reference "fig:cleaned-phylo-example"
 
 \end_inset
 
-would be exemplified.
+ would be exemplified.
 \end_layout
 
 \begin_layout Subsection
@@ -2074,7 +2073,10 @@ reference "sec:Decompose-algorithm"
  Each uncontested non-terminal and non-root taxon will show up in two subproblem
 s: it will be the root of its own subproblem and it will be tip in the subproble
 m that covers the next slice deeper in the tree.
- Note that decomposition into uncontested groups does not necessarily allow
+\end_layout
+
+\begin_layout Standard
+Note that decomposition into uncontested groups does not necessarily allow
  us to find the tree that maximizes the MSDGWS score.
  For example, see figure 
 \begin_inset CommandInset ref
@@ -2130,7 +2132,10 @@ reference "fig:pairwisecompat"
 \end_inset
 
  when the trees are considered in isolation.
- Despite the fact that the use of 
+\end_layout
+
+\begin_layout Standard
+Despite the fact that the use of 
 \family typewriter
 otc-uncontested-decompose
 \family default
@@ -2171,13 +2176,13 @@ reference "fig:subproblems-example"
 
 \begin_layout Standard
 In version 5.0 of the summary tree, this decomposition procedure produced
- 5,545 subproblems, but only 1,586 of these were non-trivial.
+ 5,545 subproblems, but only 1,586 of these were non-trivial to solve.
  If a subproblem contains only two tips it is trivial; 2,443 subproblems
  were trivial in this way.
- Similarly, if a subproblem contains only 2 trees it is trivial because
- the solution will simply be all of the groupings from the first tree combined
- with all of the groupings from the second tree that are compatible with
- the first tree; 2,838 subproblems were trivial in this way.
+ Similarly, if a subproblem contains only 2 trees it is trivial to solve
+ because the solution will simply be all of the groupings from the first
+ tree combined with all of the groupings from the second tree that are compatibl
+e with the first tree; 2,838 subproblems were trivial in this way.
  The subproblem with the largest number of tips contained 953 tips.
  The largest subproblem, in terms of the number of input trees (including
  the taxonomic tree) that were relevant, had 18 trees.
