@@ -14,12 +14,19 @@ if __name__ == "__main__":
 
     parser.add_argument('-i',
         dest='keep_ottids',
-        action='store_false',
-        default=True,
+        action='store_true',
+        default=False,
         help='use this flag to keep the OTT ids in addition to the names'
         )
 
     args = parser.parse_args()
+
+    print "converting {f}".format(f=args.newick_file)
+    print "using ott in {d}".format(d=args.ott_dir)
+    if (args.keep_ottids):
+        print "keeping OTT IDs in addition to names"
+    else:
+        print "replacing OTT IDs with names"
 
     # read pruned labelled synthesis tree
     ottpattern = re.compile(r"([(,)])(ott)(\d+)")
@@ -38,11 +45,14 @@ if __name__ == "__main__":
             ottname=ottresults
             if isinstance(ottresults,tuple):
                 ottname = ottresults[0]
-            #print m.group(3),ottname
+            print m.group(3),ottname
             skippedchars = newick[pos:m.start()]
             outfile.write(skippedchars)
             outfile.write(m.group(1))
-            label = quote_newick_name('{} ott{}'.format(ottname,ottid))
+            if args.keep_ottids:
+                label = quote_newick_name('{} ott{}'.format(ottname,ottid))
+            else:
+                label = quote_newick_name('{}'.format(ottname))
             outfile.write(label)
             pos=m.end()
         outfile.write(newick[pos:])

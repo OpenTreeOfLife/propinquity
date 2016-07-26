@@ -20,22 +20,23 @@ ARTIFACTS += $(SUPPRESS_FLAG_ARTIFACTS) \
 	$(PROPINQUITY_OUT_DIR)/phylo_input/rank_collection.json \
 	$(PROPINQUITY_OUT_DIR)/phylo_input/collections.txt
 
+# use find + xargs for wildcard expansion to guard against arg list too long
 clean1:
-	rm -f $(PROPINQUITY_OUT_DIR)/cleaned_phylo/*.tre
-	rm -f $(PROPINQUITY_OUT_DIR)/cleaned_phylo/*.json
 	rm -f $(PROPINQUITY_OUT_DIR)/cleaned_phylo/needs_updating.txt
-	rm -f $(PROPINQUITY_OUT_DIR)/exemplified_phylo/*.tre
-	rm -f $(PROPINQUITY_OUT_DIR)/phylo_snapshot/*.json
 	rm -f $(PROPINQUITY_OUT_DIR)/phylo_snapshot/git_shas.txt
 	rm -f $(PROPINQUITY_OUT_DIR)/phylo_snapshot/collections_git_shas.txt
 	rm -f $(PROPINQUITY_OUT_DIR)/phylo_snapshot/stdouterr.txt
 	rm -f $(PROPINQUITY_OUT_DIR)/phylo_input/collections.txt
+	find $(PROPINQUITY_OUT_DIR)/cleaned_phylo/ -name "*.tre" | xargs rm -f
+	find $(PROPINQUITY_OUT_DIR)/cleaned_phylo/ -name "*.json" | xargs rm -f
+	find $(PROPINQUITY_OUT_DIR)/exemplified_phylo/ -name "*.tre" | xargs rm -f
+	find $(PROPINQUITY_OUT_DIR)/phylo_snapshot/ -name "*.json" | xargs rm -f
 
 # "cleaned_ott" has dubious taxa pruned off. should check against treemachine and smasher versions
 $(PROPINQUITY_OUT_DIR)/cleaned_ott/root_ott_id.txt: $(CONFIG_FILENAME)
 	@if ! test -d $(PROPINQUITY_OUT_DIR)/cleaned_ott ; then mkdir -p $(PROPINQUITY_OUT_DIR)/cleaned_ott ; fi
 	if ! ./bin/config_checker.py synthesis.root_ott_id $(CONFIG_FILENAME) > $(PROPINQUITY_OUT_DIR)/cleaned_ott/.raw_root_ott_id.txt 2>/dev/null ; then \
-	   otc-taxonomy-parser --config $(PROPINQUITY_OUT_DIR)/config -R > $(PROPINQUITY_OUT_DIR)/cleaned_ott/.raw_root_ott_id.txt ; \
+	   otc-taxonomy-parser --config $(PROPINQUITY_OUT_DIR)/config -R | sed 's/[ \t].*//' > $(PROPINQUITY_OUT_DIR)/cleaned_ott/.raw_root_ott_id.txt ; \
 	fi ; \
 	if ! diff $(PROPINQUITY_OUT_DIR)/cleaned_ott/.raw_root_ott_id.txt $(PROPINQUITY_OUT_DIR)/cleaned_ott/root_ott_id.txt 2>/dev/null; then mv $(PROPINQUITY_OUT_DIR)/cleaned_ott/.raw_root_ott_id.txt $(PROPINQUITY_OUT_DIR)/cleaned_ott/root_ott_id.txt ; fi
 
@@ -131,7 +132,7 @@ $(PROPINQUITY_OUT_DIR)/cleaned_phylo/phylo_inputs_cleaned.txt: $(PROPINQUITY_OUT
 	  --root="$(shell cat $(PROPINQUITY_OUT_DIR)/cleaned_ott/root_ott_id.txt)"
 	touch $(PROPINQUITY_OUT_DIR)/cleaned_phylo/phylo_inputs_cleaned.txt
 
-$(PROPINQUITY_OUT_DIR)/exemplified_phylo/args.txt : $(PROPINQUITY_OUT_DIR)/phylo_input/study_tree_pairs.txt 
+$(PROPINQUITY_OUT_DIR)/exemplified_phylo/args.txt : $(PROPINQUITY_OUT_DIR)/phylo_input/study_tree_pairs.txt
 	@if ! test -d $(PROPINQUITY_OUT_DIR)/exemplified_phylo ; then mkdir -p $(PROPINQUITY_OUT_DIR)/exemplified_phylo ; fi
 	sed -e "s:\(.*\):$(PROPINQUITY_OUT_DIR)/cleaned_phylo/\1.tre:" $(PROPINQUITY_OUT_DIR)/phylo_input/study_tree_pairs.txt > $(PROPINQUITY_OUT_DIR)/exemplified_phylo/args.txt
 

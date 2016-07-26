@@ -2,13 +2,13 @@ PROPINQUITY_OUT_DIR ?= .
 export PROPINQUITY_OUT_DIR
 CONFIG_FILENAME=$(PROPINQUITY_OUT_DIR)/config
 
-COLLECTIONS_ROOT := $(shell bin/config_checker.py opentree.collections $(CONFIG_FILENAME) $(HOME)/.opentree)
+COLLECTIONS_ROOT := $(shell bin/config_checker.py opentree.collections $(CONFIG_FILENAME))
 export COLLECTIONS_ROOT
 
-PEYOTL_ROOT := $(shell bin/config_checker.py opentree.peyotl $(CONFIG_FILENAME) $(HOME)/.opentree)
+PEYOTL_ROOT := $(shell bin/config_checker.py opentree.peyotl $(CONFIG_FILENAME))
 export PEYOTL_ROOT
 
-OTT_DIR := $(shell bin/config_checker.py opentree.ott $(CONFIG_FILENAME) $(HOME)/.opentree)
+OTT_DIR := $(shell bin/config_checker.py opentree.ott $(CONFIG_FILENAME))
 export OTT_DIR
 
 OTT_FILENAMES=about.json \
@@ -22,7 +22,7 @@ export OTT_FILENAMES
 OTT_FILEPATHS := $(addprefix $(OTT_DIR)/, $(OTT_FILENAMES))
 export OTT_FILEPATHS
 
-PHYLESYSTEM_ROOT := $(shell bin/config_checker.py opentree.phylesystem $(CONFIG_FILENAME) $(HOME)/.opentree)
+PHYLESYSTEM_ROOT := $(shell bin/config_checker.py opentree.phylesystem $(CONFIG_FILENAME))
 export PHYLESYSTEM_ROOT
 
 SYNTHESIS_COLLECTIONS := $(shell bin/config_checker.py synthesis.collections $(CONFIG_FILENAME))
@@ -68,7 +68,7 @@ HTML_ARTIFACTS = $(PROPINQUITY_OUT_DIR)/annotated_supertree/index.html \
 	$(PROPINQUITY_OUT_DIR)/subproblem_solutions/index.html \
 	$(PROPINQUITY_OUT_DIR)/subproblem_solutions/index.json \
 	$(PROPINQUITY_OUT_DIR)/phylo_snapshot/index.html \
-	$(PROPINQUITY_OUT_DIR)/phylo_snapshot/index.json 
+	$(PROPINQUITY_OUT_DIR)/phylo_snapshot/index.json
 
 all: $(PROPINQUITY_OUT_DIR)/labelled_supertree/labelled_supertree.tre \
 	 $(PROPINQUITY_OUT_DIR)/annotated_supertree/annotations.json

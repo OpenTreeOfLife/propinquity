@@ -1,7 +1,9 @@
-#LyX 2.1 created this file. For more info see http://www.lyx.org/
-\lyxformat 474
+#LyX 2.2 created this file. For more info see http://www.lyx.org/
+\lyxformat 508
 \begin_document
 \begin_header
+\save_transient_properties true
+\origin unavailable
 \textclass paper
 \begin_preamble
 \usepackage{algorithm,algpseudocode}
@@ -12,16 +14,16 @@
 \language_package default
 \inputencoding auto
 \fontencoding global
-\font_roman default
-\font_sans default
-\font_typewriter default
-\font_math auto
+\font_roman "default" "default"
+\font_sans "default" "default"
+\font_typewriter "default" "default"
+\font_math "auto" "auto"
 \font_default_family default
 \use_non_tex_fonts false
 \font_sc false
 \font_osf false
-\font_sf_scale 100
-\font_tt_scale 100
+\font_sf_scale 100 100
+\font_tt_scale 100 100
 \graphics default
 \default_output_format default
 \output_sync 0
@@ -76,87 +78,122 @@
 
 \begin_body
 
+\begin_layout Standard
+\begin_inset FormulaMacro
+\newcommand{\taxonomy}{\mbox{\mathbb{T}}}
+{\mbox{\mathbb{T}}}
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset FormulaMacro
+\newcommand{\prunedTaxonomy}{\taxonomy_{P}}
+{\taxonomy_{P}}
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset FormulaMacro
+\newcommand{\phyloinputs}{\mathcal{T}}
+{\mathcal{T}}
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset FormulaMacro
+\newcommand{\expandedPhylo}{\phyloinputs_{E}}
+{\phyloinputs_{E}}
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset FormulaMacro
+\newcommand{\summaryTree}{\mathbb{S}}
+{\mathbb{S}}
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset FormulaMacro
+\newcommand{\prunedSummary}{\summaryTree_{P}}
+{\summaryTree_{P}}
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset FormulaMacro
+\newcommand{\collections}{\mathcal{C}}
+{\mathcal{C}}
+\end_inset
+
+
+\end_layout
+
 \begin_layout Title
 Title
 \end_layout
 
 \begin_layout Author
-authors
-\begin_inset Formula $^{1}$
+Benjamin D.
+ Redelings
+\begin_inset Formula $^{1,2}$
+\end_inset
+
+, Mark T.
+ Holder
+\begin_inset Formula $^{1,3}$
 \end_inset
 
 
 \end_layout
 
 \begin_layout Abstract
-We present a new software pipeline for constructing a summary supertree
- from a taxonomy and a collection of curated phylogenetic inputs.
- This pipeline is made up of the software packages 
-\emph on
-propinquity
-\emph default
-, 
-\emph on
-otcetera
-\emph default
-, and 
+We present a new supertree method and software implementation that enables
+ rapid estimation of a summary tree on the scale of millions of leaves.
+ This software pipeline is made up of three components: 
 \emph on
 peyotl
 \emph default
-.
- It is free software and is available from github.
- The pipeline improves on previous supertree construction methods in that
- it satisfies the criteria of having no unsupported branches, and no unnecessary
- polytomies.
- The reason for the inclusion and exclusion of each edge is made transparent
- by an annotations file that we compute
-\begin_inset Foot
-status collapsed
-
-\begin_layout Plain Layout
-This is maybe not exactly true, yet.
- But the branches that support an include edge are available.
+ - a python library for basic manipulating phylogenetic and taxonomic informatio
+n; 
+\emph on
+otcetera
+\emph default
+ - a set of C++ tools that perform most of the steps of the pipeline; and
  
-\end_layout
-
-\end_inset
-
-
-\begin_inset Foot
-status collapsed
-
-\begin_layout Plain Layout
-We could try to compute clearer reasons for edge non-inclusion: we could
- determine which summary edges conflict, and report all input edges that
- support conflicting edges.
- We could check which supporting input edges conflict with the excluded
- edge.
-\end_layout
-
-\end_inset
-
-.
- The supertree increases the number of phylogenetic input splits that are
- displayed, while decreasing the number of conflicts between the summary
- tree and the phylogenetic inputs.
- The 
 \emph on
 propinquity
 \emph default
- pipeline decreases the amount of computer memory and processing time required
- to construct the synthesis tree by about x-fold
-\begin_inset Foot
-status collapsed
+ - a make-based scaffold for producing the summary tree.
+ All of the components are free software and are available on GitHub.
+ This pipeline is currently used by the Open Tree of Life project to produce
+ version 5 of that project's 
+\begin_inset Quotes eld
+\end_inset
 
-\begin_layout Plain Layout
-Here we need to know how long the old pipeline took.
-\end_layout
-
+synthetic tree
+\begin_inset Quotes erd
 \end_inset
 
 .
- This prepares the way for the inclusion of many more input trees.
- 
+ The propinquity-based pipeline improves on previous supertree construction
+ methods because it produces no unsupported branches, and it avoids unnecessary
+ polytomies.
+ In addition to producing a tree, the pipeline writes an annotations file
+ that reports which grouping in the input trees support each of the groupings
+ in the supertree.
 \end_layout
 
 \begin_layout Section
@@ -166,52 +203,972 @@ Background
 \begin_layout Standard
 The Open Tree of Life project seeks to build a platform for summarizing
  what is known about phylogenetic relationships across all of Life.
- The information to be summarized is ingested in the form of a taxonomic
- tree (the OpenTree Taxonomy) with comprehensive coverage and a collection
- of curated phylogenetic input trees.
- These inputs are sourced from phylogenetic trees in published papers that
- have DOI numbers.
- Phylogenetic inputs generally have a leaf set that is much smaller than
- the comprehensive set of leaves in the taxonomy.
- We describe a software pipeline that summarizes and integrates these smaller
- source trees and the taxonomy tree into a single supertree.
- We assume that the source trees are rooted, and our supertree is also rooted.
+ One primary goal of the project is to build a summary tree from a comprehensive
+ taxonomic tree and a set of published trees.
+ The summary tree is intended to transparently and justifiably represent
+ phylogenetic information from these inputs.
+ The taxonomic tree is derived from the Open Tree Taxonomy (OTT hereafter,
+ publication in preparation).
+ The phylogenetic inputs are published trees that have been curated to align
+ the tips to OTT and to identify the correct rooting (see 
+\begin_inset CommandInset citation
+LatexCommand citealt
+key "McTavishEtAt2015"
+
+\end_inset
+
+ for further details); these trees do not include all leaf taxa.
+ The inputs (taxonomy and phylogenetic trees) and the output summary supertree
+ are all rooted.
+ Here we describe the software pipeline (
+\emph on
+propinquity
+\emph default
+) that summarizes and integrates these smaller source trees and the taxonomy
+ tree into a single supertree and the noteworth tools for manipulating and
+ solving supertrees in the 
+\emph on
+otcetera
+\emph default
+ package.
 \end_layout
 
-\begin_layout Paragraph
+\begin_layout Subsection
 Goals
 \end_layout
 
 \begin_layout Standard
-We seek to build a summary supertree that represents its source trees in
- an easy-to-interpret fashion.
- In keeping with the desire to have a transparently justifiable supertree,
- our pipeline also produces an annotations file that relates each supertree
- edge to the input tree edges that support it.
- In order to aid in interpretation of the supertree, we require that each
- supertree edge be supported by at least one input tree edge.
+Translating the goals of the Open Tree of Life's summary tree into an explicit
+ set of criteria is not trivial.
+ The summary supertree should represent the phylogenetic information from
+ source trees in a transparent and justifiable fashion, and we would like
+ to allow users to correct errors in the supertree by improving the input
+ information.
+ A more formal statement of the goals is to produce a tree which:
+\end_layout
+
+\begin_layout Enumerate
+displays no unsupported groups,
+\end_layout
+
+\begin_layout Enumerate
+defers to groupings from higher ranked trees in the case of conflict, 
+\end_layout
+
+\begin_layout Enumerate
+contains no unnecessary polytomies, and
+\end_layout
+
+\begin_layout Enumerate
+displays as many groupings from input trees as possible.
+\end_layout
+
+\begin_layout Standard
+These goals are described more fully below.
+ In order to accomplish transparency and justification, our pipeline also
+ produces annotations files with information about conflict and support.
+ 
+\end_layout
+
+\begin_layout Subsubsection
+Goal 1: Each grouping is supported by at least one input
+\end_layout
+
+\begin_layout Standard
+We require that each edge in the supertree be supported by at least one
+ input tree edge.
  In addition to aiding interpretability, this requirement keeps the supertree
  from arbitrarily representing information that comes from none of the input
  trees.
- Likewise, we require that the supertree have no unnecessary polytomies.
- Thus, for each input edge that is 
-\emph on
-not
-\emph default
- included, we can point to a reason for non-inclusion by showing that the
- input edge conflicts with some node/edge of the summary tree.
- We also seek to include all taxa from the taxonomy in the supertree.
- These optimality criteria help to define what it means for the supertree
- to represent the input trees, as well as justifying and explaining why
- various features of the supertree exist.
+ Of course, in a supertree analysis, the full tree will imply some relationships
+ for subsets of the taxa that are not found in any input tree.
+ So, the meaning of 
+\begin_inset Quotes eld
+\end_inset
+
+supported by
+\begin_inset Quotes erd
+\end_inset
+
+ needs some clarification.
+ 
+\end_layout
+
+\begin_layout Paragraph*
+Notation, terminology, and the definition of 
+\begin_inset Quotes eld
+\end_inset
+
+supported by
+\begin_inset Quotes erd
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Let 
+\begin_inset Formula $\summaryTree$
+\end_inset
+
+ denote a supertree, and 
+\begin_inset Formula $T_{i}$
+\end_inset
+
+ denote the 
+\begin_inset Formula $i$
+\end_inset
+
+th input tree.
+ The set of taxa that are mapped to the tips of the tree 
+\begin_inset Formula $T_{i}$
+\end_inset
+
+ is 
+\begin_inset Formula $\mathcal{L}(i)$
+\end_inset
+
+.
+ 
+\begin_inset Formula $\summaryTree(i)$
+\end_inset
+
+ denotes the summary tree induced by tip nodes that are mapped to taxa in
+ 
+\begin_inset Formula $\mathcal{L}(i)$
+\end_inset
+
+ and the most recent common ancestor of those leaves, and any other node
+ that is an ancestor of some but not all of these leaves.
+ We say that edge 
+\begin_inset Formula $j$
+\end_inset
+
+ of the supertree is compatible with an input tree, 
+\begin_inset Formula $T_{i}$
+\end_inset
+
+ if edge 
+\begin_inset Formula $j$
+\end_inset
+
+ either is not included in the induced tree 
+\begin_inset Formula $\summaryTree(i)$
+\end_inset
+
+ or none of the edges in the 
+\begin_inset Formula $T_{i}$
+\end_inset
+
+ are in conflict with edge 
+\begin_inset Formula $j$
+\end_inset
+
+ in the induced tree.
  
 \end_layout
 
 \begin_layout Standard
+We can consider whether or not an edge in an input tree is displayed by
+ 
+\begin_inset Formula $\summaryTree$
+\end_inset
+
+.
+ For any such node there is a set of taxa that are mapped to the tips that
+ descend from the node.
+ This set of taxa can be denoted 
+\begin_inset Formula $\mathcal{L}(i,j)$
+\end_inset
+
+ and will be referred to as the 
+\begin_inset Quotes eld
+\end_inset
+
+include set
+\begin_inset Quotes erd
+\end_inset
+
+ of the node.
+ The 
+\begin_inset Quotes eld
+\end_inset
+
+exclude set
+\begin_inset Quotes erd
+\end_inset
+
+ of 
+\begin_inset Formula $j$
+\end_inset
+
+ in 
+\begin_inset Formula $T_{i}$
+\end_inset
+
+ is the set of taxa in 
+\begin_inset Formula $\mathcal{L}(i)$
+\end_inset
+
+ but not in 
+\begin_inset Formula $\mathcal{L}(i,j)$
+\end_inset
+
+.
+ If the set of tip-mapped taxa for any node in 
+\begin_inset Formula $\summaryTree(i)$
+\end_inset
+
+ is identical to 
+\begin_inset Formula $\mathcal{L}(i,j)$
+\end_inset
+
+, then we say that 
+\begin_inset Formula $\summaryTree$
+\end_inset
+
+ displays node 
+\begin_inset Formula $j$
+\end_inset
+
+ of 
+\begin_inset Formula $T_{i}$
+\end_inset
+
+.
+ We say that the summary 
+\emph on
+displays
+\emph default
+ edge 
+\begin_inset Formula $j$
+\end_inset
+
+ if the summary tree displays the child node of edge 
+\begin_inset Formula $j$
+\end_inset
+
+.
+ We say that edge 
+\begin_inset Formula $k$
+\end_inset
+
+ of the summary tree is 
+\emph on
+supported by
+\emph default
+ node 
+\begin_inset Formula $j$
+\end_inset
+
+ in 
+\begin_inset Formula $T_{i}$
+\end_inset
+
+ if the summary tree displays node 
+\begin_inset Formula $j$
+\end_inset
+
+, but if we contracted edge 
+\begin_inset Formula $k$
+\end_inset
+
+ then the modified summary tree would no longer display node 
+\begin_inset Formula $k$
+\end_inset
+
+.
+ Operationally, we can find the most recent common ancestor (MRCA) node
+ of 
+\begin_inset Formula $\mathcal{L}(i,j)$
+\end_inset
+
+ in 
+\begin_inset Formula $\summaryTree$
+\end_inset
+
+; the summary tree displays 
+\begin_inset Formula $j$
+\end_inset
+
+ if and only if that MRCA node is not an ancestor of any member of the exclude
+ set of 
+\begin_inset Formula $j$
+\end_inset
+
+.
+ 
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+We can consider whether or not an edge in an input tree is displayed by
+ the summary tree.
+ Each edge 
+\begin_inset Formula $\boldsymbol{e}=(e_{1,}e_{2})$
+\end_inset
+
+ in any tree 
+\begin_inset Formula $t$
+\end_inset
+
+ goes from 
+\begin_inset Formula $e_{1}$
+\end_inset
+
+ to 
+\begin_inset Formula $e_{2}$
+\end_inset
+
+, where 
+\begin_inset Formula $e_{1}$
+\end_inset
+
+ is the rootward node.
+ Let 
+\begin_inset Formula $\taxonomy$
+\end_inset
+
+ denote a taxonomy tree, let 
+\begin_inset Formula $\summaryTree$
+\end_inset
+
+ denote a supertree, and 
+\begin_inset Formula $T_{i}$
+\end_inset
+
+ denote the 
+\begin_inset Formula $i$
+\end_inset
+
+th input tree.
+ Every node 
+\begin_inset Formula $k$
+\end_inset
+
+ in the taxonomy tree denotes a taxon, and every leaf node of 
+\begin_inset Formula $\summaryTree$
+\end_inset
+
+ and 
+\begin_inset Formula $T_{i}$
+\end_inset
+
+ correspond to a taxon.
+ In addition some, but not all of internal nodes of 
+\begin_inset Formula $\summaryTree$
+\end_inset
+
+ correspond to a taxon.
+ The set of taxa that are mapped to the tips of a tree 
+\begin_inset Formula $t$
+\end_inset
+
+ is 
+\begin_inset Formula $\mathcal{L}(t)$
+\end_inset
+
+, and the set of taxa that are mapped to tips that descend from a node 
+\begin_inset Formula $n$
+\end_inset
+
+ is 
+\begin_inset Formula $\mathcal{L}(n)$
+\end_inset
+
+.
+ We assocate the edge 
+\begin_inset Formula $\boldsymbol{e}$
+\end_inset
+
+ with its tipward node 
+\begin_inset Formula $e_{2}$
+\end_inset
+
+ and define 
+\begin_inset Formula $\mathcal{L}(\boldsymbol{e})$
+\end_inset
+
+ to be the tip taxa 
+\begin_inset Formula $\mathcal{L}(e_{2})$
+\end_inset
+
+ that are on the tipward side of 
+\begin_inset Formula $\boldsymbol{e}$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Plain Layout
+We can consider the information content of an edge 
+\begin_inset Formula $\boldsymbol{e}$
+\end_inset
+
+ in a tree 
+\begin_inset Formula $t$
+\end_inset
+
+ in terms of the split 
+\begin_inset Formula $\sigma(\boldsymbol{e})$
+\end_inset
+
+ associated with that edge.
+ Each edge 
+\begin_inset Formula $\boldsymbol{e}$
+\end_inset
+
+ in tree 
+\begin_inset Formula $t$
+\end_inset
+
+ divides tip taxa into two groups when cut.
+ The group 
+\begin_inset Formula $\mathcal{L}(\boldsymbol{e})$
+\end_inset
+
+ that are on the tipward side of 
+\begin_inset Formula $\boldsymbol{e}$
+\end_inset
+
+ will be referred to as the 
+\begin_inset Quotes eld
+\end_inset
+
+include set
+\begin_inset Quotes erd
+\end_inset
+
+ of the edge.
+ The rest of the taxa in are referred to as the 
+\begin_inset Quotes eld
+\end_inset
+
+exclude set
+\begin_inset Quotes erd
+\end_inset
+
+ of 
+\begin_inset Formula $\boldsymbol{e}$
+\end_inset
+
+.
+ The split 
+\begin_inset Formula $\sigma(\boldsymbol{e})$
+\end_inset
+
+ represents the division of the include group from the exclude group by
+ the edge 
+\begin_inset Formula $\boldsymbol{e}$
+\end_inset
+
+, and we write
+\begin_inset Formula 
+\begin{align*}
+\sigma(\boldsymbol{e}) & =\sigma_{1}(e)|\bullet\sigma_{2}(e)\\
+ & =\mathcal{L}(\boldsymbol{e})|\bullet\mathcal{L}(t)-\mathcal{L}(\boldsymbol{e}).
+\end{align*}
+
+\end_inset
+
+The symbol 
+\begin_inset Formula $\bullet$
+\end_inset
+
+ represents the root node and indicates that the root is on the same side
+ of 
+\begin_inset Formula $\boldsymbol{e}$
+\end_inset
+
+ as the exclude set.
+ 
+\end_layout
+
+\begin_layout Plain Layout
+Compatibility for a group of splits means that it is possible for all splits
+ to occur on edges of a single tree.
+ Two rooted splits 
+\begin_inset Formula $\boldsymbol{\alpha}=\alpha_{1}|\bullet\alpha_{2}$
+\end_inset
+
+ and 
+\begin_inset Formula $\boldsymbol{\beta}=\beta_{1}|\bullet\beta_{2}$
+\end_inset
+
+ are pairwise compatible if at least one of 
+\begin_inset Formula $\alpha_{1}\cap\beta_{1}$
+\end_inset
+
+ or 
+\begin_inset Formula $\alpha_{1}\cap\beta_{2}$
+\end_inset
+
+ or 
+\begin_inset Formula $\alpha_{2}\cap\beta_{1}$
+\end_inset
+
+ are empty, and incompatible otherwise.
+ This is true even if the total taxon set of 
+\begin_inset Formula $\boldsymbol{\alpha}$
+\end_inset
+
+ and 
+\begin_inset Formula $\boldsymbol{\beta}$
+\end_inset
+
+ are different, which might occur if 
+\begin_inset Formula $\boldsymbol{\alpha}$
+\end_inset
+
+ and 
+\begin_inset Formula $\boldsymbol{\beta}$
+\end_inset
+
+ are splits on edge of different trees.
+ For two splits 
+\begin_inset Formula $\boldsymbol{\alpha}$
+\end_inset
+
+ and 
+\begin_inset Formula $\boldsymbol{\beta}$
+\end_inset
+
+ we say that 
+\begin_inset Formula $\boldsymbol{\alpha}$
+\end_inset
+
+ 
+\begin_inset Quotes eld
+\end_inset
+
+implies
+\begin_inset Quotes erd
+\end_inset
+
+ 
+\begin_inset Formula $\boldsymbol{\beta}$
+\end_inset
+
+ if 
+\begin_inset Formula $\beta_{1}\subseteq\alpha_{1}$
+\end_inset
+
+ and 
+\begin_inset Formula $\beta_{2}\subseteq\alpha_{2}$
+\end_inset
+
+.
+ Likewise, for some leaf set 
+\begin_inset Formula $L$
+\end_inset
+
+ we use 
+\begin_inset Formula $\alpha|_{L}$
+\end_inset
+
+ to indicate the restriction of 
+\begin_inset Formula $\alpha$
+\end_inset
+
+ to 
+\begin_inset Formula $L$
+\end_inset
+
+:
+\begin_inset Formula 
+\begin{align*}
+\alpha_{L} & =\alpha_{1}\cap L|\bullet\alpha_{2}\cap L.
+\end{align*}
+
+\end_inset
+
+We say that edge 
+\begin_inset Formula $\boldsymbol{e}$
+\end_inset
+
+ of the supertree is compatible with an input tree 
+\begin_inset Formula $T_{i}$
+\end_inset
+
+ if the split 
+\begin_inset Formula $\sigma(\boldsymbol{e})|_{\mathcal{L}(T_{i})}$
+\end_inset
+
+ is compatible with the split 
+\begin_inset Formula $\sigma(\boldsymbol{f})$
+\end_inset
+
+ induced by each edge 
+\begin_inset Formula $\boldsymbol{f}$
+\end_inset
+
+ of 
+\begin_inset Formula $T_{i}$
+\end_inset
+
+.
+ In this case, compatibility with each edge implies separately implies joint
+ compatibility will all edges of 
+\begin_inset Formula $T_{i}$
+\end_inset
+
+, so that 
+\begin_inset Formula $T_{i}$
+\end_inset
+
+ either contains 
+\begin_inset Formula $\sigma(\boldsymbol{e})|_{\mathcal{L}(T_{i})}$
+\end_inset
+
+ or can be extended to contain such an edge.
+\end_layout
+
+\begin_layout Plain Layout
+If the 
+\begin_inset Formula $\sigma(\boldsymbol{e})$
+\end_inset
+
+ implies 
+\begin_inset Formula $\sigma(\boldsymbol{f})$
+\end_inset
+
+ for any edge 
+\begin_inset Formula $\boldsymbol{e}\in\summaryTree$
+\end_inset
+
+ and 
+\begin_inset Formula $\boldsymbol{f}\in T_{i}$
+\end_inset
+
+ then we say that 
+\begin_inset Formula $\summaryTree$
+\end_inset
+
+ displays edge 
+\begin_inset Formula $\boldsymbol{f}$
+\end_inset
+
+ of 
+\begin_inset Formula $T_{i}$
+\end_inset
+
+.
+ We say that edge 
+\series bold
+e
+\series default
+ of the summary tree is supported by 
+\series bold
+
+\begin_inset Formula $\boldsymbol{f}$
+\end_inset
+
+
+\series default
+ in 
+\begin_inset Formula $T_{i}$
+\end_inset
+
+ if the summary tree displays 
+\begin_inset Formula $\boldsymbol{f}$
+\end_inset
+
+, but if we contracted edge 
+\begin_inset Formula $\boldsymbol{e}$
+\end_inset
+
+ then the resulting tree would no longer display 
+\begin_inset Formula $\boldsymbol{f}$
+\end_inset
+
+.
+ Operationally, we can find the most recent common ancestor (MRCA) node
+ in the summary tree for the include set of 
+\series bold
+
+\begin_inset Formula $\boldsymbol{f}$
+\end_inset
+
+
+\series default
+; the summary tree displays 
+\begin_inset Formula $\boldsymbol{f}$
+\end_inset
+
+ if and only if that MRCA node is not an ancestor of any member of the exclude
+ set of 
+\begin_inset Formula $\boldsymbol{f}$
+\end_inset
+
+.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Note that stating that a node in the summary tree is supported by an input
+ does not imply that every descendant of that node must be present in the
+ input nor that every taxon that is not a descendant must be excluded in
+ order to display the node.
+ Consider the problem shown in figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:toyambig"
+
+\end_inset
+
+; panels (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:toyambig"
+
+\end_inset
+
+a) and (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:toyambig"
+
+\end_inset
+
+b) show 2 input trees.
+ Because taxa A and E do not occur together in either input, there is some
+ uncertainty about where to place them.
+ By our terminology, either output shown in (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:toyambig"
+
+\end_inset
+
+c) or (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:toyambig"
+
+\end_inset
+
+d) would be characterized as a tree that displays all of the input groupings
+ and which has no unsupported groups.
+ So clearly these criteria are insufficient to specify a unique solution,
+ and users of the output tree need to be aware that it may be possible for
+ some taxa to 
+\begin_inset Quotes eld
+\end_inset
+
+float
+\begin_inset Quotes erd
+\end_inset
+
+ to multiple positions.
+ 
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+Our current method of solving subproblems (BUILD) places each 
+\begin_inset Quotes eld
+\end_inset
+
+floating
+\begin_inset Quotes erd
+\end_inset
+
+ subtree as close to the root as possible.
+ However, when reattaching taxonomy-only subtrees, we do not do this.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Figures/toy_ambig/abcd.svg
+	width 45text%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset space \hfill{}
+\end_inset
+
+
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Figures/toy_ambig/bcde.svg
+	width 45text%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Figures/toy_ambig/soln1.svg
+	width 45text%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset space \hfill{}
+\end_inset
+
+
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Figures/toy_ambig/soln2.svg
+	width 45text%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+An example demonstrating that our definition of 
+\begin_inset Quotes eld
+\end_inset
+
+supported by
+\begin_inset Quotes erd
+\end_inset
+
+ does not imply entire composition of a grouping.
+ (a) and (b) show 2 input trees and (c) and (d) depict trees that each display
+ each of the groupings in the input trees and which have no unsupported
+ nodes.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:toyambig"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
 One of our aims in supertree construction is to minimize the amount of informati
-on in the supertree that does not come from single input trees.
- In general, we permit information that comes not from any individual input
- tree, but comes from combinations of input trees.
+on in the supertree that does not come from input trees.
+ We permit information that comes from combinations of input trees, but
+ not any single input tree.
  However, we seek to exclude information that comes from none of the input
  trees.
  This motivates the criterion of not having any unsupported edges, since
@@ -219,22 +1176,319 @@ on in the supertree that does not come from single input trees.
  tree.
 \end_layout
 
-\begin_layout Standard
-We note here that while our supertree satisfies these optimality criteria,
- there is not necessarily a 
-\emph on
-unique
-\emph default
- optimum.
- We also seek to construct a supertree that represents as many input tree
- edges as possible.
- Since non-included input tree edges must conflict with the supertree (or
- they would have been added), this criterion is the same as minimizing the
- number of input edges that conflict with the taxonomy.
+\begin_layout Subsubsection
+Goal 2: Tree ranking
 \end_layout
 
-\begin_layout Paragraph
-Approach
+\begin_layout Standard
+An appealing goal for the summarization would be to find the supertree that
+ displays the largest number of input tree edges.
+ This is probably an 
+\begin_inset Formula $NP$
+\end_inset
+
+-hard problem TODO:REF.
+ Furthermore, despite being easy to state, this formulation does not provide
+ biologists who use the summarization tool with an obvious avenue for fixing
+ perceived problems with the summary tree.
+ For example, a grouping that a biologist expected may not be present in
+ the supertree, but it may not conflict with any of the input groupings
+ which are displayed.
+ This can happen because displaying both node 
+\begin_inset Formula $a$
+\end_inset
+
+ from 
+\begin_inset Formula $T_{1}$
+\end_inset
+
+ and node 
+\begin_inset Formula $b$
+\end_inset
+
+ from tree 
+\begin_inset Formula $T_{2}$
+\end_inset
+
+ in a summary tree may only be possible by displaying a grouping that is
+ present in no input tree.
+ All other factors being equal, if this implied grouping conflicts with
+ input node 
+\begin_inset Formula $c$
+\end_inset
+
+ in tree 
+\begin_inset Formula $T_{3}$
+\end_inset
+
+, then 
+\begin_inset Formula $c$
+\end_inset
+
+ will not be displayed in the summary tree, but a biologist will not necessarily
+ know how to fix this problem.
+ One solution is to use a ranking of groupings.
+ If an expert were quite confident in the 
+\begin_inset Formula $x$
+\end_inset
+
+ grouping, then she could assign that input node a high ranking.
+ A supertree that used ranks could then recover this grouping even if its
+ inclusion did not increase the total number of input nodes that are displayed
+ by the summary tree.
+ Figure (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:pairwisecompat"
+
+\end_inset
+
+) shows an example of 3 input trees for which there is no pairwise incompatibili
+ty, but no solution displays all of the input groups; alternative rankings
+ of inputs can result in one of three summary trees shown in panels (d-f).
+ 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Figures/toy_pairwise_compat/abc.svg
+	scale 60
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Input Tree 1
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset space \hfill{}
+\end_inset
+
+
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Figures/toy_pairwise_compat/acd.svg
+	scale 60
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Input Tree 2
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset space \hfill{}
+\end_inset
+
+
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Figures/toy_pairwise_compat/bcd.svg
+	scale 60
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Input tree 3
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Figures/toy_pairwise_compat/s12.svg
+	scale 60
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset space \hfill{}
+\end_inset
+
+
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Figures/toy_pairwise_compat/s13.svg
+	scale 60
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset space \hfill{}
+\end_inset
+
+
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Figures/toy_pairwise_compat/s23.svg
+	scale 60
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+An example of 3 input trees shown in (a), (b), and (c) which do not conflict
+ in a pairwise manner, but cannot be jointly displayed in one tree.
+ The 3 solution trees are shown in panels (d-f).
+ Panel (d) for ranking the tree in (c) lowest.
+ Panel (e) shows the solution if the tree in (b) has the lowest rank.
+ Panel (f) shows the solution if the tree in (a) is ranked lowest.
+ Each of the solutions displays 2 of the 3 input groupings.
+ 
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:pairwisecompat"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -242,8 +1496,9 @@ Any approach to supertree construction must deal with the need to adjudicate
  between conflicting input trees.
  We choose to deal with conflict by ranking the input trees, and preferring
  to include edges from higher-ranked trees.
- Ranking is perhaps questionable because it does not mediate conflicts based
- on the relative amount of evidence for each alternative.
+ The merits of using tree ranking are questionable because the system does
+ not mediate conflicts based on the relative amount of evidence for each
+ alternative.
  However, it is a reasonable starting point.
  This is because it has the benefits of making it easy to see why some groups
  are included or not (transparency), and because it allows simpler and cleaner
@@ -257,7 +1512,7 @@ Any approach to supertree construction must deal with the need to adjudicate
 \end_inset
 
 , then 
-\begin_inset Formula $b$
+\begin_inset Formula $c$
 \end_inset
 
  may still be included in the supertree.
@@ -275,7 +1530,7 @@ Any approach to supertree construction must deal with the need to adjudicate
 
  is not included.
  In that case, it will be possible for 
-\begin_inset Formula $e$
+\begin_inset Formula $c$
 \end_inset
 
  to be represented in the summary tree.
@@ -283,117 +1538,10 @@ Any approach to supertree construction must deal with the need to adjudicate
 \end_layout
 
 \begin_layout Standard
-\begin_inset Box Boxed
-position "t"
-hor_pos "c"
-has_inner_box 1
-inner_pos "t"
-use_parbox 0
-use_makebox 0
-width "100col%"
-special "none"
-height "1in"
-height_special "totalheight"
-status open
-
-\begin_layout Plain Layout
-Example (#2):
-\end_layout
-
-\begin_layout Itemize
-tree1 has 
-\begin_inset Formula $((a_{1},b),(c,d))$
-\end_inset
-
-.
-\end_layout
-
-\begin_deeper
-\begin_layout Itemize
-\begin_inset Formula $\alpha=a_{1}b|c\,\bullet$
-\end_inset
-
-
-\end_layout
-
-\end_deeper
-\begin_layout Itemize
-tree2 has 
-\begin_inset Formula $((a_{1},c),(b,d))$
-\end_inset
-
-
-\end_layout
-
-\begin_deeper
-\begin_layout Itemize
-\begin_inset Formula $\beta=a_{1}c|b\,\bullet$
-\end_inset
-
-
-\end_layout
-
-\end_deeper
-\begin_layout Itemize
-tree3 has 
-\begin_inset Formula $(((a_{1},a_{2}),a_{3}),b,c)$
-\end_inset
-
-
-\end_layout
-
-\begin_deeper
-\begin_layout Itemize
-\begin_inset Formula $\gamma=a_{1}a_{2}|a_{3}bc\,\bullet$
-\end_inset
-
-
-\end_layout
-
-\begin_layout Plain Layout
-Here 
-\begin_inset Formula $\beta$
-\end_inset
-
- conflict with 
-\begin_inset Formula $\alpha$
-\end_inset
-
- and 
-\begin_inset Formula $\gamma$
-\end_inset
-
- conflicts with 
-\begin_inset Formula $\alpha$
-\end_inset
-
-.
- Although actually 
-\begin_inset Formula $\gamma\implies\alpha$
-\end_inset
-
-, since you can get 
-\begin_inset Formula $\alpha$
-\end_inset
-
- from 
-\begin_inset Formula $\gamma$
-\end_inset
-
- by merely removing taxa.
-\end_layout
-
-\end_deeper
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-In order to produce a comprehensive supertree, we also require that the
- ranked list of input trees contain a rooted taxonomy tree.
- Unlike other input trees, this tree is require to contain all taxa, and
- thus has the maximal leaf set.
+In order to produce a comprehensive supertree, we also require a rooted
+ taxonomy tree in addition to the ranked list of rooted input trees.
+ Unlike other input trees, the taxonomy tree is required to contain all
+ taxa, and thus has the maximal leaf set.
  We make the taxonomy tree the lowest ranked tree.
  This new formulation is the formulation of the 
 \begin_inset Quotes eld
@@ -410,6 +1558,8 @@ taxonomic supertree problem
 In our current formulation, the taxonomy tree is also unique in that the
  taxonomy is the only source of taxonomic names.
  Each node in the taxonomy tree corresponds to a named group.
+ Taxonomic groups may have the same name, but each node in the taxonomy
+ tree is identified by a unique number (its OTT Id).
  Taxonomic groups are identified in the summary supertree by finding a branch
  (or 
 \begin_inset Quotes eld
@@ -420,45 +1570,298 @@ node
 \end_inset
 
 ) that has exactly the same include|exclude relationship.
- In keeping with this, the taxonomy supertree can meaningfully possess degree-tw
-o nodes.
+ The taxonomy supertree can meaningfully possess degree-two nodes.
  Although these nodes can be removed without affecting the relationships
  of the leaves, they do represent nested taxonomic groups that contain exactly
- one subgroup, such as 
-\series bold
-example
-\series default
-.
- 
+ one subgroup.
+ The taxonomy is also used to determine which tips are terminal taxa.
+\end_layout
+
+\begin_layout Subsubsection
+Goal 3: Contain no unnecessary polytomies
 \end_layout
 
 \begin_layout Standard
-The taxonomy is used to determine which tips are terminal taxa.
+The supertree should be as resolved as possible - in other words, it should
+ have no unnecessary polytomies.
+ Thus, for each input edge that is 
+\emph on
+not
+\emph default
+ included, we can point to a reason for non-inclusion by showing that the
+ input edge conflicts with some node/edge of the summary tree.
+ Note, that the requirement to not display unsupported groups leads to some
+ 
+\begin_inset Quotes eld
+\end_inset
+
+necessary
+\begin_inset Quotes erd
+\end_inset
+
+ polytomies.
+ For example any resolution of the polytomy shown in figure (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:pairwisecompat"
+
+\end_inset
+
+e) would continue to display the same 2 input groups, but the additional
+ grouping would be unsupported, because the unresolved tree already displays
+ the 2 input groups.
+ Thus, the additional group would be unsupported and the unresolved tree
+ would be preferred by our criterion.
+ However, collapsing either internal edge of the tree shown in figure (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:pairwisecompat"
+
+\end_inset
+
+d) would result in tree which displays only one input grouping.
+ This tree would contain an unnecessary polytomy, because the polytomy would
+ permit refinement to the depicted tree which displays more input groupings.
+\end_layout
+
+\begin_layout Subsubsection
+Goal 4: Display as many input nodes as feasible
+\end_layout
+
+\begin_layout Standard
+We also seek to construct a supertree that represents as many input tree
+ edges as possible.
+ Since non-included input tree edges must conflict with the supertree (or
+ they would have been added), this criterion is the same as minimizing the
+ number of input edges that conflict with the supertree.
+\end_layout
+
+\begin_layout Subsubsection
+Summary of goals
+\end_layout
+
+\begin_layout Standard
+These optimality criteria help to define what it means for the supertree
+ to represent the input trees, as well as justifying and explaining why
+ various features of the supertree exist.
+ The pipeline described below produces a supertree that satisfies the first
+ three optimality criteria and is a greedy approximation of a solution to
+ the fourth goal.
+ It is not guaranteed to display as many input nodes as possible.
+ Even if the summary tree does accomplish goal 4, it is not necessarily
+ a 
+\emph on
+unique
+\emph default
+ optimum.
+ The pipeline takes a greedy approach to producing a summary tree by attempting
+ to add groupings from the trees in order of the trees ranking.
+ This can be viewed as a greedy solution to the problem of finding the tree
+ with the maximum sum displayed groups' weighted scores criterion (described
+ in the appendix A) where the weights from the trees are so extreme that
+ displaying one group from a highly ranked tree is preferred to displaying
+ all of the groupings from lower ranked trees.
+\end_layout
+
+\begin_layout Section
+Description of the propinquity pipeline
 \end_layout
 
 \begin_layout Subsection
-Non-terminals as tips
+Preprocessing steps
 \end_layout
 
 \begin_layout Standard
-Many input trees have tips that are not terminal taxa, but higher order
+Propinquity was designed to function as a part of the Open Tree of Life
+ software architecture, so the first few steps of the pipeline involve transform
+ing artifacts from that project into a set rooted trees and a phylogenetic
+ taxonomy.
+ The phylesystem API 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "McTavishEtAt2015"
+
+\end_inset
+
+ of Open Tree allows users to curate published estimates of trees and create
+ ranked collections of these trees.
+ Early steps in the propinquity pipeline manipulate the phylogenetic input
+ trees to improve their usability and reliability.
+ The first steps of the pipeline (see Figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:pipeline"
+
+\end_inset
+
+) collect a list trees to include (in the 
+\family typewriter
+phylo_input
+\family default
+ subdirectory) and store copies of these files (in the 
+\family typewriter
+phylo_snapshot
+\family default
+ subdirectory) to make it easier to replicate the operation (because the
+ collection of trees and the tree files change due to curation).
+\end_layout
+
+\begin_layout Subsubsection
+Pruning questionable taxa from the taxonomy
+\end_layout
+
+\begin_layout Standard
+The taxonomy referred to as 
+\begin_inset Quotes eld
+\end_inset
+
+OTT
+\begin_inset Quotes erd
+\end_inset
+
+ is a hierarchy of taxonomic names that contains a phylogenetic taxonomy.
+ An OTT ID has a position in the hierarchy, a taxonomic name, and set of
+ references to the same name in different taxonomies.
+ In addition, the ID may also be associated with a set of flags that can
+ indicate that the taxon may be questionable.
+ These flags can either encode information taken from an input taxonomy
+ (for example, taxa the NCBI refers to as 
+\begin_inset Quotes eld
+\end_inset
+
+unplaced
+\begin_inset Quotes erd
+\end_inset
+
+ are assigned an 
+\begin_inset Quotes eld
+\end_inset
+
+unplaced
+\begin_inset Quotes erd
+\end_inset
+
+ flag) or can arise because of some form of conflict during taxonomy constructio
+n (for example, if two taxonomies disagree on the name for a taxon, then
+ the taxon will be merged and the name will be retained without any descendants;
+ this name will have an OTT Id, but will be flagged as 
+\begin_inset Quotes eld
+\end_inset
+
+barren
+\begin_inset Quotes erd
+\end_inset
+
+).
+ Propinquity prunes the OTT down to a more reliable taxonomy by pruning
+ off parts of the tree that are flagged with suspicious flags.
+ The set of flags that lead to a subtree of the taxonomy being pruned is
+ under the control of the user (the set of flags used by the Open Tree of
+ Life project can be found in the 
+\family typewriter
+config.opentree.synth
+\family default
+ file in the propinquity repository).
+ For the purpose of the rest of the pipeline, an OTT Id that has been pruned
+ from the taxonomy will be treated in the same way as invalid OTT Id.
+ The output of this step is stored in propinquity's 
+\family typewriter
+cleaned_ott
+\family default
+ subdirectory; this operation only needs to be performed when the OTT or
+ the pruning flags change.
+\end_layout
+
+\begin_layout Subsubsection
+Pruning problematically mapped tips from input phylogenetic trees
+\end_layout
+
+\begin_layout Standard
+Frequently, phylogenetic estimates are rooted using the outgroup criterion,
+ which is an assumption about the monophyly of the ingroup taxa.
+ Because the rooting of the branches in the outgroup portion of the tree
+ is often uncertain, data curators can identify the ingroup node of the
+ tree; propinquity uses this annotation to prune off the outgroup taxa.
+\end_layout
+
+\begin_layout Standard
+Frequently, not all tips in a phylogenetic input will have been mapped to
+ a taxon in the current version OTT.
+ Unmapped leaves are pruned from each phylogenetic input.
+ In some cases, the OTT has changed and a taxon has been unambiguously mapped
+ to another taxon.
+ This can occur when multiple species in one version of the taxonomy are
+ 
+\begin_inset Quotes eld
+\end_inset
+
+lumped
+\begin_inset Quotes erd
+\end_inset
+
+ into a single taxon in a subsequent version.
+ OTT maintains a set of 
+\begin_inset Quotes eld
+\end_inset
+
+forwarding
+\begin_inset Quotes erd
+\end_inset
+
+ statements about IDs that have been removed but can be mapped to an existing
+ taxon; propinquity uses these statements to update the OTU mapping of input
+ trees.
+\end_layout
+
+\begin_layout Standard
+Finally some leaves are mapped to taxa that occur more than once in the
+ tree, or taxa that have ancestors represented as tips of the tree.
+ In these cases, leaves are pruned to assure that tips are mapped to unique
+ taxa that are not nested.
+ In the case of nested taxa, the tip mapped to the higher level taxon is
+ retained.
+ In the case of duplicate occurrences of an OTT taxon, propinquity checks
+ to see if a data curator has selected one of the taxa to be the exemplar
+ for the taxon.
+ If this selection has not been made, then the node with the lexicographically
+ lowest ID is chosen to exemplify the taxon.
+ This choice is arbitrary, but repeatable.
+ The pruned phylogenetic inputs are stored in a 
+\family typewriter
+cleaned_phylo
+\family default
+ subdirectory of propinquity.
+\end_layout
+
+\begin_layout Subsubsection
+Exemplifying tips mapped to higher taxa
+\end_layout
+
+\begin_layout Standard
+Many input trees have tips that are not terminal taxa, but higher-order
  taxonomic groups.
- We seek to transform these input trees into a standardized form with no
- non-terminal tips by adding or replacing nodes with their terminal descendant
- taxa.
+ It is not clear how to interpret a tip in a phylogenetic estimate that
+ is labeled with the name of a higher taxon.
+ Several scenarios can lead to these cases: the data for the tip could have
+ been created by merging a chimeric set of character scores from constituent
+ taxa; it may not have been possible to identify the species sampled precisely;
+ or the researcher may simply have used a higher taxonomic name because
+ he/she assumed that the taxon is monophyletic and the higher level name
+ is more recognizable.
+ Rather than allowing the ambiguity about interpretation of the higher-taxon
+ mapped tips to propagate throughout the entire pipeline, we transform the
+ input trees by replacing higher taxa at tips with a set of terminal-taxon
+ exemplars for each taxon.
  One approach would be to simply determine all descendant terminal taxa
  and attach them as children of the problematic tip.
- However, this changes the nonterminal tip into the parent of a clade that
- represents a claim of monophyly for the taxon.
-\end_layout
-
-\begin_layout Standard
-This might well not be the case.
- Often in such cases a single exemplar of the nonterminal taxon was used
- as a tip, and we don't know which one this was.
- Our approach to this problem is to transform the input tree by instead
- attaching all descendant tips to the parent of the nonterminal tip, and
- removing the nonterminal tip.
+ However, this would create a clade rather than a tip; subsequent steps
+ in the supertree would interpret the clade as a claim of monophyly for
+ the taxon.
+ The input tree may not have tested monophyly of the clade, so this interpretati
+on is unwarranted.
+ We avoid it by attaching exemplar taxa as child nodes of the higher taxonomic
+ tip but then collapsing the edge between the node that connected the higher
+ taxon to its parent.
  Thus, if 
 \begin_inset Formula $A$
 \end_inset
@@ -467,60 +1870,547 @@ This might well not be the case.
 \begin_inset Formula $a_{1}$
 \end_inset
 
-and 
+ and 
 \begin_inset Formula $a_{2}$
 \end_inset
 
-, we would replace the clade 
-\begin_inset Formula $(A,b,c)$
+ and 
+\begin_inset Formula $B$
+\end_inset
+
+ is a non-terminal taxon containing terminal descendants 
+\begin_inset Formula $b_{1}$
+\end_inset
+
+ and 
+\begin_inset Formula $b_{2}$
+\end_inset
+
+ we would replace the subtree 
+\begin_inset Formula $((A,B),c)$
 \end_inset
 
  with 
-\begin_inset Formula $(a_{1},a_{2},b,c)$
+\begin_inset Formula $((a_{1},a_{2},b_{1},b_{2}),c)$
 \end_inset
 
- instead of the clade 
-\begin_inset Formula $((a_{1},a_{2})A,b_{1},b_{2})$
+ instead of the subtree 
+\begin_inset Formula $(((a_{1},a_{2})A,(b_{1},b_{2})B),c)$
 \end_inset
 
 .
 \end_layout
 
-\begin_layout Section
-Algorithmic approach
-\end_layout
-
 \begin_layout Standard
-In order to make the supertree construction more tractable, we prune the
- taxonomy by removing tips that are not present in any input tree, on the
- theory that these tips cannot affect conflict resolution, and can easily
- be added-back after the supertree problem is solved.
-\end_layout
-
-\begin_layout Standard
-We also take a divide-and-conquer approach by dividing the supertree into
- subproblems along edges of the taxonomy that are uncontested by any of
- the input trees.
- This approach therefore forces monophyly for these groups, which might
- (possibly?) be non-optimal.
- However, the downsides of this approach seem minimal, compared to the improveme
-nt in scalability.
- We thus divide the supertree problem into 
+As discussed below, if a taxon is only present in the taxonomy (not in any
+ of the input trees), then it can be pruned from the taxonomy for the constructi
+on of the supertree and then grafted back on to the summary tree later.
+ Performing this pruning reduces the size of the supertree problem, reducing
+ the running time of the pipeline.
+ Similarly, when we expand a higher taxon in the exemplification step, we
+ can omit members of the taxon if they do not occur in any of the phylogenetic
+ inputs.
+ If there are no members of the higher taxon sampled in any other input
+ tree, then we arbitrarily choose one terminal taxon to represent the higher
+ taxon.
+ During the exemplification step, a tool from otcetera (
+\family typewriter
+otc-nonterminals-to-exemplars
+\family default
+) reads the taxonomy and all of the 
 \begin_inset Quotes eld
 \end_inset
 
-subproblems
+cleaned
 \begin_inset Quotes erd
 \end_inset
 
-, and apply our solver to each subproblem.
+ phylogenetic estimates from the previous step.
+ Reading all of the inputs is necessary to assure that each higher taxon
+ is replaced with the same set of exemplars regardless of which tree the
+ higher taxon occurs in, and that the exemplars for a higher taxon is the
+ union on the set of descendant terminal taxa that have been sampled in
+ a phylogenetic input.
+ Figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:exemplify-example"
+
+\end_inset
+
+ shows an example of how the trees in figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:cleaned-phylo-example"
+
+\end_inset
+
+ would be exemplified.
+\end_layout
+
+\begin_layout Subsection
+Summary tree construction
 \end_layout
 
 \begin_layout Standard
----
+After the preprocessing steps, the inputs have been converted to a set of
+ rooted phylogenetic estimates in which each leaf is mapped to a terminal
+ taxon in the exemplified taxonomic tree.
+ The goal of the remainder of the pipeline is to construct a tree that maximizes
+ the sum displayed groups' weighted scores criterion.
+ This is accomplished in five steps: (1) reducing the tree size by pruning
+ off tips not represented in any phylogenetic estimate; (2) dividing the
+ full problem into subproblems based on uncontested taxa, (3) constructing
+ a summary solution for each subproblem by greedily creating a maximally-sized
+ list of groupings that can all be displayed simultaneously; (4) grafting
+ the subproblem solutions into a single supertree; and (5) grafting (or
+ 
+\begin_inset Quotes eld
+\end_inset
+
+unpruning
+\begin_inset Quotes erd
+\end_inset
+
+) the taxonomy-only taxa onto the solution to produce a complete summary
+ tree.
+\end_layout
+
+\begin_layout Subsubsection
+Temporarily pruning leaves mapped to taxa found in only one tree
 \end_layout
 
 \begin_layout Standard
+First we prune the taxonomy by removing tips that are not present in any
+ input tree.
+ The tips pruned in this step will be grafted back onto the skeleton of
+ the summary tree in a subsequent step.
+ The theorem in Appendix 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:Proof-that-pruning"
+
+\end_inset
+
+ proves that a terminal taxon that is represented in the taxonomy, then
+ it can be pruned and then regrafted onto the solution without affecting
+ which nodes are displayed by the final summary tree.
+ Thus, this procedure does not impede our ability to find a good summary
+ tree.
+ Removing these tips produces a smaller input to the rest of the pipeline,
+ which reduces running times.
+ 
+\end_layout
+
+\begin_layout Standard
+This step is actually performed by the 
+\family typewriter
+otc-nonterminals-to-exemplars
+\family default
+ tool that was mentioned in the last step of the pre-processing portion
+ of the pipeline.
+ After producing the set of 
+\begin_inset Quotes eld
+\end_inset
+
+exemplified
+\begin_inset Quotes erd
+\end_inset
+
+ phylogenetic inputs, this tool exports a pruned down version of the taxonomy
+ that only contains tips that are present in at least one phylogenetic input.
+ In version 5.0 of the Open Tree of Life synthetic tree, this version of
+ the taxonomic tree contained only 41,226 leaves (while the flag-cleaned
+ version of OTT had 2,424,255 leaves).
+\end_layout
+
+\begin_layout Subsubsection
+Subproblem decomposition
+\end_layout
+
+\begin_layout Standard
+For the sake of efficiency, propinquity uses a divide-and-conquer approach
+ to construct the supertree.
+ Subproblems are identified by searching through the taxonomy tree to find
+ any taxa are not contested by any single input tree.
+ Here we say that input tree 
+\begin_inset Formula $T_{i}$
+\end_inset
+
+ contests taxon 
+\begin_inset Formula $x$
+\end_inset
+
+ in the pruned taxonomy, if the taxa in 
+\begin_inset Formula $x$
+\end_inset
+
+ are non-monophyletic in every resolution of tree 
+\begin_inset Formula $T_{i}$
+\end_inset
+
+.
+ Thus, polytomies in an input tree are treated as soft polytomies, and a
+ taxon is not contested merely because it is not displayed by an input tree.
+ 
+\end_layout
+
+\begin_layout Standard
+This operation is performed by the 
+\family typewriter
+otc-uncontested-decompose
+\family default
+ tool in otcetera; see appendix 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:Decompose-algorithm"
+
+\end_inset
+
+ for a description of the algorithm.
+ The output is a series of subproblems, each of which corresponds to a slice
+ of the taxonomy and corresponding slices through each relevant input tree.
+ Each uncontested non-terminal and non-root taxon will show up in two subproblem
+s: it will be the root of its own subproblem and it will be tip in the subproble
+m that covers the next slice deeper in the tree.
+\end_layout
+
+\begin_layout Standard
+Note that decomposition into uncontested groups does not necessarily allow
+ us to find the tree that maximizes the MSDGWS score.
+ For example, see figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:decompose-worsens"
+
+\end_inset
+
+; that example is a variant of the situation shown in figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:pairwisecompat"
+
+\end_inset
+
+.
+ In this case the groupings from each of the phylogenetic estimates, shown
+ in panels (a) and (b), could be displayed.
+ That solution is shown in panel (d), it displays 2 of the 3 input splits,
+ but is optimal because no solution displays all 3 input groupings and the
+ depicted solution displays the 2 highest ranked groupings.
+ However, neither of the trees shown in panels (a) or (b) contest the taxon
+ 
+\begin_inset Formula $B$
+\end_inset
+
+ shown in the taxonomy (panel (c)).
+ Thus, when using our decomposition, the branches leading to taxa 
+\begin_inset Formula $B1$
+\end_inset
+
+ and 
+\begin_inset Formula $B2$
+\end_inset
+
+ in the input phylogenetic trees would be sliced during the decomposition,
+ and relabeled to refer to taxon 
+\begin_inset Formula $B$
+\end_inset
+
+.
+ This taxonomically-informed interpretation of the inputs views the two
+ phylogenetic inputs as in conflict; so the solution returned by propinquity
+ would defer to the higher ranked tree.
+ The tree shown in panel (e) would be returned.
+ This example arises from the fact that the trees in (a) and (b) jointly
+ contest taxon 
+\begin_inset Formula $B$
+\end_inset
+
+, but neither contests taxon 
+\begin_inset Formula $B$
+\end_inset
+
+ when the trees are considered in isolation.
+\end_layout
+
+\begin_layout Standard
+Despite the fact that the use of 
+\family typewriter
+otc-uncontested-decompose
+\family default
+ can worsen the final score of the summary tree, we use this approach in
+ propinquity because it makes the construction of the tree faster and it
+ is easy for users to correct issues caused by incorrect taxa being constrained
+ to be monophyletic.
+ By adding a tree (even a low-ranked tree) that contests a taxon to the
+ corpus of input trees , then the next synthetic tree will no longer consider
+ the taxon to be uncontested.
+ Thus the procedure encourages curation of more phylogenetic inputs as a
+ means of improving the summary tree.
+ Figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:detect-uncontested-example"
+
+\end_inset
+
+ highlights the taxa that are not contested by the input shown in figure
+ 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:exemplify-example"
+
+\end_inset
+
+; figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:subproblems-example"
+
+\end_inset
+
+ shows the subproblems that would be emitted as a result of this set of
+ inputs.
+\end_layout
+
+\begin_layout Standard
+In version 5.0 of the summary tree, this decomposition procedure produced
+ 5,545 subproblems, but only 1,586 of these were non-trivial to solve.
+ If a subproblem contains only two tips it is trivial; 2,443 subproblems
+ were trivial in this way.
+ Similarly, if a subproblem contains only 2 trees it is trivial to solve
+ because the solution will simply be all of the groupings from the first
+ tree combined with all of the groupings from the second tree that are compatibl
+e with the first tree; 2,838 subproblems were trivial in this way.
+ The subproblem with the largest number of tips contained 953 tips.
+ The largest subproblem, in terms of the number of input trees (including
+ the taxonomic tree) that were relevant, had 18 trees.
+ Without decomposition, the supertree problem would have had 512 input trees
+ and 41,226 leaves.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Figures/uncontested_worsens_score/ab1c.svg
+	scale 60
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset space \hfill{}
+\end_inset
+
+
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+ 
+\begin_inset Graphics
+	filename Figures/uncontested_worsens_score/acb2.svg
+	scale 60
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset space \hfill{}
+\end_inset
+
+
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Figures/uncontested_worsens_score/tax.svg
+	scale 60
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset space \hfill{}
+\end_inset
+
+
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Figures/uncontested_worsens_score/opt.svg
+	scale 60
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset space \hfill{}
+\end_inset
+
+
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Figures/uncontested_worsens_score/returned.svg
+	scale 60
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset space \hfill{}
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+An example with three input trees: the highest ranked phylogenetic input
+ panel (a), the second ranked phylogenetic input (b), and the taxonomy in
+ panel (c).
+ The summary tree in panel (d) has the highest possible score, but the summary
+ shown in panel (e) would be returned from the pipeline that uses uncontested
+ taxon decomposition.
+\end_layout
+
+\end_inset
+
+
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:decompose-worsens"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Plain Layout
 Presenting an easy-to-interpret summary of trees that have been “curated”
  is one component of that effort.
  We seek to find a summary tree that
@@ -569,7 +2459,7 @@ has no unnecessary polytomies:
  the input trees.
 \end_layout
 
-\begin_layout Standard
+\begin_layout Plain Layout
 The point of maximizing the number of displayed groups from input trees,
  and having no unsupported branches, is not to construct an estimate of
  the true tree, but to explain and represent the input trees well.
@@ -587,71 +2477,37 @@ supported
  
 \end_layout
 
-\begin_layout Section
-Algorithmic approach
+\end_inset
+
+
 \end_layout
 
-\begin_layout Standard
-We also make the following tactical choices
-\end_layout
-
-\begin_layout Enumerate
-
-\series bold
-conflict
-\series default
- is resolved by ranking the input trees; splits from higher ranked trees
- over-rule conflicting splits from lower-ranked trees, unless the split
- from the higher-ranked tree is itself over-ruled by a split from an even
- high ranked tree.
-\end_layout
-
-\begin_layout Enumerate
-a 
-\series bold
-taxonomy-based supertree
-\series default
-.
- This is a novel name for a special form of the supertree problem.
- A taxonomy-based supertree has at least one input (the taxonomic tree)
- which is complete.
- the taxonomy is considered the lowest-ranked input.
-\end_layout
-
-\begin_layout Standard
-In order to achieve these goals, we have made the following algorithmic
- choices:
-\end_layout
-
-\begin_layout Subsection
-Problem decomposition
-\end_layout
-
-\begin_layout Standard
-First, all branches in the taxonomy that are not contested by any of the
- input trees are automatically accepted into the summary tree.
- Given these branches, the supertree problem may then be decomposed into
- smaller problems delimited by the uncontested taxonomy branches as boundaries.
- Each sub-problem is characterized by a ranked sequence of subtrees that
- are derived from regions of phylogenetic inputs that fall between the boundarie
-s.
- The smaller problems size then makes tractable a variety of strategies
- to solve the sub-problems, and decreases the amount of computer memory
- and processing time that is required.
- 
-\end_layout
-
-\begin_layout Subsection
+\begin_layout Subsubsection
 Subproblem solution
 \end_layout
 
 \begin_layout Standard
 Second, when solving sub-problems, we sequentially incorporate splits from
  trees in order of ranking, retaining splits that are compatible with the
- current set of splits.
+ current set of splits (Alg 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "alg:ConsistentSplitsFromRankedList"
+
+\end_inset
+
+).
  The order of splits from the same tree is not specified by this approach,
- and we incorporate splits in post-order.
- We make use of the BUILD algorithm to assess compatibility.
+ and we incorporate splits using one of the possible post-order traversals
+ of the tree.
+ We make use of the BUILD algorithm 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "AhoSSU1981"
+
+\end_inset
+
+ to assess compatibility.
  This strategy avoids unnecessary polytomies, since splits of later input
  trees are only rejected from the summary supertree if they conflict with
  higher-priority splits.
@@ -663,10 +2519,256 @@ Second, when solving sub-problems, we sequentially incorporate splits from
 \end_layout
 
 \begin_layout Standard
+The BUILD algorithm as originally stated by 
+\begin_inset CommandInset citation
+LatexCommand citet
+key "AhoSSU1981"
+
+\end_inset
+
+ applies to a collection of rooted triplets.
+ Instead of decomposing input splits into a collection of rooted triplets,
+ we instead modify the BUILD algorithm slightly to apply directly to larger
+ rooted splits.
+ The modified BUILD algorithm constructs a tree compatible with a collection
+ of rooted splits, and returns failure if such a tree does not exist.
+ The algorithm begins by partitioning the leaf set into subgroups, where
+ two leaves are assigned to the same subgroup if they are both in the include
+ set of any input triplet.
+ The include set of every split is thus contained in a single subgroup.
+ If the exclude set is disjoint with that subgroup, then the split is satisfied
+ by the partition and is discarded.
+ Otherwise, the split is associated with the group that contains its include
+ set.
+ The BUILD algorithm is then recursively applied to each subgroup of the
+ partition that has a non-empty set of splits assigned to it, and this recursive
+ partitioning creates a tree.
+ If at any level of recursion the partitioning stage yields only one group,
+ then the algorithm returns failure, and the collection of splits are not
+ compatible.
+\end_layout
+
+\begin_layout Standard
+This modified algorithm recovers the original BUILD algorithm of only rooted
+ triplets are supplied as input.
+ When larger splits are supplied as input, the algorithm should still be
+ correct, since the results are the same as you would expect if you actually
+ decomposed each split into all implied triplets.
+\end_layout
+
+\begin_layout Standard
+The order of the algorithm is 
+\begin_inset Formula $O(N^{2}+LN)$
+\end_inset
+
+, where 
+\begin_inset Formula $N$
+\end_inset
+
+ is the number of input splits and 
+\begin_inset Formula $L$
+\end_inset
+
+ is the number of leaves.
+ This is because the merge operation has a cost that is 
+\begin_inset Formula $O(N+L)$
+\end_inset
+
+, and there can be at most 
+\begin_inset Formula $N$
+\end_inset
+
+ merge operations.
+ In case all the inputs are triplets, the cost is 
+\begin_inset Formula $O(N^{2})$
+\end_inset
+
+ because the number of leaves is proportional to the number of triplets.
+ Some published work has attempted to decrease this order by sharing work
+ between the different levels of recursion.
+ However, it is not clear if this is right, since it is based on an algorithm
+ that might not work.
+\end_layout
+
+\begin_layout Standard
+In this approach splits are either entirely retained or entirely discarded
+ - consistent rooted triplets from conflicting splits are not retained.
+ However, when unpruning taxonomy-only taxa, we make an attempt to break
+ ties in a way that preserves some partial information from conflicting
+ splits by attaching taxa from conflicting splits at their common ancestor.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+Claim:
+\series default
+ the BUILD algorithm places 
+\begin_inset Quotes eld
+\end_inset
+
+floating
+\begin_inset Quotes erd
+\end_inset
+
+ taxa as rootward as possible.
+ However, the MRCA-based unpruner does not.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+Note:
+\series default
+ whenever we pass a split down into a subgroup, we effectively chop off
+ any elements of the exclude group that are not part of the subgroup.
+ Since the exclude group is not used to partition the groups in a sub-problem,
+ truncating the exclude group to remove these member affects the course
+ of the BUILD algorithm not at all.
+ Therefore, the BUILD algorithm effectively constructs a reduced exclude
+ set for each split that would lead to the same output.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+Proof that every partition satisfies at least one split when the splits
+ are compatible:
+\end_layout
+
+\begin_layout Standard
+- If this is not the case, then all splits that lead to the partition will
+ survive to the next level of recursion.
+ In that case, the next level of BUILD will form a single group, leading
+ to a single group, and then to failure, indicating incompatibility.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+Proof that subtrees cannot be moved rootward without violating a split:
+\end_layout
+
+\begin_layout Standard
+- Suppose that some subtree 
+\begin_inset Formula $A$
+\end_inset
+
+ forms part of a subtree 
+\begin_inset Formula $G$
+\end_inset
+
+.
+ Then 
+\begin_inset Formula $A$
+\end_inset
+
+ must have a sister subtree 
+\begin_inset Formula $B$
+\end_inset
+
+, and 
+\begin_inset Formula $G$
+\end_inset
+
+ must have a sister subtree 
+\begin_inset Formula $X$
+\end_inset
+
+, so that the BUILD tree contains a subtree of the form 
+\begin_inset Formula $((A,B,\ldots)G,X,\ldots)S$
+\end_inset
+
+.
+ In order for 
+\begin_inset Formula $G$
+\end_inset
+
+ to form a component in the subtree, there must be a split of the form 
+\begin_inset Formula $ab\ldots|s\ldots$
+\end_inset
+
+, where 
+\begin_inset Formula $a$
+\end_inset
+
+ is in 
+\begin_inset Formula $A$
+\end_inset
+
+, 
+\begin_inset Formula $B$
+\end_inset
+
+ is in 
+\begin_inset Formula $B$
+\end_inset
+
+ and 
+\begin_inset Formula $s$
+\end_inset
+
+ is in 
+\begin_inset Formula $S$
+\end_inset
+
+.
+ However, if we move 
+\begin_inset Formula $A$
+\end_inset
+
+ up to the level of 
+\begin_inset Formula $G$
+\end_inset
+
+ to form 
+\begin_inset Formula $((B,\ldots)G,A,X,\ldots)S$
+\end_inset
+
+, then such a split cannot be satisfied.
+\end_layout
+
+\begin_layout Subsubsection
+Solution grafting
+\end_layout
+
+\begin_layout Standard
+Since each uncontested taxon that is used for decomposition occurs in one
+ subproblem as a leaf node, and one subproblem as a root node, ungrafting
+ simply consists of merging these two nodes.
+\end_layout
+
+\begin_layout Subsubsection
+Unpruning
+\end_layout
+
+\begin_layout Subsubsection
+Naming unnamed nodes
+\end_layout
+
+\begin_layout Subsubsection
+Annotation
+\end_layout
+
+\begin_layout Subsection
+asdf
+\end_layout
+
+\begin_layout Standard
+So, for solving subproblems, we use the BUILD algorithm.
+ The BUILD algorithm takes a collection of rooted triplets as input, and
+ constructs a consistent tree if possible.
+\end_layout
+
+\begin_layout Subsection
+Outline
+\end_layout
+
+\begin_layout Standard
 \begin_inset Float algorithm
 wide false
 sideways false
-status open
+status collapsed
 
 \begin_layout Plain Layout
 \begin_inset ERT
@@ -813,20 +2915,16 @@ ConsistentSplitsFromRankedList
 
 \end_layout
 
-\begin_layout Section
-Pipeline
-\end_layout
-
 \begin_layout Standard
 In order to achieve these criteria, we have 
 \end_layout
 
 \begin_layout Enumerate
-Start with ranked list of trees
+Export names of trees from collections
 \end_layout
 
 \begin_layout Enumerate
-Check out phylo inputs from phylesystem
+Check out phylo inputs from phylesystem 
 \end_layout
 
 \begin_layout Enumerate
@@ -835,11 +2933,27 @@ Make phylo input snapshot (e.g.
 \end_layout
 
 \begin_layout Enumerate
-clean taxonomy & clean phylo inputs (in parallel)
+clean taxonomy 
+\begin_inset Formula $\to\taxonomy$
+\end_inset
+
+
 \end_layout
 
 \begin_layout Enumerate
-Replace non-terminals with exemplars
+clean phylo inputs (in parallel) 
+\begin_inset Formula $\to\phyloinputs$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Enumerate
+Replace non-terminals with exemplars 
+\begin_inset Formula $\to\expandedPhylo$
+\end_inset
+
+
 \end_layout
 
 \begin_layout Enumerate
@@ -851,11 +2965,19 @@ Solve subproblems
 \end_layout
 
 \begin_layout Enumerate
-Regraft subproblems
+Regraft subproblems 
+\begin_inset Formula $\to\prunedSummary$
+\end_inset
+
+
 \end_layout
 
 \begin_layout Enumerate
-Unprune the solution
+Unprune the solution 
+\begin_inset Formula $\to\summaryTree$
+\end_inset
+
+
 \end_layout
 
 \begin_layout Enumerate
@@ -867,14 +2989,14 @@ Generate annotations
 \end_layout
 
 \begin_layout Standard
-import READMEs.
+import READMEs?
 \end_layout
 
 \begin_layout Standard
 \begin_inset Float figure
 wide false
 sideways false
-status collapsed
+status open
 
 \begin_layout Plain Layout
 \align center
@@ -891,11 +3013,1422 @@ status collapsed
 \begin_inset Caption Standard
 
 \begin_layout Plain Layout
-Data flow through the 
+Organization of the 
 \emph on
 propinquity
 \emph default
  pipeline.
+ Each pentagon labels a program (blue for otcetera-based tools and red for
+ python scripts in the propinquity or peyotl repository) that performs the
+ important operations in each step.
+ The output of each step corresponds to a subdirectory of the propinquity
+ system which will hold the output artifacts for the step.
+\end_layout
+
+\end_inset
+
+
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:pipeline"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Export names of trees from collections
+\end_layout
+
+\begin_layout Standard
+The ranked list of tree names is specified as an ordered list of 
+\begin_inset Quotes eld
+\end_inset
+
+collections
+\begin_inset Quotes erd
+\end_inset
+
+.
+ A collection is an ordered list of tree names that is versioned using 
+\emph on
+git.
+
+\emph default
+ The ordered list of tree names used in synthesis is obtained simply by
+ concatenating the collections in order.
+\end_layout
+
+\begin_layout Labeling
+\labelwidthstring 00.00.0000
+Input: List of collections 
+\begin_inset Formula $\mathcal{C}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Labeling
+\labelwidthstring 00.00.0000
+Output: List of tree names
+\end_layout
+
+\begin_layout Labeling
+\labelwidthstring 00.00.0000
+Implementation: 
+\emph on
+collection_export.py
+\emph default
+ from peyotl gets (study,tree) pairs 
+\emph on
+a.k.a.
+ 
+\emph default
+tree names.
+\end_layout
+
+\begin_layout Subsection
+Prune the reference taxonomy
+\end_layout
+
+\begin_layout Standard
+
+\emph on
+Explanation
+\emph default
+: Not all taxa in OTT are reliable enough to belong in the summary tree.
+ The reference taxonomy producing software flags taxa in several ways.
+ Taxa are pruned in the cleaning step if either they or any of their ancestors
+ have these flags.
+ Flags are described here: 
+\begin_inset Flex URL
+status collapsed
+
+\begin_layout Plain Layout
+
+https://github.com/OpenTreeOfLife/reference-taxonomy/wiki/Taxon-flags
+\end_layout
+
+\end_inset
+
+.
+ We currently remove 
+\emph on
+viral
+\emph default
+, 
+\emph on
+extinct
+\begin_inset Foot
+status collapsed
+
+\begin_layout Plain Layout
+I think we should just stop pruning extinct taxa now.
+ Maybe a lot will still be pruned because they are I.C., but its not clear
+ we should prune them because they are extinct.
+\end_layout
+
+\end_inset
+
+, environmental
+\emph default
+, and 
+\emph on
+hybrid
+\emph default
+ taxa.
+ We also remove taxa that are 
+\emph on
+incertae sedis
+\emph default
+ because they are directly labeled as such, or because their parent taxon
+ is not a good clade.
+ We remove taxa that are not good clades, higher taxa that do not contain
+ any species, and taxa that are below the species level.
+ We also remove some taxa that are hidden by curatorial decision.
+\end_layout
+
+\begin_layout Description
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Plain Layout
+This is the list of cleaning flags for synth 5.0.
+ I removed the 
+\begin_inset Quotes eld
+\end_inset
+
+*_inherited
+\begin_inset Quotes erd
+\end_inset
+
+ versions.
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Flex URL
+status collapsed
+
+\begin_layout Plain Layout
+
+https://github.com/OpenTreeOfLife/reference-taxonomy/wiki/Taxon-flags
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Paragraph
+
+\emph on
+Incertae sedis
+\emph default
+ taxa
+\end_layout
+
+\begin_layout Description
+major_rank_conflict - e.g.
+ a family that has a sibling that's an order; equivalent to "incertae_sedis"
+\end_layout
+
+\begin_layout Description
+unclassified - this is NCBI's way of saying incertae sedis
+\end_layout
+
+\begin_layout Description
+unplaced - similar to incertae_sedis.
+ The taxon had been a child of an inconsistent taxon, but has now been moved
+ to be a child of the mrca of the children of the inconsistent taxon.
+\end_layout
+
+\begin_layout Description
+incertae_sedis - in source taxonomy, was a member of an "incertae sedis"
+ container
+\end_layout
+
+\begin_layout Paragraph
+viral, extinct, environmental, and hybrid taxa
+\end_layout
+
+\begin_layout Description
+environmental - child of an NCBI node whose name contains the word "environmenta
+l"
+\end_layout
+
+\begin_layout Description
+viral - the taxon name suggests that it has something to do with viruses.
+ Also, any node descended from such a node.
+\end_layout
+
+\begin_layout Description
+hybrid - taxon name contains "hybrid" or "x" indicating that it is a hybrid.
+ Also, any node descended from such a node.
+\end_layout
+
+\begin_layout Description
+extinct - node is annotated as extinct (usually but not always by IRMNG)
+\end_layout
+
+\begin_layout Paragraph
+not good clades, or do not contain any species, or are below species level
+\end_layout
+
+\begin_layout Description
+barren - there are only higher taxa at and below this node, no species
+\end_layout
+
+\begin_layout Description
+not_otu - the name suggests that this is not a taxon.
+ Keywords interpreted this way include "unidentified", "unknown", "metagenome",
+ "other sequences", "artificial", "libraries", "tranposons".
+ Also "sp." when at the end of a name.
+ Also, any node descended from such a node.
+\end_layout
+
+\begin_layout Description
+inconsistent - a placeholder or "tombstone" for a taxon that has been removed
+ due to its being inconsistent with higher priority taxa (judged to be not
+ a clade).
+\end_layout
+
+\begin_layout Description
+merged - similar to "inconsistent", but the children were directly placed
+ in a larger taxon
+\end_layout
+
+\begin_layout Description
+
+\series bold
+Suppressed by curatorial decision
+\end_layout
+
+\begin_layout Description
+hidden - marked hidden due to Open Tree curatorial decision (e.g.
+ microbes from GBIF)
+\end_layout
+
+\begin_layout Description
+
+\series bold
+Not mentioned
+\end_layout
+
+\begin_layout Description
+was_container - this used to be a container pseudo-taxon (incertae sedis,
+ unclassified, environmental samples, etc.) but its children have all been
+ flagged and moved to the node's parent
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Labeling
+\labelwidthstring 00.00.0000
+Input: “raw” reference taxonomy with flags produced by 
+\begin_inset Flex URL
+status collapsed
+
+\begin_layout Plain Layout
+
+https://github.com/OpenTreeOfLife/reference-taxonomy
+\end_layout
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Labeling
+\labelwidthstring 00.00.0000
+Output: 
+\begin_inset Formula $\taxonomy$
+\end_inset
+
+, the complete taxonomy for synthesis with some taxa pruned.
+ This will determine the leaf label set of the final summary tree.
+ 
+\end_layout
+
+\begin_layout Description
+Impl.
+ performed by 
+\emph on
+suppress-by-flag.py
+\emph default
+ from 
+\emph on
+peyotl
+\end_layout
+
+\begin_layout Description
+\begin_inset Flex URL
+status open
+
+\begin_layout Plain Layout
+
+http://files.opentreeoflife.org/synthesis/opentree5.0/output/cleaned_ott/cleaned_ot
+t.tre
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Snapshot input studies
+\end_layout
+
+\begin_layout Standard
+
+\emph on
+Explanation
+\emph default
+: For a make-based system it would be useful to copy the incoming otNexSON
+ files to a snapshot location if they differ from the version of that study
+ that is already found in that staging location.
+ 
+\end_layout
+
+\begin_layout Labeling
+\labelwidthstring 00.00.0000
+Input: local copy of phylesystem git repo, list of trees (study+tree ID
+ + optional git SHA) to be used 
+\end_layout
+
+\begin_layout Labeling
+\labelwidthstring 00.00.0000
+Output: (1) copies of the otNexSON files from the specified SHA.
+ (2) record of tree identifiers 
+\end_layout
+
+\begin_layout Standard
+Impl.: None - similar operation done by gcmdr.
+ 
+\end_layout
+
+\begin_layout Labeling
+\labelwidthstring 00.00.0000
+TODO
+\begin_inset space ~
+\end_inset
+
+for
+\begin_inset space ~
+\end_inset
+
+Impl.: Flat file implementation needed 
+\end_layout
+
+\begin_layout Labeling
+\labelwidthstring 00.00.0000
+URL
+\begin_inset space ~
+\end_inset
+
+for
+\begin_inset space ~
+\end_inset
+
+output: None
+\end_layout
+
+\begin_layout Subsection
+Snapshot input trees
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Figures/cleaned_phylo/ex_2@tree1.tre.svg
+	scale 40
+	rotateOrigin center
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Tree 1
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset space \hfill{}
+\end_inset
+
+
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Figures/cleaned_phylo/ex_2@tree2.tre.svg
+	scale 40
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Tree 2
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset space \hfill{}
+\end_inset
+
+
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Figures/cleaned_ott/cleaned_ott.tre.svg
+	scale 40
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Taxonomy Tree
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Input trees and taxonomy tree
+\end_layout
+
+\end_inset
+
+
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:cleaned-phylo-example"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+
+\emph on
+Explanation
+\emph default
+: The study files may contain multiple trees, for a make-base system it
+ would be good to have a timestamped file for each tree 
+\end_layout
+
+\begin_layout Labeling
+\labelwidthstring 00.00.0000
+Input: snapshot of otNexSON from previous step.
+ list of tree identifiers.
+ 
+\end_layout
+
+\begin_layout Labeling
+\labelwidthstring 00.00.0000
+Output: (1) one otNexSON for each tree.
+ The current naming conven- tion of studyID treeID.nexson could be used -
+ there is no need to support multiple git-SHAs per tree.
+ 
+\end_layout
+
+\begin_layout Standard
+Current Impl.: None - similar operation done by gcmdr.
+ 
+\end_layout
+
+\begin_layout Labeling
+\labelwidthstring 00.00.0000
+TODO
+\begin_inset space ~
+\end_inset
+
+for
+\begin_inset space ~
+\end_inset
+
+Impl.: Flat file implementation needed 
+\end_layout
+
+\begin_layout Labeling
+\labelwidthstring 00.00.0000
+URL
+\begin_inset space ~
+\end_inset
+
+for
+\begin_inset space ~
+\end_inset
+
+output: None
+\end_layout
+
+\begin_layout Subsection
+Pruning of input trees
+\end_layout
+
+\begin_layout Standard
+
+\emph on
+Explanation
+\emph default
+: To improve the chance of having a correct rooting, we prune the trees
+ to just the ingroup.
+ We also prune the tree down such that they contain no more than 1 exemplar
+ of any terminal taxon and there are no cases of the taxon for one tip containin
+g the taxon mapped to another tip.
+ 
+\end_layout
+
+\begin_layout Labeling
+\labelwidthstring 00.00.0000
+Input: snapshot of otNexSON trees from previous step.
+ 
+\end_layout
+
+\begin_layout Labeling
+\labelwidthstring 00.00.0000
+Output: (1) 
+\begin_inset Formula $\phyloinputs$
+\end_inset
+
+, the input set of tree represented as one newick tree for each input tree
+ with internal node labels that correspond to the node ID in the otNexSON
+ of the MRCA node.
+ (2) a record of the pruning edits performed.
+ 
+\end_layout
+
+\begin_layout Standard
+Current Impl.: None - similar operation done by gcmdr.
+ 
+\end_layout
+
+\begin_layout Standard
+TODO for Impl.: (1) Flat file implementation needed.
+ (2) record of edits needed.
+ (3) identifiers for the internal nodes would be nice for reporting the
+ provenance of edges in the summary tree.
+ (4) We should serve these trees somewhere as they are crucial inputs for
+ the rest of the pipeline.
+\end_layout
+
+\begin_layout Subsection
+Expand tips mapped to non-terminal taxa
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Figures/exemplified_phylo/ex_2@tree1.tre.svg
+	scale 40
+	rotateOrigin center
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Tree 1
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset space \hfill{}
+\end_inset
+
+
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Figures/exemplified_phylo/ex_2@tree2.tre.svg
+	scale 40
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Tree 2
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset space \hfill{}
+\end_inset
+
+
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Figures/exemplified_phylo/taxonomy.tre.svg
+	scale 40
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Pruned taxonomy tree 
+\begin_inset Formula $\prunedTaxonomy$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Exemplified Input trees and taxonomy tree.
+ E in tree1 is exemplified by E1.
+ Pruned taxa are E2, F2, and D.
+ E and F remain as monotypic taxa in the pruned taxonomy 
+\begin_inset Formula $\prunedTaxonomy$
+\end_inset
+
+.
+\end_layout
+
+\end_inset
+
+
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:exemplify-example"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+
+\emph on
+Explanation
+\emph default
+: As explained in section 1.6.2 (of otcetera doc), expanding tips that are
+ mapped to non-terminal taxa to the full set of their terminal descendants
+ and attaching these tips to the parent of the taxon should generate a tree
+ that correctly represents what the input tree says (without erroneously
+ claiming that the tree supports monophyly).
+ A clever implementation would note whether a descendant terminal taxon
+ occurs in other trees in the 
+\begin_inset Formula $\phyloinputs$
+\end_inset
+
+ corpus.
+ If there are multiple terminal descendant taxa in the expansion that only
+ occur in the taxonomy, then it should be fine to let the expansions just
+ contain 1 of these tips, 
+\begin_inset Formula $x$
+\end_inset
+
+.
+ This would mean that the others are pruned in the next step, but will be
+ placed in the correct spot in the final summary tree because they should
+ attach at the same parent node as the single exemplar, 
+\begin_inset Formula $x$
+\end_inset
+
+.
+ Failing to take this optimization will only mean that the pruned taxonomy
+ is too large.
+ 
+\end_layout
+
+\begin_layout Labeling
+\labelwidthstring 00.00.0000
+Input: 
+\begin_inset Formula $\taxonomy$
+\end_inset
+
+ and 
+\begin_inset Formula $\phyloinputs$
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Labeling
+\labelwidthstring 00.00.0000
+Output: 
+\begin_inset Formula $\expandedPhylo$
+\end_inset
+
+ – the set of phylogenetic inputs expanded such that no leaf is mapped to
+ a non-terminal taxon.
+ 
+\end_layout
+
+\begin_layout Standard
+Current Impl.: None.
+ 
+\end_layout
+
+\begin_layout Standard
+TODO: write this 
+\end_layout
+
+\begin_layout Standard
+URL for output page linking to output trees: 
+\begin_inset Flex URL
+status collapsed
+
+\begin_layout Plain Layout
+
+http://files.opentreeoflife.org/synthesis/opentree5.0/output/exemplified_phylo/inde
+x.html
+\end_layout
+
+\end_inset
+
+
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Plain Layout
+We should probably post this set of trees, as many tools don’t deal with
+ tips that are mapped to non-terminal taxa.
+ So these trees may be the most accessible set of inputs for most interested
+ parties.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Prune taxonomy down to tips represented in 
+\begin_inset Formula $\expandedPhylo$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+
+\emph on
+Explanation
+\emph default
+: This is just an optimization step.
+ Each terminal taxon that is only found in 
+\begin_inset Formula $\taxonomy$
+\end_inset
+
+, can be placed on the final summary tree by creating a tree for the overlapping
+ taxonomic inputs and then grafting on the “taxonomy only” lineages.
+ This pruning makes the inputs for the subsequent steps smaller 
+\end_layout
+
+\begin_layout Labeling
+\labelwidthstring 00.00.0000
+Input: 
+\begin_inset Formula $\taxonomy$
+\end_inset
+
+ and 
+\begin_inset Formula $\expandedPhylo$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Labeling
+\labelwidthstring 00.00.0000
+Output: 
+\begin_inset Formula $\prunedTaxonomy$
+\end_inset
+
+ the pruned taxonomy 
+\end_layout
+
+\begin_layout Standard
+Current Impl.: 
+\emph on
+otc-nonterminals-to-exemplars
+\emph default
+ does this.
+\end_layout
+
+\begin_layout Standard
+URL for output: 
+\begin_inset Flex URL
+status collapsed
+
+\begin_layout Plain Layout
+
+http://files.opentreeoflife.org/synthesis/opentree5.0/output/exemplified_phylo/taxo
+nomy.tre
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Decompose the inputs into subproblems of uncontested taxa 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename Figures/exemplified_phylo_taxonomy_uncontested.tre.svg
+	width 35text%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Uncontested edges.
+ Here the taxon 
+\emph on
+ABCD
+\emph default
+ is uncontested.
+ The edge to the ABCD node is colored red.
+\end_layout
+
+\end_inset
+
+
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:detect-uncontested-example"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Figures/subproblems/14/1.tre.svg
+	width 30text%
+
+\end_inset
+
+
+\begin_inset space \hfill{}
+\end_inset
+
+
+\begin_inset Graphics
+	filename Figures/subproblems/14/2.tre.svg
+	width 30text%
+
+\end_inset
+
+
+\begin_inset space \hfill{}
+\end_inset
+
+
+\begin_inset Graphics
+	filename Figures/subproblems/14/3.tre.svg
+	width 30text%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Subproblem 
+\emph on
+ABCD
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Figures/subproblems/17/1.tre.svg
+	width 30text%
+
+\end_inset
+
+
+\begin_inset space \hfill{}
+\end_inset
+
+
+\begin_inset Graphics
+	filename Figures/subproblems/17/2.tre.svg
+	width 30text%
+
+\end_inset
+
+
+\begin_inset space \hfill{}
+\end_inset
+
+
+\begin_inset Graphics
+	filename Figures/subproblems/17/3.tre.svg
+	width 30text%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Subproblem 
+\emph on
+root
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Subproblems generated from the exemplified trees shown in figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:exemplify-example"
+
+\end_inset
+
+.
+ A trivial statemen from the first tree that a taxon labelled 
+\begin_inset Formula $ABCD$
+\end_inset
+
+ is sister to 
+\begin_inset Formula $E$
+\end_inset
+
+ has been omitted, because trees with only 2 leaves do not contain phylogenetic
+ information.
+\end_layout
+
+\end_inset
+
+
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:subproblems-example"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+
+\emph on
+Explanation:
+\emph default
+ The decision to force uncontested taxa in the final summary means that
+ we can separate the problems into non-overlapping subproblems.
+ 
+\end_layout
+
+\begin_layout Labeling
+\labelwidthstring 00.00.0000
+Input: 
+\begin_inset Formula $\prunedTaxonomy$
+\end_inset
+
+ and 
+\begin_inset Formula $\expandedPhylo$
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Labeling
+\labelwidthstring 00.00.0000
+Output: subproblems.
+ 
+\end_layout
+
+\begin_layout Standard
+Currently expressed (1) as one newick tree file per subproblem with the
+ name SUBPROBLEMID.tre, and (2) a file called SUBPROBLEMID-tree-names.txt
+ with a treefile name on each line or “TAXONOMY” indicating the source of
+ each tree.
+ the SUBPROBLEMID is ‘ott’ followed by the OTT ID.
+ 
+\end_layout
+
+\begin_layout Standard
+Current Impl.: 
+\emph on
+otc-uncontested-decompose
+\emph default
+ 
+\end_layout
+
+\begin_layout Standard
+TODO for Impl.: 
+\end_layout
+
+\begin_layout Standard
+URL for output: 
+\begin_inset Flex URL
+status collapsed
+
+\begin_layout Plain Layout
+
+http://files.opentreeoflife.org/synthesis/opentree5.0/output/subproblems/index.html
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Solve subproblems 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset space \hfill{}
+\end_inset
+
+
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Figures/subproblem_solutions/ott14.tre.svg
+	scale 45
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Solution to subproblem 
+\emph on
+ABCD
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset space \hfill{}
+\end_inset
+
+
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Figures/subproblem_solutions/ott17.tre.svg
+	scale 45
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Solution to subproblem 
+\emph on
+root
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset space \hfill{}
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Solutions.
+ Each solution tree has a taxon at the root (although it is not currently
+ shown in the figure).
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+For the sub-problem solver, we make iterative use of the BUILD algorithm.
+ We process input trees in order of their priority.
+ We use the BUILD algorithm to determine whether a given split in an input
+ tree is consistent with the splits we have kept so far.
+ If the new split is consistent, then we add it to the set.
+ After considering all input trees, and the taxonomy, we use the BUILD algorithm
+ to construct a tree from the set of consistent splits.
+\end_layout
+
+\begin_layout Labeling
+\labelwidthstring 00.00.0000
+Input: a “raw” subproblem from step 2.7 or a simplified subproblem from step
+ 2.8.
+ 
+\end_layout
+
+\begin_layout Labeling
+\labelwidthstring 00.00.0000
+Output: a tree for each subproblem - stored in a solutions dir under the
+ name SUBPROBLEMID.tre Current Impl.: treemachine may provide one solver.
+ 
+\end_layout
+
+\begin_layout Standard
+See Algorithm 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "alg:ConsistentSplitsFromRankedList"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Subsection
+Assemble pruned summary tree from subproblem solutions
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename Figures/grafted_solution/grafted_solution_ottnames.tre.svg
+	scale 50
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Grafted solution.
+ The nodes E and F are monotypic here, but will end up being polytypic after
+ unpruning is performed.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Support for each node in the tree.
+ How do we show this?
 \end_layout
 
 \end_inset
@@ -912,26 +4445,321 @@ propinquity
 
 \end_layout
 
+\begin_layout Standard
+
+\emph on
+Explanation
+\emph default
+: Because the problems do not overlap, and the file names match the tip
+ labels (when a tip of one subproblem is actually an uncontested non-terminal
+ taxon in 
+\begin_inset Formula $\prunedTaxonomy$
+\end_inset
+
+ ), this is a simple grafting procedure.
+ When a subproblem root and a subproblem tip have the same label, we merge
+ the two nodes.
+ Since a label can only never occur on two subproblem roots or two subproblem
+ tips, we never need to merge more than two nodes.
+ Note that each subproblem is supported by the taxonomy (at a minimum),
+ so this step cannot introduce unsupported groups.
+ 
+\end_layout
+
+\begin_layout Labeling
+\labelwidthstring 00.00.0000
+Input: the solutions directory holding all of the subproblem solution trees.
+ 
+\end_layout
+
+\begin_layout Labeling
+\labelwidthstring 00.00.0000
+Output: 
+\begin_inset Formula $\prunedSummary$
+\end_inset
+
+ – the summary tree pruned down to the leaf set of 
+\begin_inset Formula $\prunedTaxonomy$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Labeling
+\labelwidthstring 00.00.0000
+Current
+\begin_inset space ~
+\end_inset
+
+Impl.: 
+\emph on
+otc-graft-solutions
+\end_layout
+
 \begin_layout Subsection
-Algorithms
+Graft the pruned taxonomy-only taxa back onto the tree
 \end_layout
 
 \begin_layout Standard
-For the sub-problem solver, we make iterative use of the BUILD algorithm.
- We process input trees in order of their priority.
- We use the BUILD algorithm to determine whether a given split in an input
- tree is consistent with the splits we have kept so far.
- If the new split is consistent, then we add it to the set.
- After considering all input trees, and the taxonomy, we use the BUILD algorithm
- to construct a tree from the set of consistent splits.
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename Figures/labelled_supertree/labelled_supertree.tre.svg
+	scale 50
+
+\end_inset
+
+
 \end_layout
 
-\begin_layout Itemize
-Add algorithm from TEX document.
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Unpruned tree with internal taxa.
+ Nodes E2, F2, and D have been re-added to the tree.
+ The nodes E and F are no longer monotypic.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Explanation: “phylo-referencing” style logic can be used to place the taxa
+ that were pruned in 2.6 
+\end_layout
+
+\begin_layout Standard
+This is a bit more complicated now that we attach the children of broken
+ taxa at their MRCA.
+\end_layout
+
+\begin_layout Standard
+Input: 
+\begin_inset Formula $\prunedSummary$
+\end_inset
+
+ and 
+\begin_inset Formula $\taxonomy$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Output: 
+\begin_inset Formula $\summaryTree$
+\end_inset
+
+ – the final summary tree 
+\end_layout
+
+\begin_layout Standard
+Current Impl.: None
+\end_layout
+
+\begin_layout Standard
+TODO for Impl.:
+\end_layout
+
+\begin_layout Standard
+TODO: write this
+\end_layout
+
+\begin_layout Subsection
+Create annotations for nodes in 
+\begin_inset Formula $\summaryTree$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+
+\emph on
+Explanation
+\emph default
+: At minimum, we would want statements of which input nodes support which
+ nodes in S.
+ But we could also noted nodes displayed, nodes in conflict, and whether
+ or not the node was constrained because it was a contested taxon.
+ 
+\end_layout
+
+\begin_layout Standard
+Input: 
+\begin_inset Formula $\summaryTree$
+\end_inset
+
+ and 
+\begin_inset Formula $\expandedPhylo$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Output: some as yet undefined format for expressing these annotations.
+ 
+\end_layout
+
+\begin_layout Standard
+Current Impl.: 
+\emph on
+otc-annotate-synth
+\end_layout
+
+\begin_layout Standard
+TODO for Impl.
+\end_layout
+
+\begin_layout Standard
+TODO: write this
 \end_layout
 
 \begin_layout Section
 Example
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Figures/cleaned_phylo/ex_2@tree1.tre.svg
+	scale 40
+	rotateOrigin center
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Tree 1
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset space \hfill{}
+\end_inset
+
+
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Figures/cleaned_phylo/ex_2@tree2.tre.svg
+	scale 40
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Tree 2
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset space \hfill{}
+\end_inset
+
+
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Figures/cleaned_ott/cleaned_ott.tre.svg
+	scale 40
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Taxonomy Tree
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Input trees and taxonomy tree
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -946,6 +4774,211 @@ We could also have an example thats
 
 \begin_layout Section
 Results
+\end_layout
+
+\begin_layout Standard
+\begin_inset Tabular
+<lyxtabular version="3" rows="5" columns="4">
+<features tabularvalignment="middle">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<row>
+<cell alignment="center" valignment="top" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+3.0
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+4.0
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+5.0
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+time
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+~24hrs
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+~24hrs
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+~8min
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+ignored edges
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -988,6 +5021,10 @@ We also increase the number of displayed input splits from 35439 to 39713,
 \begin_layout Standard
 Additionally, our pipeline now produces a tree with annotations about which
  input trees support each node in the summary tree.
+\end_layout
+
+\begin_layout Paragraph
+CPU time versus sub-problem size
 \end_layout
 
 \begin_layout Section
@@ -1038,6 +5075,597 @@ combination
  of other rooted triplets.
 \end_layout
 
+\begin_layout Section
+\start_of_appendix
+\begin_inset CommandInset label
+LatexCommand label
+name "sec:The-maximum-sum"
+
+\end_inset
+
+The maximum sum displayed groups' weighted scores criterion
+\end_layout
+
+\begin_layout Standard
+If 
+\begin_inset Formula $\mathcal{W}$
+\end_inset
+
+ is a weighting function that maps any input tree's internal node to a non-negat
+ive number.
+ If 
+\begin_inset Formula $I(\mathbb{S},i,j)$
+\end_inset
+
+ is an indicator function that is 1 if summary tree 
+\begin_inset Formula $\mathbb{S}$
+\end_inset
+
+ displays the node 
+\begin_inset Formula $V(i,j)$
+\end_inset
+
+ and 0 otherwise then: 
+\begin_inset Formula $SDGWS(\mathbb{S})=\sum_{i}\sum_{j}I(\mathbb{S},i,j)\mathcal{W}(i,j)$
+\end_inset
+
+ is the 
+\begin_inset Quotes eld
+\end_inset
+
+sum of displayed groups' weighted scores
+\begin_inset Quotes erd
+\end_inset
+
+ for a tree where 
+\begin_inset Formula $i$
+\end_inset
+
+ indexes all of the input trees and 
+\begin_inset Formula $j$
+\end_inset
+
+ indexes each non-root internal node in tree 
+\begin_inset Formula $i$
+\end_inset
+
+.
+ The summary tree constructed by the propinquity pipeline is a greedy heuristic
+ for finding a tree that maximizes this score when the weights for a node
+ are determined by the tree's weight and the difference in weighting is
+ so large that displaying one node from a highly ranked tree is preferred
+ to displaying all of the nodes in the trees with lower rank.
+ Preference for this tree is referred to as the maximum sum displayed groups'
+ weighted scores criterion (MSDGWS criterion).
+\end_layout
+
+\begin_layout Section
+\begin_inset CommandInset label
+LatexCommand label
+name "sec:Decompose-algorithm"
+
+\end_inset
+
+Description of the decomposition algorithm of otc-uncontested-decompose
+\end_layout
+
+\begin_layout Standard
+The input is the a ranked list of input trees and comprehensive taxonomy.
+ 
+\end_layout
+
+\begin_layout Subsection
+Creation of multigraph of the taxonomy with embedded trees
+\end_layout
+
+\begin_layout Standard
+The tool creates a multigraph by starting with a graph is isomorphic to
+ the taxonomic tree.
+ The nodes and edges created in this step will be referred to as the 
+\begin_inset Quotes eld
+\end_inset
+
+taxonomic graph.
+\begin_inset Quotes erd
+\end_inset
+
+ Next, we add nodes and edges to that graph in a procedure that we refer
+ to as 
+\begin_inset Quotes eld
+\end_inset
+
+embedding
+\begin_inset Quotes erd
+\end_inset
+
+ the input trees into the taxonomy.
+ A node is introduced for each node in an input tree, and these nodes are
+ mapped the MRCA nodes in the taxonomic graph.
+ In other words, for any node 
+\begin_inset Formula $y$
+\end_inset
+
+ in an input tree with a set of descendants, 
+\begin_inset Formula $\mathcal{C},$
+\end_inset
+
+ we find the most tipward node 
+\begin_inset Formula $z$
+\end_inset
+
+ in the taxonomic graph that is an ancestor to all of the taxa in 
+\begin_inset Formula $\mathcal{C}$
+\end_inset
+
+; let 
+\begin_inset Formula $m(y)=z$
+\end_inset
+
+ refer to this mapping, and 
+\begin_inset Formula $m^{\prime}(z)=y$
+\end_inset
+
+ refer to the reverse mapping.
+ Each edge 
+\begin_inset Formula $e_{ij}$
+\end_inset
+
+ in a source tree 
+\begin_inset Formula $i$
+\end_inset
+
+ connects ancestor to its descendant, 
+\begin_inset Formula $a(e_{ij})\rightarrow d(e_{ij})$
+\end_inset
+
+.
+ The edges are introduced into the graph.
+ We also introduce new edges to create a from 
+\begin_inset Formula $m(a(e_{ij}))$
+\end_inset
+
+ through its descendants to 
+\begin_inset Formula $m(d(e_{ij}))$
+\end_inset
+
+; we denote this path 
+\begin_inset Formula $p(e_{ij})$
+\end_inset
+
+ and refer to the edges in the path as 
+\begin_inset Quotes eld
+\end_inset
+
+embedding edges for tree 
+\begin_inset Formula $i$
+\end_inset
+
+
+\begin_inset Quotes erd
+\end_inset
+
+.
+ Note, that this is a path through the taxonomic nodes, while the edge 
+\begin_inset Formula $e_{ij}$
+\end_inset
+
+ connects source tree nodes.
+ The mapping between 
+\begin_inset Formula $e_{ij}$
+\end_inset
+
+ and 
+\begin_inset Formula $p(e_{ij})$
+\end_inset
+
+ is stored, and the edges are labelled with the index 
+\begin_inset Formula $i$
+\end_inset
+
+ so that it is clear which tree created them.
+ Because the taxonomic tree is highly unresolved, it is frequently the case
+ that 
+\begin_inset Formula $m(a(e_{ij}))$
+\end_inset
+
+ is the same node as 
+\begin_inset Formula $m(d(e_{ij}))$
+\end_inset
+
+; in these cases the embedding edge is a loop.
+ This situation occurs whenever edge 
+\begin_inset Formula $e_{ij}$
+\end_inset
+
+ can resolve part of the polytomy represented by a taxon.
+ 
+\end_layout
+
+\begin_layout Standard
+We treat the taxonomy as the lowest ranked input tree.
+ The next step will collapse contested edges in the taxonomic graph.
+ To retain all of the information from the taxonomy we embed the taxonomy
+ into the taxonomic graph as if it were another input tree
+\end_layout
+
+\begin_layout Subsection
+Detection of uncontested higher taxa
+\end_layout
+
+\begin_layout Standard
+After every input tree and the taxonomy tree have been embedded into the
+ taxonomic graph, we perform postorder traversal over the taxonomic graph
+ underlies the multi-graph.
+ For any internal node (each of which corresponds to a non-terminal taxon)
+ we determine wether or not it is contested by examining each input tree.
+ We can determine tree 
+\begin_inset Formula $i$
+\end_inset
+
+ contests the taxon represented by taxonomic node 
+\begin_inset Formula $x$
+\end_inset
+
+ by looking at the parents of all of the 
+\begin_inset Quotes eld
+\end_inset
+
+exiting
+\begin_inset Quotes erd
+\end_inset
+
+ embedding edges for tree 
+\begin_inset Formula $i$
+\end_inset
+
+.
+ These are the set of embedding edges that have 
+\begin_inset Formula $x$
+\end_inset
+
+ as a daughter and have a parent node that is not 
+\begin_inset Formula $x$
+\end_inset
+
+ (ergo a parent node that is taxonomically higher than 
+\begin_inset Formula $x$
+\end_inset
+
+).
+ If there are more than one parent nodes in this set of exiting embedding
+ edges, then tree 
+\begin_inset Formula $i$
+\end_inset
+
+ contests that taxon.
+ If there is only parent node, then the all of the constituent taxa belonging
+ to this taxon that are present in tree 
+\begin_inset Formula $i$
+\end_inset
+
+ have one parent that is more inclusive; this means that the input tree
+ does not contest monophyly of the taxon.
+\end_layout
+
+\begin_layout Standard
+If the taxon is uncontested, then it may be the case that some input trees
+ do not contest the taxon, but contain polytomies that could be resolved
+ to display the taxon.
+ The cases can be identified by finding multiple exiting embedding edges
+ that have the same taxon 
+\begin_inset Formula $y$
+\end_inset
+
+ as their parent node.
+ In these cases, a pseudo input tree node is created and becomes the parent
+ node for these edges; this new node is then connected to 
+\begin_inset Formula $y$
+\end_inset
+
+ as if it had been an input edge.
+ This operation is equivalent to resolving an input tree's polytomy in favor
+ of the monophyly of the uncontested taxon.
+ This is the only way in which the input trees are modified during the decomposi
+tion.
+\end_layout
+
+\begin_layout Subsection
+Collapsing contested taxa from the taxonomic graph
+\end_layout
+
+\begin_layout Standard
+If a taxonomic node 
+\begin_inset Formula $x$
+\end_inset
+
+ fails the 
+\begin_inset Quotes eld
+\end_inset
+
+uncontested
+\begin_inset Quotes erd
+\end_inset
+
+ test described in the previous section, then the node corresponding to
+ the taxon is removed from the taxonomic graph and the set of edges (and
+ mappings between input edges and embedded paths) is updated as if this
+ taxon had not been present in when the taxonomic graph was created.
+ This consists of detecting changing any edge in an embedding path that
+ is adjacent to 
+\begin_inset Formula $x$
+\end_inset
+
+ by replacing the reference to 
+\begin_inset Formula $x$
+\end_inset
+
+ with a reference to its parent 
+\begin_inset Formula $a(x)$
+\end_inset
+
+.
+ Note that we do not collapse the edge corresponding to this taxon in the
+ part of the graph that represents the embedding of the taxonomy into the
+ taxonomic graph.
+ Thus, the taxonomy will still claim the monophyly of the taxon.
+ This is relevant if the input grouping that contests taxon 
+\begin_inset Formula $x$
+\end_inset
+
+ is overruled (in the subproblem solution step) by a higher ranked split.
+ In other words, the fact that the a taxon is contested during the decomposition
+ is not a guarantee that the taxon will not be monophyletic in the final
+ supertree.
+\end_layout
+
+\begin_layout Subsection
+Emitting subproblems
+\end_layout
+
+\begin_layout Standard
+Whenever an uncontested taxon is identified, the appropriate slice of each
+ input trees that intersect with the taxon is written to a file.
+ Then the multigraph is simplified by slicing any off the taxon.
+ This slicing is accomplished by examing all of the exiting embedding edges
+ for the taxon.
+ The descendant taxa of each input tree is relabeled with the identifier
+ of the contested taxa and all of that node's descendants are removed.
+ Thus this input node will act as as if it were a leaf mapped to the uncontested
+ taxon.
+ All descendants of the taxonomic graph are also pruned off.
+\end_layout
+
+\begin_layout Section
+\begin_inset CommandInset label
+LatexCommand label
+name "sec:Proof-that-pruning"
+
+\end_inset
+
+Proof that pruning and regrafting taxa mapped to the taxonomy does not affect
+ the optimal set of displayed nodes
+\end_layout
+
+\begin_layout Standard
+(I'm not sure that we need to prove this,...)
+\end_layout
+
+\begin_layout Standard
+Let 
+\begin_inset Formula $\mathbb{S}$
+\end_inset
+
+ denote a tree that is optimal according to the MSDGWS criterion, and 
+\begin_inset Formula $\mathcal{D}(\mathbb{S},\mathcal{T})$
+\end_inset
+
+ denote a set of groups (from the trees in 
+\begin_inset Formula $\mathcal{T})$
+\end_inset
+
+ that are displayed by that 
+\begin_inset Formula $\mathbb{S}$
+\end_inset
+
+.
+ Let 
+\begin_inset Formula $\mathcal{A}_{i}$
+\end_inset
+
+ denote a set of leaves that are present in only one of the input trees.
+ If 
+\begin_inset Formula $\mathcal{P}(\mathcal{T},A_{i})$
+\end_inset
+
+ is a set of input trees identical to 
+\begin_inset Formula $\mathcal{T}$
+\end_inset
+
+, except that the taxa in 
+\begin_inset Formula $\mathcal{A}_{i}$
+\end_inset
+
+have been pruned from the 
+\begin_inset Formula $i$
+\end_inset
+
+th input tree, 
+\begin_inset Formula $T_{i}$
+\end_inset
+
+.
+ The supertree procedure of the propinquity involves decomposing the problem
+ into uncontested to taxa and then building up the maximal set of groups
+ that can be displayed using a greedy approach that starts with an empty
+ set and adds a grouping if it can be displayed with the previously accepted
+ groups.
+ Thus, 
+\begin_inset Formula $\mathcal{D}(\mathbb{S},\mathcal{T})$
+\end_inset
+
+ is built up by iterating through the inputs in ranked order.
+ 
+\end_layout
+
+\begin_layout Standard
+First we note that, by definition, the taxonomy itself does not contest
+ any of the taxa.
+ Thus the set of uncontested taxa is the same when constructing a supertree
+ from 
+\begin_inset Formula $\mathcal{T}$
+\end_inset
+
+ or from 
+\begin_inset Formula $\mathcal{P}(\mathcal{T},A_{i})$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+If 
+\begin_inset Formula $\mathcal{D}(\mathbb{S},\mathcal{T},x)$
+\end_inset
+
+ denotes the set of displayed groups in the greedy procedure inputs 1 up
+ to input tree 
+\begin_inset Formula $x$
+\end_inset
+
+, then we can note that 
+\begin_inset Formula $\mathcal{D}(\mathbb{S},\mathcal{T},i-1)=\mathcal{D}(\mathbb{S},\mathcal{P}(\mathcal{T},A_{i}),i-1)$
+\end_inset
+
+ by virtue of the fact that the first 
+\begin_inset Formula $i-1$
+\end_inset
+
+ inputs are unchanged by the pruning.
+ The procedure for grafting taxa from 
+\begin_inset Formula $\mathcal{A}_{i}$
+\end_inset
+
+on to the solution 
+\begin_inset Formula $S$
+\end_inset
+
+ is:
+\end_layout
+
+\begin_layout Enumerate
+Initialize a set 
+\begin_inset Formula $A=\mathcal{A}_{i}$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Enumerate
+While 
+\begin_inset Formula $A$
+\end_inset
+
+ is not empty:
+\end_layout
+
+\begin_deeper
+\begin_layout Enumerate
+select one taxon 
+\begin_inset Formula $x$
+\end_inset
+
+ from 
+\begin_inset Formula $A$
+\end_inset
+
+.
+ Find the node the node in 
+\begin_inset Formula $T_{i}$
+\end_inset
+
+ that maps to taxon 
+\begin_inset Formula $x$
+\end_inset
+
+.
+ Start at that node and walk rootward to find 
+\begin_inset Formula $y$
+\end_inset
+
+ the deepest node in the tree that contains tips mapped entirely to taxa
+ in 
+\begin_inset Formula $\mathcal{A}_{i}$
+\end_inset
+
+.
+ This node could be a leaf or an internal.
+ Let 
+\begin_inset Formula $z$
+\end_inset
+
+ denote its parent.
+\end_layout
+
+\begin_layout Enumerate
+Use 
+\begin_inset Formula $\mathcal{C}$
+\end_inset
+
+ to denote the set of all taxa that are mapped to tips descending from 
+\begin_inset Formula $z$
+\end_inset
+
+ but which are not in the set 
+\begin_inset Formula $A$
+\end_inset
+
+.
+ 
+\begin_inset Formula $\mathcal{C}$
+\end_inset
+
+ cannot be empty but could contain only one taxon.
+\end_layout
+
+\begin_layout Enumerate
+Use 
+\begin_inset Formula $\mathcal{B}$
+\end_inset
+
+ to denote the set of all of the taxa that are mapped to tips descending
+ from 
+\begin_inset Formula $y$
+\end_inset
+
+.
+ Remove every member of 
+\begin_inset Formula $\mathcal{B}$
+\end_inset
+
+ from 
+\begin_inset Formula $A$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Enumerate
+Find 
+\begin_inset Formula $w$
+\end_inset
+
+ a node in 
+\begin_inset Formula $S$
+\end_inset
+
+ that is the MRCA of the tips that are mapped to the taxa in 
+\begin_inset Formula $\mathcal{C}.$
+\end_inset
+
+
+\end_layout
+
+\end_deeper
 \begin_layout Standard
 \begin_inset CommandInset bibtex
 LatexCommand bibtex

@@ -1,7 +1,5 @@
-args.txt
-ott*-tree-names.txt
-ott*.md5
-ott*.tre
-checksummed-subproblem-ids.txt
-dumped-subproblem-ids.txt
-subproblem-ids.txt
+scratch/
+*.tre
+*.md5
+index.*
+*.txt

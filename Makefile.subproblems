@@ -19,15 +19,14 @@ $(PROPINQUITY_OUT_DIR)/subproblems/scratch/args.txt: $(PROPINQUITY_OUT_DIR)/exem
 	| sed -e "s:^:$(PROPINQUITY_OUT_DIR)/exemplified_phylo/:g" \
 	> $(PROPINQUITY_OUT_DIR)/subproblems/scratch/args.txt
 
-# Note that run-subproblem-finder.sh is odd in that the second arg is relative to the first arg.
-
 $(PROPINQUITY_OUT_DIR)/subproblems/dumped-subproblem-ids.txt: $(PROPINQUITY_OUT_DIR)/exemplified_phylo/taxonomy.tre \
 															  $(PROPINQUITY_OUT_DIR)/subproblems/scratch/args.txt \
 															  $(PROPINQUITY_OUT_DIR)/exemplified_phylo/nonempty_trees.txt
 	@if ! test -d $(PROPINQUITY_OUT_DIR)/subproblems ; then mkdir -p $(PROPINQUITY_OUT_DIR)/subproblems ; fi
 	./bin/run-subproblem-finder.sh \
 	  $(PROPINQUITY_OUT_DIR)/subproblems/scratch \
-	  ../dumped-subproblem-ids.txt \
+	  $(PROPINQUITY_OUT_DIR)/subproblems/dumped-subproblem-ids.txt \
+	  $(PROPINQUITY_OUT_DIR)/subproblems/contesting-trees.json \
 	  $(PROPINQUITY_OUT_DIR)/exemplified_phylo/taxonomy.tre \
 	  -f$(PROPINQUITY_OUT_DIR)/subproblems/scratch/args.txt
 
@@ -63,7 +62,7 @@ $(PROPINQUITY_OUT_DIR)/subproblem_solutions/solution-ids.txt: $(PROPINQUITY_OUT_
 
 # This solution-degree-distributions.txt is just for documentation. The
 #	dependency should be all of the solutions, but it is easier to just
-#	make it depend on the next step in the procedure 
+#	make it depend on the next step in the procedure
 $(PROPINQUITY_OUT_DIR)/subproblem_solutions/solution-degree-distributions.txt: $(PROPINQUITY_OUT_DIR)/grafted_solution/grafted_solution.tre
 	@if ! test -d $(PROPINQUITY_OUT_DIR)/subproblem_solutions ; then mkdir -p $(PROPINQUITY_OUT_DIR)/subproblem_solutions ; fi
 	rm -f $(PROPINQUITY_OUT_DIR)/subproblem_solutions/.solution-degree-distributions.txt
@@ -81,7 +80,7 @@ $(PROPINQUITY_OUT_DIR)/grafted_solution/grafted_solution.tre: $(PROPINQUITY_OUT_
 	sed "s:^:$(PROPINQUITY_OUT_DIR)/subproblem_solutions/:" \
 		$(PROPINQUITY_OUT_DIR)/subproblem_solutions/solution-ids.txt \
 		> $(PROPINQUITY_OUT_DIR)/subproblem_solutions/paths.txt
-	cd $(PROPINQUITY_OUT_DIR) ; otc-graft-solutions $$(cat $(PROPINQUITY_OUT_DIR)/subproblem_solutions/paths.txt) \
+	cd $(PROPINQUITY_OUT_DIR) ; otc-graft-solutions -f$(PROPINQUITY_OUT_DIR)/subproblem_solutions/paths.txt \
 		> $(PROPINQUITY_OUT_DIR)/grafted_solution/.grafted_solution.tre && \
 	mv $(PROPINQUITY_OUT_DIR)/grafted_solution/.grafted_solution.tre \
 	   $(PROPINQUITY_OUT_DIR)/grafted_solution/grafted_solution.tre
@@ -112,7 +111,7 @@ $(PROPINQUITY_OUT_DIR)/labelled_supertree/labelled_supertree.tre: $(PROPINQUITY_
 		$(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaned_ott.tre \
 		-j$(PROPINQUITY_OUT_DIR)/labelled_supertree/broken_taxa.json \
 		-s$(PROPINQUITY_OUT_DIR)/labelled_supertree/input_output_stats.json \
-		> $(PROPINQUITY_OUT_DIR)/labelled_supertree/labelled_supertree.tre 
+		> $(PROPINQUITY_OUT_DIR)/labelled_supertree/labelled_supertree.tre
 
 $(PROPINQUITY_OUT_DIR)/labelled_supertree/labelled_supertree_out_degree_distribution.txt: $(PROPINQUITY_OUT_DIR)/labelled_supertree/labelled_supertree.tre
 	@if ! test -d $(PROPINQUITY_OUT_DIR)/labelled_supertree ; then mkdir -p $(PROPINQUITY_OUT_DIR)/labelled_supertree ; fi
@@ -127,6 +126,12 @@ $(PROPINQUITY_OUT_DIR)/labelled_supertree/labelled_supertree_ottnames.tre: $(PRO
 		--taxonomy=$(OTT_DIR) \
 		--format-tax="%N ott%I" \
 		> $(PROPINQUITY_OUT_DIR)/labelled_supertree/labelled_supertree_ottnames.tre
+
+# Not currently used.  This is a placeholder rule to keep track of how to use otc-relabel-tree for this purpose.
+$(PROPINQUITY_OUT_DIR)/labelled_supertree/labelled_supertree_simplified_ottnames2.tre: $(PROPINQUITY_OUT_DIR)/labelled_supertree/labelled_supertree_ottnames.tre
+	otc-relabel-tree --replace "/,\(\):;\[\]\{\}\'\t\n/ /" \
+		$(PROPINQUITY_OUT_DIR)/labelled_supertree/labelled_supertree_ottnames.tre \
+		>$(PROPINQUITY_OUT_DIR)/labelled_supertree/labelled_supertree_simplified_ottnames2.tre
 
 $(PROPINQUITY_OUT_DIR)/labelled_supertree/labelled_supertree_simplified_ottnames.tre: $(PROPINQUITY_OUT_DIR)/labelled_supertree/labelled_supertree_ottnames.tre
 	otc-munge-names \
@@ -150,7 +155,7 @@ $(PROPINQUITY_OUT_DIR)/labelled_supertree/labelled_supertree_ottnames_without_mo
 		> $(PROPINQUITY_OUT_DIR)/labelled_supertree/labelled_supertree_ottnames_without_monotypic.tre
 
 
-# added $(PROPINQUITY_OUT_DIR)/exemplified_phylo/pruned_taxonomy_degree_distribution.txt 
+# added $(PROPINQUITY_OUT_DIR)/exemplified_phylo/pruned_taxonomy_degree_distribution.txt
 # to hack in a new annotation at the request of JAR
 # So we head, tail, and awk the # of exemplified tips from that output into a temporary file called num_phylo_tips.json
 # and then use merge-json.py to add that info to the annotations2.json
@@ -187,14 +192,15 @@ $(PROPINQUITY_OUT_DIR)/annotated_supertree/annotations.json: $(PROPINQUITY_OUT_D
 		$(PROPINQUITY_OUT_DIR)/annotated_supertree/annotations2.json \
 		> $(PROPINQUITY_OUT_DIR)/annotated_supertree/annotations.json
 
+# use find + xargs for wildcard expansion to guard against arg list too long
 clean2:
-	rm -f $(PROPINQUITY_OUT_DIR)/subproblems/scratch/*.tre
-	rm -f $(PROPINQUITY_OUT_DIR)/subproblems/scratch/*.md5
-	rm -f $(PROPINQUITY_OUT_DIR)/subproblems/scratch/*.txt
-	rm -f $(PROPINQUITY_OUT_DIR)/subproblems/*.tre
-	rm -f $(PROPINQUITY_OUT_DIR)/subproblems/*.md5
-	rm -f $(PROPINQUITY_OUT_DIR)/subproblems/*.txt
-	rm -f $(PROPINQUITY_OUT_DIR)/subproblem_solutions/*.tre
-	rm -f $(PROPINQUITY_OUT_DIR)/annotated_supertree/*.json
+	find $(PROPINQUITY_OUT_DIR)/subproblems/scratch/ -name "*.tre" | xargs rm -f
+	find $(PROPINQUITY_OUT_DIR)/subproblems/scratch/ -name "*.md5" | xargs rm -f
+	find $(PROPINQUITY_OUT_DIR)/subproblems/scratch/ -name "*.txt" | xargs rm -f
+	find $(PROPINQUITY_OUT_DIR)/subproblems/ -name "*.tre" | xargs rm -f
+	find $(PROPINQUITY_OUT_DIR)/subproblems/ -name "*.md5" | xargs rm -f
+	find $(PROPINQUITY_OUT_DIR)/subproblems/ -name "*.txt" | xargs rm -f
+	find $(PROPINQUITY_OUT_DIR)/subproblem_solutions/ -name "*.tre" | xargs rm -f
+	find $(PROPINQUITY_OUT_DIR)/annotated_supertree/ -name "*.json" | xargs rm -f
 	rm -f $(PROPINQUITY_OUT_DIR)/labelled_supertree/simplified_ottnames.log
 	rm -f $(PROPINQUITY_OUT_DIR)/labelled_supertree/simplified_ottnames_without_monotypic.log
