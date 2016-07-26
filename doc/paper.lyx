@@ -7,6 +7,7 @@
 \textclass paper
 \begin_preamble
 \usepackage{algorithm,algpseudocode}
+\usepackage{lmodern}
 \end_preamble
 \use_default_options true
 \maintain_unincluded_children false
@@ -166,12 +167,12 @@ We present a new supertree method and software implementation that enables
 \emph on
 peyotl
 \emph default
- - a python library for basic manipulating phylogenetic and taxonomic informatio
-n; 
+ - a python library for basic manipulation of phylogenetic and taxonomic
+ information; 
 \emph on
 otcetera
 \emph default
- - a set of C++ tools that perform most of the steps of the pipeline; and
+ - a set of C++ tools that performs most of the steps of the pipeline; and
  
 \emph on
 propinquity
@@ -225,8 +226,8 @@ key "McTavishEtAt2015"
 propinquity
 \emph default
 ) that summarizes and integrates these smaller source trees and the taxonomy
- tree into a single supertree and the noteworth tools for manipulating and
- solving supertrees in the 
+ tree into a single supertree and the noteworthy tools for manipulating
+ and solving supertrees in the 
 \emph on
 otcetera
 \emph default
@@ -356,7 +357,7 @@ th input tree.
 \begin_inset Formula $\summaryTree(i)$
 \end_inset
 
- or none of the edges in the 
+ or none of the edges in 
 \begin_inset Formula $T_{i}$
 \end_inset
 
@@ -449,6 +450,25 @@ displays
 \end_inset
 
 .
+ Operationally, we can find the most recent common ancestor (MRCA) node
+ of 
+\begin_inset Formula $\mathcal{L}(i,j)$
+\end_inset
+
+ in 
+\begin_inset Formula $\summaryTree$
+\end_inset
+
+; the summary tree displays 
+\begin_inset Formula $j$
+\end_inset
+
+ if and only if that MRCA node is not an ancestor of any member of the exclude
+ set of 
+\begin_inset Formula $j$
+\end_inset
+
+.
  We say that edge 
 \begin_inset Formula $k$
 \end_inset
@@ -478,28 +498,9 @@ supported by
 \end_inset
 
 .
- Operationally, we can find the most recent common ancestor (MRCA) node
- of 
-\begin_inset Formula $\mathcal{L}(i,j)$
-\end_inset
-
- in 
-\begin_inset Formula $\summaryTree$
-\end_inset
-
-; the summary tree displays 
-\begin_inset Formula $j$
-\end_inset
-
- if and only if that MRCA node is not an ancestor of any member of the exclude
- set of 
-\begin_inset Formula $j$
-\end_inset
-
-.
  
 \begin_inset Note Note
-status open
+status collapsed
 
 \begin_layout Plain Layout
 We can consider whether or not an edge in an input tree is displayed by
@@ -966,7 +967,7 @@ float
  to multiple positions.
  
 \begin_inset Note Note
-status open
+status collapsed
 
 \begin_layout Plain Layout
 Our current method of solving subproblems (BUILD) places each 
