@@ -1675,7 +1675,7 @@ Preprocessing steps
 \begin_layout Standard
 Propinquity was designed to function as a part of the Open Tree of Life
  software architecture, so the first few steps of the pipeline involve transform
-ing artifacts from that project into a set rooted trees and a phylogenetic
+ing artifacts from that project into a set of rooted trees and a phylogenetic
  taxonomy.
  The phylesystem API 
 \begin_inset CommandInset citation
@@ -1695,7 +1695,7 @@ reference "fig:pipeline"
 
 \end_inset
 
-) collect a list trees to include (in the 
+) collect a list of trees to include (in the 
 \family typewriter
 phylo_input
 \family default
@@ -5671,7 +5671,7 @@ Find
 \begin_inset CommandInset bibtex
 LatexCommand bibtex
 bibfiles "otcetera"
-options "plainnat"
+options "upmplainnat"
 
 \end_inset
 
