@@ -2558,6 +2558,77 @@ This modified algorithm recovers the original BUILD algorithm of only rooted
 \end_layout
 
 \begin_layout Standard
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+OK, so the order for the first iteration is something like
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $O(L)$
+\end_inset
+
+ to put each leaf in its own category.
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $O(N)$
+\end_inset
+
+ to visit each split
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $O(L)$
+\end_inset
+
+ to do the merging.
+\end_layout
+
+\begin_layout Plain Layout
+Then to do the checking, we have 
+\begin_inset Formula $O(\sum_{i=1}^{n}n_{exclude}^{i})$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+So this turns in to 
+\begin_inset Formula $O(L+N+E)$
+\end_inset
+
+ where 
+\begin_inset Formula $E$
+\end_inset
+
+ is the total number of taxa excluded.
+\end_layout
+
+\begin_layout Plain Layout
+Then we do this 
+\begin_inset Formula $N$
+\end_inset
+
+ times as most, so we get 
+\begin_inset Formula $O(N^{2}+NL+N^{2}\frac{E}{N})$
+\end_inset
+
+.
+ If 
+\begin_inset Formula $E/N$
+\end_inset
+
+ is the average number of excluded taxa.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
 The order of the algorithm is 
 \begin_inset Formula $O(N^{2}+LN)$
 \end_inset
