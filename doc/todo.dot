@@ -42,6 +42,8 @@ propinquity_list_trees_that_break_taxa [label="propinquity: list trees\nthat bre
 
 find_trees_for_synthesis [label="Find trees for synthesis"]
 
+find_trees_for_synthesis -> "Scan for low-conflict trees"
+
 explain_relations -> diagram_for_terms
 
 # subgraph cluster_vivax {
