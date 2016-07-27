@@ -2528,12 +2528,16 @@ key "AhoSSU1981"
 \end_inset
 
  applies to a collection of rooted triplets.
- Instead of decomposing input splits into a collection of rooted triplets,
- we instead modify the BUILD algorithm slightly to apply directly to larger
- rooted splits.
+ Instead of decomposing each input split into a collection of rooted triplets,
+ we instead modify the BUILD algorithm apply directly to larger rooted splits.
  The modified BUILD algorithm constructs a tree compatible with a collection
  of rooted splits, and returns failure if such a tree does not exist.
- The algorithm begins by partitioning the leaf set into subgroups, where
+ 
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Plain Layout
+The algorithm begins by partitioning the leaf set into subgroups, where
  two leaves are assigned to the same subgroup if they are both in the include
  set of any input triplet.
  The include set of every split is thus contained in a single subgroup.
@@ -2549,12 +2553,45 @@ key "AhoSSU1981"
  compatible.
 \end_layout
 
-\begin_layout Standard
-This modified algorithm recovers the original BUILD algorithm of only rooted
+\end_inset
+
+ This modified algorithm recovers the original BUILD algorithm of only rooted
  triplets are supplied as input.
- When larger splits are supplied as input, the algorithm should still be
- correct, since the results are the same as you would expect if you actually
- decomposed each split into all implied triplets.
+ When larger splits are supplied as input, the results are the same as if
+ each was was decomposed into all implied triplets.
+ The modified build algorithm has order 
+\begin_inset Formula $O(N^{2}+N^{2}E+NL)$
+\end_inset
+
+ where 
+\begin_inset Formula $N$
+\end_inset
+
+ is the number of splits pass in, 
+\begin_inset Formula $E$
+\end_inset
+
+ is the average size of the exclude group, and 
+\begin_inset Formula $L$
+\end_inset
+
+ is the total number of leaves.
+ This simplifies to 
+\begin_inset Formula $O(N^{2})$
+\end_inset
+
+ if all splits are triplets.
+ It may be possible to decrease this order to 
+\begin_inset Formula $O(?)$
+\end_inset
+
+ by sharing work between recursive invocations of BUILD, but such algorithms
+ have never been implemented.
+\end_layout
+
+\begin_layout Standard
+Hmm...
+ e-mail that other guy.
 \end_layout
 
 \begin_layout Standard
@@ -2626,40 +2663,6 @@ Then we do this
 \end_inset
 
 
-\end_layout
-
-\begin_layout Standard
-The order of the algorithm is 
-\begin_inset Formula $O(N^{2}+LN)$
-\end_inset
-
-, where 
-\begin_inset Formula $N$
-\end_inset
-
- is the number of input splits and 
-\begin_inset Formula $L$
-\end_inset
-
- is the number of leaves.
- This is because the merge operation has a cost that is 
-\begin_inset Formula $O(N+L)$
-\end_inset
-
-, and there can be at most 
-\begin_inset Formula $N$
-\end_inset
-
- merge operations.
- In case all the inputs are triplets, the cost is 
-\begin_inset Formula $O(N^{2})$
-\end_inset
-
- because the number of leaves is proportional to the number of triplets.
- Some published work has attempted to decrease this order by sharing work
- between the different levels of recursion.
- However, it is not clear if this is right, since it is based on an algorithm
- that might not work.
 \end_layout
 
 \begin_layout Standard
