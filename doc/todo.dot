@@ -14,6 +14,8 @@ Features [color="blue", fillcolor="white"]
 
 Fixes [color="red", fillcolor="white"]
 
+Fixes -> "Don't sink taxa\ntoo far down"
+
 Grants [color="orange", fillcolor="white"]
 
 Papers [color="magenta", fillcolor="white"]
@@ -21,19 +23,26 @@ Papers [color="magenta", fillcolor="white"]
 incertae_sedis [label=<Handle <i>incertae sedis</i> taxa>]
 
 incertae_sedis -> place_taxa_using_highest_ranked_tree
+place_taxa_using_highest_ranked_tree [label="Place taxa using\nhighest-ranked tree"]
 #incertae_sedis -> try_including_unplaced_taxa_to_see_what_happens
 incertae_sedis -> name_clades_when_taxa_placed_within
 
 name_clades_when_taxa_placed_within -> otcetera_read_taxonomy
+name_clades_when_taxa_placed_within [label="Name clades when\ntaxa place within"]
 
 otcetera_read_taxonomy [label="otcetera: read\ntaxonomy", color="green"]
 
-understand_broken_taxa
+understand_broken_taxa [label="Understand\nbroken taxa"]
 
 understand_broken_taxa -> show_name_for_broken_taxa
+show_name_for_broken_taxa [label="Show name for\nbroken taxa"]
 understand_broken_taxa -> propinquity_list_trees_that_break_taxa
 
 propinquity_list_trees_that_break_taxa [label="propinquity: list trees\nthat break taxa", color="green"]
+
+find_trees_for_synthesis [label="Find trees for synthesis"]
+
+explain_relations -> diagram_for_terms
 
 # subgraph cluster_vivax {
 #
