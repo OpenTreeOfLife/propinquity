@@ -1705,6 +1705,53 @@ phylo_snapshot
 \family default
  subdirectory) to make it easier to replicate the operation (because the
  collection of trees and the tree files change due to curation).
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename pipeline-tools.png
+	height 75pheight%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Organization of the 
+\emph on
+propinquity
+\emph default
+ pipeline.
+ Each pentagon labels a program (blue for otcetera-based tools and red for
+ python scripts in the propinquity or peyotl repository) that performs the
+ important operations in each step.
+ The output of each step corresponds to a subdirectory of the propinquity
+ system which will hold the output artifacts for the step.
+\end_layout
+
+\end_inset
+
+
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:pipeline"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Subsubsection
@@ -1947,6 +1994,276 @@ reference "fig:cleaned-phylo-example"
 \end_inset
 
  would be exemplified.
+ 
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Figures/cleaned_phylo/ex_2@tree1.tre.svg
+	scale 40
+	rotateOrigin center
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Tree 1
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset space \hfill{}
+\end_inset
+
+
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Figures/cleaned_phylo/ex_2@tree2.tre.svg
+	scale 40
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Tree 2
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset space \hfill{}
+\end_inset
+
+
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Figures/cleaned_ott/cleaned_ott.tre.svg
+	scale 40
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Taxonomy Tree
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Input trees and taxonomy tree
+\end_layout
+
+\end_inset
+
+
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:cleaned-phylo-example"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+ 
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Figures/exemplified_phylo/ex_2@tree1.tre.svg
+	scale 40
+	rotateOrigin center
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Tree 1
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset space \hfill{}
+\end_inset
+
+
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Figures/exemplified_phylo/ex_2@tree2.tre.svg
+	scale 40
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Tree 2
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset space \hfill{}
+\end_inset
+
+
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Figures/exemplified_phylo/taxonomy.tre.svg
+	scale 40
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Pruned taxonomy tree 
+\begin_inset Formula $\prunedTaxonomy$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Exemplified Input trees and taxonomy tree.
+ E in tree1 is exemplified by E1.
+ Pruned taxa are E2, F2, and D.
+ E and F remain as monotypic taxa in the pruned taxonomy 
+\begin_inset Formula $\prunedTaxonomy$
+\end_inset
+
+.
+\end_layout
+
+\end_inset
+
+
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:exemplify-example"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Subsection
@@ -2173,6 +2490,7 @@ reference "fig:subproblems-example"
 
  shows the subproblems that would be emitted as a result of this set of
  inputs.
+ 
 \end_layout
 
 \begin_layout Standard
@@ -2195,7 +2513,209 @@ e with the first tree; 2,838 subproblems were trivial in this way.
 \begin_inset Float figure
 wide false
 sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename Figures/exemplified_phylo_taxonomy_uncontested.tre.svg
+	width 35text%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Uncontested edges.
+ Here the taxon 
+\emph on
+ABCD
+\emph default
+ is uncontested.
+ The edge to the ABCD node is colored red.
+\end_layout
+
+\end_inset
+
+
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:detect-uncontested-example"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset Float figure
+wide false
+sideways false
 status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Figures/subproblems/14/1.tre.svg
+	width 30text%
+
+\end_inset
+
+
+\begin_inset space \hfill{}
+\end_inset
+
+
+\begin_inset Graphics
+	filename Figures/subproblems/14/2.tre.svg
+	width 30text%
+
+\end_inset
+
+
+\begin_inset space \hfill{}
+\end_inset
+
+
+\begin_inset Graphics
+	filename Figures/subproblems/14/3.tre.svg
+	width 30text%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Subproblem 
+\emph on
+ABCD
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Figures/subproblems/17/1.tre.svg
+	width 30text%
+
+\end_inset
+
+
+\begin_inset space \hfill{}
+\end_inset
+
+
+\begin_inset Graphics
+	filename Figures/subproblems/17/2.tre.svg
+	width 30text%
+
+\end_inset
+
+
+\begin_inset space \hfill{}
+\end_inset
+
+
+\begin_inset Graphics
+	filename Figures/subproblems/17/3.tre.svg
+	width 30text%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Subproblem 
+\emph on
+root
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Subproblems generated from the exemplified trees shown in figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:exemplify-example"
+
+\end_inset
+
+.
+ A trivial statemen from the first tree that a taxon labelled 
+\begin_inset Formula $ABCD$
+\end_inset
+
+ is sister to 
+\begin_inset Formula $E$
+\end_inset
+
+ has been omitted, because trees with only 2 leaves do not contain phylogenetic
+ information.
+\end_layout
+
+\end_inset
+
+
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:subproblems-example"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
 
 \begin_layout Plain Layout
 \begin_inset Float figure
@@ -2238,7 +2758,6 @@ sideways false
 status collapsed
 
 \begin_layout Plain Layout
- 
 \begin_inset Graphics
 	filename Figures/uncontested_worsens_score/acb2.svg
 	scale 60
@@ -2398,10 +2917,6 @@ name "fig:decompose-worsens"
 
 \end_layout
 
-\begin_layout Plain Layout
-
-\end_layout
-
 \end_inset
 
 
@@ -2517,6 +3032,151 @@ key "AhoSSU1981"
  Using the BUILD algorithm to construct the subproblem summary tree satisfies
  criterion 3, because trees from the BUILD algorithm do not contain unsupported
  branches.
+ 
+\begin_inset Float algorithm
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+begin{algorithmic}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+Require An ordered list of $M$ splits, $
+\backslash
+mathcal{R} = [R_1, R_2, R_3, 
+\backslash
+ldots, R3, 
+\backslash
+ldots, R_M]$
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+State $
+\backslash
+mathcal{C} = [R_1]$
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+For{each split $i$ in $[2, 3 
+\backslash
+ldots M]$}
+\end_layout
+
+\begin_layout Plain Layout
+
+   
+\backslash
+State $
+\backslash
+mathcal{T} 
+\backslash
+leftarrow 
+\backslash
+mathcal{C} + R_i$ 
+\backslash
+Comment{where `+' means concatenating 2 lists}
+\end_layout
+
+\begin_layout Plain Layout
+
+   
+\backslash
+If{
+\backslash
+textsc{BUILD}$(
+\backslash
+mathcal{T})$ does not return null}
+\end_layout
+
+\begin_layout Plain Layout
+
+      
+\backslash
+State $
+\backslash
+mathcal{C} 
+\backslash
+leftarrow 
+\backslash
+mathcal{T}$
+\end_layout
+
+\begin_layout Plain Layout
+
+   
+\backslash
+EndIf
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+EndFor{}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+State
+\backslash
+Return $
+\backslash
+mathcal{C}$
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+end{algorithmic}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "alg:ConsistentSplitsFromRankedList"
+
+\end_inset
+
+ConsistentSplitsFromRankedList
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -2803,160 +3463,26 @@ Proof that subtrees cannot be moved rootward without violating a split:
 , then such a split cannot be satisfied.
 \end_layout
 
-\begin_layout Subsubsection
-Solution grafting
-\end_layout
-
 \begin_layout Standard
-Since each uncontested taxon that is used for decomposition occurs in one
- subproblem as a leaf node, and one subproblem as a root node, ungrafting
- simply consists of merging these two nodes.
-\end_layout
+\begin_inset Float figure
+wide false
+sideways false
+status open
 
-\begin_layout Subsubsection
-Unpruning
-\end_layout
+\begin_layout Plain Layout
+\begin_inset space \hfill{}
+\end_inset
 
-\begin_layout Subsubsection
-Naming unnamed nodes
-\end_layout
 
-\begin_layout Subsubsection
-Annotation
-\end_layout
-
-\begin_layout Subsection
-asdf
-\end_layout
-
-\begin_layout Standard
-So, for solving subproblems, we use the BUILD algorithm.
- The BUILD algorithm takes a collection of rooted triplets as input, and
- constructs a consistent tree if possible.
-\end_layout
-
-\begin_layout Subsection
-Outline
-\end_layout
-
-\begin_layout Standard
-\begin_inset Float algorithm
+\begin_inset Float figure
 wide false
 sideways false
 status collapsed
 
 \begin_layout Plain Layout
-\begin_inset ERT
-status open
-
-\begin_layout Plain Layout
-
-
-\backslash
-begin{algorithmic}
-\end_layout
-
-\begin_layout Plain Layout
-
-
-\backslash
-Require An ordered list of $M$ splits, $
-\backslash
-mathcal{R} = [R_1, R_2, R_3, 
-\backslash
-ldots, R3, 
-\backslash
-ldots, R_M]$
-\end_layout
-
-\begin_layout Plain Layout
-
-
-\backslash
-State $
-\backslash
-mathcal{C} = [R_1]$
-\end_layout
-
-\begin_layout Plain Layout
-
-
-\backslash
-For{each split $i$ in $[2, 3 
-\backslash
-ldots M]$}
-\end_layout
-
-\begin_layout Plain Layout
-
-   
-\backslash
-State $
-\backslash
-mathcal{T} 
-\backslash
-leftarrow 
-\backslash
-mathcal{C} + R_i$ 
-\backslash
-Comment{where `+' means concatenating 2 lists}
-\end_layout
-
-\begin_layout Plain Layout
-
-   
-\backslash
-If{
-\backslash
-textsc{BUILD}$(
-\backslash
-mathcal{T})$ does not return null}
-\end_layout
-
-\begin_layout Plain Layout
-
-      
-\backslash
-State $
-\backslash
-mathcal{C} 
-\backslash
-leftarrow 
-\backslash
-mathcal{T}$
-\end_layout
-
-\begin_layout Plain Layout
-
-   
-\backslash
-EndIf
-\end_layout
-
-\begin_layout Plain Layout
-
-
-\backslash
-EndFor{}
-\end_layout
-
-\begin_layout Plain Layout
-
-
-\backslash
-State
-\backslash
-Return $
-\backslash
-mathcal{C}$
-\end_layout
-
-\begin_layout Plain Layout
-
-
-\backslash
-end{algorithmic}
-\end_layout
+\begin_inset Graphics
+	filename Figures/subproblem_solutions/ott14.tre.svg
+	scale 45
 
 \end_inset
 
@@ -2967,14 +3493,32 @@ end{algorithmic}
 \begin_inset Caption Standard
 
 \begin_layout Plain Layout
-\begin_inset CommandInset label
-LatexCommand label
-name "alg:ConsistentSplitsFromRankedList"
+Solution to subproblem 
+\emph on
+ABCD
+\end_layout
 
 \end_inset
 
-ConsistentSplitsFromRankedList
+
 \end_layout
+
+\end_inset
+
+
+\begin_inset space \hfill{}
+\end_inset
+
+
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Figures/subproblem_solutions/ott17.tre.svg
+	scale 45
 
 \end_inset
 
@@ -2982,6 +3526,85 @@ ConsistentSplitsFromRankedList
 \end_layout
 
 \begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Solution to subproblem 
+\emph on
+root
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset space \hfill{}
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Solutions.
+ Each solution tree has a taxon at the root (although it is not currently
+ shown in the figure).
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection
+Solution grafting
+\end_layout
+
+\begin_layout Standard
+Since each uncontested taxon that is used for decomposition occurs in one
+ subproblem as a leaf node, and one subproblem as a root node, ungrafting
+ simply consists of merging these two nodes.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename Figures/grafted_solution/grafted_solution_ottnames.tre.svg
+	scale 50
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Grafted solution.
+ The nodes E and F are monotypic here, but will end up being polytypic after
+ unpruning is performed.
+\end_layout
+
+\end_inset
+
 
 \end_layout
 
@@ -2991,6 +3614,180 @@ ConsistentSplitsFromRankedList
 \end_layout
 
 \begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Support for each node in the tree.
+ How do we show this?
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection
+Unpruning
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename Figures/labelled_supertree/labelled_supertree.tre.svg
+	scale 50
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Unpruned tree with internal taxa.
+ Nodes E2, F2, and D have been re-added to the tree.
+ The nodes E and F are no longer monotypic.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection
+Naming unnamed nodes
+\end_layout
+
+\begin_layout Standard
+In order to annotate each node in the summary supertree, it is first necessary
+ that each node have a unique name.
+ Nodes whose include group correspond exactly to the include group of a
+ node in the taxonomy are given the same name as the corresponding taxonomy
+ node.
+ These names are of the form 
+\begin_inset Formula $ottX$
+\end_inset
+
+ where 
+\begin_inset Formula $X$
+\end_inset
+
+ is an integer OTT id.
+ Leaf nodes are of course named already, so this is only an issue for internal
+ nodes.
+ (Although, how/where do we handle monotypic ancestors of forking nodes
+ again? This is in the unpruner, right?) However, it is necessary to generate
+ names for other nodes.
+ These nodes will never be monotypic, since there is no reason to generate
+ or retain monotypic nodes that do not have an OTT id.
+\end_layout
+
+\begin_layout Standard
+When generating names for unnamed internal nodes, we seek to generate names
+ that have some chance of being usable when a new synthesis tree is generated.
+ We therefore generate names for each unnamed node 
+\begin_inset Formula $n$
+\end_inset
+
+ of the form 
+\begin_inset Formula $mrcaottX_{1}ottX_{2}$
+\end_inset
+
+, where 
+\begin_inset Formula $X_{1}$
+\end_inset
+
+ and 
+\begin_inset Formula $X_{2}$
+\end_inset
+
+ are the OTT ids for two leaves, and 
+\begin_inset Formula $n$
+\end_inset
+
+ is the MRCA of these leaves.
+ When queries attempt to access a node of this form, then we perform an
+ MRCA query.
+ This allows names from version 
+\begin_inset Formula $v$
+\end_inset
+
+ of the tree to be used on version 
+\begin_inset Formula $v+1$
+\end_inset
+
+ of the tree, even if different canonical values are chosen for 
+\begin_inset Formula $X_{1}$
+\end_inset
+
+ and 
+\begin_inset Formula $X_{2}$
+\end_inset
+
+ in these two trees.
+ In any given version of the tree the canonical form is used to reference
+ nodes for the purpose of providing annotations.
+\end_layout
+
+\begin_layout Standard
+To determine the canonical form we use the following procedure.
+ We first associate each node with the smallest ottid of a descendant leaf.
+ For each unnamed node 
+\begin_inset Formula $n$
+\end_inset
+
+, we find the two children the smallest value 
+\begin_inset Formula $X_{1}$
+\end_inset
+
+ and the second smallest value 
+\begin_inset Formula $X_{2}$
+\end_inset
+
+ of this attribute.
+ Since these smallest ottids are in separate subtrees, the node 
+\begin_inset Formula $n$
+\end_inset
+
+ is the 
+\end_layout
+
+\begin_layout Subsubsection
+Annotation
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Subsection
+Outline
+\end_layout
+
+\begin_layout Plain Layout
 In order to achieve these criteria, we have 
 \end_layout
 
@@ -3063,65 +3860,15 @@ Label the solution
 Generate annotations
 \end_layout
 
-\begin_layout Standard
+\begin_layout Plain Layout
 import READMEs?
-\end_layout
-
-\begin_layout Standard
-\begin_inset Float figure
-wide false
-sideways false
-status open
-
-\begin_layout Plain Layout
-\align center
-\begin_inset Graphics
-	filename pipeline-tools.png
-	height 75pheight%
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Plain Layout
-\begin_inset Caption Standard
-
-\begin_layout Plain Layout
-Organization of the 
-\emph on
-propinquity
-\emph default
- pipeline.
- Each pentagon labels a program (blue for otcetera-based tools and red for
- python scripts in the propinquity or peyotl repository) that performs the
- important operations in each step.
- The output of each step corresponds to a subdirectory of the propinquity
- system which will hold the output artifacts for the step.
-\end_layout
-
-\end_inset
-
-
-\begin_inset CommandInset label
-LatexCommand label
-name "fig:pipeline"
-
-\end_inset
-
-
-\end_layout
-
-\end_inset
-
-
 \end_layout
 
 \begin_layout Subsection
 Export names of trees from collections
 \end_layout
 
-\begin_layout Standard
+\begin_layout Plain Layout
 The ranked list of tree names is specified as an ordered list of 
 \begin_inset Quotes eld
 \end_inset
@@ -3172,7 +3919,7 @@ tree names.
 Prune the reference taxonomy
 \end_layout
 
-\begin_layout Standard
+\begin_layout Plain Layout
 
 \emph on
 Explanation
@@ -3423,7 +4170,7 @@ t.tre
 Snapshot input studies
 \end_layout
 
-\begin_layout Standard
+\begin_layout Plain Layout
 
 \emph on
 Explanation
@@ -3446,7 +4193,7 @@ Output: (1) copies of the otNexSON files from the specified SHA.
  (2) record of tree identifiers 
 \end_layout
 
-\begin_layout Standard
+\begin_layout Plain Layout
 Impl.: None - similar operation done by gcmdr.
  
 \end_layout
@@ -3481,139 +4228,7 @@ output: None
 Snapshot input trees
 \end_layout
 
-\begin_layout Standard
-\begin_inset Float figure
-wide false
-sideways false
-status open
-
 \begin_layout Plain Layout
-\begin_inset Float figure
-wide false
-sideways false
-status open
-
-\begin_layout Plain Layout
-\begin_inset Graphics
-	filename Figures/cleaned_phylo/ex_2@tree1.tre.svg
-	scale 40
-	rotateOrigin center
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Plain Layout
-\begin_inset Caption Standard
-
-\begin_layout Plain Layout
-Tree 1
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\end_inset
-
-
-\begin_inset space \hfill{}
-\end_inset
-
-
-\begin_inset Float figure
-wide false
-sideways false
-status collapsed
-
-\begin_layout Plain Layout
-\begin_inset Graphics
-	filename Figures/cleaned_phylo/ex_2@tree2.tre.svg
-	scale 40
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Plain Layout
-\begin_inset Caption Standard
-
-\begin_layout Plain Layout
-Tree 2
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\end_inset
-
-
-\begin_inset space \hfill{}
-\end_inset
-
-
-\begin_inset Float figure
-wide false
-sideways false
-status collapsed
-
-\begin_layout Plain Layout
-\begin_inset Graphics
-	filename Figures/cleaned_ott/cleaned_ott.tre.svg
-	scale 40
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Plain Layout
-\begin_inset Caption Standard
-
-\begin_layout Plain Layout
-Taxonomy Tree
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Plain Layout
-\begin_inset Caption Standard
-
-\begin_layout Plain Layout
-Input trees and taxonomy tree
-\end_layout
-
-\end_inset
-
-
-\begin_inset CommandInset label
-LatexCommand label
-name "fig:cleaned-phylo-example"
-
-\end_inset
-
-
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
 
 \emph on
 Explanation
@@ -3637,7 +4252,7 @@ Output: (1) one otNexSON for each tree.
  
 \end_layout
 
-\begin_layout Standard
+\begin_layout Plain Layout
 Current Impl.: None - similar operation done by gcmdr.
  
 \end_layout
@@ -3672,7 +4287,7 @@ output: None
 Pruning of input trees
 \end_layout
 
-\begin_layout Standard
+\begin_layout Plain Layout
 
 \emph on
 Explanation
@@ -3704,12 +4319,12 @@ Output: (1)
  
 \end_layout
 
-\begin_layout Standard
+\begin_layout Plain Layout
 Current Impl.: None - similar operation done by gcmdr.
  
 \end_layout
 
-\begin_layout Standard
+\begin_layout Plain Layout
 TODO for Impl.: (1) Flat file implementation needed.
  (2) record of edits needed.
  (3) identifiers for the internal nodes would be nice for reporting the
@@ -3722,150 +4337,7 @@ TODO for Impl.: (1) Flat file implementation needed.
 Expand tips mapped to non-terminal taxa
 \end_layout
 
-\begin_layout Standard
-\begin_inset Float figure
-wide false
-sideways false
-status open
-
 \begin_layout Plain Layout
-\begin_inset Float figure
-wide false
-sideways false
-status collapsed
-
-\begin_layout Plain Layout
-\begin_inset Graphics
-	filename Figures/exemplified_phylo/ex_2@tree1.tre.svg
-	scale 40
-	rotateOrigin center
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Plain Layout
-\begin_inset Caption Standard
-
-\begin_layout Plain Layout
-Tree 1
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\end_inset
-
-
-\begin_inset space \hfill{}
-\end_inset
-
-
-\begin_inset Float figure
-wide false
-sideways false
-status collapsed
-
-\begin_layout Plain Layout
-\begin_inset Graphics
-	filename Figures/exemplified_phylo/ex_2@tree2.tre.svg
-	scale 40
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Plain Layout
-\begin_inset Caption Standard
-
-\begin_layout Plain Layout
-Tree 2
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\end_inset
-
-
-\begin_inset space \hfill{}
-\end_inset
-
-
-\begin_inset Float figure
-wide false
-sideways false
-status collapsed
-
-\begin_layout Plain Layout
-\begin_inset Graphics
-	filename Figures/exemplified_phylo/taxonomy.tre.svg
-	scale 40
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Plain Layout
-\begin_inset Caption Standard
-
-\begin_layout Plain Layout
-Pruned taxonomy tree 
-\begin_inset Formula $\prunedTaxonomy$
-\end_inset
-
-
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Plain Layout
-\begin_inset Caption Standard
-
-\begin_layout Plain Layout
-Exemplified Input trees and taxonomy tree.
- E in tree1 is exemplified by E1.
- Pruned taxa are E2, F2, and D.
- E and F remain as monotypic taxa in the pruned taxonomy 
-\begin_inset Formula $\prunedTaxonomy$
-\end_inset
-
-.
-\end_layout
-
-\end_inset
-
-
-\begin_inset CommandInset label
-LatexCommand label
-name "fig:exemplify-example"
-
-\end_inset
-
-
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
 
 \emph on
 Explanation
@@ -3924,16 +4396,16 @@ Output:
  
 \end_layout
 
-\begin_layout Standard
+\begin_layout Plain Layout
 Current Impl.: None.
  
 \end_layout
 
-\begin_layout Standard
+\begin_layout Plain Layout
 TODO: write this 
 \end_layout
 
-\begin_layout Standard
+\begin_layout Plain Layout
 URL for output page linking to output trees: 
 \begin_inset Flex URL
 status collapsed
@@ -3970,7 +4442,7 @@ Prune taxonomy down to tips represented in
 
 \end_layout
 
-\begin_layout Standard
+\begin_layout Plain Layout
 
 \emph on
 Explanation
@@ -4007,7 +4479,7 @@ Output:
  the pruned taxonomy 
 \end_layout
 
-\begin_layout Standard
+\begin_layout Plain Layout
 Current Impl.: 
 \emph on
 otc-nonterminals-to-exemplars
@@ -4015,7 +4487,7 @@ otc-nonterminals-to-exemplars
  does this.
 \end_layout
 
-\begin_layout Standard
+\begin_layout Plain Layout
 URL for output: 
 \begin_inset Flex URL
 status collapsed
@@ -4035,212 +4507,7 @@ nomy.tre
 Decompose the inputs into subproblems of uncontested taxa 
 \end_layout
 
-\begin_layout Standard
-\begin_inset Float figure
-wide false
-sideways false
-status open
-
 \begin_layout Plain Layout
-\align center
-\begin_inset Graphics
-	filename Figures/exemplified_phylo_taxonomy_uncontested.tre.svg
-	width 35text%
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Plain Layout
-\begin_inset Caption Standard
-
-\begin_layout Plain Layout
-Uncontested edges.
- Here the taxon 
-\emph on
-ABCD
-\emph default
- is uncontested.
- The edge to the ABCD node is colored red.
-\end_layout
-
-\end_inset
-
-
-\begin_inset CommandInset label
-LatexCommand label
-name "fig:detect-uncontested-example"
-
-\end_inset
-
-
-\end_layout
-
-\end_inset
-
-
-\begin_inset Float figure
-wide false
-sideways false
-status open
-
-\begin_layout Plain Layout
-\begin_inset Float figure
-wide false
-sideways false
-status open
-
-\begin_layout Plain Layout
-\begin_inset Graphics
-	filename Figures/subproblems/14/1.tre.svg
-	width 30text%
-
-\end_inset
-
-
-\begin_inset space \hfill{}
-\end_inset
-
-
-\begin_inset Graphics
-	filename Figures/subproblems/14/2.tre.svg
-	width 30text%
-
-\end_inset
-
-
-\begin_inset space \hfill{}
-\end_inset
-
-
-\begin_inset Graphics
-	filename Figures/subproblems/14/3.tre.svg
-	width 30text%
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Plain Layout
-\begin_inset Caption Standard
-
-\begin_layout Plain Layout
-Subproblem 
-\emph on
-ABCD
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Plain Layout
-\begin_inset Float figure
-wide false
-sideways false
-status open
-
-\begin_layout Plain Layout
-\begin_inset Graphics
-	filename Figures/subproblems/17/1.tre.svg
-	width 30text%
-
-\end_inset
-
-
-\begin_inset space \hfill{}
-\end_inset
-
-
-\begin_inset Graphics
-	filename Figures/subproblems/17/2.tre.svg
-	width 30text%
-
-\end_inset
-
-
-\begin_inset space \hfill{}
-\end_inset
-
-
-\begin_inset Graphics
-	filename Figures/subproblems/17/3.tre.svg
-	width 30text%
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Plain Layout
-\begin_inset Caption Standard
-
-\begin_layout Plain Layout
-Subproblem 
-\emph on
-root
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Plain Layout
-\begin_inset Caption Standard
-
-\begin_layout Plain Layout
-Subproblems generated from the exemplified trees shown in figure 
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "fig:exemplify-example"
-
-\end_inset
-
-.
- A trivial statemen from the first tree that a taxon labelled 
-\begin_inset Formula $ABCD$
-\end_inset
-
- is sister to 
-\begin_inset Formula $E$
-\end_inset
-
- has been omitted, because trees with only 2 leaves do not contain phylogenetic
- information.
-\end_layout
-
-\end_inset
-
-
-\begin_inset CommandInset label
-LatexCommand label
-name "fig:subproblems-example"
-
-\end_inset
-
-
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
 
 \emph on
 Explanation:
@@ -4269,7 +4536,7 @@ Output: subproblems.
  
 \end_layout
 
-\begin_layout Standard
+\begin_layout Plain Layout
 Currently expressed (1) as one newick tree file per subproblem with the
  name SUBPROBLEMID.tre, and (2) a file called SUBPROBLEMID-tree-names.txt
  with a treefile name on each line or “TAXONOMY” indicating the source of
@@ -4278,7 +4545,7 @@ Currently expressed (1) as one newick tree file per subproblem with the
  
 \end_layout
 
-\begin_layout Standard
+\begin_layout Plain Layout
 Current Impl.: 
 \emph on
 otc-uncontested-decompose
@@ -4286,11 +4553,11 @@ otc-uncontested-decompose
  
 \end_layout
 
-\begin_layout Standard
+\begin_layout Plain Layout
 TODO for Impl.: 
 \end_layout
 
-\begin_layout Standard
+\begin_layout Plain Layout
 URL for output: 
 \begin_inset Flex URL
 status collapsed
@@ -4309,111 +4576,7 @@ http://files.opentreeoflife.org/synthesis/opentree5.0/output/subproblems/index.h
 Solve subproblems 
 \end_layout
 
-\begin_layout Standard
-\begin_inset Float figure
-wide false
-sideways false
-status open
-
 \begin_layout Plain Layout
-\begin_inset space \hfill{}
-\end_inset
-
-
-\begin_inset Float figure
-wide false
-sideways false
-status collapsed
-
-\begin_layout Plain Layout
-\begin_inset Graphics
-	filename Figures/subproblem_solutions/ott14.tre.svg
-	scale 45
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Plain Layout
-\begin_inset Caption Standard
-
-\begin_layout Plain Layout
-Solution to subproblem 
-\emph on
-ABCD
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\end_inset
-
-
-\begin_inset space \hfill{}
-\end_inset
-
-
-\begin_inset Float figure
-wide false
-sideways false
-status collapsed
-
-\begin_layout Plain Layout
-\begin_inset Graphics
-	filename Figures/subproblem_solutions/ott17.tre.svg
-	scale 45
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Plain Layout
-\begin_inset Caption Standard
-
-\begin_layout Plain Layout
-Solution to subproblem 
-\emph on
-root
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\end_inset
-
-
-\begin_inset space \hfill{}
-\end_inset
-
-
-\end_layout
-
-\begin_layout Plain Layout
-\begin_inset Caption Standard
-
-\begin_layout Plain Layout
-Solutions.
- Each solution tree has a taxon at the root (although it is not currently
- shown in the figure).
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
 For the sub-problem solver, we make iterative use of the BUILD algorithm.
  We process input trees in order of their priority.
  We use the BUILD algorithm to determine whether a given split in an input
@@ -4437,7 +4600,7 @@ Output: a tree for each subproblem - stored in a solutions dir under the
  
 \end_layout
 
-\begin_layout Standard
+\begin_layout Plain Layout
 See Algorithm 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -4452,75 +4615,7 @@ reference "alg:ConsistentSplitsFromRankedList"
 Assemble pruned summary tree from subproblem solutions
 \end_layout
 
-\begin_layout Standard
-\begin_inset Float figure
-wide false
-sideways false
-status open
-
 \begin_layout Plain Layout
-\align center
-\begin_inset Graphics
-	filename Figures/grafted_solution/grafted_solution_ottnames.tre.svg
-	scale 50
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Plain Layout
-\begin_inset Caption Standard
-
-\begin_layout Plain Layout
-Grafted solution.
- The nodes E and F are monotypic here, but will end up being polytypic after
- unpruning is performed.
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-\begin_inset Float figure
-wide false
-sideways false
-status open
-
-\begin_layout Plain Layout
-
-\end_layout
-
-\begin_layout Plain Layout
-\begin_inset Caption Standard
-
-\begin_layout Plain Layout
-Support for each node in the tree.
- How do we show this?
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Plain Layout
-
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
 
 \emph on
 Explanation
@@ -4575,53 +4670,17 @@ otc-graft-solutions
 Graft the pruned taxonomy-only taxa back onto the tree
 \end_layout
 
-\begin_layout Standard
-\begin_inset Float figure
-wide false
-sideways false
-status open
-
 \begin_layout Plain Layout
-\align center
-\begin_inset Graphics
-	filename Figures/labelled_supertree/labelled_supertree.tre.svg
-	scale 50
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Plain Layout
-\begin_inset Caption Standard
-
-\begin_layout Plain Layout
-Unpruned tree with internal taxa.
- Nodes E2, F2, and D have been re-added to the tree.
- The nodes E and F are no longer monotypic.
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
 Explanation: “phylo-referencing” style logic can be used to place the taxa
  that were pruned in 2.6 
 \end_layout
 
-\begin_layout Standard
+\begin_layout Plain Layout
 This is a bit more complicated now that we attach the children of broken
  taxa at their MRCA.
 \end_layout
 
-\begin_layout Standard
+\begin_layout Plain Layout
 Input: 
 \begin_inset Formula $\prunedSummary$
 \end_inset
@@ -4633,7 +4692,7 @@ Input:
 
 \end_layout
 
-\begin_layout Standard
+\begin_layout Plain Layout
 Output: 
 \begin_inset Formula $\summaryTree$
 \end_inset
@@ -4641,15 +4700,15 @@ Output:
  – the final summary tree 
 \end_layout
 
-\begin_layout Standard
+\begin_layout Plain Layout
 Current Impl.: None
 \end_layout
 
-\begin_layout Standard
+\begin_layout Plain Layout
 TODO for Impl.:
 \end_layout
 
-\begin_layout Standard
+\begin_layout Plain Layout
 TODO: write this
 \end_layout
 
@@ -4661,7 +4720,7 @@ Create annotations for nodes in
 
 \end_layout
 
-\begin_layout Standard
+\begin_layout Plain Layout
 
 \emph on
 Explanation
@@ -4673,7 +4732,7 @@ Explanation
  
 \end_layout
 
-\begin_layout Standard
+\begin_layout Plain Layout
 Input: 
 \begin_inset Formula $\summaryTree$
 \end_inset
@@ -4685,166 +4744,28 @@ Input:
 
 \end_layout
 
-\begin_layout Standard
+\begin_layout Plain Layout
 Output: some as yet undefined format for expressing these annotations.
  
 \end_layout
 
-\begin_layout Standard
+\begin_layout Plain Layout
 Current Impl.: 
 \emph on
 otc-annotate-synth
 \end_layout
 
-\begin_layout Standard
+\begin_layout Plain Layout
 TODO for Impl.
 \end_layout
 
-\begin_layout Standard
+\begin_layout Plain Layout
 TODO: write this
 \end_layout
 
-\begin_layout Section
-Example
-\end_layout
-
-\begin_layout Standard
-\begin_inset Float figure
-wide false
-sideways false
-status open
-
-\begin_layout Plain Layout
-\begin_inset Float figure
-wide false
-sideways false
-status open
-
-\begin_layout Plain Layout
-\begin_inset Graphics
-	filename Figures/cleaned_phylo/ex_2@tree1.tre.svg
-	scale 40
-	rotateOrigin center
-
 \end_inset
 
 
-\end_layout
-
-\begin_layout Plain Layout
-\begin_inset Caption Standard
-
-\begin_layout Plain Layout
-Tree 1
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\end_inset
-
-
-\begin_inset space \hfill{}
-\end_inset
-
-
-\begin_inset Float figure
-wide false
-sideways false
-status open
-
-\begin_layout Plain Layout
-\begin_inset Graphics
-	filename Figures/cleaned_phylo/ex_2@tree2.tre.svg
-	scale 40
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Plain Layout
-\begin_inset Caption Standard
-
-\begin_layout Plain Layout
-Tree 2
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\end_inset
-
-
-\begin_inset space \hfill{}
-\end_inset
-
-
-\begin_inset Float figure
-wide false
-sideways false
-status open
-
-\begin_layout Plain Layout
-\begin_inset Graphics
-	filename Figures/cleaned_ott/cleaned_ott.tre.svg
-	scale 40
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Plain Layout
-\begin_inset Caption Standard
-
-\begin_layout Plain Layout
-Taxonomy Tree
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Plain Layout
-\begin_inset Caption Standard
-
-\begin_layout Plain Layout
-Input trees and taxonomy tree
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Plain Layout
-
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-We should have a small example: taxonomy and a couple of trees.
- I guess the example should illustrate the idea of uncontested decomposition?
- Maybe about 8 taxa, 1 contested node, 1 uncontested node?
-\end_layout
-
-\begin_layout Standard
-We could also have an example thats 
 \end_layout
 
 \begin_layout Section
