@@ -3729,8 +3729,16 @@ When generating names for unnamed internal nodes, we seek to generate names
 \end_inset
 
  is the MRCA of these leaves.
- When queries attempt to access a node of this form, then we perform an
- MRCA query.
+ When queries attempt to access a node of this form, then we perform a query
+ to determine the MRCA of 
+\begin_inset Formula $X_{1}$
+\end_inset
+
+ and 
+\begin_inset Formula $X_{2}$
+\end_inset
+
+.
  This allows names from version 
 \begin_inset Formula $v$
 \end_inset
@@ -3754,12 +3762,24 @@ When generating names for unnamed internal nodes, we seek to generate names
 
 \begin_layout Standard
 To determine the canonical form we use the following procedure.
- We first associate each node with the smallest ottid of a descendant leaf.
+ We first associate each node 
+\begin_inset Formula $n$
+\end_inset
+
+ with the smallest ottid 
+\begin_inset Formula $s(n)$
+\end_inset
+
+ of any descendant leaf.
  For each unnamed node 
 \begin_inset Formula $n$
 \end_inset
 
-, we find the two children the smallest value 
+, we find the two children the smallest 
+\begin_inset Formula $s(\cdot)$
+\end_inset
+
+ value 
 \begin_inset Formula $X_{1}$
 \end_inset
 
@@ -3772,11 +3792,339 @@ To determine the canonical form we use the following procedure.
 \begin_inset Formula $n$
 \end_inset
 
- is the 
+ is the MRCA of 
+\begin_inset Formula $X_{1}$
+\end_inset
+
+ and 
+\begin_inset Formula $X_{2}$
+\end_inset
+
+.
+ These values are independent of the branch rotation of the tree in memory,
+ and so function well as canonical values.
 \end_layout
 
 \begin_layout Subsubsection
 Annotation
+\end_layout
+
+\begin_layout Standard
+To annotate a summary supertree, we compare the supertree with each input
+ phylogeny that was used in generating it.
+ We record relationships between supertree edges 
+\begin_inset Formula $x$
+\end_inset
+
+ and edges 
+\begin_inset Formula $y$
+\end_inset
+
+ in an input phylogeny:
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $x$
+\end_inset
+
+ conflicts_with 
+\begin_inset Formula $y$
+\end_inset
+
+: the split of 
+\begin_inset Formula $x$
+\end_inset
+
+ conflicts with the split of 
+\begin_inset Formula $y$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $x$
+\end_inset
+
+ displays 
+\begin_inset Formula $y$
+\end_inset
+
+: the split of 
+\begin_inset Formula $x$
+\end_inset
+
+ implies (or 
+\begin_inset Quotes eld
+\end_inset
+
+extends
+\begin_inset Quotes erd
+\end_inset
+
+) the split of 
+\begin_inset Formula $y$
+\end_inset
+
+
+\begin_inset Foot
+status collapsed
+
+\begin_layout Plain Layout
+the split 
+\begin_inset Formula $A_{1}|A_{2}$
+\end_inset
+
+ implies (or extends) a split 
+\begin_inset Formula $B_{1}|B_{2}$
+\end_inset
+
+ if 
+\begin_inset Formula $B_{1}\subseteq A_{1}$
+\end_inset
+
+ and 
+\begin_inset Formula $B_{2}\subseteq A_{2}$
+\end_inset
+
+.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+\begin_inset Formula $x$
+\end_inset
+
+ terminal 
+\begin_inset Formula $y$
+\end_inset
+
+: if 
+\begin_inset Formula $y$
+\end_inset
+
+ is terminal in the input tree and 
+\begin_inset Formula $x$
+\end_inset
+
+ displays 
+\begin_inset Formula $y$
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+or, the split of 
+\begin_inset Formula $y$
+\end_inset
+
+ is trivial and 
+\begin_inset Formula $x$
+\end_inset
+
+ displays 
+\begin_inset Formula $y$
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\begin_layout Itemize
+\begin_inset Formula $x$
+\end_inset
+
+ supported_by 
+\begin_inset Formula $y$
+\end_inset
+
+: if 
+\begin_inset Formula $y$
+\end_inset
+
+ is not terminal, and 
+\begin_inset Formula $x$
+\end_inset
+
+ uniquely displays 
+\begin_inset Formula $y$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $x$
+\end_inset
+
+ partial_path_of 
+\begin_inset Formula $y$
+\end_inset
+
+: if 
+\begin_inset Formula $y$
+\end_inset
+
+ is not terminal, and 
+\begin_inset Formula $x$
+\end_inset
+
+ non-uniquely displays 
+\begin_inset Formula $y$
+\end_inset
+
+
+\backslash
+
+\end_layout
+
+\end_deeper
+\begin_layout Itemize
+\begin_inset Formula $x$
+\end_inset
+
+ resolves 
+\begin_inset Formula $y$
+\end_inset
+
+: 
+\begin_inset Formula $x$
+\end_inset
+
+ is compatible with 
+\begin_inset Formula $y$
+\end_inset
+
+ and but below
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+\begin_inset Formula $x$
+\end_inset
+
+ is below 
+\begin_inset Formula $y$
+\end_inset
+
+ if the include and exclude groups of 
+\begin_inset Formula $x$
+\end_inset
+
+ both intersect the include group of 
+\begin_inset Formula $y$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+ 
+\begin_inset Formula $y$
+\end_inset
+
+; 
+\begin_inset Formula $x$
+\end_inset
+
+ is compatible with, but above-or-beside
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+\begin_inset Formula $x$
+\end_inset
+
+ is above-or-beside 
+\begin_inset Formula $y$
+\end_inset
+
+ if the include and exclude groups of 
+\begin_inset Formula $x$
+\end_inset
+
+ both intersect the exclude group of 
+\begin_inset Formula $y$
+\end_inset
+
+ 
+\end_layout
+
+\end_inset
+
+ all of 
+\begin_inset Formula $y's$
+\end_inset
+
+ child edges.
+ Thus if 
+\begin_inset Formula $x$
+\end_inset
+
+ was restricted to the leaf set of 
+\begin_inset Formula $y$
+\end_inset
+
+, 
+\begin_inset Formula $x$
+\end_inset
+
+ could be inserted below 
+\begin_inset Formula $y$
+\end_inset
+
+ and would subdivide 
+\begin_inset Formula $y's$
+\end_inset
+
+ children.
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $x$
+\end_inset
+
+ resolved_by 
+\begin_inset Formula $y$
+\end_inset
+
+: 
+\begin_inset Formula $y$
+\end_inset
+
+ is compatible with 
+\begin_inset Formula $x$
+\end_inset
+
+ but below 
+\begin_inset Formula $x$
+\end_inset
+
+; 
+\begin_inset Formula $y$
+\end_inset
+
+ is compatible with, but above all of 
+\begin_inset Formula $x's$
+\end_inset
+
+ child edges.
+\end_layout
+
+\begin_layout Standard
+Here the rooted split of an edge 
+\begin_inset Formula $x$
+\end_inset
+
+ is the ordered partition include|exclude.
 \end_layout
 
 \begin_layout Standard
