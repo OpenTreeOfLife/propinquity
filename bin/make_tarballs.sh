@@ -66,4 +66,4 @@ printf "\n   * \`grafted_solution_ottnames.tre\` - synthetic tree without taxono
 tar -czvf $tar_dir1.tar.gz $tar_dir1
 
 # all synthesis outputs
-tar -czvf ${outputdir}_all.tar.gz $outputdir
+tar -czvf ${outputdir}_output.tar.gz $outputdir
