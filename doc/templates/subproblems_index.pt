@@ -20,7 +20,7 @@ for details.</p>
 <p><strong>Results:</strong>
 This page contains the <a href="#subproblems">list of subproblems</a>, the
 <a href="#trees">list of subproblems overlapping each input tree</a>, and the
-<a href="#broken">list of contested ('broken') taxa</a>.
+<a href="#contested">list of contested taxa</a>.
 
 <p id="subproblems"><strong>List of subproblems</strong></p>
 
@@ -51,7 +51,7 @@ The taxonomy overlaps with every subproblem.</p>
     </tr>
 </table>
 
-<p id="broken"><strong>Contested taxa</strong></p>
+<p id="contested"><strong>Contested taxa</strong></p>
 
 <p>The ${len(subproblems.contested_taxa)} contested taxa follow. For each taxon,
   we list the input tree(s) that conflict with the taxon. For each tree,
