@@ -3642,7 +3642,56 @@ Unpruning
 \end_layout
 
 \begin_layout Standard
-ben: start here
+During unpruning, when we encounter taxonomy nodes that conflict with the
+ solution tree, we have to decide what to do with these taxa.
+ One approach would be to apply Algorithm 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "alg:ConsistentSplitsFromRankedList"
+
+\end_inset
+
+ to the taxonomy tree.
+ That would involve decomposing the taxonomy tree into a collection of splits,
+ and discarding splits that are in conflict with the solution tree.
+ This is equivalent to finding taxonomy nodes that conflict with the solution
+ tree and removing them, while reparenting their children to the parent
+ of the conflicting node (and the grandparent of the children).
+ [Note that the taxonomy tree is special, since it has degree-2 nodes that
+ are important.]
+\end_layout
+
+\begin_layout Standard
+However, an alternative approach when finding a 
+\begin_inset Quotes eld
+\end_inset
+
+broken taxon
+\begin_inset Quotes erd
+\end_inset
+
+ is to 
+\end_layout
+
+\begin_layout Itemize
+find the children of the broken taxon that are exist in input trees
+\end_layout
+
+\begin_layout Itemize
+find the MRCA of those children in the pruned solution tree
+\end_layout
+
+\begin_layout Itemize
+attach the children of the broken taxon their in the solution tree.
+\end_layout
+
+\begin_layout Standard
+BDR: We need a concrete example where attach the children of a broken taxon
+ at the MRCA during unpruning, and this gives a different result than just
+ removing broken taxa from the taxonomy tree prior to unpruning.
+ The example needs a taxonomy tree and (I think) only 1 input tree.
+ The input tree needs to conflict with the taxonomy, but provide a non-taxonomy
+ node at which to attach the children of the broken taxa.
 \end_layout
 
 \begin_layout Standard
@@ -5796,6 +5845,17 @@ Proof that pruning and regrafting taxa mapped to the taxonomy does not affect
 
 \begin_layout Standard
 (I'm not sure that we need to prove this,...)
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Plain Layout
+Under what set of assumptions about sub-problem solution and unpruning does
+ this hold?
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
