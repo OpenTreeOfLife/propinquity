@@ -3613,30 +3613,6 @@ Grafted solution.
 
 \end_layout
 
-\begin_layout Standard
-\begin_inset Float figure
-wide false
-sideways false
-status collapsed
-
-\begin_layout Plain Layout
-\begin_inset Caption Standard
-
-\begin_layout Plain Layout
-Support for each node in the tree.
- How do we show this?
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
 \begin_layout Subsubsection
 Unpruning
 \end_layout
@@ -3662,43 +3638,300 @@ reference "alg:ConsistentSplitsFromRankedList"
 \end_layout
 
 \begin_layout Standard
-However, an alternative approach when finding a 
-\begin_inset Quotes eld
-\end_inset
-
-broken taxon
-\begin_inset Quotes erd
-\end_inset
-
- is to 
-\end_layout
-
-\begin_layout Itemize
-find the children of the broken taxon that are exist in input trees
-\end_layout
-
-\begin_layout Itemize
-find the MRCA of those children in the pruned solution tree
-\end_layout
-
-\begin_layout Itemize
-attach the children of the broken taxon their in the solution tree.
+An alternative is leave broken taxa in the taxonomy.
+ When then attach the unsampled children of the broken taxa to the solution
+ at the MRCA of the sampled children in the solution.
 \end_layout
 
 \begin_layout Standard
-BDR: We need a concrete example where attach the children of a broken taxon
- at the MRCA during unpruning, and this gives a different result than just
- removing broken taxa from the taxonomy tree prior to unpruning.
- The example needs a taxonomy tree and (I think) only 1 input tree.
- The input tree needs to conflict with the taxonomy, but provide a non-taxonomy
- node at which to attach the children of the broken taxa.
+Figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:Two-approaches-to-unpruning"
+
+\end_inset
+
+ illustrates the two approaches to unpruning.
+ Taxa G and R in the taxonomy (Fig 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:Two-approaches-to-unpruning"
+
+\end_inset
+
+a) are broken because they conflict with the grafted solution (Fig 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:Two-approaches-to-unpruning"
+
+\end_inset
+
+b).
+ Removing these broken taxa from the taxonomy before unpruning leads to
+ taxa R4, R5, and R6 being attached directly at taxon N, as in the tree
+ shown in Fig 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:Two-approaches-to-unpruning"
+
+\end_inset
+
+c.
+ This is because these taxa attach at the closest named taxon that is not
+ broken, which is N in this case.
+ In tree illustrated in Fig 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:Two-approaches-to-unpruning"
+
+\end_inset
+
+d, the children of the broken taxon R and instead attached at the MRCA of
+ R1, R2, and R3, which is not a taxonomy node.
+\end_layout
+
+\begin_layout Standard
+
+\emph on
+BDR: maybe we could complicate example 2 instead of providing a separate
+ example of how attaching unsampled children of broken taxa at the MRCA
+ of sampled taxa makes a difference.
 \end_layout
 
 \begin_layout Standard
 \begin_inset Float figure
 wide false
 sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Box Frameless
+position "c"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "45col%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename example3/cleaned_ott-labels.tre.pdf
+	scale 40
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Taxonomy
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset space \hfill{}
+\end_inset
+
+
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Box Frameless
+position "c"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "45col%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename example3/grafted_solution-labels.tre.pdf
+	scale 40
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Grafted solution
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset space \hfill{}
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Float figure
+wide false
+sideways false
 status collapsed
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename example3/unprune-old-labels.tre.pdf
+	scale 40
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Unpruned tree - broken taxa removed
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset space \hfill{}
+\end_inset
+
+
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename example3/unprune-new-labels2.tre.pdf
+	scale 40
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Unpruned tree with MRCA-attachment
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:Two-approaches-to-unpruning"
+
+\end_inset
+
+Two approaches to unpruning.
+ Taxa G and R in the taxanomy (a) are broken because they conflict with
+ the grafted solution (b).
+ Removing these broken taxa from the taxonomy before unpruning leads to
+ taxa R4, R5, and R6 being attached directly at taxon N, as in tree (c).
+ In tree (d), the children of the broken taxon R and instead attached at
+ the MRCA of R1, R2, and R3.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
 
 \begin_layout Plain Layout
 \align center
@@ -3860,6 +4093,34 @@ To determine the canonical form we use the following procedure.
 
 \begin_layout Subsubsection
 Annotation
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Support for each node in the tree.
+ How do we show this?
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Paragraph
+Annotations 
 \end_layout
 
 \begin_layout Standard
