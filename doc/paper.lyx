@@ -143,7 +143,8 @@
 \end_layout
 
 \begin_layout Title
-Title
+A supertree pipeline for summarizing phylogenetic and taxonomic information
+ for millions of species
 \end_layout
 
 \begin_layout Author
@@ -163,21 +164,36 @@ Benjamin D.
 \begin_layout Abstract
 We present a new supertree method and software implementation that enables
  rapid estimation of a summary tree on the scale of millions of leaves.
- This software pipeline is made up of three components: 
+ This software pipeline is called 
 \emph on
-peyotl
+
+\begin_inset Quotes eld
+\end_inset
+
+propinquity.
+\begin_inset Quotes erd
+\end_inset
+
+
 \emph default
- - a python library for basic manipulation of phylogenetic and taxonomic
- information; 
+ It uses the dependency-tracking tool 
+\begin_inset Quotes eld
+\end_inset
+
+
+\emph on
+make
+\emph default
+
+\begin_inset Quotes erd
+\end_inset
+
+ to direct the series of operations required to construct the tree.
+ It relies heavily on 
 \emph on
 otcetera
 \emph default
- - a set of C++ tools that performs most of the steps of the pipeline; and
- 
-\emph on
-propinquity
-\emph default
- - a make-based scaffold for producing the summary tree.
+ - a set of C++ tools to performs most of the steps of the pipeline.
  All of the components are free software and are available on GitHub.
  This pipeline is currently used by the Open Tree of Life project to produce
  version 5 of that project's 
@@ -203,7 +219,14 @@ Background
 
 \begin_layout Standard
 The Open Tree of Life project seeks to build a platform for summarizing
- what is known about phylogenetic relationships across all of Life.
+ what is known about phylogenetic relationships across all of Life
+\begin_inset CommandInset citation
+LatexCommand citep
+key "HinchliffEtAl2015"
+
+\end_inset
+
+.
  One primary goal of the project is to build a summary tree from a comprehensive
  taxonomic tree and a set of published trees.
  The summary tree is intended to transparently and justifiably represent
@@ -242,10 +265,11 @@ Goals
 Translating the goals of the Open Tree of Life's summary tree into an explicit
  set of criteria is not trivial.
  The summary supertree should represent the phylogenetic information from
- source trees in a transparent and justifiable fashion, and we would like
- to allow users to correct errors in the supertree by improving the input
- information.
- A more formal statement of the goals is to produce a tree which:
+ source trees in a transparent and justifiable fashion.
+ We would like to allow users to correct errors in the supertree by improving
+ the input information rather than requiring modifyication to the supertree
+ algorithm.
+ The pipeline was designed to create a tree which:
 \end_layout
 
 \begin_layout Enumerate
@@ -370,14 +394,18 @@ th input tree.
 \end_layout
 
 \begin_layout Standard
-We can consider whether or not an edge in an input tree is displayed by
+We can consider whether or not an node in an input tree is displayed by
  
 \begin_inset Formula $\summaryTree$
 \end_inset
 
 .
- For any such node there is a set of taxa that are mapped to the tips that
- descend from the node.
+ For any such node 
+\begin_inset Formula $j$
+\end_inset
+
+ there is a set of taxa that are mapped to the tips that descend from the
+ node.
  This set of taxa can be denoted 
 \begin_inset Formula $\mathcal{L}(i,j)$
 \end_inset
@@ -437,7 +465,7 @@ exclude set
 \end_inset
 
 .
- We say that the summary 
+ We say that the summary tree 
 \emph on
 displays
 \emph default
@@ -1245,8 +1273,9 @@ reference "fig:pairwisecompat"
 \end_inset
 
 ) shows an example of 3 input trees for which there is no pairwise incompatibili
-ty, but no solution displays all of the input groups; alternative rankings
- of inputs can result in one of three summary trees shown in panels (d-f).
+ty, but no solution displays all of the input groups.
+ Alternative rankings of inputs can result in one of three summary trees
+ shown in panels (d-f).
  
 \end_layout
 
@@ -1501,10 +1530,12 @@ Any approach to supertree construction must deal with the need to adjudicate
  not mediate conflicts based on the relative amount of evidence for each
  alternative.
  However, it is a reasonable starting point.
- This is because it has the benefits of making it easy to see why some groups
- are included or not (transparency), and because it allows simpler and cleaner
- algorithms.
- However, we note that if an edge 
+ It has the benefits of making it easy to see why some groups are included
+ or not (transparency), and it allows simpler and cleaner algorithms.
+\end_layout
+
+\begin_layout Standard
+Note that if an edge 
 \begin_inset Formula $c$
 \end_inset
 
@@ -1535,6 +1566,8 @@ Any approach to supertree construction must deal with the need to adjudicate
 \end_inset
 
  to be represented in the summary tree.
+ Thus, the fact that the summary tree displays an input edge does not imply
+ that none of the higher ranked input trees conflict with that edge.
  
 \end_layout
 
@@ -1544,7 +1577,7 @@ In order to produce a comprehensive supertree, we also require a rooted
  Unlike other input trees, the taxonomy tree is required to contain all
  taxa, and thus has the maximal leaf set.
  We make the taxonomy tree the lowest ranked tree.
- This new formulation is the formulation of the 
+ We refer to this the formulation as the 
 \begin_inset Quotes eld
 \end_inset
 
@@ -1631,10 +1664,10 @@ Goal 4: Display as many input nodes as feasible
 
 \begin_layout Standard
 We also seek to construct a supertree that represents as many input tree
- edges as possible.
- Since non-included input tree edges must conflict with the supertree (or
+ nodes as possible.
+ Since non-included input tree nodes must conflict with the supertree (or
  they would have been added), this criterion is the same as minimizing the
- number of input edges that conflict with the supertree.
+ number of input nodes that conflict with the supertree.
 \end_layout
 
 \begin_layout Subsubsection
@@ -1658,7 +1691,7 @@ unique
  The pipeline takes a greedy approach to producing a summary tree by attempting
  to add groupings from the trees in order of the trees ranking.
  This can be viewed as a greedy solution to the problem of finding the tree
- with the maximum sum displayed groups' weighted scores criterion (described
+ with the maximum sum of displayed groups' weighted scores criterion (described
  in the appendix A) where the weights from the trees are so extreme that
  displaying one group from a highly ranked tree is preferred to displaying
  all of the groupings from lower ranked trees.
@@ -1759,15 +1792,7 @@ Pruning questionable taxa from the taxonomy
 \end_layout
 
 \begin_layout Standard
-The taxonomy referred to as 
-\begin_inset Quotes eld
-\end_inset
-
-OTT
-\begin_inset Quotes erd
-\end_inset
-
- is a hierarchy of taxonomic names that contains a phylogenetic taxonomy.
+OTT is a hierarchy of taxonomic names that implies a phylogenetic taxonomy.
  An OTT ID has a position in the hierarchy, a taxonomic name, and set of
  references to the same name in different taxonomies.
  In addition, the ID may also be associated with a set of flags that can
@@ -1892,8 +1917,8 @@ Many input trees have tips that are not terminal taxa, but higher-order
  is labeled with the name of a higher taxon.
  Several scenarios can lead to these cases: the data for the tip could have
  been created by merging a chimeric set of character scores from constituent
- taxa; it may not have been possible to identify the species sampled precisely;
- or the researcher may simply have used a higher taxonomic name because
+ taxa; the species sampled may not have been identified to the lowest taxonomic
+ rank; or the researcher may simply have used a higher taxonomic name because
  he/she assumed that the taxon is monophyletic and the higher level name
  is more recognizable.
  Rather than allowing the ambiguity about interpretation of the higher-taxon
@@ -2127,7 +2152,7 @@ name "fig:cleaned-phylo-example"
 \begin_inset Float figure
 wide false
 sideways false
-status collapsed
+status open
 
 \begin_layout Plain Layout
 \begin_inset Float figure
@@ -2239,14 +2264,22 @@ Pruned taxonomy tree
 \begin_inset Caption Standard
 
 \begin_layout Plain Layout
-Exemplified Input trees and taxonomy tree.
- E in tree1 is exemplified by E1.
- Pruned taxa are E2, F2, and D.
- E and F remain as monotypic taxa in the pruned taxonomy 
-\begin_inset Formula $\prunedTaxonomy$
+Exemplified input trees and taxonomy tree from figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:cleaned-phylo-example"
+
 \end_inset
 
 .
+ E in tree1 is exemplified by E1.
+ Pruned taxa are E2, F2, and D.
+ The taxa E and F are retained as monotypic taxa in the pruned taxonomy
+ 
+\begin_inset Formula $\prunedTaxonomy$
+\end_inset
+
+, but are not shown in panel c.
 \end_layout
 
 \end_inset
@@ -2391,6 +2424,38 @@ reference "sec:Decompose-algorithm"
  Each uncontested non-terminal and non-root taxon will show up in two subproblem
 s: it will be the root of its own subproblem and it will be tip in the subproble
 m that covers the next slice deeper in the tree.
+ Figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:detect-uncontested-example"
+
+\end_inset
+
+ highlights the taxa that are not contested by the input shown in figure
+ 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:exemplify-example"
+
+\end_inset
+
+; figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:subproblems-example"
+
+\end_inset
+
+ shows the subproblems that would be emitted as a result of this set of
+ inputs.
+ The supertree operation of 
+\begin_inset CommandInset citation
+LatexCommand citet
+key "HinchliffEtAl2015"
+
+\end_inset
+
+ also used this otcetera-based decomposition step.
 \end_layout
 
 \begin_layout Standard
@@ -2466,30 +2531,6 @@ otc-uncontested-decompose
  the taxon to be uncontested.
  Thus the procedure encourages curation of more phylogenetic inputs as a
  means of improving the summary tree.
- Figure 
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "fig:detect-uncontested-example"
-
-\end_inset
-
- highlights the taxa that are not contested by the input shown in figure
- 
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "fig:exemplify-example"
-
-\end_inset
-
-; figure 
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "fig:subproblems-example"
-
-\end_inset
-
- shows the subproblems that would be emitted as a result of this set of
- inputs.
  
 \end_layout
 
@@ -2513,7 +2554,7 @@ e with the first tree; 2,838 subproblems were trivial in this way.
 \begin_inset Float figure
 wide false
 sideways false
-status collapsed
+status open
 
 \begin_layout Plain Layout
 \align center
@@ -2530,7 +2571,14 @@ status collapsed
 \begin_inset Caption Standard
 
 \begin_layout Plain Layout
-Uncontested edges.
+Uncontested edges from the inputs shown in figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:exemplify-example"
+
+\end_inset
+
+.
  Here the taxon 
 \emph on
 ABCD
@@ -2557,7 +2605,7 @@ name "fig:detect-uncontested-example"
 \begin_inset Float figure
 wide false
 sideways false
-status collapsed
+status open
 
 \begin_layout Plain Layout
 \begin_inset Float figure
@@ -2715,7 +2763,7 @@ name "fig:subproblems-example"
 \begin_inset Float figure
 wide false
 sideways false
-status collapsed
+status open
 
 \begin_layout Plain Layout
 \begin_inset Float figure
@@ -3189,7 +3237,8 @@ key "AhoSSU1981"
 
  applies to a collection of rooted triplets.
  Instead of decomposing each input split into a collection of rooted triplets,
- we instead modify the BUILD algorithm apply directly to larger rooted splits.
+ we instead modify the BUILD algorithm to apply directly to larger rooted
+ splits.
  The modified BUILD algorithm constructs a tree compatible with a collection
  of rooted splits, and returns failure if such a tree does not exist.
  
