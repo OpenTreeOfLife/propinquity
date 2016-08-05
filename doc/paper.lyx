@@ -3844,27 +3844,15 @@ In order to annotate each node in the summary supertree, it is first necessary
 \end_inset
 
  is an integer OTT id.
- Leaf nodes are of course named already, so this is only an issue for internal
- nodes.
- (Although, how/where do we handle monotypic ancestors of forking nodes
- again? This is in the unpruner, right?) However, it is necessary to generate
- names for other nodes.
- These nodes will never be monotypic, since there is no reason to generate
- or retain monotypic nodes that do not have an OTT id.
-\end_layout
-
-\begin_layout Standard
-When generating names for unnamed internal nodes, we seek to generate names
- that have some chance of being usable when a new synthesis tree is generated.
- We therefore generate names for each unnamed node 
-\begin_inset Formula $n$
-\end_inset
-
- of the form 
+ We generate a name of the form 
 \begin_inset Formula $mrcaottX_{1}ottX_{2}$
 \end_inset
 
-, where 
+ for an unnamed node 
+\begin_inset Formula $n$
+\end_inset
+
+ where 
 \begin_inset Formula $X_{1}$
 \end_inset
 
@@ -3872,13 +3860,11 @@ When generating names for unnamed internal nodes, we seek to generate names
 \begin_inset Formula $X_{2}$
 \end_inset
 
- are the OTT ids for two leaves, and 
+ are the OTT ids for two leaves, 
 \begin_inset Formula $n$
 \end_inset
 
- is the MRCA of these leaves.
- When queries attempt to access a node of this form, then we perform a query
- to determine the MRCA of 
+ is the MRCA of these leaves, and 
 \begin_inset Formula $X_{1}$
 \end_inset
 
@@ -3886,71 +3872,17 @@ When generating names for unnamed internal nodes, we seek to generate names
 \begin_inset Formula $X_{2}$
 \end_inset
 
-.
- This allows names from version 
-\begin_inset Formula $v$
-\end_inset
-
- of the tree to be used on version 
-\begin_inset Formula $v+1$
-\end_inset
-
- of the tree, even if different canonical values are chosen for 
-\begin_inset Formula $X_{1}$
-\end_inset
-
- and 
-\begin_inset Formula $X_{2}$
-\end_inset
-
- in these two trees.
- In any given version of the tree the canonical form is used to reference
- nodes for the purpose of providing annotations.
-\end_layout
-
-\begin_layout Standard
-To determine the canonical form we use the following procedure.
- We first associate each node 
+ are the smallest numbers that can be chosen to designate 
 \begin_inset Formula $n$
 \end_inset
 
- with the smallest ottid 
-\begin_inset Formula $s(n)$
-\end_inset
-
- of any descendant leaf.
- For each unnamed node 
-\begin_inset Formula $n$
-\end_inset
-
-, we find the two children the smallest 
-\begin_inset Formula $s(\cdot)$
-\end_inset
-
- value 
-\begin_inset Formula $X_{1}$
-\end_inset
-
- and the second smallest value 
-\begin_inset Formula $X_{2}$
-\end_inset
-
- of this attribute.
- Since these smallest ottids are in separate subtrees, the node 
-\begin_inset Formula $n$
-\end_inset
-
- is the MRCA of 
-\begin_inset Formula $X_{1}$
-\end_inset
-
- and 
-\begin_inset Formula $X_{2}$
-\end_inset
-
-.
- These values are independent of the branch rotation of the tree in memory,
- and so function well as canonical values.
+ as their MRCA.
+ Because new taxa added to OTT will be given higher OTT Ids, the use of
+ the lowest numbered OTT Ids as designators increases the chance that a
+ node label can be encountered in a subsequent version of the tree (though
+ the taxonomic content may change).
+ The deterministic choice of designators also makes the labeling insensitive
+ to branch rotation of the grafted solution tree.
 \end_layout
 
 \begin_layout Subsubsection
