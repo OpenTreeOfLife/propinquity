@@ -3687,6 +3687,21 @@ reference "alg:ConsistentSplitsFromRankedList"
 \end_layout
 
 \begin_layout Standard
+A 
+\emph on
+slice
+\emph default
+ is a ....
+ a region of the taxonomy starting with a non-broken taxon down through
+ broken taxa, and bounded below (tipward) but non-broken taxa.
+ The new unpruner processes 
+\emph on
+slices
+\emph default
+...
+\end_layout
+
+\begin_layout Standard
 An alternative is leave broken taxa in the taxonomy.
  When then attach the unsampled children of the broken taxa to the solution
  at the MRCA of the sampled children in the solution.
@@ -3742,9 +3757,26 @@ d, the children of the broken taxon R and instead attached at the MRCA of
 \begin_layout Standard
 
 \emph on
-BDR: maybe we could complicate example 2 instead of providing a separate
- example of how attaching unsampled children of broken taxa at the MRCA
- of sampled taxa makes a difference.
+BDR: shoule we could example 2 to show how attaching unsampled children
+ of broken taxa at the MRCA of sampled taxa makes a difference, instead
+ of providing a separate example? (Fig 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:Two-approaches-to-unpruning"
+
+\end_inset
+
+/example3).
+\end_layout
+
+\begin_layout Standard
+Ultimately, this solution is not completely satisfying, since including
+ the taxonomy as an input tree undermines this behavior.
+ This is because the unpruner is not following the same principles as the
+ sub-problem solver.
+ Hence, it would be desirable to extend the sub-problem solver to handle
+ these kind of cases in order to unify the sub-problem solver and the unpruner
+ under a single approach to conflict resolution.
 \end_layout
 
 \begin_layout Standard
@@ -3758,7 +3790,7 @@ status open
 \begin_inset Float figure
 wide false
 sideways false
-status open
+status collapsed
 
 \begin_layout Plain Layout
 \align center
@@ -3958,7 +3990,7 @@ name "fig:Two-approaches-to-unpruning"
 \end_inset
 
 Two approaches to unpruning.
- Taxa G and R in the taxanomy (a) are broken because they conflict with
+ Taxa G and R in the taxonomy (a) are broken because they conflict with
  the grafted solution (b).
  Removing these broken taxa from the taxonomy before unpruning leads to
  taxa R4, R5, and R6 being attached directly at taxon N, as in tree (c).
