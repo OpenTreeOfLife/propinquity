@@ -3236,7 +3236,7 @@ key "AhoSSU1981"
  of rooted splits, and returns failure if such a tree does not exist.
  
 \begin_inset Note Note
-status collapsed
+status open
 
 \begin_layout Plain Layout
 The algorithm begins by partitioning the leaf set into subgroups, where
@@ -3269,7 +3269,7 @@ The algorithm begins by partitioning the leaf set into subgroups, where
 \begin_inset Formula $N$
 \end_inset
 
- is the number of splits pass in, 
+ is the number of splits passed in, 
 \begin_inset Formula $E$
 \end_inset
 
@@ -3283,226 +3283,27 @@ The algorithm begins by partitioning the leaf set into subgroups, where
 \end_inset
 
  if all splits are triplets.
- It may be possible to decrease this order to 
-\begin_inset Formula $O(?)$
-\end_inset
-
- by sharing work between recursive invocations of BUILD, but such algorithms
- have never been implemented.
-\end_layout
-
-\begin_layout Standard
-Hmm...
- e-mail that other guy.
-\end_layout
-
-\begin_layout Standard
-\begin_inset Note Note
-status open
-
-\begin_layout Plain Layout
-OK, so the order for the first iteration is something like
-\end_layout
-
-\begin_layout Itemize
-\begin_inset Formula $O(L)$
-\end_inset
-
- to put each leaf in its own category.
-\end_layout
-
-\begin_layout Itemize
-\begin_inset Formula $O(N)$
-\end_inset
-
- to visit each split
-\end_layout
-
-\begin_layout Itemize
-\begin_inset Formula $O(L)$
-\end_inset
-
- to do the merging.
-\end_layout
-
-\begin_layout Plain Layout
-Then to do the checking, we have 
-\begin_inset Formula $O(\sum_{i=1}^{n}n_{exclude}^{i})$
-\end_inset
-
-
-\end_layout
-
-\begin_layout Plain Layout
-So this turns in to 
-\begin_inset Formula $O(L+N+E)$
-\end_inset
-
- where 
-\begin_inset Formula $E$
-\end_inset
-
- is the total number of taxa excluded.
-\end_layout
-
-\begin_layout Plain Layout
-Then we do this 
-\begin_inset Formula $N$
-\end_inset
-
- times as most, so we get 
-\begin_inset Formula $O(N^{2}+NL+N^{2}\frac{E}{N})$
-\end_inset
-
-.
- If 
-\begin_inset Formula $E/N$
-\end_inset
-
- is the average number of excluded taxa.
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-In this approach splits are either entirely retained or entirely discarded
+ In this approach splits are either entirely retained or entirely discarded
  - consistent rooted triplets from conflicting splits are not retained.
  However, when unpruning taxonomy-only taxa, we make an attempt to break
  ties in a way that preserves some partial information from conflicting
  splits by attaching taxa from conflicting splits at their common ancestor.
-\end_layout
+ Figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:subproblem-solutions."
 
-\begin_layout Standard
-
-\series bold
-Claim:
-\series default
- the BUILD algorithm places 
-\begin_inset Quotes eld
 \end_inset
 
-floating
-\begin_inset Quotes erd
-\end_inset
+ shows the solutions that would be obtained by applying our modified version
+ of the BUILD algorithm to the subproblems show in figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:subproblems-example"
 
- taxa as rootward as possible.
- However, the MRCA-based unpruner does not.
-\end_layout
-
-\begin_layout Standard
-
-\series bold
-Note:
-\series default
- whenever we pass a split down into a subgroup, we effectively chop off
- any elements of the exclude group that are not part of the subgroup.
- Since the exclude group is not used to partition the groups in a sub-problem,
- truncating the exclude group to remove these member affects the course
- of the BUILD algorithm not at all.
- Therefore, the BUILD algorithm effectively constructs a reduced exclude
- set for each split that would lead to the same output.
-\end_layout
-
-\begin_layout Standard
-
-\series bold
-Proof that every partition satisfies at least one split when the splits
- are compatible:
-\end_layout
-
-\begin_layout Standard
-- If this is not the case, then all splits that lead to the partition will
- survive to the next level of recursion.
- In that case, the next level of BUILD will form a single group, leading
- to a single group, and then to failure, indicating incompatibility.
-\end_layout
-
-\begin_layout Standard
-
-\series bold
-Proof that subtrees cannot be moved rootward without violating a split:
-\end_layout
-
-\begin_layout Standard
-- Suppose that some subtree 
-\begin_inset Formula $A$
-\end_inset
-
- forms part of a subtree 
-\begin_inset Formula $G$
 \end_inset
 
 .
- Then 
-\begin_inset Formula $A$
-\end_inset
-
- must have a sister subtree 
-\begin_inset Formula $B$
-\end_inset
-
-, and 
-\begin_inset Formula $G$
-\end_inset
-
- must have a sister subtree 
-\begin_inset Formula $X$
-\end_inset
-
-, so that the BUILD tree contains a subtree of the form 
-\begin_inset Formula $((A,B,\ldots)G,X,\ldots)S$
-\end_inset
-
-.
- In order for 
-\begin_inset Formula $G$
-\end_inset
-
- to form a component in the subtree, there must be a split of the form 
-\begin_inset Formula $ab\ldots|s\ldots$
-\end_inset
-
-, where 
-\begin_inset Formula $a$
-\end_inset
-
- is in 
-\begin_inset Formula $A$
-\end_inset
-
-, 
-\begin_inset Formula $B$
-\end_inset
-
- is in 
-\begin_inset Formula $B$
-\end_inset
-
- and 
-\begin_inset Formula $s$
-\end_inset
-
- is in 
-\begin_inset Formula $S$
-\end_inset
-
-.
- However, if we move 
-\begin_inset Formula $A$
-\end_inset
-
- up to the level of 
-\begin_inset Formula $G$
-\end_inset
-
- to form 
-\begin_inset Formula $((B,\ldots)G,A,X,\ldots)S$
-\end_inset
-
-, then such a split cannot be satisfied.
 \end_layout
 
 \begin_layout Standard
@@ -3519,7 +3320,7 @@ status open
 \begin_inset Float figure
 wide false
 sideways false
-status collapsed
+status open
 
 \begin_layout Plain Layout
 \begin_inset Graphics
@@ -3555,7 +3356,7 @@ ABCD
 \begin_inset Float figure
 wide false
 sideways false
-status collapsed
+status open
 
 \begin_layout Plain Layout
 \begin_inset Graphics
@@ -3594,10 +3395,22 @@ root
 \begin_inset Caption Standard
 
 \begin_layout Plain Layout
-Solutions.
- Each solution tree has a taxon at the root (although it is not currently
- shown in the figure).
+Solutions to the subproblems depicted in figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:subproblems-example"
+
+\end_inset
+
+
 \end_layout
+
+\end_inset
+
+
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:subproblem-solutions."
 
 \end_inset
 
