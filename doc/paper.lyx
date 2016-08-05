@@ -3234,29 +3234,6 @@ key "AhoSSU1981"
  splits.
  The modified BUILD algorithm constructs a tree compatible with a collection
  of rooted splits, and returns failure if such a tree does not exist.
- 
-\begin_inset Note Note
-status open
-
-\begin_layout Plain Layout
-The algorithm begins by partitioning the leaf set into subgroups, where
- two leaves are assigned to the same subgroup if they are both in the include
- set of any input triplet.
- The include set of every split is thus contained in a single subgroup.
- If the exclude set is disjoint with that subgroup, then the split is satisfied
- by the partition and is discarded.
- Otherwise, the split is associated with the group that contains its include
- set.
- The BUILD algorithm is then recursively applied to each subgroup of the
- partition that has a non-empty set of splits assigned to it, and this recursive
- partitioning creates a tree.
- If at any level of recursion the partitioning stage yields only one group,
- then the algorithm returns failure, and the collection of splits are not
- compatible.
-\end_layout
-
-\end_inset
-
  This modified algorithm recovers the original BUILD algorithm of only rooted
  triplets are supplied as input.
  When larger splits are supplied as input, the results are the same as if
