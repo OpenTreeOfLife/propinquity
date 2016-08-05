@@ -2328,12 +2328,12 @@ unpruning
 \end_layout
 
 \begin_layout Subsubsection
-Temporarily pruning leaves mapped to taxa found in only one tree
+Temporarily pruning leaves mapped to taxa found only in the taxonomy
 \end_layout
 
 \begin_layout Standard
-First we prune the taxonomy by removing tips that are not present in any
- input tree.
+We prune the taxonomy by removing tips that are not present in any input
+ tree.
  The tips pruned in this step will be grafted back onto the skeleton of
  the summary tree in a subsequent step.
  A terminal taxon that is represented only in the taxonomycan be pruned
@@ -3404,16 +3404,25 @@ Solution grafting
 \end_layout
 
 \begin_layout Standard
-Since each uncontested taxon that is used for decomposition occurs in one
- subproblem as a leaf node, and one subproblem as a root node, ungrafting
- simply consists of merging these two nodes.
+To produce a tree that spans all of the taxa sampled in the exemplified
+ set of input trees, we graft the subproblem solutions into a single tree
+ (stored as the 
+\family typewriter
+grafted_solution/grafted_solution.tre
+\family default
+ by propinquity).
+ Recall that each non-root uncontested taxon used for decomposition occurs
+ as a leaf taxon in one subproblem and as a root taxon in one other subproblem.
+ Thus, the ungrafting operation simply consists of reading all of the subproblem
+ solutions into memory and then merging the nodes that are labeled with
+ the same OTT ID.
 \end_layout
 
 \begin_layout Standard
 \begin_inset Float figure
 wide false
 sideways false
-status collapsed
+status open
 
 \begin_layout Plain Layout
 \align center
@@ -3446,33 +3455,60 @@ Grafted solution.
 \end_layout
 
 \begin_layout Subsubsection
-Unpruning
+Unpruning unsampled taxa
 \end_layout
 
 \begin_layout Standard
-During unpruning, when we encounter taxonomy nodes that conflict with the
- solution tree, we have to decide what to do with these taxa.
- One approach would be to apply Algorithm 
+As described above, taxa that do not have any descendants in a sampled phylogene
+tic input are pruned from the taxonomy for the sake of efficiency.
+ These taxa are reattached by an 
+\begin_inset Quotes eld
+\end_inset
+
+unpruning step.
+\begin_inset Quotes erd
+\end_inset
+
+ For those taxa that are compatible with the grafted tree, this step simply
+ amounts to adding any unsample taxonomic children to the node that represents
+ the taxon in the grafted solution tree that was created in the previous
+ step.
+\end_layout
+
+\begin_layout Standard
+However, a taxon may be incompatible with the grafted solution; we refer
+ to such taxa as 
+\begin_inset Quotes eld
+\end_inset
+
+broken taxa.
+\begin_inset Quotes erd
+\end_inset
+
+ If a broken taxon contains some unsampled children, it is not clear where
+ these unsampled children should be attached to the grafted solution.
+ One approach would be to mimic the application of apply Algorithm 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "alg:ConsistentSplitsFromRankedList"
 
 \end_inset
 
- to the taxonomy tree.
- That would involve decomposing the taxonomy tree into a collection of splits,
- and discarding splits that are in conflict with the solution tree.
- This is equivalent to finding taxonomy nodes that conflict with the solution
- tree and removing them, while reparenting their children to the parent
- of the conflicting node (and the grandparent of the children).
- [Note that the taxonomy tree is special, since it has degree-2 nodes that
- are important.]
-\end_layout
-
-\begin_layout Standard
-An alternative is leave broken taxa in the taxonomy.
- When then attach the unsampled children of the broken taxa to the solution
- at the MRCA of the sampled children in the solution.
+ to the full (unpruned) taxonomic tree.
+ This would be equivalent to collapsing each edge in the taxonomy that attaches
+ a broken taxon to its parent.
+ The unsampled children of broken taxa would attach at their least inclusive
+ ancestral taxon which is unbroken.
+ In cases of several adjacent taxa are broken, this can lead to polytomies
+ of very high degree deep in the tree.
+ This can make the summary tree difficult to navigate.
+ Thus, we have adopted an alternative solution.
+ The 
+\family typewriter
+otc-unprune-solution-and-name-unnamed-nodes
+\family default
+ tool from otcetera attaches the unsampled children of a broken taxa to
+ the grafeted solution as children of the MRCA of the sampled children.
 \end_layout
 
 \begin_layout Standard
@@ -3484,7 +3520,7 @@ reference "fig:Two-approaches-to-unpruning"
 \end_inset
 
  illustrates the two approaches to unpruning.
- Taxa G and R in the taxonomy (Fig 
+ Taxa G, M, and R (Fig 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "fig:Two-approaches-to-unpruning"
@@ -3498,36 +3534,30 @@ reference "fig:Two-approaches-to-unpruning"
 
 \end_inset
 
-b).
- Removing these broken taxa from the taxonomy before unpruning leads to
- taxa R4, R5, and R6 being attached directly at taxon N, as in the tree
- shown in Fig 
+b); among these only taxon R has children that were unsampled in the grafted
+ solution.
+ Ignoring all broken taxa when unpruning would cause the unsampled children
+ (R4, R5, and R6) to attached directly at taxon N (as in the tree shown
+ in Fig 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "fig:Two-approaches-to-unpruning"
 
 \end_inset
 
-c.
- This is because these taxa attach at the closest named taxon that is not
- broken, which is N in this case.
- In tree illustrated in Fig 
+c), because that is the least inclusive unbroken ancestor of R.
+ The tree illustrated in Fig 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "fig:Two-approaches-to-unpruning"
 
 \end_inset
 
-d, the children of the broken taxon R and instead attached at the MRCA of
- R1, R2, and R3, which is not a taxonomy node.
-\end_layout
-
-\begin_layout Standard
-
-\emph on
-BDR: maybe we could complicate example 2 instead of providing a separate
- example of how attaching unsampled children of broken taxa at the MRCA
- of sampled taxa makes a difference.
+d shows the tree that would be produced by propinquity; the children of
+ the broken taxon R and instead attached at the MRCA of sampled children
+ (R1, R2, and R3).
+ Their attachment point does not correspond to a taxon in the taxonomic
+ tree.
 \end_layout
 
 \begin_layout Standard
@@ -3665,7 +3695,7 @@ Grafted solution
 \begin_inset Float figure
 wide false
 sideways false
-status collapsed
+status open
 
 \begin_layout Plain Layout
 \align center
@@ -3700,7 +3730,7 @@ Unpruned tree - broken taxa removed
 \begin_inset Float figure
 wide false
 sideways false
-status collapsed
+status open
 
 \begin_layout Plain Layout
 \align center
