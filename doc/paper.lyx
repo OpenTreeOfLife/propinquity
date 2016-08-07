@@ -3558,6 +3558,7 @@ d shows the tree that would be produced by propinquity; the children of
  (R1, R2, and R3).
  Their attachment point does not correspond to a taxon in the taxonomic
  tree.
+
 \end_layout
 
 \begin_layout Standard
@@ -3571,7 +3572,7 @@ status open
 \begin_inset Float figure
 wide false
 sideways false
-status open
+status collapsed
 
 \begin_layout Plain Layout
 \align center
@@ -3771,7 +3772,7 @@ name "fig:Two-approaches-to-unpruning"
 \end_inset
 
 Two approaches to unpruning.
- Taxa G and R in the taxanomy (a) are broken because they conflict with
+ Taxa G and R in the taxonomy (a) are broken because they conflict with
  the grafted solution (b).
  Removing these broken taxa from the taxonomy before unpruning leads to
  taxa R4, R5, and R6 being attached directly at taxon N, as in tree (c).
