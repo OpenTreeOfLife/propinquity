@@ -209,7 +209,7 @@ synthetic tree
  methods because it produces no unsupported branches, and it avoids unnecessary
  polytomies.
  In addition to producing a tree, the pipeline writes an annotations file
- that reports which grouping in the input trees support each of the groupings
+ that reports which grouping in the input trees support each of the groups
  in the supertree.
 \end_layout
 
@@ -219,7 +219,7 @@ Background
 
 \begin_layout Standard
 The Open Tree of Life project seeks to build a platform for summarizing
- what is known about phylogenetic relationships across all of Life
+ what is known about phylogenetic relationships across all of Life 
 \begin_inset CommandInset citation
 LatexCommand citep
 key "HinchliffEtAl2015"
@@ -982,9 +982,9 @@ reference "fig:toyambig"
 
 d) would be characterized as a tree that displays all of the input groupings
  and which has no unsupported groups.
- So clearly these criteria are insufficient to specify a unique solution,
- and users of the output tree need to be aware that it may be possible for
- some taxa to 
+ Clearly these criteria are insufficient to specify a unique solution, and
+ users of the output tree need to be aware that it may be possible for some
+ taxa to 
 \begin_inset Quotes eld
 \end_inset
 
@@ -1212,14 +1212,9 @@ Goal 2: Tree ranking
 \begin_layout Standard
 An appealing goal for the summarization would be to find the supertree that
  displays the largest number of input tree edges.
- This is probably an 
-\begin_inset Formula $NP$
-\end_inset
-
--hard problem TODO:REF.
- Furthermore, despite being easy to state, this formulation does not provide
- biologists who use the summarization tool with an obvious avenue for fixing
- perceived problems with the summary tree.
+ Despite being easy to state, this formulation does not provide biologists
+ who use the summarization tool with an obvious avenue for fixing perceived
+ problems with the summary tree.
  For example, a grouping that a biologist expected may not be present in
  the supertree, but it may not conflict with any of the input groupings
  which are displayed.
@@ -1975,9 +1970,9 @@ on is unwarranted.
 \end_layout
 
 \begin_layout Standard
-As discussed below, if a taxon is only present in the taxonomy (not in any
- of the input trees), then it can be pruned from the taxonomy for the constructi
-on of the supertree and then grafted back on to the summary tree later.
+If a taxon is only present in the taxonomy (not in any of the input trees),
+ then it can be pruned from the taxonomy for the construction of the supertree
+ and then grafted back on to the summary tree later.
  Performing this pruning reduces the size of the supertree problem, reducing
  the running time of the pipeline.
  Similarly, when we expand a higher taxon in the exemplification step, we
@@ -2336,7 +2331,7 @@ We prune the taxonomy by removing tips that are not present in any input
  tree.
  The tips pruned in this step will be grafted back onto the skeleton of
  the summary tree in a subsequent step.
- A terminal taxon that is represented only in the taxonomycan be pruned
+ A terminal taxon that is represented only in the taxonomy can be pruned
  and then regrafted onto the solution without affecting which nodes are
  displayed by the final summary tree.
  Thus, this procedure does not impede our ability to find a good summary
@@ -2385,11 +2380,11 @@ For the sake of efficiency, propinquity uses a divide-and-conquer approach
 \begin_inset Formula $x$
 \end_inset
 
- in the pruned taxonomy, if the taxa in 
+ in the pruned taxonomy, if 
 \begin_inset Formula $x$
 \end_inset
 
- are non-monophyletic in every resolution of tree 
+ is not monophyletic in any resolution of tree 
 \begin_inset Formula $T_{i}$
 \end_inset
 
@@ -2479,7 +2474,7 @@ reference "fig:pairwisecompat"
 \begin_inset Formula $B$
 \end_inset
 
- shown in the taxonomy (panel (c)).
+ shown in the taxonomy panel (c).
  Thus, when using our decomposition, the branches leading to taxa 
 \begin_inset Formula $B1$
 \end_inset
@@ -3044,9 +3039,9 @@ Subproblem solution
 \end_layout
 
 \begin_layout Standard
-Second, when solving sub-problems, we sequentially incorporate splits from
- trees in order of ranking, retaining splits that are compatible with the
- current set of splits (Alg 
+When solving sub-problems, we sequentially incorporate splits from trees
+ in order of ranking, retaining splits that are compatible with the current
+ set of splits (Alg 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "alg:ConsistentSplitsFromRankedList"
@@ -3262,8 +3257,8 @@ key "AhoSSU1981"
  if all splits are triplets.
  In this approach splits are either entirely retained or entirely discarded
  - consistent rooted triplets from conflicting splits are not retained.
- However, when unpruning taxonomy-only taxa, we make an attempt to break
- ties in a way that preserves some partial information from conflicting
+ However, when unpruning taxonomy-only taxa (see below), we make an attempt
+ to break ties in a way that preserves some partial information from conflicting
  splits by attaching taxa from conflicting splits at their common ancestor.
  Figure 
 \begin_inset CommandInset ref
@@ -3471,8 +3466,7 @@ unpruning step.
 
  For those taxa that are compatible with the grafted tree, this step simply
  amounts to adding any unsample taxonomic children to the node that represents
- the taxon in the grafted solution tree that was created in the previous
- step.
+ the taxon in the grafted solution tree.
 \end_layout
 
 \begin_layout Standard
@@ -3831,11 +3825,11 @@ Naming unnamed nodes
 
 \begin_layout Standard
 In order to annotate each node in the summary supertree, it is first necessary
- that each node have a unique name.
+ that each node have a unique identifier.
  Nodes whose include group correspond exactly to the include group of a
- node in the taxonomy are given the same name as the corresponding taxonomy
- node.
- These names are of the form 
+ node in the taxonomy are given the same identifier as the corresponding
+ taxonomy node.
+ These identifier are of the form 
 \begin_inset Formula $ottX$
 \end_inset
 
@@ -3844,11 +3838,11 @@ In order to annotate each node in the summary supertree, it is first necessary
 \end_inset
 
  is an integer OTT id.
- We generate a name of the form 
+ We generate a label of the form 
 \begin_inset Formula $mrcaottX_{1}ottX_{2}$
 \end_inset
 
- for an unnamed node 
+ for an non-taxonomic node 
 \begin_inset Formula $n$
 \end_inset
 
@@ -3946,9 +3940,9 @@ nodes
 \begin_inset Formula $x$
 \end_inset
 
- several keys to categorize the relationship between the node and the inputs;
- each key in the node provenance object maps to a structure storing the
- tree ID and node IDs for the input tree nodes.
+ uses several properties to categorize the relationship between the node
+ and the inputs; each property in the node provenance object maps to a structure
+ storing the tree ID and node IDs for the input tree nodes.
  
 \end_layout
 
@@ -4149,7 +4143,7 @@ supported_by
 \end_layout
 
 \begin_layout Standard
-Finally, 
+Finally, if 
 \begin_inset Formula $T_{i}$
 \end_inset
 
@@ -4326,7 +4320,7 @@ The maximum sum displayed groups' weighted scores criterion
 \end_layout
 
 \begin_layout Standard
-If 
+Let 
 \begin_inset Formula $\mathcal{W}$
 \end_inset
 
@@ -4369,13 +4363,13 @@ sum of displayed groups' weighted scores
 \end_inset
 
 .
+ Preference for this tree is referred to as the maximum sum displayed groups'
+ weighted scores criterion (MSDGWS criterion).
  The summary tree constructed by the propinquity pipeline is a greedy heuristic
  for finding a tree that maximizes this score when the weights for a node
  are determined by the tree's weight and the difference in weighting is
  so large that displaying one node from a highly ranked tree is preferred
  to displaying all of the nodes in the trees with lower rank.
- Preference for this tree is referred to as the maximum sum displayed groups'
- weighted scores criterion (MSDGWS criterion).
 \end_layout
 
 \begin_layout Section
@@ -4534,9 +4528,9 @@ Detection of uncontested higher taxa
 \begin_layout Standard
 After every input tree and the taxonomy tree have been embedded into the
  taxonomic graph, we perform postorder traversal over the taxonomic graph
- underlies the multi-graph.
+ that underlies the multi-graph.
  For any internal node (each of which corresponds to a non-terminal taxon)
- we determine wether or not it is contested by examining each input tree.
+ we determine whether or not it is contested by examining each input tree.
  We can determine tree 
 \begin_inset Formula $i$
 \end_inset
