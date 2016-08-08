@@ -3229,7 +3229,7 @@ key "AhoSSU1981"
  splits.
  The modified BUILD algorithm constructs a tree compatible with a collection
  of rooted splits, and returns failure if such a tree does not exist.
- This modified algorithm recovers the original BUILD algorithm of only rooted
+ This modified algorithm recovers the original BUILD algorithm if only rooted
  triplets are supplied as input.
  When larger splits are supplied as input, the results are the same as if
  each was was decomposed into all implied triplets.
@@ -3408,7 +3408,7 @@ grafted_solution/grafted_solution.tre
  by propinquity).
  Recall that each non-root uncontested taxon used for decomposition occurs
  as a leaf taxon in one subproblem and as a root taxon in one other subproblem.
- Thus, the ungrafting operation simply consists of reading all of the subproblem
+ Thus, the grafting operation simply consists of reading all of the subproblem
  solutions into memory and then merging the nodes that are labeled with
  the same OTT ID.
 \end_layout
@@ -3465,7 +3465,7 @@ unpruning step.
 \end_inset
 
  For those taxa that are compatible with the grafted tree, this step simply
- amounts to adding any unsample taxonomic children to the node that represents
+ amounts to adding any unsampled taxonomic children to the node that represents
  the taxon in the grafted solution tree.
 \end_layout
 
@@ -3502,7 +3502,7 @@ reference "alg:ConsistentSplitsFromRankedList"
 otc-unprune-solution-and-name-unnamed-nodes
 \family default
  tool from otcetera attaches the unsampled children of a broken taxa to
- the grafeted solution as children of the MRCA of the sampled children.
+ the grafted solution as children of the MRCA of the sampled children.
 \end_layout
 
 \begin_layout Standard
@@ -3528,7 +3528,7 @@ reference "fig:Two-approaches-to-unpruning"
 
 \end_inset
 
-b); among these only taxon R has children that were unsampled in the grafted
+b); among these, only taxon R has children that were unsampled in the grafted
  solution.
  Ignoring all broken taxa when unpruning would cause the unsampled children
  (R4, R5, and R6) to attached directly at taxon N (as in the tree shown
@@ -3792,7 +3792,7 @@ status open
 \begin_layout Plain Layout
 \align center
 \begin_inset Graphics
-	filename Figures/labelled_supertree/labelled_supertree.tre.svg
+	filename Figures/labelled_supertree/labelled_supertree_only_taxon_names.tre.svg
 	scale 50
 
 \end_inset
@@ -4005,7 +4005,7 @@ Conceptually, this annotation operation in equivalent to considering every
 \begin_inset Formula $x$
 \end_inset
 
- are with rooted taxon biparitions which conflict with, are displayed by,
+ are with rooted taxon bipartitions which conflict with, are displayed by,
  or are resolved by the the rooted taxonomic bipartition associated with
  node 
 \begin_inset Formula $x$
@@ -4233,7 +4233,7 @@ make html
 \begin_inset Quotes erd
 \end_inset
 
- target) can compose an index.html file for each directory created durin
+ target) can compose an index.html file for each directory created during
  the pipeline to explain the artifacts held in that directory and report
  summary statistics about the summarization run.
 \end_layout
@@ -4254,7 +4254,7 @@ key "HinchliffEtAl2015"
 
 \end_inset
 
- paper is used by the project to serve the tree produced by propinquitye
+ paper is used by the project to serve the tree produced by propinquity
  via Open Tree of Life APIs.
  The migration of summary tree construction from treemachine (used for version
  4) to propinquity (for all versions from v5.0 to present) has decreased
