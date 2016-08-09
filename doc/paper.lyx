@@ -8,6 +8,7 @@
 \begin_preamble
 \usepackage{algorithm,algpseudocode}
 \usepackage{lmodern}
+\definecolor{mylime}{RGB}{128,255,128}
 \end_preamble
 \use_default_options true
 \maintain_unincluded_children false
@@ -4251,9 +4252,21 @@ partial_path_of
 \end_inset
 
 "mrcaott5ott7": { "
-\color lime
-supported_by
-\color inherit
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+\family typewriter
+
+\backslash
+textcolor{mylime}{supported
+\backslash
+_by}
+\end_layout
+
+\end_inset
+
 ":
 \begin_inset space ~
 \end_inset
@@ -4888,7 +4901,7 @@ The relationship of edges in summary tree
 \begin_inset Formula $T_{1}$
 \end_inset
 
- they are lime colored.
+ they are green.
  There is no conflict in this example.
  Also, if this were output from propinquity, then each internal node of
  
