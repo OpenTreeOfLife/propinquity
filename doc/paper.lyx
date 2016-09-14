@@ -8,6 +8,7 @@
 \begin_preamble
 \usepackage{algorithm,algpseudocode}
 \usepackage{lmodern}
+\definecolor{mylime}{RGB}{128,255,128}
 \end_preamble
 \use_default_options true
 \maintain_unincluded_children false
@@ -209,7 +210,7 @@ synthetic tree
  methods because it produces no unsupported branches, and it avoids unnecessary
  polytomies.
  In addition to producing a tree, the pipeline writes an annotations file
- that reports which grouping in the input trees support each of the groupings
+ that reports which grouping in the input trees support each of the groups
  in the supertree.
 \end_layout
 
@@ -219,7 +220,7 @@ Background
 
 \begin_layout Standard
 The Open Tree of Life project seeks to build a platform for summarizing
- what is known about phylogenetic relationships across all of Life
+ what is known about phylogenetic relationships across all of Life 
 \begin_inset CommandInset citation
 LatexCommand citep
 key "HinchliffEtAl2015"
@@ -982,9 +983,9 @@ reference "fig:toyambig"
 
 d) would be characterized as a tree that displays all of the input groupings
  and which has no unsupported groups.
- So clearly these criteria are insufficient to specify a unique solution,
- and users of the output tree need to be aware that it may be possible for
- some taxa to 
+ Clearly these criteria are insufficient to specify a unique solution, and
+ users of the output tree need to be aware that it may be possible for some
+ taxa to 
 \begin_inset Quotes eld
 \end_inset
 
@@ -1212,14 +1213,9 @@ Goal 2: Tree ranking
 \begin_layout Standard
 An appealing goal for the summarization would be to find the supertree that
  displays the largest number of input tree edges.
- This is probably an 
-\begin_inset Formula $NP$
-\end_inset
-
--hard problem TODO:REF.
- Furthermore, despite being easy to state, this formulation does not provide
- biologists who use the summarization tool with an obvious avenue for fixing
- perceived problems with the summary tree.
+ Despite being easy to state, this formulation does not provide biologists
+ who use the summarization tool with an obvious avenue for fixing perceived
+ problems with the summary tree.
  For example, a grouping that a biologist expected may not be present in
  the supertree, but it may not conflict with any of the input groupings
  which are displayed.
@@ -1975,9 +1971,9 @@ on is unwarranted.
 \end_layout
 
 \begin_layout Standard
-As discussed below, if a taxon is only present in the taxonomy (not in any
- of the input trees), then it can be pruned from the taxonomy for the constructi
-on of the supertree and then grafted back on to the summary tree later.
+If a taxon is only present in the taxonomy (not in any of the input trees),
+ then it can be pruned from the taxonomy for the construction of the supertree
+ and then grafted back on to the summary tree later.
  Performing this pruning reduces the size of the supertree problem, reducing
  the running time of the pipeline.
  Similarly, when we expand a higher taxon in the exemplification step, we
@@ -2328,15 +2324,15 @@ unpruning
 \end_layout
 
 \begin_layout Subsubsection
-Temporarily pruning leaves mapped to taxa found in only one tree
+Temporarily pruning leaves mapped to taxa found only in the taxonomy
 \end_layout
 
 \begin_layout Standard
-First we prune the taxonomy by removing tips that are not present in any
- input tree.
+We prune the taxonomy by removing tips that are not present in any input
+ tree.
  The tips pruned in this step will be grafted back onto the skeleton of
  the summary tree in a subsequent step.
- A terminal taxon that is represented only in the taxonomycan be pruned
+ A terminal taxon that is represented only in the taxonomy can be pruned
  and then regrafted onto the solution without affecting which nodes are
  displayed by the final summary tree.
  Thus, this procedure does not impede our ability to find a good summary
@@ -2385,11 +2381,11 @@ For the sake of efficiency, propinquity uses a divide-and-conquer approach
 \begin_inset Formula $x$
 \end_inset
 
- in the pruned taxonomy, if the taxa in 
+ in the pruned taxonomy, if 
 \begin_inset Formula $x$
 \end_inset
 
- are non-monophyletic in every resolution of tree 
+ is not monophyletic in any resolution of tree 
 \begin_inset Formula $T_{i}$
 \end_inset
 
@@ -2479,7 +2475,7 @@ reference "fig:pairwisecompat"
 \begin_inset Formula $B$
 \end_inset
 
- shown in the taxonomy (panel (c)).
+ shown in the taxonomy panel (c).
  Thus, when using our decomposition, the branches leading to taxa 
 \begin_inset Formula $B1$
 \end_inset
@@ -3044,9 +3040,9 @@ Subproblem solution
 \end_layout
 
 \begin_layout Standard
-Second, when solving sub-problems, we sequentially incorporate splits from
- trees in order of ranking, retaining splits that are compatible with the
- current set of splits (Alg 
+When solving sub-problems, we sequentially incorporate splits from trees
+ in order of ranking, retaining splits that are compatible with the current
+ set of splits (Alg 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "alg:ConsistentSplitsFromRankedList"
@@ -3234,30 +3230,7 @@ key "AhoSSU1981"
  splits.
  The modified BUILD algorithm constructs a tree compatible with a collection
  of rooted splits, and returns failure if such a tree does not exist.
- 
-\begin_inset Note Note
-status collapsed
-
-\begin_layout Plain Layout
-The algorithm begins by partitioning the leaf set into subgroups, where
- two leaves are assigned to the same subgroup if they are both in the include
- set of any input triplet.
- The include set of every split is thus contained in a single subgroup.
- If the exclude set is disjoint with that subgroup, then the split is satisfied
- by the partition and is discarded.
- Otherwise, the split is associated with the group that contains its include
- set.
- The BUILD algorithm is then recursively applied to each subgroup of the
- partition that has a non-empty set of splits assigned to it, and this recursive
- partitioning creates a tree.
- If at any level of recursion the partitioning stage yields only one group,
- then the algorithm returns failure, and the collection of splits are not
- compatible.
-\end_layout
-
-\end_inset
-
- This modified algorithm recovers the original BUILD algorithm of only rooted
+ This modified algorithm recovers the original BUILD algorithm if only rooted
  triplets are supplied as input.
  When larger splits are supplied as input, the results are the same as if
  each was was decomposed into all implied triplets.
@@ -3269,7 +3242,7 @@ The algorithm begins by partitioning the leaf set into subgroups, where
 \begin_inset Formula $N$
 \end_inset
 
- is the number of splits pass in, 
+ is the number of splits passed in, 
 \begin_inset Formula $E$
 \end_inset
 
@@ -3283,226 +3256,27 @@ The algorithm begins by partitioning the leaf set into subgroups, where
 \end_inset
 
  if all splits are triplets.
- It may be possible to decrease this order to 
-\begin_inset Formula $O(?)$
-\end_inset
-
- by sharing work between recursive invocations of BUILD, but such algorithms
- have never been implemented.
-\end_layout
-
-\begin_layout Standard
-Hmm...
- e-mail that other guy.
-\end_layout
-
-\begin_layout Standard
-\begin_inset Note Note
-status open
-
-\begin_layout Plain Layout
-OK, so the order for the first iteration is something like
-\end_layout
-
-\begin_layout Itemize
-\begin_inset Formula $O(L)$
-\end_inset
-
- to put each leaf in its own category.
-\end_layout
-
-\begin_layout Itemize
-\begin_inset Formula $O(N)$
-\end_inset
-
- to visit each split
-\end_layout
-
-\begin_layout Itemize
-\begin_inset Formula $O(L)$
-\end_inset
-
- to do the merging.
-\end_layout
-
-\begin_layout Plain Layout
-Then to do the checking, we have 
-\begin_inset Formula $O(\sum_{i=1}^{n}n_{exclude}^{i})$
-\end_inset
-
-
-\end_layout
-
-\begin_layout Plain Layout
-So this turns in to 
-\begin_inset Formula $O(L+N+E)$
-\end_inset
-
- where 
-\begin_inset Formula $E$
-\end_inset
-
- is the total number of taxa excluded.
-\end_layout
-
-\begin_layout Plain Layout
-Then we do this 
-\begin_inset Formula $N$
-\end_inset
-
- times as most, so we get 
-\begin_inset Formula $O(N^{2}+NL+N^{2}\frac{E}{N})$
-\end_inset
-
-.
- If 
-\begin_inset Formula $E/N$
-\end_inset
-
- is the average number of excluded taxa.
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-In this approach splits are either entirely retained or entirely discarded
+ In this approach splits are either entirely retained or entirely discarded
  - consistent rooted triplets from conflicting splits are not retained.
- However, when unpruning taxonomy-only taxa, we make an attempt to break
- ties in a way that preserves some partial information from conflicting
+ However, when unpruning taxonomy-only taxa (see below), we make an attempt
+ to break ties in a way that preserves some partial information from conflicting
  splits by attaching taxa from conflicting splits at their common ancestor.
-\end_layout
+ Figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:subproblem-solutions."
 
-\begin_layout Standard
-
-\series bold
-Claim:
-\series default
- the BUILD algorithm places 
-\begin_inset Quotes eld
 \end_inset
 
-floating
-\begin_inset Quotes erd
-\end_inset
+ shows the solutions that would be obtained by applying our modified version
+ of the BUILD algorithm to the subproblems show in figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:subproblems-example"
 
- taxa as rootward as possible.
- However, the MRCA-based unpruner does not.
-\end_layout
-
-\begin_layout Standard
-
-\series bold
-Note:
-\series default
- whenever we pass a split down into a subgroup, we effectively chop off
- any elements of the exclude group that are not part of the subgroup.
- Since the exclude group is not used to partition the groups in a sub-problem,
- truncating the exclude group to remove these member affects the course
- of the BUILD algorithm not at all.
- Therefore, the BUILD algorithm effectively constructs a reduced exclude
- set for each split that would lead to the same output.
-\end_layout
-
-\begin_layout Standard
-
-\series bold
-Proof that every partition satisfies at least one split when the splits
- are compatible:
-\end_layout
-
-\begin_layout Standard
-- If this is not the case, then all splits that lead to the partition will
- survive to the next level of recursion.
- In that case, the next level of BUILD will form a single group, leading
- to a single group, and then to failure, indicating incompatibility.
-\end_layout
-
-\begin_layout Standard
-
-\series bold
-Proof that subtrees cannot be moved rootward without violating a split:
-\end_layout
-
-\begin_layout Standard
-- Suppose that some subtree 
-\begin_inset Formula $A$
-\end_inset
-
- forms part of a subtree 
-\begin_inset Formula $G$
 \end_inset
 
 .
- Then 
-\begin_inset Formula $A$
-\end_inset
-
- must have a sister subtree 
-\begin_inset Formula $B$
-\end_inset
-
-, and 
-\begin_inset Formula $G$
-\end_inset
-
- must have a sister subtree 
-\begin_inset Formula $X$
-\end_inset
-
-, so that the BUILD tree contains a subtree of the form 
-\begin_inset Formula $((A,B,\ldots)G,X,\ldots)S$
-\end_inset
-
-.
- In order for 
-\begin_inset Formula $G$
-\end_inset
-
- to form a component in the subtree, there must be a split of the form 
-\begin_inset Formula $ab\ldots|s\ldots$
-\end_inset
-
-, where 
-\begin_inset Formula $a$
-\end_inset
-
- is in 
-\begin_inset Formula $A$
-\end_inset
-
-, 
-\begin_inset Formula $B$
-\end_inset
-
- is in 
-\begin_inset Formula $B$
-\end_inset
-
- and 
-\begin_inset Formula $s$
-\end_inset
-
- is in 
-\begin_inset Formula $S$
-\end_inset
-
-.
- However, if we move 
-\begin_inset Formula $A$
-\end_inset
-
- up to the level of 
-\begin_inset Formula $G$
-\end_inset
-
- to form 
-\begin_inset Formula $((B,\ldots)G,A,X,\ldots)S$
-\end_inset
-
-, then such a split cannot be satisfied.
 \end_layout
 
 \begin_layout Standard
@@ -3519,7 +3293,7 @@ status open
 \begin_inset Float figure
 wide false
 sideways false
-status collapsed
+status open
 
 \begin_layout Plain Layout
 \begin_inset Graphics
@@ -3555,7 +3329,7 @@ ABCD
 \begin_inset Float figure
 wide false
 sideways false
-status collapsed
+status open
 
 \begin_layout Plain Layout
 \begin_inset Graphics
@@ -3594,10 +3368,22 @@ root
 \begin_inset Caption Standard
 
 \begin_layout Plain Layout
-Solutions.
- Each solution tree has a taxon at the root (although it is not currently
- shown in the figure).
+Solutions to the subproblems depicted in figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:subproblems-example"
+
+\end_inset
+
+
 \end_layout
+
+\end_inset
+
+
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:subproblem-solutions."
 
 \end_inset
 
@@ -3614,16 +3400,25 @@ Solution grafting
 \end_layout
 
 \begin_layout Standard
-Since each uncontested taxon that is used for decomposition occurs in one
- subproblem as a leaf node, and one subproblem as a root node, ungrafting
- simply consists of merging these two nodes.
+To produce a tree that spans all of the taxa sampled in the exemplified
+ set of input trees, we graft the subproblem solutions into a single tree
+ (stored as the 
+\family typewriter
+grafted_solution/grafted_solution.tre
+\family default
+ by propinquity).
+ Recall that each non-root uncontested taxon used for decomposition occurs
+ as a leaf taxon in one subproblem and as a root taxon in one other subproblem.
+ Thus, the grafting operation simply consists of reading all of the subproblem
+ solutions into memory and then merging the nodes that are labeled with
+ the same OTT ID.
 \end_layout
 
 \begin_layout Standard
 \begin_inset Float figure
 wide false
 sideways false
-status collapsed
+status open
 
 \begin_layout Plain Layout
 \align center
@@ -3656,48 +3451,59 @@ Grafted solution.
 \end_layout
 
 \begin_layout Subsubsection
-Unpruning
+Unpruning unsampled taxa
 \end_layout
 
 \begin_layout Standard
-During unpruning, when we encounter taxonomy nodes that conflict with the
- solution tree, we have to decide what to do with these taxa.
- One approach would be to apply Algorithm 
+As described above, taxa that do not have any descendants in a sampled phylogene
+tic input are pruned from the taxonomy for the sake of efficiency.
+ These taxa are reattached by an 
+\begin_inset Quotes eld
+\end_inset
+
+unpruning step.
+\begin_inset Quotes erd
+\end_inset
+
+ For those taxa that are compatible with the grafted tree, this step simply
+ amounts to adding any unsampled taxonomic children to the node that represents
+ the taxon in the grafted solution tree.
+\end_layout
+
+\begin_layout Standard
+However, a taxon may be incompatible with the grafted solution; we refer
+ to such taxa as 
+\begin_inset Quotes eld
+\end_inset
+
+broken taxa.
+\begin_inset Quotes erd
+\end_inset
+
+ If a broken taxon contains some unsampled children, it is not clear where
+ these unsampled children should be attached to the grafted solution.
+ One approach would be to mimic the application of apply Algorithm 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "alg:ConsistentSplitsFromRankedList"
 
 \end_inset
 
- to the taxonomy tree.
- That would involve decomposing the taxonomy tree into a collection of splits,
- and discarding splits that are in conflict with the solution tree.
- This is equivalent to finding taxonomy nodes that conflict with the solution
- tree and removing them, while reparenting their children to the parent
- of the conflicting node (and the grandparent of the children).
- [Note that the taxonomy tree is special, since it has degree-2 nodes that
- are important.]
-\end_layout
-
-\begin_layout Standard
-A 
-\emph on
-slice
-\emph default
- is a ....
- a region of the taxonomy starting with a non-broken taxon down through
- broken taxa, and bounded below (tipward) but non-broken taxa.
- The new unpruner processes 
-\emph on
-slices
-\emph default
-...
-\end_layout
-
-\begin_layout Standard
-An alternative is leave broken taxa in the taxonomy.
- When then attach the unsampled children of the broken taxa to the solution
- at the MRCA of the sampled children in the solution.
+ to the full (unpruned) taxonomic tree.
+ This would be equivalent to collapsing each edge in the taxonomy that attaches
+ a broken taxon to its parent.
+ The unsampled children of broken taxa would attach at their least inclusive
+ ancestral taxon which is unbroken.
+ In cases of several adjacent taxa are broken, this can lead to polytomies
+ of very high degree deep in the tree.
+ This can make the summary tree difficult to navigate.
+ Thus, we have adopted an alternative solution.
+ The 
+\family typewriter
+otc-unprune-solution-and-name-unnamed-nodes
+\family default
+ tool from otcetera attaches the unsampled children of a broken taxa to
+ the grafted solution as children of the MRCA of the sampled children.
 \end_layout
 
 \begin_layout Standard
@@ -3709,7 +3515,7 @@ reference "fig:Two-approaches-to-unpruning"
 \end_inset
 
  illustrates the two approaches to unpruning.
- Taxa G and R in the taxonomy (Fig 
+ Taxa G, M, and R (Fig 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "fig:Two-approaches-to-unpruning"
@@ -3723,53 +3529,30 @@ reference "fig:Two-approaches-to-unpruning"
 
 \end_inset
 
-b).
- Removing these broken taxa from the taxonomy before unpruning leads to
- taxa R4, R5, and R6 being attached directly at taxon N, as in the tree
- shown in Fig 
+b); among these, only taxon R has children that were unsampled in the grafted
+ solution.
+ Ignoring all broken taxa when unpruning would cause the unsampled children
+ (R4, R5, and R6) to attached directly at taxon N (as in the tree shown
+ in Fig 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "fig:Two-approaches-to-unpruning"
 
 \end_inset
 
-c.
- This is because these taxa attach at the closest named taxon that is not
- broken, which is N in this case.
- In tree illustrated in Fig 
+c), because that is the least inclusive unbroken ancestor of R.
+ The tree illustrated in Fig 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "fig:Two-approaches-to-unpruning"
 
 \end_inset
 
-d, the children of the broken taxon R and instead attached at the MRCA of
- R1, R2, and R3, which is not a taxonomy node.
-\end_layout
-
-\begin_layout Standard
-
-\emph on
-BDR: shoule we could example 2 to show how attaching unsampled children
- of broken taxa at the MRCA of sampled taxa makes a difference, instead
- of providing a separate example? (Fig 
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "fig:Two-approaches-to-unpruning"
-
-\end_inset
-
-/example3).
-\end_layout
-
-\begin_layout Standard
-Ultimately, this solution is not completely satisfying, since including
- the taxonomy as an input tree undermines this behavior.
- This is because the unpruner is not following the same principles as the
- sub-problem solver.
- Hence, it would be desirable to extend the sub-problem solver to handle
- these kind of cases in order to unify the sub-problem solver and the unpruner
- under a single approach to conflict resolution.
+d shows the tree that would be produced by propinquity; the children of
+ the broken taxon R and instead attached at the MRCA of sampled children
+ (R1, R2, and R3).
+ Their attachment point does not correspond to a taxon in the taxonomic
+ tree.
 \end_layout
 
 \begin_layout Standard
@@ -3907,7 +3690,7 @@ Grafted solution
 \begin_inset Float figure
 wide false
 sideways false
-status collapsed
+status open
 
 \begin_layout Plain Layout
 \align center
@@ -3942,7 +3725,7 @@ Unpruned tree - broken taxa removed
 \begin_inset Float figure
 wide false
 sideways false
-status collapsed
+status open
 
 \begin_layout Plain Layout
 \align center
@@ -4010,7 +3793,7 @@ status open
 \begin_layout Plain Layout
 \align center
 \begin_inset Graphics
-	filename Figures/labelled_supertree/labelled_supertree.tre.svg
+	filename Figures/labelled_supertree/labelled_supertree_only_taxon_names.tre.svg
 	scale 50
 
 \end_inset
@@ -4043,11 +3826,11 @@ Naming unnamed nodes
 
 \begin_layout Standard
 In order to annotate each node in the summary supertree, it is first necessary
- that each node have a unique name.
+ that each node have a unique identifier.
  Nodes whose include group correspond exactly to the include group of a
- node in the taxonomy are given the same name as the corresponding taxonomy
- node.
- These names are of the form 
+ node in the taxonomy are given the same identifier as the corresponding
+ taxonomy node.
+ These identifier are of the form 
 \begin_inset Formula $ottX$
 \end_inset
 
@@ -4056,27 +3839,15 @@ In order to annotate each node in the summary supertree, it is first necessary
 \end_inset
 
  is an integer OTT id.
- Leaf nodes are of course named already, so this is only an issue for internal
- nodes.
- (Although, how/where do we handle monotypic ancestors of forking nodes
- again? This is in the unpruner, right?) However, it is necessary to generate
- names for other nodes.
- These nodes will never be monotypic, since there is no reason to generate
- or retain monotypic nodes that do not have an OTT id.
-\end_layout
-
-\begin_layout Standard
-When generating names for unnamed internal nodes, we seek to generate names
- that have some chance of being usable when a new synthesis tree is generated.
- We therefore generate names for each unnamed node 
-\begin_inset Formula $n$
-\end_inset
-
- of the form 
+ We generate a label of the form 
 \begin_inset Formula $mrcaottX_{1}ottX_{2}$
 \end_inset
 
-, where 
+ for an non-taxonomic node 
+\begin_inset Formula $n$
+\end_inset
+
+ where 
 \begin_inset Formula $X_{1}$
 \end_inset
 
@@ -4084,13 +3855,11 @@ When generating names for unnamed internal nodes, we seek to generate names
 \begin_inset Formula $X_{2}$
 \end_inset
 
- are the OTT ids for two leaves, and 
+ are the OTT ids for two leaves, 
 \begin_inset Formula $n$
 \end_inset
 
- is the MRCA of these leaves.
- When queries attempt to access a node of this form, then we perform a query
- to determine the MRCA of 
+ is the MRCA of these leaves, and 
 \begin_inset Formula $X_{1}$
 \end_inset
 
@@ -4098,71 +3867,17 @@ When generating names for unnamed internal nodes, we seek to generate names
 \begin_inset Formula $X_{2}$
 \end_inset
 
-.
- This allows names from version 
-\begin_inset Formula $v$
-\end_inset
-
- of the tree to be used on version 
-\begin_inset Formula $v+1$
-\end_inset
-
- of the tree, even if different canonical values are chosen for 
-\begin_inset Formula $X_{1}$
-\end_inset
-
- and 
-\begin_inset Formula $X_{2}$
-\end_inset
-
- in these two trees.
- In any given version of the tree the canonical form is used to reference
- nodes for the purpose of providing annotations.
-\end_layout
-
-\begin_layout Standard
-To determine the canonical form we use the following procedure.
- We first associate each node 
+ are the smallest numbers that can be chosen to designate 
 \begin_inset Formula $n$
 \end_inset
 
- with the smallest ottid 
-\begin_inset Formula $s(n)$
-\end_inset
-
- of any descendant leaf.
- For each unnamed node 
-\begin_inset Formula $n$
-\end_inset
-
-, we find the two children the smallest 
-\begin_inset Formula $s(\cdot)$
-\end_inset
-
- value 
-\begin_inset Formula $X_{1}$
-\end_inset
-
- and the second smallest value 
-\begin_inset Formula $X_{2}$
-\end_inset
-
- of this attribute.
- Since these smallest ottids are in separate subtrees, the node 
-\begin_inset Formula $n$
-\end_inset
-
- is the MRCA of 
-\begin_inset Formula $X_{1}$
-\end_inset
-
- and 
-\begin_inset Formula $X_{2}$
-\end_inset
-
-.
- These values are independent of the branch rotation of the tree in memory,
- and so function well as canonical values.
+ as their MRCA.
+ Because new taxa added to OTT will be given higher OTT Ids, the use of
+ the lowest numbered OTT Ids as designators increases the chance that a
+ node label can be encountered in a subsequent version of the tree (though
+ the taxonomic content may change).
+ The deterministic choice of designators also makes the labeling insensitive
+ to branch rotation of the grafted solution tree.
 \end_layout
 
 \begin_layout Subsubsection
@@ -4176,11 +3891,1025 @@ sideways false
 status open
 
 \begin_layout Plain Layout
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Box Frameless
+position "c"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "25col%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename annotation_example/input1.tre.svg
+	scale 50
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
 \begin_inset Caption Standard
 
 \begin_layout Plain Layout
-Support for each node in the tree.
- How do we show this?
+Input tree 
+\begin_inset Formula $T_{1}$
+\end_inset
+
+ named 
+\begin_inset Quotes eld
+\end_inset
+
+tree1
+\begin_inset Quotes erd
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset space \hfill{}
+\end_inset
+
+
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset Box Frameless
+position "c"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "35col%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename annotation_example/summary.tre.svg
+	scale 50
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Summary Tree 
+\begin_inset Formula $\summaryTree$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset space \hfill{}
+\end_inset
+
+
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset Box Frameless
+position "c"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "35col%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename annotation_example/induced1_color.svg
+	scale 50
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Induced Tree 
+\begin_inset Formula $\summaryTree(1)$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset VSpace bigskip
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset VSpace bigskip
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset space \hfill{}
+\end_inset
+
+
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Box Shadowbox
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "80col%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
+
+\begin_layout Plain Layout
+
+\family typewriter
+{
+\end_layout
+
+\begin_layout Plain Layout
+
+\family typewriter
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+"nodes": {
+\end_layout
+
+\begin_layout Plain Layout
+
+\family typewriter
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+"mrcaott1ott4": { "
+\color blue
+partial_path_of
+\color inherit
+": { "tree1": "node15", ...
+ } },
+\end_layout
+
+\begin_layout Plain Layout
+
+\family typewriter
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+"ott10":
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+{ "
+\color blue
+partial_path_of
+\color inherit
+": { "tree1": "node15", ...
+ } },
+\end_layout
+
+\begin_layout Plain Layout
+
+\family typewriter
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+"mrcaott5ott7": { "
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+\family typewriter
+
+\backslash
+textcolor{mylime}{supported
+\backslash
+_by}
+\end_layout
+
+\end_inset
+
+":
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+ { "tree1": "node16", ...
+ } },
+\end_layout
+
+\begin_layout Plain Layout
+
+\family typewriter
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+"ott1":
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+{ "
+\color orange
+terminal
+\color inherit
+": 
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+{ "tree1": "ott1", ...
+ 
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+} },
+\end_layout
+
+\begin_layout Plain Layout
+
+\family typewriter
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+"ott2":
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+{ "
+\color orange
+terminal
+\color inherit
+": 
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+{ "tree1": "ott2", ...
+ 
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+} },
+\end_layout
+
+\begin_layout Plain Layout
+
+\family typewriter
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+"ott5":
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+{ "
+\color orange
+terminal
+\color inherit
+": 
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+{ "tree1": "ott5", ...
+ 
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+} },
+\end_layout
+
+\begin_layout Plain Layout
+
+\family typewriter
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+"ott11":
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+{ "
+\color orange
+terminal
+\color inherit
+": 
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+{ "tree1": "ott5", ...
+ 
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+} },
+\end_layout
+
+\begin_layout Plain Layout
+
+\family typewriter
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+"ott7":
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+{ "
+\color orange
+terminal
+\color inherit
+": 
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+{ "tree1": "ott7", ...
+ 
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+} }
+\end_layout
+
+\begin_layout Plain Layout
+
+\family typewriter
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+},
+\end_layout
+
+\begin_layout Plain Layout
+
+\family typewriter
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+...
+\end_layout
+
+\begin_layout Plain Layout
+
+\family typewriter
+} 
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+JSON annotations relating edges of (c) to edges of (a)
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset space \hfill{}
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:displayed-annotations"
+
+\end_inset
+
+The relationship of edges in summary tree 
+\begin_inset Formula $\summaryTree$
+\end_inset
+
+ (b) to edges in the input tree 
+\begin_inset Formula $T_{1}$
+\end_inset
+
+ (a).
+ Only edges of 
+\begin_inset Formula $\summaryTree$
+\end_inset
+
+ that are present in the induced tree 
+\begin_inset Formula $\summaryTree(1)$
+\end_inset
+
+ are represented by JSON annotations (d).
+ Taxon names are here suppressed in favor of OTT ids, and edges are referenced
+ via their tipward nodes.
+ Edges in 
+\begin_inset Formula $\summaryTree(1)$
+\end_inset
+
+ that correspond to terminal edges of 
+\begin_inset Formula $T_{1}$
+\end_inset
+
+ are orange; edges of 
+\begin_inset Formula $\summaryTree(1)$
+\end_inset
+
+ that are supported by edges of 
+\begin_inset Formula $T_{1}$
+\end_inset
+
+ are blue; where multiple edges of 
+\begin_inset Formula $\summaryTree(1)$
+\end_inset
+
+ correspond to the same edge of 
+\begin_inset Formula $T_{1}$
+\end_inset
+
+ they are green.
+ There is no conflict in this example.
+ Also, if this were output from propinquity, then each internal node of
+ 
+\begin_inset Formula $\summaryTree$
+\end_inset
+
+ would be supported by other inputs trees that are not shown here.
+ 
 \end_layout
 
 \end_inset
@@ -4198,1613 +4927,408 @@ Annotations
 \end_layout
 
 \begin_layout Standard
-To annotate a summary supertree, we compare the supertree with each input
- phylogeny that was used in generating it.
- We record relationships between supertree edges 
-\begin_inset Formula $x$
-\end_inset
-
- and edges 
-\begin_inset Formula $y$
-\end_inset
-
- in an input phylogeny:
-\end_layout
-
-\begin_layout Itemize
-\begin_inset Formula $x$
-\end_inset
-
- conflicts_with 
-\begin_inset Formula $y$
-\end_inset
-
-: the split of 
-\begin_inset Formula $x$
-\end_inset
-
- conflicts with the split of 
-\begin_inset Formula $y$
-\end_inset
-
-
-\end_layout
-
-\begin_layout Itemize
-\begin_inset Formula $x$
-\end_inset
-
- displays 
-\begin_inset Formula $y$
-\end_inset
-
-: the split of 
-\begin_inset Formula $x$
-\end_inset
-
- implies (or 
+To reveal the connections between the groupings found in the a summary supertree
+ and the input trees, propinquity uses a few Python scripts and the 
+\family typewriter
+otc-annotate-synth
+\family default
+ tool from otcetera to create an annotations file describing the pipeline
+ used and the connections between phylogenetic information in the inputs
+ and the summary.
+ The JSON file produced by 
+\family typewriter
+otc-annotate-synth
+\family default
+ encodes a 
 \begin_inset Quotes eld
 \end_inset
 
-extends
+nodes
 \begin_inset Quotes erd
 \end_inset
 
-) the split of 
-\begin_inset Formula $y$
-\end_inset
-
-
-\begin_inset Foot
-status collapsed
-
-\begin_layout Plain Layout
-the split 
-\begin_inset Formula $A_{1}|A_{2}$
-\end_inset
-
- implies (or extends) a split 
-\begin_inset Formula $B_{1}|B_{2}$
-\end_inset
-
- if 
-\begin_inset Formula $B_{1}\subseteq A_{1}$
-\end_inset
-
- and 
-\begin_inset Formula $B_{2}\subseteq A_{2}$
-\end_inset
-
-.
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_deeper
-\begin_layout Itemize
+ property that holds a mapping between a node name for the summary tree
+ (using the naming convention described in the previous section) and a node
+ provenance object categorizes the relationship between the node and the
+ inputs.
+ The node provenance object for node 
 \begin_inset Formula $x$
 \end_inset
 
- terminal 
-\begin_inset Formula $y$
-\end_inset
-
-: if 
-\begin_inset Formula $y$
-\end_inset
-
- is terminal in the input tree and 
-\begin_inset Formula $x$
-\end_inset
-
- displays 
-\begin_inset Formula $y$
-\end_inset
-
-
-\end_layout
-
-\begin_deeper
-\begin_layout Itemize
-or, the split of 
-\begin_inset Formula $y$
-\end_inset
-
- is trivial and 
-\begin_inset Formula $x$
-\end_inset
-
- displays 
-\begin_inset Formula $y$
-\end_inset
-
-
-\end_layout
-
-\end_deeper
-\begin_layout Itemize
-\begin_inset Formula $x$
-\end_inset
-
- supported_by 
-\begin_inset Formula $y$
-\end_inset
-
-: if 
-\begin_inset Formula $y$
-\end_inset
-
- is not terminal, and 
-\begin_inset Formula $x$
-\end_inset
-
- uniquely displays 
-\begin_inset Formula $y$
-\end_inset
-
-
-\end_layout
-
-\begin_layout Itemize
-\begin_inset Formula $x$
-\end_inset
-
- partial_path_of 
-\begin_inset Formula $y$
-\end_inset
-
-: if 
-\begin_inset Formula $y$
-\end_inset
-
- is not terminal, and 
-\begin_inset Formula $x$
-\end_inset
-
- non-uniquely displays 
-\begin_inset Formula $y$
-\end_inset
-
-
-\backslash
-
-\end_layout
-
-\end_deeper
-\begin_layout Itemize
-\begin_inset Formula $x$
-\end_inset
-
- resolves 
-\begin_inset Formula $y$
-\end_inset
-
-: 
-\begin_inset Formula $x$
-\end_inset
-
- is compatible with 
-\begin_inset Formula $y$
-\end_inset
-
- and but below
-\begin_inset Foot
-status open
-
-\begin_layout Plain Layout
-\begin_inset Formula $x$
-\end_inset
-
- is below 
-\begin_inset Formula $y$
-\end_inset
-
- if the include and exclude groups of 
-\begin_inset Formula $x$
-\end_inset
-
- both intersect the include group of 
-\begin_inset Formula $y$
-\end_inset
-
-
-\end_layout
-
-\end_inset
-
+ uses several properties to categorize the relationship between the node
+ and the inputs; each property in the node provenance object maps to a structure
+ storing the tree ID and node IDs for the input tree nodes.
  
-\begin_inset Formula $y$
-\end_inset
-
-; 
-\begin_inset Formula $x$
-\end_inset
-
- is compatible with, but above-or-beside
-\begin_inset Foot
-status open
-
-\begin_layout Plain Layout
-\begin_inset Formula $x$
-\end_inset
-
- is above-or-beside 
-\begin_inset Formula $y$
-\end_inset
-
- if the include and exclude groups of 
-\begin_inset Formula $x$
-\end_inset
-
- both intersect the exclude group of 
-\begin_inset Formula $y$
-\end_inset
-
- 
-\end_layout
-
-\end_inset
-
- all of 
-\begin_inset Formula $y's$
-\end_inset
-
- child edges.
- Thus if 
-\begin_inset Formula $x$
-\end_inset
-
- was restricted to the leaf set of 
-\begin_inset Formula $y$
-\end_inset
-
-, 
-\begin_inset Formula $x$
-\end_inset
-
- could be inserted below 
-\begin_inset Formula $y$
-\end_inset
-
- and would subdivide 
-\begin_inset Formula $y's$
-\end_inset
-
- children.
-\end_layout
-
-\begin_layout Itemize
-\begin_inset Formula $x$
-\end_inset
-
- resolved_by 
-\begin_inset Formula $y$
-\end_inset
-
-: 
-\begin_inset Formula $y$
-\end_inset
-
- is compatible with 
-\begin_inset Formula $x$
-\end_inset
-
- but below 
-\begin_inset Formula $x$
-\end_inset
-
-; 
-\begin_inset Formula $y$
-\end_inset
-
- is compatible with, but above all of 
-\begin_inset Formula $x's$
-\end_inset
-
- child edges.
 \end_layout
 
 \begin_layout Standard
-Here the rooted split of an edge 
+Conceptually, this annotation operation in equivalent to considering every
+ node 
+\begin_inset Formula $j$
+\end_inset
+
+ in each input tree 
+\begin_inset Formula $i$
+\end_inset
+
+ and the summary tree node 
 \begin_inset Formula $x$
 \end_inset
 
- is the ordered partition include|exclude.
+.
+ Because the vast majority of nodes in the input studies will be compatible
+ but not directly relevant to node 
+\begin_inset Formula $x$
+\end_inset
+
+ we do not list all of the compatible groupings.
+ If node 
+\begin_inset Formula $x$
+\end_inset
+
+ is not included in the induced tree 
+\begin_inset Formula $\mathcal{\mathbb{S}}(i)$
+\end_inset
+
+, then none of the nodes of tree 
+\begin_inset Formula $i$
+\end_inset
+
+ will be referred to in the annotations for node 
+\begin_inset Formula $x$
+\end_inset
+
+.
+ Even if 
+\begin_inset Formula $x$
+\end_inset
+
+ is included in 
+\begin_inset Formula $\mathcal{\mathbb{S}}(i)$
+\end_inset
+
+, many of the nodes of 
+\begin_inset Formula $T_{i}$
+\end_inset
+
+ will be compatible with 
+\begin_inset Formula $x$
+\end_inset
+
+ while being relevant to other parts of the summary tree.
+ The only input nodes listed for node 
+\begin_inset Formula $x$
+\end_inset
+
+ are with rooted taxon bipartitions which conflict with, are displayed by,
+ or are resolved by the the rooted taxonomic bipartition associated with
+ node 
+\begin_inset Formula $x$
+\end_inset
+
+.
+ All input nodes that cannot be displayed by any supertree that contains
+ 
+\begin_inset Formula $x$
+\end_inset
+
+ are stored in a 
+\begin_inset Quotes eld
+\end_inset
+
+conflicts_with
+\begin_inset Quotes erd
+\end_inset
+
+ property of the node provenance object.
+ If node 
+\begin_inset Formula $j$
+\end_inset
+
+ of 
+\begin_inset Formula $T_{i}$
+\end_inset
+
+ is displayed by the summary tree and 
+\begin_inset Formula $x$
+\end_inset
+
+ is part of the path of 
+\begin_inset Formula $\mathcal{\mathbb{S}}(i)$
+\end_inset
+
+ that displays the split between descendants of 
+\begin_inset Formula $j$
+\end_inset
+
+ and other taxa, then a reference to the node 
+\begin_inset Formula $j$
+\end_inset
+
+ will be in the node provenance object.
+ The exact categorization of this annotation will depend on the configuration
+ of node 
+\begin_inset Formula $x$
+\end_inset
+
+ on the induce tree 
+\begin_inset Formula $\mathcal{\mathbb{S}}(i)$
+\end_inset
+
+:
+\end_layout
+
+\begin_layout Itemize
+if 
+\begin_inset Formula $x$
+\end_inset
+
+ is a terminal path in the induced tree then node 
+\begin_inset Formula $j$
+\end_inset
+
+ will be listed in the 
+\begin_inset Quotes eld
+\end_inset
+
+terminal
+\begin_inset Quotes erd
+\end_inset
+
+ property;
+\end_layout
+
+\begin_layout Itemize
+if 
+\begin_inset Formula $x$
+\end_inset
+
+ is along an internal path that contains some nodes with out-degree equal
+ to 1, then node 
+\begin_inset Formula $j$
+\end_inset
+
+ will be listed in the 
+\begin_inset Quotes eld
+\end_inset
+
+partial_path_of
+\begin_inset Quotes erd
+\end_inset
+
+ property; and
+\end_layout
+
+\begin_layout Itemize
+if 
+\begin_inset Formula $x$
+\end_inset
+
+ is along an internal path that contains without any node of out-degree
+ 1, then node 
+\begin_inset Formula $j$
+\end_inset
+
+ will be listed in the 
+\begin_inset Quotes eld
+\end_inset
+
+supported_by
+\begin_inset Quotes erd
+\end_inset
+
+ property, because node 
+\begin_inset Formula $j$
+\end_inset
+
+ supports the existence of grouping 
+\begin_inset Formula $x$
+\end_inset
+
+ in the sense that collapsing the edge that separates 
+\begin_inset Formula $x$
+\end_inset
+
+ from its parent would cause the summary tree to no longer display node
+ 
+\begin_inset Formula $j$
+\end_inset
+
+.
 \end_layout
 
 \begin_layout Standard
-\begin_inset Note Note
-status collapsed
-
-\begin_layout Subsection
-Outline
-\end_layout
-
-\begin_layout Plain Layout
-In order to achieve these criteria, we have 
-\end_layout
-
-\begin_layout Enumerate
-Export names of trees from collections
-\end_layout
-
-\begin_layout Enumerate
-Check out phylo inputs from phylesystem 
-\end_layout
-
-\begin_layout Enumerate
-Make phylo input snapshot (e.g.
- pinned version of phylo inputs)
-\end_layout
-
-\begin_layout Enumerate
-clean taxonomy 
-\begin_inset Formula $\to\taxonomy$
-\end_inset
-
-
-\end_layout
-
-\begin_layout Enumerate
-clean phylo inputs (in parallel) 
-\begin_inset Formula $\to\phyloinputs$
-\end_inset
-
-
-\end_layout
-
-\begin_layout Enumerate
-Replace non-terminals with exemplars 
-\begin_inset Formula $\to\expandedPhylo$
-\end_inset
-
-
-\end_layout
-
-\begin_layout Enumerate
-Decompose into subproblems
-\end_layout
-
-\begin_layout Enumerate
-Solve subproblems
-\end_layout
-
-\begin_layout Enumerate
-Regraft subproblems 
-\begin_inset Formula $\to\prunedSummary$
-\end_inset
-
-
-\end_layout
-
-\begin_layout Enumerate
-Unprune the solution 
-\begin_inset Formula $\to\summaryTree$
-\end_inset
-
-
-\end_layout
-
-\begin_layout Enumerate
-Label the solution
-\end_layout
-
-\begin_layout Enumerate
-Generate annotations
-\end_layout
-
-\begin_layout Plain Layout
-import READMEs?
-\end_layout
-
-\begin_layout Subsection
-Export names of trees from collections
-\end_layout
-
-\begin_layout Plain Layout
-The ranked list of tree names is specified as an ordered list of 
-\begin_inset Quotes eld
-\end_inset
-
-collections
-\begin_inset Quotes erd
-\end_inset
-
-.
- A collection is an ordered list of tree names that is versioned using 
-\emph on
-git.
-
-\emph default
- The ordered list of tree names used in synthesis is obtained simply by
- concatenating the collections in order.
-\end_layout
-
-\begin_layout Labeling
-\labelwidthstring 00.00.0000
-Input: List of collections 
-\begin_inset Formula $\mathcal{C}$
-\end_inset
-
-
-\end_layout
-
-\begin_layout Labeling
-\labelwidthstring 00.00.0000
-Output: List of tree names
-\end_layout
-
-\begin_layout Labeling
-\labelwidthstring 00.00.0000
-Implementation: 
-\emph on
-collection_export.py
-\emph default
- from peyotl gets (study,tree) pairs 
-\emph on
-a.k.a.
- 
-\emph default
-tree names.
-\end_layout
-
-\begin_layout Subsection
-Prune the reference taxonomy
-\end_layout
-
-\begin_layout Plain Layout
-
-\emph on
-Explanation
-\emph default
-: Not all taxa in OTT are reliable enough to belong in the summary tree.
- The reference taxonomy producing software flags taxa in several ways.
- Taxa are pruned in the cleaning step if either they or any of their ancestors
- have these flags.
- Flags are described here: 
-\begin_inset Flex URL
-status collapsed
-
-\begin_layout Plain Layout
-
-https://github.com/OpenTreeOfLife/reference-taxonomy/wiki/Taxon-flags
-\end_layout
-
-\end_inset
-
-.
- We currently remove 
-\emph on
-viral
-\emph default
-, 
-\emph on
-extinct
-\begin_inset Foot
-status collapsed
-
-\begin_layout Plain Layout
-I think we should just stop pruning extinct taxa now.
- Maybe a lot will still be pruned because they are I.C., but its not clear
- we should prune them because they are extinct.
-\end_layout
-
-\end_inset
-
-, environmental
-\emph default
-, and 
-\emph on
-hybrid
-\emph default
- taxa.
- We also remove taxa that are 
-\emph on
-incertae sedis
-\emph default
- because they are directly labeled as such, or because their parent taxon
- is not a good clade.
- We remove taxa that are not good clades, higher taxa that do not contain
- any species, and taxa that are below the species level.
- We also remove some taxa that are hidden by curatorial decision.
-\end_layout
-
-\begin_layout Description
-\begin_inset Note Note
-status collapsed
-
-\begin_layout Plain Layout
-This is the list of cleaning flags for synth 5.0.
- I removed the 
-\begin_inset Quotes eld
-\end_inset
-
-*_inherited
-\begin_inset Quotes erd
-\end_inset
-
- versions.
-\end_layout
-
-\begin_layout Plain Layout
-\begin_inset Flex URL
-status collapsed
-
-\begin_layout Plain Layout
-
-https://github.com/OpenTreeOfLife/reference-taxonomy/wiki/Taxon-flags
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Paragraph
-
-\emph on
-Incertae sedis
-\emph default
- taxa
-\end_layout
-
-\begin_layout Description
-major_rank_conflict - e.g.
- a family that has a sibling that's an order; equivalent to "incertae_sedis"
-\end_layout
-
-\begin_layout Description
-unclassified - this is NCBI's way of saying incertae sedis
-\end_layout
-
-\begin_layout Description
-unplaced - similar to incertae_sedis.
- The taxon had been a child of an inconsistent taxon, but has now been moved
- to be a child of the mrca of the children of the inconsistent taxon.
-\end_layout
-
-\begin_layout Description
-incertae_sedis - in source taxonomy, was a member of an "incertae sedis"
- container
-\end_layout
-
-\begin_layout Paragraph
-viral, extinct, environmental, and hybrid taxa
-\end_layout
-
-\begin_layout Description
-environmental - child of an NCBI node whose name contains the word "environmenta
-l"
-\end_layout
-
-\begin_layout Description
-viral - the taxon name suggests that it has something to do with viruses.
- Also, any node descended from such a node.
-\end_layout
-
-\begin_layout Description
-hybrid - taxon name contains "hybrid" or "x" indicating that it is a hybrid.
- Also, any node descended from such a node.
-\end_layout
-
-\begin_layout Description
-extinct - node is annotated as extinct (usually but not always by IRMNG)
-\end_layout
-
-\begin_layout Paragraph
-not good clades, or do not contain any species, or are below species level
-\end_layout
-
-\begin_layout Description
-barren - there are only higher taxa at and below this node, no species
-\end_layout
-
-\begin_layout Description
-not_otu - the name suggests that this is not a taxon.
- Keywords interpreted this way include "unidentified", "unknown", "metagenome",
- "other sequences", "artificial", "libraries", "tranposons".
- Also "sp." when at the end of a name.
- Also, any node descended from such a node.
-\end_layout
-
-\begin_layout Description
-inconsistent - a placeholder or "tombstone" for a taxon that has been removed
- due to its being inconsistent with higher priority taxa (judged to be not
- a clade).
-\end_layout
-
-\begin_layout Description
-merged - similar to "inconsistent", but the children were directly placed
- in a larger taxon
-\end_layout
-
-\begin_layout Description
-
-\series bold
-Suppressed by curatorial decision
-\end_layout
-
-\begin_layout Description
-hidden - marked hidden due to Open Tree curatorial decision (e.g.
- microbes from GBIF)
-\end_layout
-
-\begin_layout Description
-
-\series bold
-Not mentioned
-\end_layout
-
-\begin_layout Description
-was_container - this used to be a container pseudo-taxon (incertae sedis,
- unclassified, environmental samples, etc.) but its children have all been
- flagged and moved to the node's parent
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Labeling
-\labelwidthstring 00.00.0000
-Input: “raw” reference taxonomy with flags produced by 
-\begin_inset Flex URL
-status collapsed
-
-\begin_layout Plain Layout
-
-https://github.com/OpenTreeOfLife/reference-taxonomy
-\end_layout
-
-\end_inset
-
- 
-\end_layout
-
-\begin_layout Labeling
-\labelwidthstring 00.00.0000
-Output: 
-\begin_inset Formula $\taxonomy$
-\end_inset
-
-, the complete taxonomy for synthesis with some taxa pruned.
- This will determine the leaf label set of the final summary tree.
- 
-\end_layout
-
-\begin_layout Description
-Impl.
- performed by 
-\emph on
-suppress-by-flag.py
-\emph default
- from 
-\emph on
-peyotl
-\end_layout
-
-\begin_layout Description
-\begin_inset Flex URL
-status open
-
-\begin_layout Plain Layout
-
-http://files.opentreeoflife.org/synthesis/opentree5.0/output/cleaned_ott/cleaned_ot
-t.tre
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Subsection
-Snapshot input studies
-\end_layout
-
-\begin_layout Plain Layout
-
-\emph on
-Explanation
-\emph default
-: For a make-based system it would be useful to copy the incoming otNexSON
- files to a snapshot location if they differ from the version of that study
- that is already found in that staging location.
- 
-\end_layout
-
-\begin_layout Labeling
-\labelwidthstring 00.00.0000
-Input: local copy of phylesystem git repo, list of trees (study+tree ID
- + optional git SHA) to be used 
-\end_layout
-
-\begin_layout Labeling
-\labelwidthstring 00.00.0000
-Output: (1) copies of the otNexSON files from the specified SHA.
- (2) record of tree identifiers 
-\end_layout
-
-\begin_layout Plain Layout
-Impl.: None - similar operation done by gcmdr.
- 
-\end_layout
-
-\begin_layout Labeling
-\labelwidthstring 00.00.0000
-TODO
-\begin_inset space ~
-\end_inset
-
-for
-\begin_inset space ~
-\end_inset
-
-Impl.: Flat file implementation needed 
-\end_layout
-
-\begin_layout Labeling
-\labelwidthstring 00.00.0000
-URL
-\begin_inset space ~
-\end_inset
-
-for
-\begin_inset space ~
-\end_inset
-
-output: None
-\end_layout
-
-\begin_layout Subsection
-Snapshot input trees
-\end_layout
-
-\begin_layout Plain Layout
-
-\emph on
-Explanation
-\emph default
-: The study files may contain multiple trees, for a make-base system it
- would be good to have a timestamped file for each tree 
-\end_layout
-
-\begin_layout Labeling
-\labelwidthstring 00.00.0000
-Input: snapshot of otNexSON from previous step.
- list of tree identifiers.
- 
-\end_layout
-
-\begin_layout Labeling
-\labelwidthstring 00.00.0000
-Output: (1) one otNexSON for each tree.
- The current naming conven- tion of studyID treeID.nexson could be used -
- there is no need to support multiple git-SHAs per tree.
- 
-\end_layout
-
-\begin_layout Plain Layout
-Current Impl.: None - similar operation done by gcmdr.
- 
-\end_layout
-
-\begin_layout Labeling
-\labelwidthstring 00.00.0000
-TODO
-\begin_inset space ~
-\end_inset
-
-for
-\begin_inset space ~
-\end_inset
-
-Impl.: Flat file implementation needed 
-\end_layout
-
-\begin_layout Labeling
-\labelwidthstring 00.00.0000
-URL
-\begin_inset space ~
-\end_inset
-
-for
-\begin_inset space ~
-\end_inset
-
-output: None
-\end_layout
-
-\begin_layout Subsection
-Pruning of input trees
-\end_layout
-
-\begin_layout Plain Layout
-
-\emph on
-Explanation
-\emph default
-: To improve the chance of having a correct rooting, we prune the trees
- to just the ingroup.
- We also prune the tree down such that they contain no more than 1 exemplar
- of any terminal taxon and there are no cases of the taxon for one tip containin
-g the taxon mapped to another tip.
- 
-\end_layout
-
-\begin_layout Labeling
-\labelwidthstring 00.00.0000
-Input: snapshot of otNexSON trees from previous step.
- 
-\end_layout
-
-\begin_layout Labeling
-\labelwidthstring 00.00.0000
-Output: (1) 
-\begin_inset Formula $\phyloinputs$
-\end_inset
-
-, the input set of tree represented as one newick tree for each input tree
- with internal node labels that correspond to the node ID in the otNexSON
- of the MRCA node.
- (2) a record of the pruning edits performed.
- 
-\end_layout
-
-\begin_layout Plain Layout
-Current Impl.: None - similar operation done by gcmdr.
- 
-\end_layout
-
-\begin_layout Plain Layout
-TODO for Impl.: (1) Flat file implementation needed.
- (2) record of edits needed.
- (3) identifiers for the internal nodes would be nice for reporting the
- provenance of edges in the summary tree.
- (4) We should serve these trees somewhere as they are crucial inputs for
- the rest of the pipeline.
-\end_layout
-
-\begin_layout Subsection
-Expand tips mapped to non-terminal taxa
-\end_layout
-
-\begin_layout Plain Layout
-
-\emph on
-Explanation
-\emph default
-: As explained in section 1.6.2 (of otcetera doc), expanding tips that are
- mapped to non-terminal taxa to the full set of their terminal descendants
- and attaching these tips to the parent of the taxon should generate a tree
- that correctly represents what the input tree says (without erroneously
- claiming that the tree supports monophyly).
- A clever implementation would note whether a descendant terminal taxon
- occurs in other trees in the 
-\begin_inset Formula $\phyloinputs$
-\end_inset
-
- corpus.
- If there are multiple terminal descendant taxa in the expansion that only
- occur in the taxonomy, then it should be fine to let the expansions just
- contain 1 of these tips, 
-\begin_inset Formula $x$
-\end_inset
-
-.
- This would mean that the others are pruned in the next step, but will be
- placed in the correct spot in the final summary tree because they should
- attach at the same parent node as the single exemplar, 
-\begin_inset Formula $x$
-\end_inset
-
-.
- Failing to take this optimization will only mean that the pruned taxonomy
- is too large.
- 
-\end_layout
-
-\begin_layout Labeling
-\labelwidthstring 00.00.0000
-Input: 
-\begin_inset Formula $\taxonomy$
-\end_inset
-
- and 
-\begin_inset Formula $\phyloinputs$
-\end_inset
-
- 
-\end_layout
-
-\begin_layout Labeling
-\labelwidthstring 00.00.0000
-Output: 
-\begin_inset Formula $\expandedPhylo$
-\end_inset
-
- – the set of phylogenetic inputs expanded such that no leaf is mapped to
- a non-terminal taxon.
- 
-\end_layout
-
-\begin_layout Plain Layout
-Current Impl.: None.
- 
-\end_layout
-
-\begin_layout Plain Layout
-TODO: write this 
-\end_layout
-
-\begin_layout Plain Layout
-URL for output page linking to output trees: 
-\begin_inset Flex URL
-status collapsed
-
-\begin_layout Plain Layout
-
-http://files.opentreeoflife.org/synthesis/opentree5.0/output/exemplified_phylo/inde
-x.html
-\end_layout
-
-\end_inset
-
-
-\begin_inset Note Note
-status collapsed
-
-\begin_layout Plain Layout
-We should probably post this set of trees, as many tools don’t deal with
- tips that are mapped to non-terminal taxa.
- So these trees may be the most accessible set of inputs for most interested
- parties.
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Subsection
-Prune taxonomy down to tips represented in 
-\begin_inset Formula $\expandedPhylo$
-\end_inset
-
-
-\end_layout
-
-\begin_layout Plain Layout
-
-\emph on
-Explanation
-\emph default
-: This is just an optimization step.
- Each terminal taxon that is only found in 
-\begin_inset Formula $\taxonomy$
-\end_inset
-
-, can be placed on the final summary tree by creating a tree for the overlapping
- taxonomic inputs and then grafting on the “taxonomy only” lineages.
- This pruning makes the inputs for the subsequent steps smaller 
-\end_layout
-
-\begin_layout Labeling
-\labelwidthstring 00.00.0000
-Input: 
-\begin_inset Formula $\taxonomy$
-\end_inset
-
- and 
-\begin_inset Formula $\expandedPhylo$
-\end_inset
-
-
-\end_layout
-
-\begin_layout Labeling
-\labelwidthstring 00.00.0000
-Output: 
-\begin_inset Formula $\prunedTaxonomy$
-\end_inset
-
- the pruned taxonomy 
-\end_layout
-
-\begin_layout Plain Layout
-Current Impl.: 
-\emph on
-otc-nonterminals-to-exemplars
-\emph default
- does this.
-\end_layout
-
-\begin_layout Plain Layout
-URL for output: 
-\begin_inset Flex URL
-status collapsed
-
-\begin_layout Plain Layout
-
-http://files.opentreeoflife.org/synthesis/opentree5.0/output/exemplified_phylo/taxo
-nomy.tre
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Subsection
-Decompose the inputs into subproblems of uncontested taxa 
-\end_layout
-
-\begin_layout Plain Layout
-
-\emph on
-Explanation:
-\emph default
- The decision to force uncontested taxa in the final summary means that
- we can separate the problems into non-overlapping subproblems.
- 
-\end_layout
-
-\begin_layout Labeling
-\labelwidthstring 00.00.0000
-Input: 
-\begin_inset Formula $\prunedTaxonomy$
-\end_inset
-
- and 
-\begin_inset Formula $\expandedPhylo$
-\end_inset
-
- 
-\end_layout
-
-\begin_layout Labeling
-\labelwidthstring 00.00.0000
-Output: subproblems.
- 
-\end_layout
-
-\begin_layout Plain Layout
-Currently expressed (1) as one newick tree file per subproblem with the
- name SUBPROBLEMID.tre, and (2) a file called SUBPROBLEMID-tree-names.txt
- with a treefile name on each line or “TAXONOMY” indicating the source of
- each tree.
- the SUBPROBLEMID is ‘ott’ followed by the OTT ID.
- 
-\end_layout
-
-\begin_layout Plain Layout
-Current Impl.: 
-\emph on
-otc-uncontested-decompose
-\emph default
- 
-\end_layout
-
-\begin_layout Plain Layout
-TODO for Impl.: 
-\end_layout
-
-\begin_layout Plain Layout
-URL for output: 
-\begin_inset Flex URL
-status collapsed
-
-\begin_layout Plain Layout
-
-http://files.opentreeoflife.org/synthesis/opentree5.0/output/subproblems/index.html
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Subsection
-Solve subproblems 
-\end_layout
-
-\begin_layout Plain Layout
-For the sub-problem solver, we make iterative use of the BUILD algorithm.
- We process input trees in order of their priority.
- We use the BUILD algorithm to determine whether a given split in an input
- tree is consistent with the splits we have kept so far.
- If the new split is consistent, then we add it to the set.
- After considering all input trees, and the taxonomy, we use the BUILD algorithm
- to construct a tree from the set of consistent splits.
-\end_layout
-
-\begin_layout Labeling
-\labelwidthstring 00.00.0000
-Input: a “raw” subproblem from step 2.7 or a simplified subproblem from step
- 2.8.
- 
-\end_layout
-
-\begin_layout Labeling
-\labelwidthstring 00.00.0000
-Output: a tree for each subproblem - stored in a solutions dir under the
- name SUBPROBLEMID.tre Current Impl.: treemachine may provide one solver.
- 
-\end_layout
-
-\begin_layout Plain Layout
-See Algorithm 
+These three relationships are illustrated in Figure 
 \begin_inset CommandInset ref
 LatexCommand ref
-reference "alg:ConsistentSplitsFromRankedList"
+reference "fig:displayed-annotations"
 
 \end_inset
 
 .
-\end_layout
-
-\begin_layout Subsection
-Assemble pruned summary tree from subproblem solutions
-\end_layout
-
-\begin_layout Plain Layout
-
-\emph on
-Explanation
-\emph default
-: Because the problems do not overlap, and the file names match the tip
- labels (when a tip of one subproblem is actually an uncontested non-terminal
- taxon in 
-\begin_inset Formula $\prunedTaxonomy$
+ Finally, if 
+\begin_inset Formula $T_{i}$
 \end_inset
 
- ), this is a simple grafting procedure.
- When a subproblem root and a subproblem tip have the same label, we merge
- the two nodes.
- Since a label can only never occur on two subproblem roots or two subproblem
- tips, we never need to merge more than two nodes.
- Note that each subproblem is supported by the taxonomy (at a minimum),
- so this step cannot introduce unsupported groups.
- 
-\end_layout
-
-\begin_layout Labeling
-\labelwidthstring 00.00.0000
-Input: the solutions directory holding all of the subproblem solution trees.
- 
-\end_layout
-
-\begin_layout Labeling
-\labelwidthstring 00.00.0000
-Output: 
-\begin_inset Formula $\prunedSummary$
+ does not display 
+\begin_inset Formula $x$
 \end_inset
 
- – the summary tree pruned down to the leaf set of 
-\begin_inset Formula $\prunedTaxonomy$
+ from 
+\begin_inset Formula $\mathcal{\mathbb{S}}(i)$
+\end_inset
+
+, but there exists an unresolved node 
+\begin_inset Formula $j$
+\end_inset
+
+ in 
+\begin_inset Formula $T_{i}$
+\end_inset
+
+ which could be resolved such that the tree would then display 
+\begin_inset Formula $x$
+\end_inset
+
+, then a reference to node 
+\begin_inset Formula $j$
+\end_inset
+
+ will be listed in the 
+\begin_inset Quotes eld
+\end_inset
+
+resolves
+\begin_inset Quotes erd
+\end_inset
+
+ property of node 
+\begin_inset Formula $x$
 \end_inset
 
 .
-\end_layout
-
-\begin_layout Labeling
-\labelwidthstring 00.00.0000
-Current
-\begin_inset space ~
-\end_inset
-
-Impl.: 
-\emph on
-otc-graft-solutions
-\end_layout
-
-\begin_layout Subsection
-Graft the pruned taxonomy-only taxa back onto the tree
-\end_layout
-
-\begin_layout Plain Layout
-Explanation: “phylo-referencing” style logic can be used to place the taxa
- that were pruned in 2.6 
-\end_layout
-
-\begin_layout Plain Layout
-This is a bit more complicated now that we attach the children of broken
- taxa at their MRCA.
-\end_layout
-
-\begin_layout Plain Layout
-Input: 
-\begin_inset Formula $\prunedSummary$
-\end_inset
-
- and 
-\begin_inset Formula $\taxonomy$
-\end_inset
-
-
-\end_layout
-
-\begin_layout Plain Layout
-Output: 
-\begin_inset Formula $\summaryTree$
-\end_inset
-
- – the final summary tree 
-\end_layout
-
-\begin_layout Plain Layout
-Current Impl.: None
-\end_layout
-
-\begin_layout Plain Layout
-TODO for Impl.:
-\end_layout
-
-\begin_layout Plain Layout
-TODO: write this
-\end_layout
-
-\begin_layout Subsection
-Create annotations for nodes in 
-\begin_inset Formula $\summaryTree$
-\end_inset
-
-
-\end_layout
-
-\begin_layout Plain Layout
-
-\emph on
-Explanation
-\emph default
-: At minimum, we would want statements of which input nodes support which
- nodes in S.
- But we could also noted nodes displayed, nodes in conflict, and whether
- or not the node was constrained because it was a contested taxon.
  
 \end_layout
 
-\begin_layout Plain Layout
-Input: 
-\begin_inset Formula $\summaryTree$
+\begin_layout Standard
+The otcetera annotation tool can also detect cases in which including informatio
+n from node 
+\begin_inset Formula $j$
 \end_inset
 
- and 
-\begin_inset Formula $\expandedPhylo$
+ in 
+\begin_inset Formula $T_{i}$
 \end_inset
 
-
-\end_layout
-
-\begin_layout Plain Layout
-Output: some as yet undefined format for expressing these annotations.
- 
-\end_layout
-
-\begin_layout Plain Layout
-Current Impl.: 
-\emph on
-otc-annotate-synth
-\end_layout
-
-\begin_layout Plain Layout
-TODO for Impl.
-\end_layout
-
-\begin_layout Plain Layout
-TODO: write this
-\end_layout
-
+ could further resolve a polytomy 
+\begin_inset Formula $x$
 \end_inset
 
+ in the summary tree; such a case would be annotated using the 
+\begin_inset Quotes eld
+\end_inset
 
+resolved_by
+\begin_inset Quotes erd
+\end_inset
+
+ property of 
+\begin_inset Formula $x$
+\end_inset
+
+.
+ However, because of our goal of excluding unnecessary polytomies, none
+ of the nodes in propinquity's summary tree will use this annotation when
+ they are annotated with the set of input trees.
+\end_layout
+
+\begin_layout Subsubsection
+Self-documentation
+\end_layout
+
+\begin_layout Standard
+An optional step in the propinquity pipeline (triggered by the executing
+ the 
+\begin_inset Quotes eld
+\end_inset
+
+make html
+\begin_inset Quotes erd
+\end_inset
+
+ target) can compose an index.html file for each directory created during
+ the pipeline to explain the artifacts held in that directory and report
+ summary statistics about the summarization run.
 \end_layout
 
 \begin_layout Section
-Results
+Conclusions
 \end_layout
 
 \begin_layout Standard
-\begin_inset Tabular
-<lyxtabular version="3" rows="5" columns="4">
-<features tabularvalignment="middle">
-<column alignment="center" valignment="top">
-<column alignment="center" valignment="top">
-<column alignment="center" valignment="top">
-<column alignment="center" valignment="top">
-<row>
-<cell alignment="center" valignment="top" bottomline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" bottomline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-3.0
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" bottomline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-4.0
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" bottomline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-5.0
-\end_layout
-
-\end_inset
-</cell>
-</row>
-<row>
-<cell alignment="center" valignment="top" topline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-time
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-~24hrs
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-~24hrs
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-~8min
-\end_layout
-
-\end_inset
-</cell>
-</row>
-<row>
-<cell alignment="center" valignment="top" topline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-ignored edges
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-0
-\end_layout
-
-\end_inset
-</cell>
-</row>
-<row>
-<cell alignment="center" valignment="top" topline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\end_layout
-
-\end_inset
-</cell>
-</row>
-<row>
-<cell alignment="center" valignment="top" topline="true" bottomline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" bottomline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" bottomline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" bottomline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\end_layout
-
-\end_inset
-</cell>
-</row>
-</lyxtabular>
+Here we have described the motivation and methodology used by the propinquity
+ tool that is currently used by the Open Tree of Life project to build its
+ summary tree.
+ A modified version of the treemachine software which built the summary
+ tree described in the 
+\begin_inset CommandInset citation
+LatexCommand citet
+key "HinchliffEtAl2015"
 
 \end_inset
 
-
-\end_layout
-
-\begin_layout Standard
-We have decreased the time to construct a supertree from (?) about 24 hours
- to about 8 minutes (minus pickle-creation time).
- The amount of RAM required to construct the supertree has decreased from
- 
-\begin_inset Formula $X$
-\end_inset
-
- to 
-\begin_inset Formula $Y$
-\end_inset
-
-.
- 
-\end_layout
-
-\begin_layout Standard
-Compared to the previous pipeline, we have
-\end_layout
-
-\begin_layout Itemize
-no unsupported nodes
-\end_layout
-
-\begin_layout Itemize
-no unresolved polytomies
-\end_layout
-
-\begin_layout Standard
-We also increase the number of displayed input splits from 35439 to 39713,
- which is an increase of 3774 more nodes displayed, a 10.6% increase.
+ paper is used by the project to serve the tree produced by propinquity
+ via Open Tree of Life APIs.
+ The migration of summary tree construction from treemachine (used for version
+ 4) to propinquity (for all versions from v5.0 to present) has decreased
+ the computational time required to construct a supertree from several hours
+ to about 8 minutes (after some preprocessing steps which only have to be
+ performed when the input taxonomy changes).
+ The amount of RAM required during tree construction has also decreased
+ substantially.
+ Unlike the previous tree, the tree from propinquity contained no unsupported
+ nodes or unnecessary polytomies.
+ The number of displayed input splits from increased from 35,439 (for version
+ 4) to 39,713; a 10.6% increase.
  The number of input splits that do not conflict with the summary tree,
  but are not incorporated drops from 2736 to 0.
  The number of input splits that conflict with the phylogeny drops from
  2850 to 1312, a decrease of 1538, or 54.0%.
+ 
+\begin_inset Note Comment
+status collapsed
+
+\begin_layout Plain Layout
+ARE THESE numbers for the same set of inputs? or v4 to v5 (the latter had
+ the barnacles tree collection, and perhaps a few other tree differences?
 \end_layout
 
-\begin_layout Standard
-Additionally, our pipeline now produces a tree with annotations about which
- input trees support each node in the summary tree.
-\end_layout
+\end_inset
 
-\begin_layout Paragraph
-CPU time versus sub-problem size
+
 \end_layout
 
 \begin_layout Section
-Discussion
+Acknowledgements
 \end_layout
 
 \begin_layout Standard
-One of our aim in supertree construction is to minimize the amount of informatio
-n in the supertree that does not come from any of the input trees.
- However this general principle can be formalized in a variety of ways.
- For example, one approach is to minimize the number of nodes in the supertree
- while representing as many of the input splits as possible.
- While initially attractive, this approach has the downside that, when it
- is given two input trees with disjoint taxa, it will attempt to merge these
- trees into a single tree in order to decrease the number of nodes.
- For example, if given the tree ((human,gorilla),(dog,cat)) and the tree
- ((fugu,tuna),(shark,ray)) the minimum node criterion leads to the supertree
- ((human,gorilla,fugu,tuna),(dog,cat,shark,ray)) or ((human,gorilla,shark,ray),(
-dog,cat,fugu,tuna)) with 3 internal nodes.
- In constrast, the BUILD algorithm would produce ((human,gorilla),(dog,cat),(fug
-u,tuna),(shark,ray)) with 5 internal nodes.
- We thus prefer the BUILD algorithm, with its preference not to merge groups
- unless there is phylogenetic input supporting the merger.
-\end_layout
-
-\begin_layout Paragraph*
-comparison with other supertree approaches
+Thanks to Karen Cranston, Jonathan Rees, Jim Allman, Cody Hinchliff, Stephen
+ Smith, and Joseph Brown for discussions and feedback.
+ Thanks to NSF grant 1208393 (DEB), part of the collaborative Open Tree
+ of Life awards, the University of Kansas, and the Heidelberg Institute
+ for Theoretical Studies for funding.
 \end_layout
 
 \begin_layout Standard
-distance-based: what supertree approaches are distance-based?
-\end_layout
+\begin_inset CommandInset bibtex
+LatexCommand bibtex
+bibfiles "otcetera"
+options "upmplainnat"
 
-\begin_layout Standard
-maximum number of input triplets
-\end_layout
+\end_inset
 
-\begin_layout Paragraph*
-guarantees
-\end_layout
 
-\begin_layout Itemize
-may not display a rooted triplet that is supported and uncontested, if that
- triplet is contested by a 
-\emph on
-combination
-\emph default
- of other rooted triplets.
 \end_layout
 
 \begin_layout Section
@@ -5819,7 +5343,7 @@ The maximum sum displayed groups' weighted scores criterion
 \end_layout
 
 \begin_layout Standard
-If 
+Let 
 \begin_inset Formula $\mathcal{W}$
 \end_inset
 
@@ -5862,13 +5386,13 @@ sum of displayed groups' weighted scores
 \end_inset
 
 .
+ Preference for this tree is referred to as the maximum sum displayed groups'
+ weighted scores criterion (MSDGWS criterion).
  The summary tree constructed by the propinquity pipeline is a greedy heuristic
  for finding a tree that maximizes this score when the weights for a node
  are determined by the tree's weight and the difference in weighting is
  so large that displaying one node from a highly ranked tree is preferred
  to displaying all of the nodes in the trees with lower rank.
- Preference for this tree is referred to as the maximum sum displayed groups'
- weighted scores criterion (MSDGWS criterion).
 \end_layout
 
 \begin_layout Section
@@ -6027,9 +5551,9 @@ Detection of uncontested higher taxa
 \begin_layout Standard
 After every input tree and the taxonomy tree have been embedded into the
  taxonomic graph, we perform postorder traversal over the taxonomic graph
- underlies the multi-graph.
+ that underlies the multi-graph.
  For any internal node (each of which corresponds to a non-terminal taxon)
- we determine wether or not it is contested by examining each input tree.
+ we determine whether or not it is contested by examining each input tree.
  We can determine tree 
 \begin_inset Formula $i$
 \end_inset
@@ -6165,17 +5689,6 @@ Whenever an uncontested taxon is identified, the appropriate slice of each
  Thus this input node will act as as if it were a leaf mapped to the uncontested
  taxon.
  All descendants of the taxonomic graph are also pruned off.
-\end_layout
-
-\begin_layout Standard
-\begin_inset CommandInset bibtex
-LatexCommand bibtex
-bibfiles "otcetera"
-options "upmplainnat"
-
-\end_inset
-
-
 \end_layout
 
 \end_body
