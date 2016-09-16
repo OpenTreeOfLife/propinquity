@@ -14,10 +14,7 @@ mapped to higher taxa. See
 
 <p><strong>Results: </strong>A taxonomy with a total of ${cleaned_ott.num_nodes} nodes.
 ${cleaned_ott.num_tips} of these are leaves and
-${cleaned_ott.num_non_leaf_nodes} internal nodes
-(${cleaned_ott.num_monotypic_nodes} monotypic and
-${cleaned_ott.num_non_leaf_nodes_with_multiple_children} forking internal nodes).
-</p>
+${cleaned_ott.num_non_leaf_nodes} internal nodes.</p>
 <p>The <em>cleaned_ott.tre</em> file in this directory contains a newick
 representation of this taxonomy (<a href="./cleaned_ott.tre" download>download newick</a>).</p>
 <p>The following table lists the number of OTT Ids pruned by the combination of
@@ -30,7 +27,10 @@ representation of this taxonomy (<a href="./cleaned_ott.tre" download>download n
     <tr><th>Combination of flags</th><th># of nodes pruned</th></tr>
     <tr tal:repeat="id_eblob cleaned_ott.pruned.items()">
         <td>${id_eblob[0]}</td>
-        <td>${len(id_eblob[1]['anc_ott_id_pruned'])}</td>
+        <div tal:switch="id_eblob[0] in cleaned_ott.pruning_keys_not_from_flags">
+            <td tal:case="True">${len(id_eblob[1])}</td>
+            <td tal:case="False">${len(id_eblob[1]['anc_ott_id_pruned'])}</td>
+        </div>
     </tr>
 </table>
 </div>
