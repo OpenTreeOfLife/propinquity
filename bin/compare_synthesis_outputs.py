@@ -55,7 +55,7 @@ def config_diffs(run1,run2):
     ott2 = jsondata2['ott_version']
     if (ott1 != ott2):
         print "run1 ott ({v1}) != run2 ott ({v2})".format(v1=ott1,v2=ott2)
-        
+
     # do roots match
     root1 = int(jsondata1["root_ott_id"])
     root2 = int(jsondata2["root_ott_id"])
@@ -220,15 +220,17 @@ def broken_taxa_diffs(run1,run2,names=False):
         s2 = set(broken_taxa2)
         # names in 2 but not in 1 (the 'newly broken names')
         diff = s2.difference(s1)
-        broken_names={}
-        for i in diff:
-            taxon_name=get_taxon_name(i)
-            if (taxon_name):
-                broken_names[i]=taxon_name
-        print broken_names
+        if len(diff) > 0:
+            print "broken taxa in run2:"
+            #broken_names={}
+            for i in diff:
+                (name,rank)=get_taxon_details(i)
+                print "{id}\t{n}\t{r}".format(id=i,n=name,r=rank)
+                # if (taxon_name):
+                #     broken_names[i]=taxon_name
 
 # note that ottid is in form 'ott####'
-def get_taxon_name(ottid):
+def get_taxon_details(ottid):
     pattern = re.compile(r'ott')
     int_id = re.sub(pattern,'',ottid)
     method_url = "https://api.opentreeoflife.org/v3/taxonomy/taxon_info"
@@ -237,7 +239,8 @@ def get_taxon_name(ottid):
     r = requests.post(method_url,headers=header,data=json.dumps(payload))
     try:
         taxon_name = r.json()['name']
-        return taxon_name
+        rank = r.json()["rank"]
+        return (taxon_name,rank)
     except KeyError:
         print "no name returned for {id}".format(id=ottid)
     #print '{i}:{n}'.format(i=ottid,n=taxon_name)
@@ -251,6 +254,11 @@ if __name__ == "__main__":
     parser.add_argument('run2',
         help='path to the second output directory'
         )
+    parser.add_argument('-b',
+        dest='print_broken_taxa',
+        action='store_true',
+        help='whether to print info on newly-broken taxa'
+        )
     args = parser.parse_args()
     print "run 1 output: {d}".format(d=args.run1)
     print "run 2 output: {d}".format(d=args.run2)
@@ -261,5 +269,5 @@ if __name__ == "__main__":
     subproblem_diff(args.run1,args.run2)
     subproblem_distributions(args.run1,args.run2)
     print "\n# Comparing broken taxa"
-    broken_taxa_diffs(args.run1,args.run2,True)
+    broken_taxa_diffs(args.run1,args.run2,args.print_broken_taxa)
     synthesis_tree_diffs(args.run1,args.run2)
