@@ -66,10 +66,12 @@ $(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaned_ott_with_hiddenbarren.tre: $(OTT_FILE
 #	otc-taxonomy-parser $(OTT_DIR) --config=$(CONFIG_FILENAME) -T > cleaned_ott/.raw_cleaned_ott.tre
 
 $(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaned_ott.tre: $(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaned_ott_with_hiddenbarren.tre
-	otc-relabel-tree \
-		$(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaned_ott_with_hiddenbarren.tre \
-		--del-higher-taxon-tips \
-		-j$(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaned_ott_pruned_nonflagged.json > $(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaned_ott.tre
+	cp $(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaned_ott_with_hiddenbarren.tre $(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaned_ott.tre
+	echo '{}' > $(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaned_ott_pruned_nonflagged.json
+	#otc-relabel-tree \
+	#	$(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaned_ott_with_hiddenbarren.tre \
+	#	--del-higher-taxon-tips \
+	#	-j$(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaned_ott_pruned_nonflagged.json > $(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaned_ott.tre
 
 $(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaned_ott.json: $(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaned_ott_1.json $(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaned_ott_pruned_nonflagged.json
 	./bin/combine_ott_cleaning_logs.py \

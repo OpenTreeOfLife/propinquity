@@ -24,8 +24,8 @@ if __name__ == '__main__':
     p = blob['pruned']
     httk = 'higher-taxon-tip'
     intk = 'empty-after-higher-taxon-tip-prune'
-    high_tax_tip_pruned = higher_taxon_blob[httk]
-    internal_high_tax_tip_pruned = higher_taxon_blob[intk]
+    high_tax_tip_pruned = higher_taxon_blob.get(httk, {})
+    internal_high_tax_tip_pruned = higher_taxon_blob.get(intk, {})
     p[httk] = high_tax_tip_pruned
     p[intk] = internal_high_tax_tip_pruned
     n_ht_in_pruned = len(internal_high_tax_tip_pruned)
