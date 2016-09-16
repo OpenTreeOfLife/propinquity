@@ -1,13 +1,22 @@
+# Parent of output defaults to .
 PROPINQUITY_OUT_DIR ?= .
 export PROPINQUITY_OUT_DIR
+
+# filepath to the run config file
 CONFIG_FILENAME=$(PROPINQUITY_OUT_DIR)/config
 
+# The directory holding a shards directory with the collections repo(s)
+#   obtained from the union of the ~/.opentree user-wide config and the run config
 COLLECTIONS_ROOT := $(shell bin/config_checker.py opentree.collections $(CONFIG_FILENAME))
 export COLLECTIONS_ROOT
 
+# Reads the filepath to a clone of the peyotl repo
+#   obtained from the union of the ~/.opentree user-wide config and the run config
 PEYOTL_ROOT := $(shell bin/config_checker.py opentree.peyotl $(CONFIG_FILENAME))
 export PEYOTL_ROOT
 
+# Reads the filepath to the directory that holds a taxonomy in Open Tree Taxonomy interim format
+#   obtained from the union of the ~/.opentree user-wide config and the run config
 OTT_DIR := $(shell bin/config_checker.py opentree.ott $(CONFIG_FILENAME))
 export OTT_DIR
 
@@ -19,12 +28,18 @@ OTT_FILENAMES=about.json \
 	version.txt
 export OTT_FILENAMES
 
+# Full paths of the relevant files that make up OTT
 OTT_FILEPATHS := $(addprefix $(OTT_DIR)/, $(OTT_FILENAMES))
 export OTT_FILEPATHS
 
+# The directory holding a shards directory with the phyleystem-# repo(s)
+#   obtained from the union of the ~/.opentree user-wide config and the run config
 PHYLESYSTEM_ROOT := $(shell bin/config_checker.py opentree.phylesystem $(CONFIG_FILENAME))
 export PHYLESYSTEM_ROOT
 
+# The value [synthesis]/collections var which collections (owner/name format) should be
+#   used to create the synthesis. The order of these collections determines the ranking
+#   obtained from the union of the ~/.opentree user-wide config and the run config
 SYNTHESIS_COLLECTIONS := $(shell bin/config_checker.py synthesis.collections $(CONFIG_FILENAME))
 export SYNTHESIS_COLLECTIONS
 

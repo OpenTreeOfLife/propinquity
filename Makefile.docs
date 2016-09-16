@@ -28,13 +28,13 @@ HARDCODED_DOC_ARTIFACTS := $(addprefix $(PROPINQUITY_OUT_DIR)/, $(HARDCODED_DOC_
 
 $(PROPINQUITY_OUT_DIR)/assessments/supertree_degree_distribution.txt: $(PROPINQUITY_OUT_DIR)/labelled_supertree/labelled_supertree.tre
 	@if ! test -d $(PROPINQUITY_OUT_DIR)/assessments ; then mkdir -p $(PROPINQUITY_OUT_DIR)/assessments ; fi
-	cd $(PROPINQUITY_OUT_DIR) ; otc-degree-distribution \
+	otc-degree-distribution \
 		$(PROPINQUITY_OUT_DIR)/labelled_supertree/labelled_supertree.tre \
 		> $(PROPINQUITY_OUT_DIR)/assessments/supertree_degree_distribution.txt
 
 $(PROPINQUITY_OUT_DIR)/assessments/taxonomy_degree_distribution.txt: $(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaned_ott.tre
 	@if ! test -d $(PROPINQUITY_OUT_DIR)/assessments ; then mkdir -p $(PROPINQUITY_OUT_DIR)/assessments ; fi
-	cd $(PROPINQUITY_OUT_DIR) ; otc-degree-distribution $(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaned_ott.tre > $(PROPINQUITY_OUT_DIR)/assessments/taxonomy_degree_distribution.txt
+	otc-degree-distribution $(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaned_ott.tre > $(PROPINQUITY_OUT_DIR)/assessments/taxonomy_degree_distribution.txt
 
 $(PROPINQUITY_OUT_DIR)/assessments/lost_taxa.txt: $(PROPINQUITY_OUT_DIR)/labelled_supertree/labelled_supertree.tre
 	@if ! test -d $(PROPINQUITY_OUT_DIR)/assessments ; then mkdir -p $(PROPINQUITY_OUT_DIR)/assessments ; fi
@@ -66,7 +66,7 @@ check: $(PROPINQUITY_OUT_DIR)/assessments/summary.json
 
 html-output: $(PROPINQUITY_OUT_DIR)/assessments/summary.json \
 				   $(PROPINQUITY_OUT_DIR)/phylo_snapshot/collections_git_shas.txt
-	bin/document_outputs.py --config=$(CONFIG_FILENAME) $(PROPINQUITY_OUT_DIR)
+	./bin/document_outputs.py --config=$(CONFIG_FILENAME) $(PROPINQUITY_OUT_DIR)
 	@echo 'Documentation created'
 
 
