@@ -43,8 +43,8 @@ export PHYLESYSTEM_ROOT
 SYNTHESIS_COLLECTIONS := $(shell bin/config_checker.py synthesis.collections $(CONFIG_FILENAME))
 export SYNTHESIS_COLLECTIONS
 
-INPUT_PHYLO_ARTIFACTS=$(PROPINQUITY_OUT_DIR)/phylo_input/studies.txt \
-                      $(PROPINQUITY_OUT_DIR)/phylo_input/study_tree_pairs.txt
+
+INPUT_PHYLO_ARTIFACTS=$(PROPINQUITY_OUT_DIR)/phylo_input/study_tree_pairs.txt
 
 ARTIFACTS=$(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaned_ott.tre \
 	  $(PROPINQUITY_OUT_DIR)/cleaned_phylo/phylo_inputs_cleaned.txt \
