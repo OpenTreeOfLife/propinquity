@@ -1,5 +1,19 @@
-SUPPRESS_FLAG_ARTIFACTS=$(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaned_ott.tre \
-	$(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaned_ott.json \
+# This Makefile contains the rules for generating a standard set of supertree inputs
+#	from the configuration.
+# Essentially this entails pruning off unwanted parts of OTT and tips that are problematic
+#	in the input trees, then exemplifying any higher taxa in input trees such that 
+#	the leaf set of taxonomy and inputs is the same.
+# The final outputs that matter to the construction of the supertree are the "CLEANED_ARTIFACTS":
+#			out_dir/exemplified_phylo/taxonomy.tre			# the cleaned, exemplified taxonomy
+#			out_dir/exemplified_phylo/nonempty_trees.txt	# the list of tree inputs
+#			out_dir/exemplified_phylo/*.tre 				# the tree inputs
+#			out_dir/cleaned_ott/cleaned_ott.tre				# the cleaned taxonomy
+
+CLEANED_ARTIFACTS=$(PROPINQUITY_OUT_DIR)/exemplified_phylo/nonempty_trees.txt \
+				  $(PROPINQUITY_OUT_DIR)/exemplified_phylo/taxonomy.tre \
+				  $(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaned_ott.tre
+
+SUPPRESS_FLAG_ARTIFACTS= $(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaned_ott.json \
 	$(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaned_ott_1.json \
 	$(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaned_ott_pruned_nonflagged.json \
 	$(PROPINQUITY_OUT_DIR)/cleaned_ott/ott_version.txt \
@@ -7,6 +21,7 @@ SUPPRESS_FLAG_ARTIFACTS=$(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaned_ott.tre \
 	$(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaning_flags.txt
 
 ARTIFACTS += $(SUPPRESS_FLAG_ARTIFACTS) \
+	$(CLEANED_ARTIFACTS) \
 	$(PROPINQUITY_OUT_DIR)/phylo_snapshot/git_shas.txt \
 	$(PROPINQUITY_OUT_DIR)/phylo_snapshot/collections_git_shas.txt \
 	$(PROPINQUITY_OUT_DIR)/phylo_snapshot/concrete_rank_collection.json \
@@ -16,7 +31,6 @@ ARTIFACTS += $(SUPPRESS_FLAG_ARTIFACTS) \
 	$(PROPINQUITY_OUT_DIR)/cleaned_phylo/root_ott_id.txt \
 	$(PROPINQUITY_OUT_DIR)/cleaned_phylo/phylo_inputs_cleaned.txt \
 	$(PROPINQUITY_OUT_DIR)/cleaned_phylo/needs_updating.txt \
-	$(PROPINQUITY_OUT_DIR)/exemplified_phylo/taxonomy.tre \
 	$(PROPINQUITY_OUT_DIR)/exemplified_phylo/args.txt \
 	$(PROPINQUITY_OUT_DIR)/exemplified_phylo/pruned_taxonomy_degree_distribution.txt \
 	$(PROPINQUITY_OUT_DIR)/phylo_induced_taxonomy/taxonomy.tre \
