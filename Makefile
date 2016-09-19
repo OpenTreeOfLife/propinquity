@@ -94,7 +94,7 @@ extra: $(PROPINQUITY_OUT_DIR)/labelled_supertree/labelled_supertree_ottnames.tre
 	   $(PROPINQUITY_OUT_DIR)/labelled_supertree/labelled_supertree_simplified_ottnames_without_monotypic.tre \
 	   $(PROPINQUITY_OUT_DIR)/grafted_solution/grafted_solution_ottnames.tre
 
-clean: cleanottproducts cleanphyloproducts clean2 cleanpre
+clean: cleanpre cleanottproducts cleanphyloproducts cleansubproblems cleanfinal
 	rm -f $(ARTIFACTS)
 	rm -f $(INPUT_PHYLO_ARTIFACTS)
 	rm -f $(ASSESSMENT_ARTIFACTS)
@@ -103,8 +103,9 @@ clean: cleanottproducts cleanphyloproducts clean2 cleanpre
 realclean: clean realcleanottproducts
 	# No op
 
-include Makefile.specify_inputs   # contains cleanpre: target
-include Makefile.clean_ott   # contains cleanottproducts: target
-include Makefile.clean_phylo   # contains cleanphyloproducts: target
-include Makefile.subproblems    # contains clean2: target
-include Makefile.docs           # contains html: and check: targets
+include Makefile.specify_inputs   # contains cleanpre target
+include Makefile.clean_ott   # contains cleanottproducts target
+include Makefile.clean_phylo   # contains cleanphyloproducts target
+include Makefile.subproblems    # contains cleansubproblems target
+include Makefile.regraft_and_label    # contains cleanfinal target
+include Makefile.docs           # contains html and check targets

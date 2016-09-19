@@ -1,5 +1,13 @@
 digraph P {
-    ottflags [shape=diamond label="OTT Flags"];
+    homeconfig [shape=house label="~/.opentree"];
+    inputconfig [shape=house label="config"];
+    impliedconfig [shape=box label="implied full config"];
+    homeconfig -> impliedconfig;
+    inputconfig -> impliedconfig;
+
+    ottflags [shape=oval label="OTT Flags"];
+    impliedconfig -> ottflags ;
+
     ott [shape=oval label="OTT"];
     phylesystem [shape=oval label="phylesystem"];
     synthcoll [shape=oval label="synth. collection"];
