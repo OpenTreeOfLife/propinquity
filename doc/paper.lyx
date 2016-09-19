@@ -268,7 +268,7 @@ Translating the goals of the Open Tree of Life's summary tree into an explicit
  The summary supertree should represent the phylogenetic information from
  source trees in a transparent and justifiable fashion.
  We would like to allow users to correct errors in the supertree by improving
- the input information rather than requiring modifyication to the supertree
+ the input information rather than requiring modification to the supertree
  algorithm.
  The pipeline was designed to create a tree which:
 \end_layout
@@ -994,6 +994,28 @@ float
 \end_inset
 
  to multiple positions.
+ In figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:toyambig"
+
+\end_inset
+
+, taxon E floats to different positions in (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:toyambig"
+
+\end_inset
+
+c) and (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:toyambig"
+
+\end_inset
+
+d), whereas taxon A does not.
  
 \begin_inset Note Note
 status collapsed
@@ -1042,7 +1064,7 @@ status collapsed
 \begin_inset Caption Standard
 
 \begin_layout Plain Layout
-
+Input tree 1
 \end_layout
 
 \end_inset
@@ -1076,7 +1098,7 @@ status collapsed
 \begin_inset Caption Standard
 
 \begin_layout Plain Layout
-
+Input tree 2
 \end_layout
 
 \end_inset
@@ -1109,7 +1131,7 @@ status collapsed
 \begin_inset Caption Standard
 
 \begin_layout Plain Layout
-
+Summary tree
 \end_layout
 
 \end_inset
@@ -1143,7 +1165,7 @@ status collapsed
 \begin_inset Caption Standard
 
 \begin_layout Plain Layout
-
+Summary tree
 \end_layout
 
 \end_inset
@@ -1172,6 +1194,14 @@ supported by
  (a) and (b) show 2 input trees and (c) and (d) depict trees that each display
  each of the groupings in the input trees and which have no unsupported
  nodes.
+ The BUILD algorithm (section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:subproblem-solutions."
+
+\end_inset
+
+) would choose tree (d) that floats taxon E closer to the root.
 \end_layout
 
 \end_inset
@@ -1301,7 +1331,7 @@ status collapsed
 \begin_inset Caption Standard
 
 \begin_layout Plain Layout
-Input Tree 1
+Input tree 1
 \end_layout
 
 \end_inset
@@ -1335,7 +1365,7 @@ status collapsed
 \begin_inset Caption Standard
 
 \begin_layout Plain Layout
-Input Tree 2
+Input tree 2
 \end_layout
 
 \end_inset
@@ -1402,7 +1432,7 @@ status collapsed
 \begin_inset Caption Standard
 
 \begin_layout Plain Layout
-
+Summary tree
 \end_layout
 
 \end_inset
@@ -1436,7 +1466,7 @@ status collapsed
 \begin_inset Caption Standard
 
 \begin_layout Plain Layout
-
+Summary tree
 \end_layout
 
 \end_inset
@@ -1470,7 +1500,7 @@ status collapsed
 \begin_inset Caption Standard
 
 \begin_layout Plain Layout
-
+Summary tree
 \end_layout
 
 \end_inset
@@ -1649,7 +1679,7 @@ reference "fig:pairwisecompat"
 
 \end_inset
 
-d) would result in tree which displays only one input grouping.
+d) would result in a tree which displays only one input grouping.
  This tree would contain an unnecessary polytomy, because the polytomy would
  permit refinement to the depicted tree which displays more input groupings.
 \end_layout
@@ -3037,6 +3067,13 @@ supported
 
 \begin_layout Subsubsection
 Subproblem solution
+\begin_inset CommandInset label
+LatexCommand label
+name "subsec:Subproblem-solution"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -4257,7 +4294,6 @@ status open
 
 \begin_layout Plain Layout
 
-\family typewriter
 
 \backslash
 textcolor{mylime}{supported
