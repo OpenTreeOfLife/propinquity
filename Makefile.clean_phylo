@@ -1,6 +1,6 @@
 # This Makefile contains the rules for generating a standard set of supertree inputs
-#	from the configuration.
-# Essentially this entails pruning off unwanted parts of OTT and tips that are problematic
+#	from the config and the results in cleaned_ott and phylo_snapshot.
+# The cleaning steps entail pruning off unwanted parts of OTT and tips that are problematic
 #	in the input trees, then exemplifying any higher taxa in input trees such that 
 #	the leaf set of taxonomy and inputs is the same.
 # The final outputs that matter to the construction of the supertree are the "CLEANED_ARTIFACTS":
