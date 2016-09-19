@@ -20,13 +20,14 @@ export PEYOTL_ROOT
 OTT_DIR := $(shell bin/config_checker.py opentree.ott $(CONFIG_FILENAME))
 export OTT_DIR
 
+# This list of files for each OTT release are used below to create the 
+#	full paths to the OTT inputs
 OTT_FILENAMES=about.json \
 	conflicts.tsv \
 	deprecated.tsv \
 	synonyms.tsv \
 	taxonomy.tsv \
 	version.txt
-export OTT_FILENAMES
 
 # Full paths of the relevant files that make up OTT
 OTT_FILEPATHS := $(addprefix $(OTT_DIR)/, $(OTT_FILENAMES))
@@ -42,9 +43,6 @@ export PHYLESYSTEM_ROOT
 #   obtained from the union of the ~/.opentree user-wide config and the run config
 SYNTHESIS_COLLECTIONS := $(shell bin/config_checker.py synthesis.collections $(CONFIG_FILENAME))
 export SYNTHESIS_COLLECTIONS
-
-
-INPUT_PHYLO_ARTIFACTS=$(PROPINQUITY_OUT_DIR)/phylo_input/study_tree_pairs.txt
 
 ARTIFACTS=$(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaned_ott.tre \
 	  $(PROPINQUITY_OUT_DIR)/cleaned_phylo/phylo_inputs_cleaned.txt \
@@ -96,7 +94,6 @@ extra: $(PROPINQUITY_OUT_DIR)/labelled_supertree/labelled_supertree_ottnames.tre
 
 clean: cleanpre cleanottproducts cleanphyloproducts cleansubproblems cleanfinal
 	rm -f $(ARTIFACTS)
-	rm -f $(INPUT_PHYLO_ARTIFACTS)
 	rm -f $(ASSESSMENT_ARTIFACTS)
 	rm -f $(HTML_ARTIFACTS)
 
