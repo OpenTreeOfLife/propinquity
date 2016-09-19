@@ -44,16 +44,6 @@ export PHYLESYSTEM_ROOT
 SYNTHESIS_COLLECTIONS := $(shell bin/config_checker.py synthesis.collections $(CONFIG_FILENAME))
 export SYNTHESIS_COLLECTIONS
 
-ARTIFACTS=$(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaned_ott.tre \
-	  $(PROPINQUITY_OUT_DIR)/cleaned_phylo/phylo_inputs_cleaned.txt \
-	  $(PROPINQUITY_OUT_DIR)/exemplified_phylo/nonempty_trees.txt \
-	  $(PROPINQUITY_OUT_DIR)/subproblems/subproblem-ids.txt \
-	  $(PROPINQUITY_OUT_DIR)/grafted_solution/grafted_solution_ottnames.tre \
-	  $(PROPINQUITY_OUT_DIR)/full_supertree/full_supertree.tre \
-	  $(PROPINQUITY_OUT_DIR)/labelled_supertree/labelled_supertree.tre \
-	  $(PROPINQUITY_OUT_DIR)/labelled_supertree/labelled_supertree_ottnames.tre \
-	  $(PROPINQUITY_OUT_DIR)/annotated_supertree/annotations.json
-
 ASSESSMENT_ARTIFACTS = $(PROPINQUITY_OUT_DIR)/assessments/supertree_degree_distribution.txt \
 	$(PROPINQUITY_OUT_DIR)/assessments/taxonomy_degree_distribution.txt \
 	$(PROPINQUITY_OUT_DIR)/assessments/lost_taxa.txt \
@@ -92,12 +82,16 @@ extra: $(PROPINQUITY_OUT_DIR)/labelled_supertree/labelled_supertree_ottnames.tre
 	   $(PROPINQUITY_OUT_DIR)/labelled_supertree/labelled_supertree_simplified_ottnames_without_monotypic.tre \
 	   $(PROPINQUITY_OUT_DIR)/grafted_solution/grafted_solution_ottnames.tre
 
-clean: cleanpre cleanottproducts cleanphyloproducts cleansubproblems cleanfinal
-	rm -f $(ARTIFACTS)
+clean: cleanpre \
+	   cleanottproducts \
+	   cleanphyloproducts \
+	   cleansubproblems \
+	   cleanfinal \
+	   cleandoc
 	rm -f $(ASSESSMENT_ARTIFACTS)
 	rm -f $(HTML_ARTIFACTS)
 
-realclean: clean realcleanottproducts
+realclean: realcleanottproducts clean
 	# No op
 
 include Makefile.specify_inputs   # contains cleanpre target

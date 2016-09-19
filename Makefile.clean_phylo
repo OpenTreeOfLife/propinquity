@@ -9,19 +9,18 @@
 #			out_dir/exemplified_phylo/*.tre 				# the tree inputs
 
 CLEANED_ARTIFACTS=$(PROPINQUITY_OUT_DIR)/exemplified_phylo/nonempty_trees.txt \
-				  $(PROPINQUITY_OUT_DIR)/exemplified_phylo/taxonomy.tre
-
-ARTIFACTS += $(CLEANED_ARTIFACTS) \
-	$(PROPINQUITY_OUT_DIR)/cleaned_phylo/cleaning_flags.txt \
-	$(PROPINQUITY_OUT_DIR)/cleaned_phylo/root_ott_id.txt \
-	$(PROPINQUITY_OUT_DIR)/cleaned_phylo/phylo_inputs_cleaned.txt \
-	$(PROPINQUITY_OUT_DIR)/cleaned_phylo/needs_updating.txt \
-	$(PROPINQUITY_OUT_DIR)/exemplified_phylo/args.txt \
-	$(PROPINQUITY_OUT_DIR)/exemplified_phylo/pruned_taxonomy_degree_distribution.txt 
+				  $(PROPINQUITY_OUT_DIR)/exemplified_phylo/taxonomy.tre \
+				  $(PROPINQUITY_OUT_DIR)/cleaned_phylo/cleaning_flags.txt \
+				  $(PROPINQUITY_OUT_DIR)/cleaned_phylo/root_ott_id.txt \
+				  $(PROPINQUITY_OUT_DIR)/cleaned_phylo/phylo_inputs_cleaned.txt \
+				  $(PROPINQUITY_OUT_DIR)/cleaned_phylo/needs_updating.txt \
+				  $(PROPINQUITY_OUT_DIR)/exemplified_phylo/args.txt \
+				  $(PROPINQUITY_OUT_DIR)/exemplified_phylo/exemplified_log.json \
+				  $(PROPINQUITY_OUT_DIR)/exemplified_phylo/pruned_taxonomy_degree_distribution.txt 
 
 # use find + xargs for wildcard expansion to guard against arg list too long
 cleanphyloproducts:
-	rm -f $(PROPINQUITY_OUT_DIR)/cleaned_phylo/needs_updating.txt
+	rm -f $(CLEANED_ARTIFACTS)
 	find $(PROPINQUITY_OUT_DIR)/cleaned_phylo/ -name "*.tre" | xargs rm -f
 	find $(PROPINQUITY_OUT_DIR)/cleaned_phylo/ -name "*.json" | xargs rm -f
 	find $(PROPINQUITY_OUT_DIR)/exemplified_phylo/ -name "*.tre" | xargs rm -f

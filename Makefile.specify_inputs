@@ -13,8 +13,6 @@ INPUT_PHYLO_ARTIFACTS=$(PROPINQUITY_OUT_DIR)/phylo_snapshot/git_shas.txt \
 	$(PROPINQUITY_OUT_DIR)/phylo_input/collections.txt \
 	$(PROPINQUITY_OUT_DIR)/phylo_input/study_tree_pairs.txt
 
-ARTIFACTS += $(INPUT_PHYLO_ARTIFACTS)
-
 # use find + xargs for wildcard expansion to guard against arg list too long
 cleanpre:
 	rm -f $(PROPINQUITY_OUT_DIR)/phylo_snapshot/stdouterr.txt

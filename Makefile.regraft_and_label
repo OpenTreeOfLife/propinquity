@@ -2,27 +2,28 @@
 # It contains rules for regrafting taxonomy-only tips, labelling the tree, and making annotations
 # This completes the construction of the summary tree.
 
+FULL_SUPERTREE_ARTIFACTS=$(PROPINQUITY_OUT_DIR)/full_supertree/full_supertree.tre
 
-FULL_TREE_ARTIFACTS=$(PROPINQUITY_OUT_DIR)/full_supertree/full_supertree.tre \
+LABELLED_SUPERTREE_ARTIFACTS=$(PROPINQUITY_OUT_DIR)/labelled_supertree/broken_taxa.json \
+	  $(PROPINQUITY_OUT_DIR)/labelled_supertree/input_output_stats.json \
 	  $(PROPINQUITY_OUT_DIR)/labelled_supertree/labelled_supertree.tre \
 	  $(PROPINQUITY_OUT_DIR)/labelled_supertree/labelled_supertree_out_degree_distribution.txt \
 	  $(PROPINQUITY_OUT_DIR)/labelled_supertree/labelled_supertree_ottnames.tre \
 	  $(PROPINQUITY_OUT_DIR)/labelled_supertree/labelled_supertree_ottnames_without_monotypic.tre \
 	  $(PROPINQUITY_OUT_DIR)/labelled_supertree/labelled_supertree_simplified_ottnames.tre \
-	  $(PROPINQUITY_OUT_DIR)/labelled_supertree/labelled_supertree_simplified_ottnames_without_monotypic.tre \
-	  $(PROPINQUITY_OUT_DIR)/annotated_supertree/annotations.json
+	  $(PROPINQUITY_OUT_DIR)/labelled_supertree/labelled_supertree_simplified_ottnames_without_monotypic.tre
 
-ARTIFACTS += $(FULL_TREE_ARTIFACTS)
+ANNOTATED_SUPERTREE_ARTIFACTS=$(PROPINQUITY_OUT_DIR)/annotated_supertree/annotations.json \
+	$(PROPINQUITY_OUT_DIR)/annotated_supertree/annotations1.json \
+	$(PROPINQUITY_OUT_DIR)/annotated_supertree/annotations2.json
 
-$(PROPINQUITY_OUT_DIR)/grafted_solution/grafted_solution_ottnames.tre: $(PROPINQUITY_OUT_DIR)/grafted_solution/grafted_solution.tre
-	@if ! test -d $(PROPINQUITY_OUT_DIR)/grafted_solution ; then mkdir -p $(PROPINQUITY_OUT_DIR)/grafted_solution ; fi
-	otc-relabel-tree \
-		$(PROPINQUITY_OUT_DIR)/grafted_solution/grafted_solution.tre \
-		--taxonomy=$(OTT_DIR) \
-		--format-tax="%N ott%I" \
-		--del-monotypic \
-		> $(PROPINQUITY_OUT_DIR)/grafted_solution/grafted_solution_ottnames.tre
+FULL_TREE_ARTIFACTS= $(FULL_SUPERTREE_ARTIFACTS) \
+	  $(LABELLED_SUPERTREE_ARTIFACTS) \
+	  $(ANNOTATED_SUPERTREE_ARTIFACTS)
 
+
+# Full supertree without labels. This is not used. It is pretty deprecated, but the 
+#	rule remains, in case someone wants a small version of the tree (fewer labels and short tip labels)
 $(PROPINQUITY_OUT_DIR)/full_supertree/full_supertree.tre: $(PROPINQUITY_OUT_DIR)/grafted_solution/grafted_solution.tre \
 														  $(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaned_ott.tre
 	@if ! test -d $(PROPINQUITY_OUT_DIR)/full_supertree ; then mkdir -p $(PROPINQUITY_OUT_DIR)/full_supertree ; fi
