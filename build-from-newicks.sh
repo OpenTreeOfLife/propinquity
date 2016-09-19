@@ -32,26 +32,32 @@ then
 fi
 
 ottdir="${OTT_DIR}"
-if test -z "${ottdir}"
-then
+if test -z "${ottdir}" && test -f "$HOME/.opentree"
+then 
     ottdir=$(bin/config_checker.py opentree.ott ~/.opentree)
+    echo "OTT_DIR set toot set, using '${ottdir}' from ~/.opentree"
 fi
 
+if test -z "${ottdir}"; then
+    echo "OTT directory not set, quitting."
+    exit 1
+fi
+   
 if test -z "${ottdir}"
 then
     echo "build-from-newicks.sh: expecting OTT_DIR to be in your environment and to specify the taxonomy directory"
     exit 1
 fi
 
-if [ "${OTT_DIR:0:1}" != "/" ]; then
-    echo -e "build-from-newicks.sh: Error! OTT_DIR=${OTT_DIR} is a relative path!"
+if [ "${ottdir:0:1}" != "/" ]; then
+    echo -e "build-from-newicks.sh: Error! OTT_DIR='${ott_dir}' is a relative path!"
     exit 1
 fi
 
 if ! test -d "${ottdir}"
 then
     echo "build-from-newicks.sh: OTT_DIR is set, but is not a directory:"
-    echo "  OTT_DIR=${OTT_DIR}"
+    echo "  OTT_DIR=${ottdir}"
     exit 1
 fi
 if ! test -f "${phyloranking}"
@@ -104,19 +110,25 @@ touch $PROPINQUITY_OUT_DIR/phylo_input/rank_collection.json
 # 3. fake export of nexson files, and fake generation of study tree pairs
 echo -n "Generating nexson tree files from newick files ... "
 
-for i in $(cat "${phyloranking}")
+phyloranking_dir=$(dirname ${phyloranking})
+
+for filename in $(cat "${phyloranking}")
 do
-    if ! test -f "${i}"
+    if [ "${filename:0:1}" != "/" ] ; then
+	filename="${phyloranking_dir}/$filename"
+    fi
+
+    if ! test -f "${filename}"
     then
-        echo "build-from-newicks: input newick ${i} does not refer to a file."
+        echo "build-from-newicks: input newick ${filename} does not refer to a file."
         exit 1
     fi
-    fn="$(basename $i)"
+    fn="$(basename $filename)"
     stem="$(echo $fn | sed -e 's/\.tre$//')"
     tree_id="$(echo $stem | sed -E 's/^.*@(.+)$/\1/')"
 #    echo $tree_id
     echo $stem >> $PROPINQUITY_OUT_DIR/phylo_input/study_tree_pairs.txt
-    python "${PEYOTL_ROOT}/scripts/nexson/propinquity_newick_to_nexson.py" "--ids=${tree_id}" $i > $PROPINQUITY_OUT_DIR/phylo_snapshot/"${stem}.json"
+    python "${PEYOTL_ROOT}/scripts/nexson/propinquity_newick_to_nexson.py" "--ids=${tree_id}" ${filename} > $PROPINQUITY_OUT_DIR/phylo_snapshot/"${stem}.json"
 done
 echo "done."
 
@@ -125,3 +137,11 @@ echo -n "Generating collection JSON for supplied newicks ... "
 bin/fake-collection.py $(cat "${phyloranking}") > $PROPINQUITY_OUT_DIR/phylo_snapshot/concrete_rank_collection.json
 touch $PROPINQUITY_OUT_DIR/phylo_snapshot/git_shas.txt
 echo "done."
+
+# If you are going to edit the config, then you have to do
+#   touch $PROPINQUITY_OUT_DIR/phylo_input/collections.txt
+#   touch $PROPINQUITY_OUT_DIR/phylo_input/rank_collection.json
+#   touch $PROPINQUITY_OUT_DIR/phylo_input/study_tree_pairs.txt
+#   touch $PROPINQUITY_OUT_DIR/phylo_snapshot/concrete_rank_collection.json
+#   touch $PROPINQUITY_OUT_DIR/phylo_snapshot/git_shas.txt
+# in that order!
