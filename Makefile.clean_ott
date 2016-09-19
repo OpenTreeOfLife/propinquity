@@ -1,17 +1,4 @@
-# This Makefile contains the rules for generating a standard set of supertree inputs
-#	from the configuration.
-# Essentially this entails pruning off unwanted parts of OTT and tips that are problematic
-#	in the input trees, then exemplifying any higher taxa in input trees such that 
-#	the leaf set of taxonomy and inputs is the same.
-# The final outputs that matter to the construction of the supertree are the "CLEANED_ARTIFACTS":
-#			out_dir/exemplified_phylo/taxonomy.tre			# the cleaned, exemplified taxonomy
-#			out_dir/exemplified_phylo/nonempty_trees.txt	# the list of tree inputs
-#			out_dir/exemplified_phylo/*.tre 				# the tree inputs
-#			out_dir/cleaned_ott/cleaned_ott.tre				# the cleaned taxonomy
-
-CLEANED_ARTIFACTS=$(PROPINQUITY_OUT_DIR)/exemplified_phylo/nonempty_trees.txt \
-				  $(PROPINQUITY_OUT_DIR)/exemplified_phylo/taxonomy.tre \
-				  $(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaned_ott.tre
+# The rules for cleaning OTT for use by the rest of the pipeline
 
 SUPPRESS_FLAG_ARTIFACTS= $(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaned_ott.json \
 	$(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaned_ott_1.json \
@@ -21,22 +8,17 @@ SUPPRESS_FLAG_ARTIFACTS= $(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaned_ott.json \
 	$(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaning_flags.txt
 
 ARTIFACTS += $(SUPPRESS_FLAG_ARTIFACTS) \
-	$(CLEANED_ARTIFACTS) \
-	$(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaning_flags.txt \
-	$(PROPINQUITY_OUT_DIR)/cleaned_ott/root_ott_id.txt \
-	$(PROPINQUITY_OUT_DIR)/cleaned_phylo/cleaning_flags.txt \
-	$(PROPINQUITY_OUT_DIR)/cleaned_phylo/root_ott_id.txt \
-	$(PROPINQUITY_OUT_DIR)/cleaned_phylo/phylo_inputs_cleaned.txt \
-	$(PROPINQUITY_OUT_DIR)/cleaned_phylo/needs_updating.txt \
-	$(PROPINQUITY_OUT_DIR)/exemplified_phylo/args.txt \
-	$(PROPINQUITY_OUT_DIR)/exemplified_phylo/pruned_taxonomy_degree_distribution.txt 
+	$(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaned_ott.tre \
+	$(PROPINQUITY_OUT_DIR)/cleaned_ott/root_ott_id.txt
 
 # use find + xargs for wildcard expansion to guard against arg list too long
-clean1:
-	rm -f $(PROPINQUITY_OUT_DIR)/cleaned_phylo/needs_updating.txt
-	find $(PROPINQUITY_OUT_DIR)/cleaned_phylo/ -name "*.tre" | xargs rm -f
-	find $(PROPINQUITY_OUT_DIR)/cleaned_phylo/ -name "*.json" | xargs rm -f
-	find $(PROPINQUITY_OUT_DIR)/exemplified_phylo/ -name "*.tre" | xargs rm -f
+cleanottproducts:
+	echo "cleaned_ott/* is not clean unless you run the realclean target"
+
+realcleanottproducts:
+	rm -f $(SUPPRESS_FLAG_ARTIFACTS)
+	rm -f $(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaned_ott.tre
+	rm -f $(PROPINQUITY_OUT_DIR)/cleaned_ott/root_ott_id.txt
 
 # "cleaned_ott" has dubious taxa pruned off. should check against treemachine and smasher versions
 $(PROPINQUITY_OUT_DIR)/cleaned_ott/root_ott_id.txt: $(CONFIG_FILENAME)
@@ -80,64 +62,6 @@ $(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaned_ott.json: $(PROPINQUITY_OUT_DIR)/clea
 		$(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaned_ott_pruned_nonflagged.json \
 		$(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaned_ott.json
 
-$(PROPINQUITY_OUT_DIR)/cleaned_phylo/needs_updating.txt: $(PROPINQUITY_OUT_DIR)/phylo_input/study_tree_pairs.txt \
-														 $(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaning_flags.txt \
-														 $(PROPINQUITY_OUT_DIR)/cleaned_ott/root_ott_id.txt
-	@if ! test -d $(PROPINQUITY_OUT_DIR)/cleaned_phylo ; then mkdir -p $(PROPINQUITY_OUT_DIR)/cleaned_phylo ; fi
-	if ! diff $(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaning_flags.txt $(PROPINQUITY_OUT_DIR)/cleaned_phylo/cleaning_flags.txt >/dev/null 2>&1 && \
-	   ! diff $(PROPINQUITY_OUT_DIR)/cleaned_ott/root_ott_id.txt $(PROPINQUITY_OUT_DIR)/cleaned_phylo/root_ott_id.txt >/dev/null 2>&1 ; \
-	then \
-		sed -e "s:\(.*\):$(PROPINQUITY_OUT_DIR)/phylo_snapshot/\1.json:" < $(PROPINQUITY_OUT_DIR)/phylo_input/study_tree_pairs.txt > $(PROPINQUITY_OUT_DIR)/cleaned_phylo/x ; \
-		bin/convert-space-to-newline $(PROPINQUITY_OUT_DIR)/cleaned_phylo/x > $(PROPINQUITY_OUT_DIR)/cleaned_phylo/needs_updating.txt ;\
-		rm -f $(PROPINQUITY_OUT_DIR)/cleaned_phylo/x ;\
-	else \
-		./bin/write-needs-updating $(PROPINQUITY_OUT_DIR)/cleaned_phylo $$(sed -e 's:\(.*\):phylo_snapshot/\1.json:' < $(PROPINQUITY_OUT_DIR)/phylo_input/study_tree_pairs.txt) > $(PROPINQUITY_OUT_DIR)/cleaned_phylo/needs_updating.txt ;\
-	fi
-	cp $(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaning_flags.txt $(PROPINQUITY_OUT_DIR)/cleaned_phylo/cleaning_flags.txt
-	cp $(PROPINQUITY_OUT_DIR)/cleaned_ott/root_ott_id.txt $(PROPINQUITY_OUT_DIR)/cleaned_phylo/root_ott_id.txt
-
-# Could we make the cleaned_phylo/*.tre files depend on INDIVIDUAL phylo_snapshot/*.json files?
-$(PROPINQUITY_OUT_DIR)/cleaned_phylo/phylo_inputs_cleaned.txt: $(PROPINQUITY_OUT_DIR)/cleaned_phylo/needs_updating.txt \
-															   $(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaning_flags.txt \
-															   $(PROPINQUITY_OUT_DIR)/cleaned_ott/root_ott_id.txt \
-															   $(PROPINQUITY_OUT_DIR)/phylo_snapshot/concrete_rank_collection.json \
-															   $(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaned_ott_pruned_nonflagged.json \
-															   $(OTT_FILEPATHS)
-	@if ! test -d $(PROPINQUITY_OUT_DIR)/cleaned_phylo ; then mkdir -p $(PROPINQUITY_OUT_DIR)/cleaned_phylo ; fi
-	$(PEYOTL_ROOT)/scripts/nexson/prune_to_clean_mapped.py \
-	  --ott-dir=$(OTT_DIR) \
-	  --input-files-list=$(PROPINQUITY_OUT_DIR)/cleaned_phylo/needs_updating.txt \
-	  --out-dir=$(PROPINQUITY_OUT_DIR)/cleaned_phylo \
-	  --ott-prune-flags="$(shell cat $(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaning_flags.txt)" \
-	  --ott-prune-nonflagged-json=$(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaned_ott_pruned_nonflagged.json \
-	  --root="$(shell cat $(PROPINQUITY_OUT_DIR)/cleaned_ott/root_ott_id.txt)"
-	touch $(PROPINQUITY_OUT_DIR)/cleaned_phylo/phylo_inputs_cleaned.txt
-
 $(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaned_ott_pruned_nonflagged.json: $(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaned_ott.tre
 	echo "cleaned_ott/cleaned_ott_pruned_nonflagged.json created as a side effect."
 
-$(PROPINQUITY_OUT_DIR)/exemplified_phylo/args.txt : $(PROPINQUITY_OUT_DIR)/phylo_input/study_tree_pairs.txt
-	@if ! test -d $(PROPINQUITY_OUT_DIR)/exemplified_phylo ; then mkdir -p $(PROPINQUITY_OUT_DIR)/exemplified_phylo ; fi
-	sed -e "s:\(.*\):$(PROPINQUITY_OUT_DIR)/cleaned_phylo/\1.tre:" $(PROPINQUITY_OUT_DIR)/phylo_input/study_tree_pairs.txt > $(PROPINQUITY_OUT_DIR)/exemplified_phylo/args.txt
-
-# Could we make the exemplified_phylo/*.tre files depend on INDIVIDUAL cleaned_phylo/*.tre files?
-$(PROPINQUITY_OUT_DIR)/exemplified_phylo/nonempty_trees.txt : $(PROPINQUITY_OUT_DIR)/exemplified_phylo/args.txt \
-															  $(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaned_ott.tre \
-															  $(PROPINQUITY_OUT_DIR)/cleaned_phylo/phylo_inputs_cleaned.txt
-	@if ! test -d $(PROPINQUITY_OUT_DIR)/exemplified_phylo ; then mkdir -p $(PROPINQUITY_OUT_DIR)/exemplified_phylo ; fi
-	otc-nonterminals-to-exemplars \
-	  -e$(PROPINQUITY_OUT_DIR)/exemplified_phylo \
-	  $(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaned_ott.tre \
-	  -f$(PROPINQUITY_OUT_DIR)/exemplified_phylo/args.txt \
-	  -j$(PROPINQUITY_OUT_DIR)/exemplified_phylo/exemplified_log.json \
-	  -n$(PROPINQUITY_OUT_DIR)/exemplified_phylo/.nonempty_trees.txt && mv \
-	  $(PROPINQUITY_OUT_DIR)/exemplified_phylo/.nonempty_trees.txt \
-	  $(PROPINQUITY_OUT_DIR)/exemplified_phylo/nonempty_trees.txt
-
-$(PROPINQUITY_OUT_DIR)/exemplified_phylo/taxonomy.tre: $(PROPINQUITY_OUT_DIR)/exemplified_phylo/nonempty_trees.txt
-
-$(PROPINQUITY_OUT_DIR)/exemplified_phylo/pruned_taxonomy_degree_distribution.txt : $(PROPINQUITY_OUT_DIR)/exemplified_phylo/taxonomy.tre
-	@if ! test -d $(PROPINQUITY_OUT_DIR)/exemplified_phylo ; then mkdir -p $(PROPINQUITY_OUT_DIR)/exemplified_phylo ; fi
-	otc-degree-distribution \
-		$(PROPINQUITY_OUT_DIR)/exemplified_phylo/taxonomy.tre \
-		> $(PROPINQUITY_OUT_DIR)/exemplified_phylo/pruned_taxonomy_degree_distribution.txt

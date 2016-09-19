@@ -7,23 +7,11 @@
 #			out_dir/exemplified_phylo/taxonomy.tre			# the cleaned, exemplified taxonomy
 #			out_dir/exemplified_phylo/nonempty_trees.txt	# the list of tree inputs
 #			out_dir/exemplified_phylo/*.tre 				# the tree inputs
-#			out_dir/cleaned_ott/cleaned_ott.tre				# the cleaned taxonomy
 
 CLEANED_ARTIFACTS=$(PROPINQUITY_OUT_DIR)/exemplified_phylo/nonempty_trees.txt \
-				  $(PROPINQUITY_OUT_DIR)/exemplified_phylo/taxonomy.tre \
-				  $(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaned_ott.tre
+				  $(PROPINQUITY_OUT_DIR)/exemplified_phylo/taxonomy.tre
 
-SUPPRESS_FLAG_ARTIFACTS= $(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaned_ott.json \
-	$(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaned_ott_1.json \
-	$(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaned_ott_pruned_nonflagged.json \
-	$(PROPINQUITY_OUT_DIR)/cleaned_ott/ott_version.txt \
-	$(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaned_ott_with_hiddenbarren.tre \
-	$(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaning_flags.txt
-
-ARTIFACTS += $(SUPPRESS_FLAG_ARTIFACTS) \
-	$(CLEANED_ARTIFACTS) \
-	$(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaning_flags.txt \
-	$(PROPINQUITY_OUT_DIR)/cleaned_ott/root_ott_id.txt \
+ARTIFACTS += $(CLEANED_ARTIFACTS) \
 	$(PROPINQUITY_OUT_DIR)/cleaned_phylo/cleaning_flags.txt \
 	$(PROPINQUITY_OUT_DIR)/cleaned_phylo/root_ott_id.txt \
 	$(PROPINQUITY_OUT_DIR)/cleaned_phylo/phylo_inputs_cleaned.txt \
@@ -32,53 +20,11 @@ ARTIFACTS += $(SUPPRESS_FLAG_ARTIFACTS) \
 	$(PROPINQUITY_OUT_DIR)/exemplified_phylo/pruned_taxonomy_degree_distribution.txt 
 
 # use find + xargs for wildcard expansion to guard against arg list too long
-clean1:
+cleanphyloproducts:
 	rm -f $(PROPINQUITY_OUT_DIR)/cleaned_phylo/needs_updating.txt
 	find $(PROPINQUITY_OUT_DIR)/cleaned_phylo/ -name "*.tre" | xargs rm -f
 	find $(PROPINQUITY_OUT_DIR)/cleaned_phylo/ -name "*.json" | xargs rm -f
 	find $(PROPINQUITY_OUT_DIR)/exemplified_phylo/ -name "*.tre" | xargs rm -f
-
-# "cleaned_ott" has dubious taxa pruned off. should check against treemachine and smasher versions
-$(PROPINQUITY_OUT_DIR)/cleaned_ott/root_ott_id.txt: $(CONFIG_FILENAME)
-	@if ! test -d $(PROPINQUITY_OUT_DIR)/cleaned_ott ; then mkdir -p $(PROPINQUITY_OUT_DIR)/cleaned_ott ; fi
-	if ! ./bin/config_checker.py synthesis.root_ott_id $(CONFIG_FILENAME) > $(PROPINQUITY_OUT_DIR)/cleaned_ott/.raw_root_ott_id.txt 2>/dev/null ; then \
-	   otc-taxonomy-parser --config $(PROPINQUITY_OUT_DIR)/config -R | sed 's/[ \t].*//' > $(PROPINQUITY_OUT_DIR)/cleaned_ott/.raw_root_ott_id.txt ; \
-	fi ; \
-	if ! diff $(PROPINQUITY_OUT_DIR)/cleaned_ott/.raw_root_ott_id.txt $(PROPINQUITY_OUT_DIR)/cleaned_ott/root_ott_id.txt 2>/dev/null; then mv $(PROPINQUITY_OUT_DIR)/cleaned_ott/.raw_root_ott_id.txt $(PROPINQUITY_OUT_DIR)/cleaned_ott/root_ott_id.txt ; fi
-
-$(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaning_flags.txt: $(CONFIG_FILENAME)
-	@if ! test -d $(PROPINQUITY_OUT_DIR)/cleaned_ott ; then mkdir -p $(PROPINQUITY_OUT_DIR)/cleaned_ott ; fi
-	./bin/config_checker.py taxonomy.cleaning_flags $(CONFIG_FILENAME) > $(PROPINQUITY_OUT_DIR)/cleaned_ott/.raw_cleaning_flags.txt
-	if ! diff $(PROPINQUITY_OUT_DIR)/cleaned_ott/.raw_cleaning_flags.txt $(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaning_flags.txt 2>/dev/null; then mv $(PROPINQUITY_OUT_DIR)/cleaned_ott/.raw_cleaning_flags.txt $(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaning_flags.txt ; fi
-
-$(PROPINQUITY_OUT_DIR)/cleaned_ott/ott_version.txt: $(OTT_DIR)/version.txt
-	@if ! test -d $(PROPINQUITY_OUT_DIR)/cleaned_ott ; then mkdir -p $(PROPINQUITY_OUT_DIR)/cleaned_ott ; fi
-	if ! diff $(OTT_DIR)/version.txt $(PROPINQUITY_OUT_DIR)/cleaned_ott/ott_version.txt >/dev/null 2>&1 ; then cp $(OTT_DIR)/version.txt $(PROPINQUITY_OUT_DIR)/cleaned_ott/ott_version.txt ; fi
-
-$(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaned_ott_with_hiddenbarren.tre: $(OTT_FILEPATHS) \
-													$(PROPINQUITY_OUT_DIR)/cleaned_ott/ott_version.txt \
-													$(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaning_flags.txt \
-													$(PROPINQUITY_OUT_DIR)/cleaned_ott/root_ott_id.txt
-	$(PEYOTL_ROOT)/scripts/ott/suppress_by_flag.py \
-	    --ott-dir=$(OTT_DIR) \
-	    --output=$(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaned_ott_with_hiddenbarren.tre \
-	    --log=$(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaned_ott_1.json \
-	    --flags="$(shell cat $(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaning_flags.txt)" \
-	    --root="$(shell cat $(PROPINQUITY_OUT_DIR)/cleaned_ott/root_ott_id.txt)"
-#	Maybe replace python program with C++ program below after we can generate the necessary log files.
-#	otc-taxonomy-parser $(OTT_DIR) --config=$(CONFIG_FILENAME) -T > cleaned_ott/.raw_cleaned_ott.tre
-
-$(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaned_ott.tre: $(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaned_ott_with_hiddenbarren.tre
-	otc-relabel-tree \
-		$(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaned_ott_with_hiddenbarren.tre \
-		--del-higher-taxon-tips \
-		-j$(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaned_ott_pruned_nonflagged.json > $(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaned_ott.tre
-
-$(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaned_ott.json: $(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaned_ott_1.json $(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaned_ott_pruned_nonflagged.json
-	./bin/combine_ott_cleaning_logs.py \
-		$(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaned_ott_1.json \
-		$(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaned_ott_pruned_nonflagged.json \
-		$(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaned_ott.json
 
 $(PROPINQUITY_OUT_DIR)/cleaned_phylo/needs_updating.txt: $(PROPINQUITY_OUT_DIR)/phylo_input/study_tree_pairs.txt \
 														 $(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaning_flags.txt \
@@ -112,9 +58,6 @@ $(PROPINQUITY_OUT_DIR)/cleaned_phylo/phylo_inputs_cleaned.txt: $(PROPINQUITY_OUT
 	  --ott-prune-nonflagged-json=$(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaned_ott_pruned_nonflagged.json \
 	  --root="$(shell cat $(PROPINQUITY_OUT_DIR)/cleaned_ott/root_ott_id.txt)"
 	touch $(PROPINQUITY_OUT_DIR)/cleaned_phylo/phylo_inputs_cleaned.txt
-
-$(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaned_ott_pruned_nonflagged.json: $(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaned_ott.tre
-	echo "cleaned_ott/cleaned_ott_pruned_nonflagged.json created as a side effect."
 
 $(PROPINQUITY_OUT_DIR)/exemplified_phylo/args.txt : $(PROPINQUITY_OUT_DIR)/phylo_input/study_tree_pairs.txt
 	@if ! test -d $(PROPINQUITY_OUT_DIR)/exemplified_phylo ; then mkdir -p $(PROPINQUITY_OUT_DIR)/exemplified_phylo ; fi
