@@ -5322,14 +5322,16 @@ key "HinchliffEtAl2015"
  performed when the input taxonomy changes).
  The amount of RAM required during tree construction has also decreased
  substantially.
- Unlike the previous tree, the tree from propinquity contained no unsupported
+ We ran propinquity on the same input trees used to construct version Open
+ Tree version 4.
+ Unlike the version 4 tree, the tree from propinquity contained no unsupported
  nodes or unnecessary polytomies.
- The number of displayed input splits from increased from 35,439 (for version
- 4) to 39,713; a 10.6% increase.
+ The number of displayed input splits increased from 35,518 (for version
+ 4) to 39,639; an 11.2% increase.
  The number of input splits that do not conflict with the summary tree,
- but are not incorporated drops from 2736 to 0.
+ but are not incorporated drops from 2718 to 0.
  The number of input splits that conflict with the phylogeny drops from
- 2850 to 1312, a decrease of 1538, or 54.0%.
+ 2760 to 1357, a decrease of 1357, or 49.2%.
  
 \begin_inset Note Comment
 status collapsed
@@ -5337,6 +5339,89 @@ status collapsed
 \begin_layout Plain Layout
 ARE THESE numbers for the same set of inputs? or v4 to v5 (the latter had
  the barnacles tree collection, and perhaps a few other tree differences?
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Note
+status open
+
+\begin_layout Paragraph
+Commands used
+\end_layout
+
+\begin_layout Itemize
+otc-displayed-stats v4prime/cleaned_ott/cleaned_ott.tre v4.tre v4prime/exemplified
+_phylo/*_*
+\backslash
+@*.tre
+\end_layout
+
+\begin_layout Itemize
+otc-displayed-stats v4prime/cleaned_ott/cleaned_ott.tre v4prime.tre v4prime/exempl
+ified_phylo/*_*
+\backslash
+@*.tre
+\end_layout
+
+\begin_layout Paragraph
+Command output (last line)
+\end_layout
+
+\begin_layout Plain Layout
+FD FCR FI F RD RCR RI RT R label
+\end_layout
+
+\begin_layout Plain Layout
+35518 2718 2760 40996 0 0 0 0 0 Total of 482 trees (v4)
+\end_layout
+
+\begin_layout Plain Layout
+39639 0 1357 40996 0 0 0 0 0 Total of 482 trees (v4-propinquity)
+\end_layout
+
+\begin_layout Paragraph
+Key (seed otc-displayed-stats -h)
+\end_layout
+
+\begin_layout Plain Layout
+F = forking versus R = redundant 
+\end_layout
+
+\begin_layout Plain Layout
+CR = could-resolve 
+\end_layout
+
+\begin_layout Plain Layout
+D = displayed 
+\end_layout
+
+\begin_layout Plain Layout
+I = incompatible
+\end_layout
+
+\begin_layout Paragraph
+Interpretation
+\end_layout
+
+\begin_layout Plain Layout
+OK, so v4 summary displays 35518 out of 40996 input tree splits.
+ 2718 additional input tree splits could be added to the v4 summary, and
+ 2760 input tree splits are incompatible with the v4 summary.
+ The propinquity pipeline generates a tree that displays 39639 splits, also
+ out of 40996.
+ No additional input tree splits could be added.
+ The remaining 1357 input tree splits are necessarily incompatible with
+ the summary.
+ 
+\end_layout
+
+\begin_layout Plain Layout
+482 trees were used as inputs.
 \end_layout
 
 \end_inset
