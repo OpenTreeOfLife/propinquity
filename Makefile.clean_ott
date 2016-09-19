@@ -9,9 +9,6 @@ SUPPRESS_FLAG_ARTIFACTS= $(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaned_ott.json \
 
 # use find + xargs for wildcard expansion to guard against arg list too long
 cleanottproducts:
-	echo "cleaned_ott/* is not clean unless you run the realclean target"
-
-realcleanottproducts:
 	rm -f $(SUPPRESS_FLAG_ARTIFACTS)
 	rm -f $(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaned_ott.tre
 	rm -f $(PROPINQUITY_OUT_DIR)/cleaned_ott/root_ott_id.txt

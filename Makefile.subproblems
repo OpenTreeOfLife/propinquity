@@ -2,7 +2,9 @@ SUBPROBLEM_ARTIFACTS=$(PROPINQUITY_OUT_DIR)/subproblems/subproblem-ids.txt \
 	  $(PROPINQUITY_OUT_DIR)/grafted_solution/grafted_solution.tre \
 	  $(PROPINQUITY_OUT_DIR)/grafted_solution/grafted_solution_ottnames.tre \
 	  $(PROPINQUITY_OUT_DIR)/subproblem_solutions/solution-ids.txt \
-	  $(PROPINQUITY_OUT_DIR)/subproblem_solutions/solution-degree-distributions.txt
+	  $(PROPINQUITY_OUT_DIR)/subproblem_solutions/solution-degree-distributions.txt \
+	  $(PROPINQUITY_OUT_DIR)/subproblems/contesting-trees.json
+
 
 $(PROPINQUITY_OUT_DIR)/subproblems/scratch/args.txt: $(PROPINQUITY_OUT_DIR)/exemplified_phylo/nonempty_trees.txt
 	@if ! test -d $(PROPINQUITY_OUT_DIR)/subproblems/scratch ; then mkdir -p $(PROPINQUITY_OUT_DIR)/subproblems/scratch ; fi

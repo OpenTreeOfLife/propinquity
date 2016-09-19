@@ -47,31 +47,9 @@ export SYNTHESIS_COLLECTIONS
 ASSESSMENT_ARTIFACTS = $(PROPINQUITY_OUT_DIR)/assessments/supertree_degree_distribution.txt \
 	$(PROPINQUITY_OUT_DIR)/assessments/taxonomy_degree_distribution.txt \
 	$(PROPINQUITY_OUT_DIR)/assessments/lost_taxa.txt \
-	$(PROPINQUITY_OUT_DIR)/assessments/summary.json
+	$(PROPINQUITY_OUT_DIR)/assessments/summary.json \
+	$(PROPINQUITY_OUT_DIR)/assessments/log.txt
 
-HTML_ARTIFACTS = $(PROPINQUITY_OUT_DIR)/annotated_supertree/index.html \
-	$(PROPINQUITY_OUT_DIR)/annotated_supertree/index.json \
-	$(PROPINQUITY_OUT_DIR)/assessments/index.html \
-	$(PROPINQUITY_OUT_DIR)/cleaned_ott/index.html \
-	$(PROPINQUITY_OUT_DIR)/cleaned_ott/index.json \
-	$(PROPINQUITY_OUT_DIR)/cleaned_phylo/index.json \
-	$(PROPINQUITY_OUT_DIR)/cleaned_phylo/index.html \
-	$(PROPINQUITY_OUT_DIR)/exemplified_phylo/index.html \
-	$(PROPINQUITY_OUT_DIR)/exemplified_phylo/index.json \
-	$(PROPINQUITY_OUT_DIR)/grafted_solution/index.html \
-	$(PROPINQUITY_OUT_DIR)/grafted_solution/index.json \
-	$(PROPINQUITY_OUT_DIR)/index.html \
-	$(PROPINQUITY_OUT_DIR)/index.json \
-	$(PROPINQUITY_OUT_DIR)/labelled_supertree/index.html \
-	$(PROPINQUITY_OUT_DIR)/labelled_supertree/index.json \
-	$(PROPINQUITY_OUT_DIR)/phylo_input/index.json \
-	$(PROPINQUITY_OUT_DIR)/phylo_input/index.html \
-	$(PROPINQUITY_OUT_DIR)/subproblems/index.html \
-	$(PROPINQUITY_OUT_DIR)/subproblems/index.json \
-	$(PROPINQUITY_OUT_DIR)/subproblem_solutions/index.html \
-	$(PROPINQUITY_OUT_DIR)/subproblem_solutions/index.json \
-	$(PROPINQUITY_OUT_DIR)/phylo_snapshot/index.html \
-	$(PROPINQUITY_OUT_DIR)/phylo_snapshot/index.json
 
 all: $(PROPINQUITY_OUT_DIR)/labelled_supertree/labelled_supertree.tre \
 	 $(PROPINQUITY_OUT_DIR)/annotated_supertree/annotations.json
@@ -89,7 +67,20 @@ clean: cleanpre \
 	   cleanfinal \
 	   cleandoc
 	rm -f $(ASSESSMENT_ARTIFACTS)
-	rm -f $(HTML_ARTIFACTS)
+
+	if test -d $(PROPINQUITY_OUT_DIR)/phylo_input ; then rmdir --ignore-fail-on-non-empty $(PROPINQUITY_OUT_DIR)/phylo_input ; fi
+	if test -d $(PROPINQUITY_OUT_DIR)/phylo_snapshot ; then rmdir --ignore-fail-on-non-empty $(PROPINQUITY_OUT_DIR)/phylo_snapshot ; fi
+	if test -d $(PROPINQUITY_OUT_DIR)/cleaned_ott ; then rmdir --ignore-fail-on-non-empty $(PROPINQUITY_OUT_DIR)/cleaned_ott ; fi
+	if test -d $(PROPINQUITY_OUT_DIR)/cleaned_phylo ; then rmdir --ignore-fail-on-non-empty $(PROPINQUITY_OUT_DIR)/cleaned_phylo ; fi
+	if test -d $(PROPINQUITY_OUT_DIR)/exemplified_phylo ; then rmdir --ignore-fail-on-non-empty $(PROPINQUITY_OUT_DIR)/exemplified_phylo ; fi
+	if test -d $(PROPINQUITY_OUT_DIR)/subproblems/scratch ; then rmdir --ignore-fail-on-non-empty $(PROPINQUITY_OUT_DIR)/subproblems/scratch ; fi
+	if test -d $(PROPINQUITY_OUT_DIR)/subproblems ; then rmdir --ignore-fail-on-non-empty $(PROPINQUITY_OUT_DIR)/subproblems ; fi
+	if test -d $(PROPINQUITY_OUT_DIR)/subproblem_solutions ; then rmdir --ignore-fail-on-non-empty $(PROPINQUITY_OUT_DIR)/subproblem_solutions ; fi
+	if test -d $(PROPINQUITY_OUT_DIR)/grafted_solution ; then rmdir --ignore-fail-on-non-empty $(PROPINQUITY_OUT_DIR)/grafted_solution ; fi
+	if test -d $(PROPINQUITY_OUT_DIR)/labelled_supertree ; then rmdir --ignore-fail-on-non-empty $(PROPINQUITY_OUT_DIR)/labelled_supertree ; fi
+	if test -d $(PROPINQUITY_OUT_DIR)/annotated_supertree ; then rmdir --ignore-fail-on-non-empty $(PROPINQUITY_OUT_DIR)/annotated_supertree ; fi
+	if test -d $(PROPINQUITY_OUT_DIR)/assessments ; then rmdir --ignore-fail-on-non-empty $(PROPINQUITY_OUT_DIR)/assessments ; fi
+	if test -d $(PROPINQUITY_OUT_DIR)/logs ; then rmdir --ignore-fail-on-non-empty $(PROPINQUITY_OUT_DIR)/logs ; fi
 
 realclean: realcleanottproducts clean
 	# No op
