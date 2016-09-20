@@ -1,4 +1,4 @@
-all: pipeline-tools.png makefile-dependencies.png todo.pdf
+all: pipeline-tools.png makefile-dependencies.png
 
 
 %.png : %.dot
