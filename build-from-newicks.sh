@@ -37,10 +37,6 @@ then
     echo "build-from-newicks.sh: expecting OTT_DIR to be in your environment and to specify the taxonomy directory"
     exit 1
 fi
-if [ "${ottdir:0:1}" != "/" ]; then
-    echo -e "build-from-newicks.sh: Error! OTT_DIR='${ott_dir}' is a relative path!"
-    exit 1
-fi
 if ! test -d "${ottdir}"
 then
     echo "build-from-newicks.sh: OTT_DIR is set, but is not a directory:"
