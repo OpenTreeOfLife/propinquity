@@ -210,9 +210,11 @@ def synthesis_tree_diffs(run1,run2):
 def broken_taxa_diffs(run1,run2,names=False):
 # file of interest is labelled_supertree/broken_taxa.json
     jsonfile = "{d}/labelled_supertree/broken_taxa.json".format(d=run1)
-    broken_taxa1 = json.load(open(jsonfile, 'r'))['non_monophyletic_taxa'].keys()
+    lsbt1 = json.load(open(jsonfile, 'r'))['non_monophyletic_taxa']
+    broken_taxa1 = lsbt1.keys() if lsbt else set()
     jsonfile = "{d}/labelled_supertree/broken_taxa.json".format(d=run2)
-    broken_taxa2 = json.load(open(jsonfile, 'r'))['non_monophyletic_taxa'].keys()
+    lsbt2 = json.load(open(jsonfile, 'r'))['non_monophyletic_taxa']
+    broken_taxa2 = lsbt2.keys() if lsbt else set()
     countmismatch = 0
     countmismatch += compare_lists("broken taxa",broken_taxa1,broken_taxa2,True)
     if (names):

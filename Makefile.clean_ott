@@ -47,7 +47,8 @@ $(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaned_ott.tre: $(PROPINQUITY_OUT_DIR)/clean
 	otc-relabel-tree \
 		$(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaned_ott_with_hiddenbarren.tre \
 		--del-higher-taxon-tips \
-		-j$(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaned_ott_pruned_nonflagged.json > $(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaned_ott.tre
+		-j$(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaned_ott_pruned_nonflagged.json \
+		--taxonomy $(OTT_DIR) > $(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaned_ott.tre
 
 $(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaned_ott.json: $(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaned_ott_1.json $(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaned_ott_pruned_nonflagged.json
 	./bin/combine_ott_cleaning_logs.py \

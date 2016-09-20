@@ -73,7 +73,10 @@ def parse_config(config_filepath):
     config.ott_version = codecs.open(ott_version_file, 'rU', encoding='utf-8').read().strip()
     ott_major_pat = re.compile('^([0-9.]+)[a-z]?.*')
     m = ott_major_pat.match(config.ott_version)
-    config.ott_major_minor_version = m.group(1)
+    if m:
+        config.ott_major_minor_version = m.group(1)
+    else:
+        config.ott_major_minor_version = 'NOT built using OTT'
     return config
 
 def get_otc_version():
@@ -306,6 +309,8 @@ class DocGen(object):
         blob = Extensible()
         blob.unprune_stats = read_as_json(os.path.join(d, 'input_output_stats.json'))
         blob.non_monophyletic_taxa = read_as_json(os.path.join(d, 'broken_taxa.json'))
+        if not blob.non_monophyletic_taxa['non_monophyletic_taxa'] is None:
+            blob.non_monophyletic_taxa['non_monophyletic_taxa'] = {}
         return blob
     def read_subproblem_solutions(self):
         d = os.path.join(self.top_output_dir, 'subproblem_solutions')

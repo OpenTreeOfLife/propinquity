@@ -82,6 +82,8 @@ if __name__ == '__main__':
     bt_name = 'otc-unprune-solution-and-name-unnamed-nodes broken_taxa.json'
     bt_pair  = [bt_file, bt_name]
     bt_dict = read_as_json(bt_file)['non_monophyletic_taxa']
+    if not bt_dict:
+        bt_dict = {}
     cleaned_ott_json_pruned = read_as_json(cleaned_taxonomy_json).get('pruned', {})
     # pruned because they became empty
     httip_key = 'higher-taxon-tip'

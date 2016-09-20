@@ -21,20 +21,24 @@ if __name__ == '__main__':
     out_fn = args.combined_json[0]
     blob = read_as_json(fj_fn)
     higher_taxon_blob = read_as_json(htj_fn)
-    p = blob['pruned']
-    httk = 'higher-taxon-tip'
-    intk = 'empty-after-higher-taxon-tip-prune'
-    high_tax_tip_pruned = higher_taxon_blob.get(httk, {})
-    internal_high_tax_tip_pruned = higher_taxon_blob.get(intk, {})
-    p[httk] = high_tax_tip_pruned
-    p[intk] = internal_high_tax_tip_pruned
-    n_ht_in_pruned = len(internal_high_tax_tip_pruned)
-    n_ht_pruned = len(high_tax_tip_pruned)
-    blob['num_non_leaf_nodes'] -= n_ht_in_pruned
-    blob['num_pruned_anc_nodes'] += n_ht_in_pruned
-    blob['num_tips'] -= n_ht_pruned
-    blob['num_nodes'] -= (n_ht_pruned + n_ht_in_pruned)
-    del blob['num_monotypic_nodes']
-    del blob['num_non_leaf_nodes_with_multiple_children']
-    blob['pruning_keys_not_from_flags'] = [httk, intk]
+    if higher_taxon_blob:
+        p = blob['pruned']
+        httk = 'higher-taxon-tip'
+        intk = 'empty-after-higher-taxon-tip-prune'
+        high_tax_tip_pruned = higher_taxon_blob.get(httk, {})
+        internal_high_tax_tip_pruned = higher_taxon_blob.get(intk, {})
+        p[httk] = high_tax_tip_pruned
+        p[intk] = internal_high_tax_tip_pruned
+        n_ht_in_pruned = len(internal_high_tax_tip_pruned)
+        n_ht_pruned = len(high_tax_tip_pruned)
+        blob['num_non_leaf_nodes'] -= n_ht_in_pruned
+        blob['num_pruned_anc_nodes'] += n_ht_in_pruned
+        blob['num_tips'] -= n_ht_pruned
+        blob['num_nodes'] -= (n_ht_pruned + n_ht_in_pruned)
+        del blob['num_monotypic_nodes']
+        del blob['num_non_leaf_nodes_with_multiple_children']
+        kl = [httk, intk]
+    else:
+        kl = []
+    blob['pruning_keys_not_from_flags'] = kl
     write_as_json(blob, out_fn)

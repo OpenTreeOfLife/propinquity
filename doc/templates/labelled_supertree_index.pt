@@ -37,16 +37,21 @@
     <li>the <a href="./labelled_supertree_simplified_ottnames_without_monotypic.tre" download>./labelled_supertree_simplified_ottnames_without_monotypic.tre</a> (if the file exists) is a version of labelled_supertree_ottnames_without_monotypic.tre with names simplified to remove characters that cause problems for some clients (using otc-munge-names). The log for this step will be at <a href="simplified_ottnames_without_monotypic.log">simplified_ottnames_without_monotypic.log</a></li>
 </ul>
 
-<p>Non-monophyletic taxa: There are ${len(non_monophyletic_taxa.non_monophyletic_taxa)}
-  taxa from the Open Tree Taxonomy that are not monophyletic in the synthetic
-  tree.</p>
-<table>
-    <tr><th>"broken" taxon</th><th>MRCA</th><th># attachment points</th></tr>
-    <tr tal:repeat="id2dict non_monophyletic_taxa.non_monophyletic_taxa.items()">
-        <td>${id2dict[0]}</td>
-        <td>${id2dict[1]["mrca"]}</td>
-        <td>${len(id2dict[1]["attachment_points"])}</td>
-    </tr>
-</table>
+<div tal:switch="bool(non_monophyletic_taxa.non_monophyletic_taxa)">
+    <div tal:case="True">
+        <p >Non-monophyletic taxa: There are ${len(non_monophyletic_taxa.non_monophyletic_taxa)}
+        taxa from the Open Tree Taxonomy that are not monophyletic in the synthetic
+        tree.</p>
+        <table>
+            <tr><th>"broken" taxon</th><th>MRCA</th><th># attachment points</th></tr>
+            <tr tal:repeat="id2dict non_monophyletic_taxa.non_monophyletic_taxa.items()">
+                <td>${id2dict[0]}</td>
+                <td>${id2dict[1]["mrca"]}</td>
+                <td>${len(id2dict[1]["attachment_points"])}</td>
+            </tr>
+        </table>
+    </div>
+    <div tal:case="False"><p>Non-monophyletic taxa: There were 0 non-monophyletic taxa</p></div>
+</div>
 </div>
 </html>
