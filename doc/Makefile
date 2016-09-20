@@ -9,3 +9,6 @@ all: pipeline-tools.png makefile-dependencies.png
 
 makefile-dependencies.dot: makefile-dependencies-format.dot \
 						   makefile-dependencies-inputs.dot
+	cat makefile-dependencies-format.dot > makefile-dependencies.dot
+	cat makefile-dependencies-inputs.dot >> makefile-dependencies.dot
+	echo '}' >> makefile-dependencies.dot
