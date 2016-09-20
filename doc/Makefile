@@ -8,7 +8,7 @@ all: pipeline-tools.png makefile-dependencies.png
 	dot -Tpdf -o$@ $<
 
 makefile-dependencies.dot: makefile-dependencies-format.dot \
-						   makefile-dependencies-inputs.dot
+						   makefile-dependencies-specify-inputs.dot
 	cat makefile-dependencies-format.dot > makefile-dependencies.dot
-	cat makefile-dependencies-inputs.dot >> makefile-dependencies.dot
+	cat makefile-dependencies-specify-inputs.dot >> makefile-dependencies.dot
 	echo '}' >> makefile-dependencies.dot
