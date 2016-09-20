@@ -6,3 +6,6 @@ all: pipeline-tools.png makefile-dependencies.png
 
 %.pdf : %.dot
 	dot -Tpdf -o$@ $<
+
+makefile-dependencies.dot: makefile-dependencies-format.dot \
+						   makefile-dependencies-inputs.dot
