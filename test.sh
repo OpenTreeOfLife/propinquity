@@ -11,7 +11,7 @@ function run_example_test {
 	fi
 	export PROPINQUITY_OUT_DIR="test-output/e${exnum}-${rankingfileprefix}"
 	export OTT_DIR="examples/${exnum}/taxonomy"
-	./build-from-newicks.sh "examples/${exnum}/two-phylo-rankings.txt" || exit
+	./build-from-newicks.sh "examples/${exnum}/${rankingfileprefix}-phylo-rankings.txt" || exit
 	make html || exit
 	make clean || exit
 	rm -f "$PROPINQUITY_OUT_DIR/config"
@@ -21,3 +21,4 @@ function run_example_test {
 run_example_test 1 two || exit
 run_example_test 2 two || exit
 run_example_test 2 three || exit
+run_example_test 3 one || exit
