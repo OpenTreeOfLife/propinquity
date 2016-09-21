@@ -36,6 +36,7 @@ $(PROPINQUITY_OUT_DIR)/phylo_input/study_tree_pairs.txt: $(PROPINQUITY_OUT_DIR)/
 		$(PROPINQUITY_OUT_DIR)/phylo_snapshot/concrete_rank_collection.json \
 		>$(PROPINQUITY_OUT_DIR)/phylo_input/study_tree_pairs.txt
 
+
 # Snapshots of the NexSON are more efficient to produce in bulk (hence the export of the entire
 # collection as a part of the concrete_rank_collection target
 $(PROPINQUITY_OUT_DIR)/phylo_snapshot/git_shas.txt:
@@ -70,6 +71,10 @@ $(PROPINQUITY_OUT_DIR)/phylo_input/collections.txt: $(CONFIG_FILENAME)
 		$(PROPINQUITY_OUT_DIR)/phylo_input/collections.txt ; \
 	else rm $(PROPINQUITY_OUT_DIR)/phylo_input/.raw_collections.txt ; \
 	fi
+
+
+# we should not be hard-coding the shards/collections-1/collections-by-owner here
+#	but it will work for the time being @TODO
 
 $(PROPINQUITY_OUT_DIR)/phylo_input/rank_collection.json: $(PROPINQUITY_OUT_DIR)/phylo_input/collections.txt \
 													     $(addsuffix .json, $(addprefix $(COLLECTIONS_ROOT)/shards/collections-1/collections-by-owner/, $(SYNTHESIS_COLLECTIONS)))
