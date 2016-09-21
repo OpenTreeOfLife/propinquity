@@ -3,9 +3,10 @@ config [style=filled, color="#AAFFAA"] ;
 config -> "config[synthesis]root_ott_id" ;
 "config[taxonomy]cleaning_flags" [style=filled, color="#AAFFAA"] ;
 config -> "config[taxonomy]cleaning_flags" ;
-"$OTT_DIR" [style=filled, color="#AAFFAA"] ;
+config -> "config[opentree]ott" ;
+"config[opentree]ott" [style=filled, color="#AAFFAA"] ;
 "<OTT>" [style=filled, color="#AAFFAA"] ;
-"$OTT_DIR" -> "<OTT>" ;
+"config[opentree]ott"-> "<OTT>" ;
 
 "config[synthesis]root_ott_id" -> "config_checker.py synthesis.root_ott_id" ;
 "config_checker.py synthesis.root_ott_id" [style=filled, color="#EEBBDD"] ;

@@ -1,6 +1,7 @@
-"$OTT_DIR" [style=filled, color="#AAFFAA"] ;
+"config[opentree]ott" [style=filled, color="#AAFFAA"] ;
+"config" -> "config[opentree]ott" ;
 "<OTT>" [style=filled, color="#AAFFAA"] ;
-"$OTT_DIR" -> "<OTT>" ;
+"config[opentree]ott"-> "<OTT>" ;
 
 "exemplified_phylo/nonempty_trees.txt" -> "subproblems/scratch/args.txt" ;
 
