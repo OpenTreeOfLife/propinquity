@@ -4,8 +4,6 @@
 "otc-unprune-solution-and-name-unnamed-nodes" -> "labelled_supertree/labelled_supertree.tre"
 "otc-unprune-solution-and-name-unnamed-nodes" -> "labelled_supertree/broken_taxa.json"
 "otc-unprune-solution-and-name-unnamed-nodes" -> "labelled_supertree/input_output_stats.json"
-"labelled_supertree/broken_taxa.json" [color="#AAAAEE"]
-"labelled_supertree/input_output_stats.json" [color="#AAAAEE"]
 
 #"cleaned_ott/cleaned_ott.tre" -> "otc-unprune-solution"
 #"grafted_solution/grafted_solution.tre" -> "otc-unprune-solution"
@@ -18,22 +16,52 @@
 
 
 
-"labelled_supertree/labelled_supertree.tre" -> "otc-relabel-tree labelled_supertree/labelled_supertree.tre"
-"otc-relabel-tree labelled_supertree/labelled_supertree.tre" [style=filled, color="#EEBBDD"]
-"otc-relabel-tree labelled_supertree/labelled_supertree.tre" -> "labelled_supertree/labelled_supertree_ottnames.tre"
+"labelled_supertree/labelled_supertree.tre" -> "otc-relabel-tree (OTT names)"
+"otc-relabel-tree (OTT names)" [style=filled, color="#EEBBDD"]
+"otc-relabel-tree (OTT names)" -> "labelled_supertree/labelled_supertree_ottnames.tre"
+
+
+"labelled_supertree/labelled_supertree_ottnames.tre" -> "otc-munge-names"
+"otc-munge-names" [style=filled, color="#EEBBDD"]
+"otc-munge-names" -> "labelled_supertree/labelled_supertree_simplified_ottnames.tre"
+"otc-munge-names" -> "labelled_supertree/simplified_ottnames.log"
+
 
 "cleaned_ott/cleaned_ott.tre" -> "otc-annotate-synth"
 "labelled_supertree/labelled_supertree.tre" -> "otc-annotate-synth"
 "exemplified_phylo/nonempty_trees.txt" -> "otc-annotate-synth"
+"exemplified_phylo/study*tree*.tre"  -> "otc-annotate-synth"
 "otc-annotate-synth" [style=filled, color="#EEBBDD"]
-"otc-annotate-synth" -> "annotated_supertree/annotations.json"
+"otc-annotate-synth" -> "annotated_supertree/preannotations1.json"
+
+"subproblems/subproblem-ids.txt" -> "add_subproblem_info_to_annotations.py" ;
+"annotated_supertree/preannotations1.json" -> "add_subproblem_info_to_annotations.py" ;
+"add_subproblem_info_to_annotations.py" [style=filled, color="#EEBBDD"] ; 
+"add_subproblem_info_to_annotations.py" -> "annotated_supertree/annotations1.json" ;
+
+"exemplified_phylo/pruned_taxonomy_degree_distribution.txt" -> "awk" ;
+"awk" [style=filled, color="#EEBBDD"] ;
+"awk" -> "annotated_supertree/num_phylo_tips.json";
+
+"config" -> "gen_attributes.py" ;
+"config" [style=filled, color="#AAFFAA"] ;
+"gen_attributes.py" [style=filled, color="#EEBBDD"] ;
+"gen_attributes.py" -> "annotated_supertree/preannotations2.json";
+
+"annotated_supertree/num_phylo_tips.json" -> "merge-json.py (2)" ; 
+"annotated_supertree/preannotations2.json"  -> "merge-json.py (2)" ; 
+"merge-json.py (2)" [style=filled, color="#EEBBDD"] ;
+"merge-json.py (2)" -> "annotated_supertree/annotations2.json" ;
+
+"annotated_supertree/annotations1.json" -> "merge-json.py (a)" ; 
+"annotated_supertree/annotations2.json" -> "merge-json.py (a)" ; 
+"merge-json.py (a)" [style=filled, color="#EEBBDD"] ;
+"merge-json.py (a)" -> "annotated_supertree/annotations.json" ;
 
 "grafted_solution/grafted_solution.tre" -> "otc-degree-distribution (solution)"
 "otc-degree-distribution (solution)" [style=filled, color="#EEBBDD"]
 "otc-degree-distribution (solution)" -> "subproblem_solutions/solution_degree_distributon.txt"
-"subproblem_solutions/solution_degree_distributon.txt" [color="#AAAAEE"]
 
 "labelled_supertree/labelled_supertree.tre" -> "otc-degree-distribution (supertree)"
 "otc-degree-distribution (supertree)" [style=filled, color="#EEBBDD"]
 "otc-degree-distribution (supertree)" -> "labelled_supertree/labelled_supertree_out_degree_distributon.txt"
-"labelled_supertree/labelled_supertree_out_degree_distributon.txt" [color="#AAAAEE"]
