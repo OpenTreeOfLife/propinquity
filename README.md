@@ -123,7 +123,7 @@ mentioned above).
       ...
 
   The actual `phylesystem-1` repo cloned from git should be in a
-  directory `{opentree.phylesystem}/DIR/shards/phylesystem-1`, where
+  directory `{opentree.phylesystem}/shards/phylesystem-1`, where
   `{opentree.phylesystem}` is the directory referred to above.
 
 
