@@ -1,4 +1,12 @@
 #!/bin/bash
+if test -d test-output
+then
+	if ! rmdir test-output
+	then
+		echo 'test-output directory is in the way. Move it first!'
+		exit 1
+	fi
+fi
 mkdir -p test-output
 
 function run_example_test {
