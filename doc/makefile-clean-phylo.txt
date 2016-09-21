@@ -34,6 +34,6 @@
 "otc-nonterminalstoexemplars" -> "exemplified_phylo/exemplified_log.json" ;
 
 "otc-degree-distribution"  [style=filled, color="#EEBBDD"] ;
-exemplified_phylo/taxonomy.tre -> "otc-degree-distribution" ;
+"exemplified_phylo/taxonomy.tre" -> "otc-degree-distribution" ;
 "otc-degree-distribution" -> "exemplified_phylo/pruned_taxonomy_degree_distribution.txt";
 
