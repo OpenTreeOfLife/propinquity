@@ -1,30 +1,3 @@
-"phylo_input/study_tree_pairs.txt" -> "exemplified_phylo/args.txt"
-
-"cleaned_ott/cleaned_ott.tre" -> "otc-nonterminalstoexemplars"
-"exemplified_phylo/args.txt" -> "otc-nonterminalstoexemplars"
-"cleaned_phylo/phylo_inputs_cleaned.txt" -> "otc-nonterminalstoexemplars"
-"otc-nonterminalstoexemplars" -> "exemplified_phylo/nonempty_trees.txt"
-"otc-nonterminalstoexemplars" -> "exemplified_phylo/taxonomy.tre" [color=green style=dotted]
-"otc-nonterminalstoexemplars"  [style=filled, color="#EEBBDD"]
-
-"exemplified_phylo/nonempty_trees.txt" -> "exemplified_phylo/taxonomy.tre"
-
-"cleaned_ott/cleaning_flags.txt" -> "bin/write_needs_updating"
-"cleaned_ott/root_ott_id.txt" -> "bin/write_needs_updating"
-"phylo_input/study_tree_pairs.txt" -> "bin/write_needs_updating"
-"bin/write_needs_updating" -> "cleaned_phylo/needs_updating.txt"
-"bin/write_needs_updating" -> "cleaned_phylo/cleaning_flags.txt"  [color=green style=dotted]
-"bin/write_needs_updating" -> "cleaned_phylo/root_ott_id.txt"  [color=green style=dotted]
-"bin/write_needs_updating"   [style=filled, color="#EEBBDD"]
-
-"cleaned_phylo/needs_updating.txt" -> "prune_to_clean_mapped.py"
-"cleaned_ott/cleaning_flags.txt" -> "prune_to_clean_mapped.py"
-"cleaned_phylo/root_ott_it.txt" -> "prune_to_clean_mapped.py"
-"$OTT_FILEPATHS" -> "prune_to_clean_mapped.py"
-"phylo_snapshot/concrete_rank_collection.json" -> "prune_to_clean_mapped.py"
-"prune_to_clean_mapped.py"  [style=filled, color="#EEBBDD"]
-"prune_to_clean_mapped.py" -> "cleaned_phylo/phylo_inputs_cleaned.txt"
-
 "exemplified_phylo/nonempty_trees.txt" -> "subproblems/scratch/args.txt"
 
 "exemplified_phylo/taxonomy.tre" -> "bin/run-subproblem/finder.sh"

@@ -45,4 +45,4 @@ config -> "config[opentree]phylesystem" ;
 "collection_export.py --export=studyID_treeID" -> "phylo_input/study_tree_pairs.txt"
 
 
-"export_studies_from_collection.py" -> "phylo_snapshot/<TREE>.json" ;
+"export_studies_from_collection.py" -> "phylo_snapshot/study*@tree*.json" ;

@@ -21,6 +21,7 @@ makefile-dependencies.dot: makefile-format.dot \
 	cat makefile-specify-inputs.txt >> $@
 	cat makefile-clean-ott.txt >> $@
 	cat makefile-clean-phylo.txt >> $@
+	cat makefile-subproblems.txt >> $@
 	echo '}' >> $@
 
 
