@@ -1,7 +1,3 @@
-config -> "cleaned_ott/root_ott_id.txt"
-config -> "cleaned_ott/cleaning_flags.txt"
-"$OTT_DIR/version.txt" -> "cleaned_ott/version.txt"
-
 "phylo_input/study_tree_pairs.txt" -> "exemplified_phylo/args.txt"
 
 "cleaned_ott/cleaned_ott.tre" -> "otc-nonterminalstoexemplars"
@@ -12,13 +8,6 @@ config -> "cleaned_ott/cleaning_flags.txt"
 "otc-nonterminalstoexemplars"  [style=filled, color="#EEBBDD"]
 
 "exemplified_phylo/nonempty_trees.txt" -> "exemplified_phylo/taxonomy.tre"
-
-"$OTT_FILEPATHS" -> "suppress_by_flag.py"
-"cleaned_ott/version.txt" ->  "suppress_by_flag.py"
-"cleaned_ott/cleaning_flags.txt" ->  "suppress_by_flag.py"
-"cleaned_ott/root_ott_id.txt" ->  "suppress_by_flag.py"
-"suppress_by_flag.py" [style=filled, color="#EEBBDD"]
-"suppress_by_flag.py" -> "cleaned_ott/cleaned_ott.tre"
 
 "cleaned_ott/cleaning_flags.txt" -> "bin/write_needs_updating"
 "cleaned_ott/root_ott_id.txt" -> "bin/write_needs_updating"
