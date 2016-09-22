@@ -407,11 +407,24 @@ We can consider whether or not an node in an input tree is displayed by
 
  there is a set of taxa that are mapped to the tips that descend from the
  node.
- This set of taxa can be denoted 
+ This set of taxa is the 
+\begin_inset Quotes eld
+\end_inset
+
+cluster
+\begin_inset Quotes erd
+\end_inset
+
+ of taxa corresponding to node 
+\begin_inset Formula $j$
+\end_inset
+
+; it can be denoted
 \begin_inset Formula $\mathcal{L}(i,j)$
 \end_inset
 
- and will be referred to as the 
+.
+ It will also be referred to as the 
 \begin_inset Quotes eld
 \end_inset
 
@@ -445,7 +458,7 @@ exclude set
 \end_inset
 
 .
- If the set of tip-mapped taxa for any node in 
+ If the cluster of taxa for any supertree node in 
 \begin_inset Formula $\summaryTree(i)$
 \end_inset
 
@@ -1694,6 +1707,26 @@ We also seek to construct a supertree that represents as many input tree
  Since non-included input tree nodes must conflict with the supertree (or
  they would have been added), this criterion is the same as minimizing the
  number of input nodes that conflict with the supertree.
+ As discussed in 
+\begin_inset CommandInset citation
+LatexCommand citet
+before "pages 92 and 131;"
+key "HusonRS2010"
+
+\end_inset
+
+ the maximum compatibility problem is known to be 
+\begin_inset Formula $NP$
+\end_inset
+
+-hard via a reduction to Max-Clique 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "Karp1972"
+
+\end_inset
+
+.
 \end_layout
 
 \begin_layout Subsubsection
