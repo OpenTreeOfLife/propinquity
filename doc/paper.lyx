@@ -2310,7 +2310,7 @@ status open
 
 \begin_layout Plain Layout
 \begin_inset Graphics
-	filename Figures/exemplified_phylo/taxonomy.tre.svg
+	filename Figures/exemplified_phylo_taxonomy_uncontested.tre.svg
 	scale 40
 
 \end_inset
@@ -2359,6 +2359,15 @@ reference "fig:cleaned-phylo-example"
 \end_inset
 
 , but are not shown in panel c.
+ The red edge in the pruned taxonomy tree is an uncontested higher taxon
+ in the exemplified taxonomy (as explained in section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "subsec:Subproblem-decomposition"
+
+\end_inset
+
+)
 \end_layout
 
 \end_inset
@@ -2406,6 +2415,13 @@ unpruning
 
 \begin_layout Subsubsection
 Subproblem decomposition
+\begin_inset CommandInset label
+LatexCommand label
+name "subsec:Subproblem-decomposition"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -2453,15 +2469,14 @@ reference "sec:Decompose-algorithm"
  Each uncontested non-terminal and non-root taxon will show up in two subproblem
 s: it will be the root of its own subproblem and it will be tip in the subproble
 m that covers the next slice deeper in the tree.
- Figure 
+ The red edge in figure 
 \begin_inset CommandInset ref
 LatexCommand ref
-reference "fig:detect-uncontested-example"
+reference "fig:exemplify-example"
 
 \end_inset
 
- highlights the taxa that are not contested by the input shown in figure
- 
+c highlights the taxa that are not contested by the input shown in 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "fig:exemplify-example"
@@ -2506,57 +2521,57 @@ reference "fig:pairwisecompat"
 
 .
  In this case the groupings from each of the phylogenetic estimates, shown
- in panels (
+ in panels 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "fig:decompose-worsens"
 
 \end_inset
 
-a) and (
+a and (
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "fig:decompose-worsens"
 
 \end_inset
 
-b), could be displayed.
- That solution is shown in panel (
+b, could be displayed.
+ That solution is shown in panel 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "fig:decompose-worsens"
 
 \end_inset
 
-d), it displays two of the three input splits, but is optimal because no
+d, it displays two of the three input splits, but is optimal because no
  solution displays all three input groupings and the depicted solution displays
  the two highest ranked groupings.
- However, neither of the trees shown in panels (
+ However, neither of the trees shown in panels 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "fig:decompose-worsens"
 
 \end_inset
 
-a) or (
+a or 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "fig:decompose-worsens"
 
 \end_inset
 
-b) contest the taxon 
+b contest the taxon 
 \begin_inset Formula $B$
 \end_inset
 
- shown in the taxonomy panel (
+ shown in the taxonomy panel 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "fig:decompose-worsens"
 
 \end_inset
 
-c).
+c.
  Thus, when using our decomposition, the branches leading to taxa 
 \begin_inset Formula $B1$
 \end_inset
@@ -2574,29 +2589,29 @@ c).
  This taxonomically-informed interpretation of the inputs views the two
  phylogenetic inputs as in conflict; so the solution returned by propinquity
  would defer to the higher ranked tree.
- The tree shown in panel (
+ The tree shown in panel 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "fig:decompose-worsens"
 
 \end_inset
 
-e) would be returned.
- This example arises from the fact that the trees in (
+e would be returned.
+ This example arises from the fact that the trees in 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "fig:decompose-worsens"
 
 \end_inset
 
-a) and (
+a and 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "fig:decompose-worsens"
 
 \end_inset
 
-b) jointly contest taxon 
+b jointly contest taxon 
 \begin_inset Formula $B$
 \end_inset
 
@@ -2641,57 +2656,6 @@ e with the first tree; 2,838 subproblems were trivial in this way.
 \end_layout
 
 \begin_layout Standard
-\begin_inset Float figure
-wide false
-sideways false
-status open
-
-\begin_layout Plain Layout
-\align center
-\begin_inset Graphics
-	filename Figures/exemplified_phylo_taxonomy_uncontested.tre.svg
-	width 35text%
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Plain Layout
-\begin_inset Caption Standard
-
-\begin_layout Plain Layout
-Uncontested edges from the inputs shown in figure 
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "fig:exemplify-example"
-
-\end_inset
-
-.
- Here the taxon 
-\emph on
-ABCD
-\emph default
- is uncontested.
- The edge to the ABCD node is colored red.
-\end_layout
-
-\end_inset
-
-
-\begin_inset CommandInset label
-LatexCommand label
-name "fig:detect-uncontested-example"
-
-\end_inset
-
-
-\end_layout
-
-\end_inset
-
-
 \begin_inset Float figure
 wide false
 sideways false
