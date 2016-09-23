@@ -178,26 +178,26 @@ propinquity.
 
 \emph default
  It uses the dependency-tracking tool 
-\begin_inset Quotes eld
-\end_inset
-
-
 \emph on
 make
 \emph default
-
-\begin_inset Quotes erd
-\end_inset
-
  to direct the series of operations required to construct the tree.
  It relies heavily on 
 \emph on
+
+\begin_inset Quotes eld
+\end_inset
+
 otcetera
+\begin_inset Quotes erd
+\end_inset
+
+
 \emph default
  - a set of C++ tools to performs most of the steps of the pipeline.
  All of the components are free software and are available on GitHub.
  This pipeline is currently used by the Open Tree of Life project to produce
- version 5 of that project's 
+ all of the versions of project's 
 \begin_inset Quotes eld
 \end_inset
 
@@ -205,7 +205,7 @@ synthetic tree
 \begin_inset Quotes erd
 \end_inset
 
-.
+ starting at version 5.
  The propinquity-based pipeline improves on previous supertree construction
  methods because it produces no unsupported branches, and it avoids unnecessary
  polytomies.
@@ -242,7 +242,8 @@ key "McTavishEtAt2015"
 
 \end_inset
 
- for further details); these trees do not include all leaf taxa.
+ for further details of the curation tools).
+ Unlike OTT, these phylogenetic trees do not include all leaf taxa.
  The inputs (taxonomy and phylogenetic trees) and the output summary supertree
  are all rooted.
  Here we describe the software pipeline (
@@ -419,7 +420,7 @@ cluster
 \begin_inset Formula $j$
 \end_inset
 
-; it can be denoted
+; it can be denoted 
 \begin_inset Formula $\mathcal{L}(i,j)$
 \end_inset
 
@@ -536,7 +537,7 @@ supported by
 \end_inset
 
  then the modified summary tree would no longer display node 
-\begin_inset Formula $k$
+\begin_inset Formula $j$
 \end_inset
 
 .
@@ -977,7 +978,7 @@ reference "fig:toyambig"
 
 \end_inset
 
-b) show 2 input trees.
+b) show two input trees.
  Because taxa A and E do not occur together in either input, there is some
  uncertainty about where to place them.
  By our terminology, either output shown in (
@@ -1256,9 +1257,30 @@ Goal 2: Tree ranking
 \begin_layout Standard
 An appealing goal for the summarization would be to find the supertree that
  displays the largest number of input tree edges.
- Despite being easy to state, this formulation does not provide biologists
- who use the summarization tool with an obvious avenue for fixing perceived
- problems with the summary tree.
+ As discussed in 
+\begin_inset CommandInset citation
+LatexCommand citet
+before "pages 92 and 131;"
+key "HusonRS2010"
+
+\end_inset
+
+ the maximum compatibility problem is known to be 
+\begin_inset Formula $NP$
+\end_inset
+
+-hard via a reduction to Max-Clique 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "Karp1972"
+
+\end_inset
+
+.
+ In addition to being computationally daunting, this formulation of the
+ supertree problem does not provide biologists who use the summarization
+ tool with an obvious avenue for fixing perceived problems with the summary
+ tree.
  For example, a grouping that a biologist expected may not be present in
  the supertree, but it may not conflict with any of the input groupings
  which are displayed.
@@ -1297,7 +1319,7 @@ An appealing goal for the summarization would be to find the supertree that
  know how to fix this problem.
  One solution is to use a ranking of groupings.
  If an expert were quite confident in the 
-\begin_inset Formula $x$
+\begin_inset Formula $c$
 \end_inset
 
  grouping, then she could assign that input node a high ranking.
@@ -1574,7 +1596,7 @@ Any approach to supertree construction must deal with the need to adjudicate
 \end_layout
 
 \begin_layout Standard
-Note that if an edge 
+Note that if some edge 
 \begin_inset Formula $c$
 \end_inset
 
@@ -1616,19 +1638,7 @@ In order to produce a comprehensive supertree, we also require a rooted
  Unlike other input trees, the taxonomy tree is required to contain all
  taxa, and thus has the maximal leaf set.
  We make the taxonomy tree the lowest ranked tree.
- We refer to this the formulation as the 
-\begin_inset Quotes eld
-\end_inset
-
-taxonomic supertree problem
-\begin_inset Quotes erd
-\end_inset
-
-.
-\end_layout
-
-\begin_layout Standard
-In our current formulation, the taxonomy tree is also unique in that the
+ In our current formulation, the taxonomy tree is also unique in that the
  taxonomy is the only source of taxonomic names.
  Each node in the taxonomy tree corresponds to a named group.
  Taxonomic groups may have the same name, but each node in the taxonomy
@@ -1662,7 +1672,7 @@ The supertree should be as resolved as possible - in other words, it should
 not
 \emph default
  included, we can point to a reason for non-inclusion by showing that the
- input edge conflicts with some node/edge of the summary tree.
+ input edge conflicts with some edge of the summary tree.
  Note, that the requirement to not display unsupported groups leads to some
  
 \begin_inset Quotes eld
@@ -1680,9 +1690,9 @@ reference "fig:pairwisecompat"
 
 \end_inset
 
-e) would continue to display the same 2 input groups, but the additional
+e) would continue to display the same two input groups, but the additional
  grouping would be unsupported, because the unresolved tree already displays
- the 2 input groups.
+ the two input groups.
  Thus, the additional group would be unsupported and the unresolved tree
  would be preferred by our criterion.
  However, collapsing either internal edge of the tree shown in figure (
@@ -1707,26 +1717,6 @@ We also seek to construct a supertree that represents as many input tree
  Since non-included input tree nodes must conflict with the supertree (or
  they would have been added), this criterion is the same as minimizing the
  number of input nodes that conflict with the supertree.
- As discussed in 
-\begin_inset CommandInset citation
-LatexCommand citet
-before "pages 92 and 131;"
-key "HusonRS2010"
-
-\end_inset
-
- the maximum compatibility problem is known to be 
-\begin_inset Formula $NP$
-\end_inset
-
--hard via a reduction to Max-Clique 
-\begin_inset CommandInset citation
-LatexCommand citep
-key "Karp1972"
-
-\end_inset
-
-.
 \end_layout
 
 \begin_layout Subsubsection
@@ -1875,7 +1865,7 @@ unplaced
 
  flag) or can arise because of some form of conflict during taxonomy constructio
 n (for example, if two taxonomies disagree on the name for a taxon, then
- the taxon will be merged and the name will be retained without any descendants;
+ the taxon can be merged and the name will be retained without any descendants;
  this name will have an OTT Id, but will be flagged as 
 \begin_inset Quotes eld
 \end_inset
@@ -1951,7 +1941,7 @@ Finally some leaves are mapped to taxa that occur more than once in the
  In these cases, leaves are pruned to assure that tips are mapped to unique
  taxa that are not nested.
  In the case of nested taxa, the tip mapped to the higher level taxon is
- retained.
+ pruned, and one of the lower level tips is retained.
  In the case of duplicate occurrences of an OTT taxon, propinquity checks
  to see if a data curator has selected one of the taxa to be the exemplar
  for the taxon.
@@ -1979,7 +1969,7 @@ Many input trees have tips that are not terminal taxa, but higher-order
  taxa; the species sampled may not have been identified to the lowest taxonomic
  rank; or the researcher may simply have used a higher taxonomic name because
  he/she assumed that the taxon is monophyletic and the higher level name
- is more recognizable.
+ would be more recognizable.
  Rather than allowing the ambiguity about interpretation of the higher-taxon
  mapped tips to propagate throughout the entire pipeline, we transform the
  input trees by replacing higher taxa at tips with a set of terminal-taxon
@@ -2078,7 +2068,37 @@ reference "fig:cleaned-phylo-example"
 \end_inset
 
  would be exemplified.
- 
+\end_layout
+
+\begin_layout Standard
+We prune the taxonomy by removing tips that are not present in any input
+ tree to produce the pruned taxonomy 
+\begin_inset Formula $\mathbb{T}_{p}$
+\end_inset
+
+.
+ The tips pruned in this step will be grafted back onto the skeleton of
+ the summary tree in a subsequent step.
+ A terminal taxon that is represented only in the taxonomy can be pruned
+ and then regrafted onto the solution without affecting which nodes are
+ displayed by the final summary tree.
+ Thus, this procedure does not impede our ability to find a good summary
+ tree.
+ Removing these tips produces a smaller input to the rest of the pipeline,
+ which reduces running times.
+ After producing the set of 
+\begin_inset Quotes eld
+\end_inset
+
+exemplified
+\begin_inset Quotes erd
+\end_inset
+
+ phylogenetic inputs, this tool exports a pruned down version of the taxonomy
+ that only contains tips that are present in at least one phylogenetic input.
+ In version 5.0 of the Open Tree of Life synthetic tree, this version of
+ the taxonomic tree contained only 41,226 leaves (while the flag-cleaned
+ version of OTT had 2,424,255 leaves).
 \begin_inset Float figure
 wide false
 sideways false
@@ -2368,13 +2388,11 @@ After the preprocessing steps, the inputs have been converted to a set of
  taxon in the exemplified taxonomic tree.
  The goal of the remainder of the pipeline is to construct a tree that maximizes
  the sum displayed groups' weighted scores criterion.
- This is accomplished in five steps: (1) reducing the tree size by pruning
- off tips not represented in any phylogenetic estimate; (2) dividing the
- full problem into subproblems based on uncontested taxa, (3) constructing
- a summary solution for each subproblem by greedily creating a maximally-sized
- list of groupings that can all be displayed simultaneously; (4) grafting
- the subproblem solutions into a single supertree; and (5) grafting (or
- 
+ This is accomplished in four steps: (1) dividing the full problem into
+ subproblems based on uncontested taxa, (2) constructing a summary solution
+ for each subproblem by greedily creating a maximally-sized list of groupings
+ that can all be displayed simultaneously; (3) grafting the subproblem solutions
+ into a single supertree; and (4) grafting (or 
 \begin_inset Quotes eld
 \end_inset
 
@@ -2384,47 +2402,6 @@ unpruning
 
 ) the taxonomy-only taxa onto the solution to produce a complete summary
  tree.
-\end_layout
-
-\begin_layout Subsubsection
-Temporarily pruning leaves mapped to taxa found only in the taxonomy
-\end_layout
-
-\begin_layout Standard
-We prune the taxonomy by removing tips that are not present in any input
- tree.
- The tips pruned in this step will be grafted back onto the skeleton of
- the summary tree in a subsequent step.
- A terminal taxon that is represented only in the taxonomy can be pruned
- and then regrafted onto the solution without affecting which nodes are
- displayed by the final summary tree.
- Thus, this procedure does not impede our ability to find a good summary
- tree.
- Removing these tips produces a smaller input to the rest of the pipeline,
- which reduces running times.
- 
-\end_layout
-
-\begin_layout Standard
-This step is actually performed by the 
-\family typewriter
-otc-nonterminals-to-exemplars
-\family default
- tool that was mentioned in the last step of the pre-processing portion
- of the pipeline.
- After producing the set of 
-\begin_inset Quotes eld
-\end_inset
-
-exemplified
-\begin_inset Quotes erd
-\end_inset
-
- phylogenetic inputs, this tool exports a pruned down version of the taxonomy
- that only contains tips that are present in at least one phylogenetic input.
- In version 5.0 of the Open Tree of Life synthetic tree, this version of
- the taxonomic tree contained only 41,226 leaves (while the flag-cleaned
- version of OTT had 2,424,255 leaves).
 \end_layout
 
 \begin_layout Subsubsection
@@ -2529,16 +2506,57 @@ reference "fig:pairwisecompat"
 
 .
  In this case the groupings from each of the phylogenetic estimates, shown
- in panels (a) and (b), could be displayed.
- That solution is shown in panel (d), it displays 2 of the 3 input splits,
- but is optimal because no solution displays all 3 input groupings and the
- depicted solution displays the 2 highest ranked groupings.
- However, neither of the trees shown in panels (a) or (b) contest the taxon
- 
+ in panels (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:decompose-worsens"
+
+\end_inset
+
+a) and (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:decompose-worsens"
+
+\end_inset
+
+b), could be displayed.
+ That solution is shown in panel (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:decompose-worsens"
+
+\end_inset
+
+d), it displays two of the three input splits, but is optimal because no
+ solution displays all three input groupings and the depicted solution displays
+ the two highest ranked groupings.
+ However, neither of the trees shown in panels (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:decompose-worsens"
+
+\end_inset
+
+a) or (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:decompose-worsens"
+
+\end_inset
+
+b) contest the taxon 
 \begin_inset Formula $B$
 \end_inset
 
- shown in the taxonomy panel (c).
+ shown in the taxonomy panel (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:decompose-worsens"
+
+\end_inset
+
+c).
  Thus, when using our decomposition, the branches leading to taxa 
 \begin_inset Formula $B1$
 \end_inset
@@ -2556,9 +2574,29 @@ reference "fig:pairwisecompat"
  This taxonomically-informed interpretation of the inputs views the two
  phylogenetic inputs as in conflict; so the solution returned by propinquity
  would defer to the higher ranked tree.
- The tree shown in panel (e) would be returned.
- This example arises from the fact that the trees in (a) and (b) jointly
- contest taxon 
+ The tree shown in panel (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:decompose-worsens"
+
+\end_inset
+
+e) would be returned.
+ This example arises from the fact that the trees in (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:decompose-worsens"
+
+\end_inset
+
+a) and (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:decompose-worsens"
+
+\end_inset
+
+b) jointly contest taxon 
 \begin_inset Formula $B$
 \end_inset
 
