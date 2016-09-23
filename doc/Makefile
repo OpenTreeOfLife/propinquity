@@ -1,4 +1,5 @@
 all: pipeline-tools.png \
+	paper-pipeline-tools.png \
 	makefile-dependencies.png \
 	makefile-specify-inputs.png \
 	makefile-clean-ott.png \

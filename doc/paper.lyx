@@ -1795,7 +1795,7 @@ status open
 \begin_layout Plain Layout
 \align center
 \begin_inset Graphics
-	filename pipeline-tools.png
+	filename paper-pipeline-tools.png
 	height 75pheight%
 
 \end_inset
@@ -1812,11 +1812,15 @@ Organization of the
 propinquity
 \emph default
  pipeline.
- Each pentagon labels a program (blue for otcetera-based tools and red for
- python scripts in the propinquity or peyotl repository) that performs the
- important operations in each step.
+ Each colored pentagon labels a program (blue for otcetera-based tools and
+ red for python scripts in the propinquity or peyotl repository) that performs
+ the important operations in each step; the number before the tool name
+ refers to the section in this paper that describes the operation.
  The output of each step corresponds to a subdirectory of the propinquity
  system which will hold the output artifacts for the step.
+ Ovals are resources that are required (OTT and Open Tree's phylesystem
+ repository).
+ White pentagons are user-controlled inputs.
 \end_layout
 
 \end_inset
