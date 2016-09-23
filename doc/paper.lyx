@@ -3939,15 +3939,19 @@ In order to annotate each node in the summary supertree, it is first necessary
 \begin_inset Formula $X_{1}$
 \end_inset
 
- and 
-\begin_inset Formula $X_{2}$
-\end_inset
-
- are the smallest numbers that can be chosen to designate 
+ is the numerically smallest OTT ID that is a descendant of 
 \begin_inset Formula $n$
 \end_inset
 
- as their MRCA.
+, and 
+\begin_inset Formula $X_{2}$
+\end_inset
+
+ is the next the smallest ID that can be chosen to designate 
+\begin_inset Formula $n$
+\end_inset
+
+ as the MRCA.
  Because new taxa added to OTT will be given higher OTT Ids, the use of
  the lowest numbered OTT Ids as designators increases the chance that a
  node label can be encountered in a subsequent version of the tree (though
@@ -5146,7 +5150,7 @@ conflicts_with
 \begin_inset Formula $x$
 \end_inset
 
- on the induce tree 
+ on the induced tree 
 \begin_inset Formula $\mathcal{\mathbb{S}}(i)$
 \end_inset
 
@@ -5199,8 +5203,7 @@ if
 \begin_inset Formula $x$
 \end_inset
 
- is along an internal path that contains without any node of out-degree
- 1, then node 
+ is along an internal path without any node of out-degree 1, then node 
 \begin_inset Formula $j$
 \end_inset
 
@@ -5331,9 +5334,17 @@ make html
 \begin_inset Quotes erd
 \end_inset
 
- target) can compose an index.html file for each directory created during
- the pipeline to explain the artifacts held in that directory and report
- summary statistics about the summarization run.
+ target) can compose an 
+\begin_inset Quotes eld
+\end_inset
+
+index.html
+\begin_inset Quotes erd
+\end_inset
+
+ file for each directory created during the pipeline to explain the artifacts
+ held in that directory and report summary statistics about the summarization
+ run.
 \end_layout
 
 \begin_layout Section
@@ -5368,12 +5379,12 @@ key "HinchliffEtAl2015"
  The number of displayed input splits increased from 35,518 (for version
  4) to 39,639; an 11.2% increase.
  The number of input splits that do not conflict with the summary tree,
- but are not incorporated drops from 2718 to 0.
- The number of input splits that conflict with the phylogeny drops from
+ but are not incorporated dropped from 2718 to 0.
+ The number of input splits that conflict with the phylogeny dropped from
  2760 to 1357, a decrease of 1357, or 49.2%.
  
 \begin_inset Note Comment
-status collapsed
+status open
 
 \begin_layout Plain Layout
 ARE THESE numbers for the same set of inputs? or v4 to v5 (the latter had
@@ -5601,7 +5612,7 @@ embedding
 \begin_inset Formula $y$
 \end_inset
 
- in an input tree with a set of descendants, 
+ in an input tree with a cluster of descendants, 
 \begin_inset Formula $\mathcal{C},$
 \end_inset
 
