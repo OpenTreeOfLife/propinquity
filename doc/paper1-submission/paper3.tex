@@ -1,8 +1,8 @@
-\documentclass[fleqn,10pt,lineno,english]{wlpeerj}
+\documentclass[fleqn,12pt,english]{wlpeerj}
 \usepackage[T1]{fontenc}
 %\usepackage[latin9]{inputenc}
 %\usepackage{geometry}
-\geometry{verbose,tmargin=2cm,bmargin=2cm,lmargin=2cm,rmargin=2cm}
+\geometry{verbose,tmargin=1in,bmargin=1in,lmargin=1in,rmargin=1in}
 %\usepackage{xcolor}
 %\usepackage{verbatim}
 \usepackage{float}
@@ -13,6 +13,8 @@
 \usepackage{natbib}
 
 \makeatletter
+
+%\def\fps@figure{ht}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%% LyX specific LaTeX commands.
 %% A simple dot to overcome graphicx limitations
@@ -53,10 +55,12 @@
 for millions of species}
 
 \author[1,2]{Benjamin D. Redelings}
-\author[1]{Mark T. Holder}
-\affil[1]{Department of Ecology and Evolutionary Biology, University of Kansas, Lawrence KS, US}
-\affil[2]{Department of Biology, Duke University, Durham NC, US}
-\corrauthor[1]{Mark T. Holder}{mtholder@ku.edu}
+\author[2,3,4]{Mark T. Holder}
+\affil[1]{Department of Biology, Duke University, Durham NC, US}
+\affil[2]{Department of Ecology and Evolutionary Biology, University of Kansas, Lawrence KS, US}
+\affil[3]{Biodiversity Institute, University of Kansas, Lawrence KS, US}
+\affil[4]{Heidelberg Institute for Theoretical Studies, Schloss-Wolfsbrunnenweg 35, 69118 Heidelberg, Germany}
+\corrauthor[2,3,4]{Mark T. Holder}{mtholder@ku.edu}
 
 % \keywords{Keyword1, Keyword2, Keyword3}
 
@@ -242,19 +246,19 @@ of inputs can result in one of three summary trees shown in panels
 (d-f). 
 
 \begin{figure}
-\subfloat[Input tree 1]{\includegraphics[scale=0.6]{Figures__toy_pairwise_compat__abc}
+\subfloat[Input tree 1]{\includegraphics[scale=0.57]{Figures__toy_pairwise_compat__abc}
 
-}\hfill{}\subfloat[Input tree 2]{\includegraphics[scale=0.6]{Figures__toy_pairwise_compat__acd}
+}\hfill{}\subfloat[Input tree 2]{\includegraphics[scale=0.57]{Figures__toy_pairwise_compat__acd}
 
-}\hfill{}\subfloat[Input tree 3]{\includegraphics[scale=0.6]{Figures__toy_pairwise_compat__bcd}
+}\hfill{}\subfloat[Input tree 3]{\includegraphics[scale=0.57]{Figures__toy_pairwise_compat__bcd}
 
 }
 
-\subfloat[Summary tree]{\includegraphics[scale=0.6]{Figures__toy_pairwise_compat__s12}
+\subfloat[Summary tree]{\includegraphics[scale=0.57]{Figures__toy_pairwise_compat__s12}
 
-}\hfill{}\subfloat[Summary tree]{\includegraphics[scale=0.6]{Figures__toy_pairwise_compat__s13}
+}\hfill{}\subfloat[Summary tree]{\includegraphics[scale=0.57]{Figures__toy_pairwise_compat__s13}
 
-}\hfill{}\subfloat[Summary tree]{\includegraphics[scale=0.6]{Figures__toy_pairwise_compat__s23}
+}\hfill{}\subfloat[Summary tree]{\includegraphics[scale=0.57]{Figures__toy_pairwise_compat__s23}
 
 }
 
@@ -639,17 +643,17 @@ do not contain phylogenetic information.}
 \label{fig:subproblems-example}
 \end{figure}
 \begin{figure}
-\subfloat[]{\includegraphics[scale=0.6]{Figures__uncontested_worsens_score__ab1c}
+\subfloat[]{\includegraphics[scale=0.57]{Figures__uncontested_worsens_score__ab1c}
 
-}\hfill{}\subfloat[]{\includegraphics[scale=0.6]{Figures__uncontested_worsens_score__acb2}
+}\hfill{}\subfloat[]{\includegraphics[scale=0.57]{Figures__uncontested_worsens_score__acb2}
 
-}\hfill{}\subfloat[]{\includegraphics[scale=0.6]{Figures__uncontested_worsens_score__tax}
+}\hfill{}\subfloat[]{\includegraphics[scale=0.57]{Figures__uncontested_worsens_score__tax}
 
 }
 
-\hfill{}\subfloat[]{\includegraphics[scale=0.6]{Figures__uncontested_worsens_score__opt}
+\hfill{}\subfloat[]{\includegraphics[scale=0.57]{Figures__uncontested_worsens_score__opt}
 
-}\hfill{}\subfloat[]{\includegraphics[scale=0.6]{Figures__uncontested_worsens_score__returned}
+}\hfill{}\subfloat[]{\includegraphics[scale=0.57]{Figures__uncontested_worsens_score__returned}
 
 }\hfill{}
 
@@ -716,9 +720,9 @@ shows the solutions that would be obtained by applying our modified
 version of the BUILD algorithm to the subproblems show in figure \ref{fig:subproblems-example}.
 
 \begin{figure}
-\hfill{}\subfloat[Solution to subproblem \emph{ABCD}]{\includegraphics[scale=0.45]{Figures__subproblem_solutions__ott14\lyxdot tre}
+\hfill{}\subfloat[Solution to subproblem \emph{ABCD}]{\includegraphics[scale=0.55]{Figures__subproblem_solutions__ott14\lyxdot tre}
 
-}\hfill{}\subfloat[Solution to subproblem \emph{root}]{\includegraphics[scale=0.45]{Figures__subproblem_solutions__ott17\lyxdot tre}
+}\hfill{}\subfloat[Solution to subproblem \emph{root}]{\includegraphics[scale=0.55]{Figures__subproblem_solutions__ott17\lyxdot tre}
 
 }\hfill{}
 
@@ -791,14 +795,14 @@ in the taxonomic tree.
 \subfloat[Taxonomy]{\begin{centering}
 \begin{minipage}[c][1\totalheight][t]{0.45\columnwidth}%
 \begin{center}
-\includegraphics[scale=0.4]{example3__cleaned_ott-labels\lyxdot tre}
+\includegraphics[scale=0.38]{example3__cleaned_ott-labels\lyxdot tre}
 \par\end{center}%
 \end{minipage}
 \par\end{centering}
 }\hfill{}\subfloat[Grafted solution]{\begin{centering}
 \begin{minipage}[c][1\totalheight][t]{0.45\columnwidth}%
 \begin{center}
-\includegraphics[scale=0.4]{example3__grafted_solution-labels\lyxdot tre}
+\includegraphics[scale=0.38]{example3__grafted_solution-labels\lyxdot tre}
 \par\end{center}%
 \end{minipage}
 \par\end{centering}
@@ -806,10 +810,10 @@ in the taxonomic tree.
 \par\end{centering}
 \begin{centering}
 \subfloat[Unpruned tree - broken taxa removed]{\begin{centering}
-\includegraphics[scale=0.4]{example3__unprune-old-labels\lyxdot tre}
+\includegraphics[scale=0.38]{example3__unprune-old-labels\lyxdot tre}
 \par\end{centering}
 }\hfill{}\subfloat[Unpruned tree with MRCA-attachment]{\begin{centering}
-\includegraphics[scale=0.4]{example3__unprune-new-labels2\lyxdot tre}
+\includegraphics[scale=0.38]{example3__unprune-new-labels2\lyxdot tre}
 \par\end{centering}
 }
 \par\end{centering}
@@ -875,7 +879,7 @@ rotation of the grafted solution tree.
 \bigskip{}
 
 \hfill{}\subfloat[JSON annotations relating edges of (c) to edges of (a)]{%
-\shadowbox{\begin{minipage}[t]{0.8\columnwidth}%
+\shadowbox{\begin{minipage}[t]{1.0\columnwidth}%
 \texttt{\{}
 
 \texttt{~~\textquotedbl{}nodes\textquotedbl{}: \{}
@@ -942,8 +946,6 @@ each internal node of $\protect\summaryTree$ would be supported by
 other inputs trees that are not shown here. }
 \end{figure}
 
-
-\paragraph{Annotations }
 
 To reveal the connections between the groupings found in the a summary
 supertree and the input trees, propinquity uses a few Python scripts
@@ -1053,8 +1055,7 @@ for Theoretical Studies for funding.
 
 \appendix
 
-\section{\label{sec:The-maximum-sum}The maximum sum displayed groups' weighted
-scores criterion}
+\section{The maximum sum displayed groups' weighted scores criterion}\label{sec:The-maximum-sum}
 
 Let $\mathcal{W}$ is a weighting function that maps any input tree's
 internal node to a non-negative number. If $I(\mathbb{S},i,j)$ is
