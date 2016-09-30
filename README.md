@@ -19,7 +19,7 @@ configuration settings (see below)
 There are 3 small scripts that let you accomplish some common tasks
 without modifying your environment. These scripts take two arguments: a
 configuration filepath and an output file path. They copy the configuration
-file into the correct spot in the outpu directory, and then trigger the
+file into the correct spot in the output directory, and then trigger the
 build operation with the appropriate output directory in the env.
 These scripts are:
   1.  `bin/build_at_dir.sh cfg out` to call the `bin/opentree_rebuild_from_latest.sh` script
