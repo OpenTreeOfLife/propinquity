@@ -65,21 +65,29 @@ for millions of species}
 % \keywords{Keyword1, Keyword2, Keyword3}
 
 \begin{abstract}
-We present a new supertree method and software implementation that
-enables rapid estimation of a summary tree on the scale of millions
-of leaves. This software pipeline is called \emph{``propinquity.''}
-It uses the dependency-tracking tool \emph{make} to direct the series
-of operations required to construct the tree. It relies heavily on
-\emph{``otcetera''} - a set of C++ tools to performs most of the
-steps of the pipeline. All of the components are free software and
-are available on GitHub. This pipeline is currently used by the Open
-Tree of Life project to produce all of the versions of project's ``synthetic
-tree'' starting at version 5. The propinquity-based pipeline improves
-on previous supertree construction methods because it produces no
-unsupported branches, and it avoids unnecessary polytomies. In addition
-to producing a tree, the pipeline writes an annotations file that
-reports which grouping in the input trees support each of the groups
-in the supertree.
+We present a new supertree method that enables rapid estimation of a
+summary tree on the scale of millions of leaves.  This supertree
+summarizes a collection of input phylogenies and an input taxonomy.
+We introduce formal requirements that such a supertree must satisfy in
+order to transparently and justifiably represent the input trees.   In
+addition to producing a tree, our method writes an annotations file
+that reports which grouping in the input trees support each of the
+groups in the supertree.
+
+We compare the performance of this new method to a previous supertree
+method on the inputs to the Open Tree of Life version 4, and find that
+the number of displayed input splits increases from 35,518 to 39,639 and the
+number of conflicting input splits decreases from 2760 to 1357.  The
+new supertree method also improves on the previous supertree
+construction method because it produces no unsupported branches, and
+it avoids unnecessary polytomies. 
+
+This pipeline is currently used by the Open Tree of Life project to
+produce all of the versions of project's ``synthetic tree'' starting
+at version 5.This software pipeline is called
+\emph{``propinquity.''}. It relies heavily on \emph{``otcetera''} - a
+set of C++ tools to perform most of the steps of the pipeline. All of
+the components are free software and are available on GitHub.
 \end{abstract}
 
 \begin{document}
