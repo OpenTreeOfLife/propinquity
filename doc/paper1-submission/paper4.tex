@@ -11,7 +11,7 @@
 \usepackage{amssymb}
 \usepackage{graphicx}
 \usepackage{natbib}
-
+\sloppy
 \makeatletter
 
 %\def\fps@figure{ht}
@@ -19,6 +19,8 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%% LyX specific LaTeX commands.
 %% A simple dot to overcome graphicx limitations
 \newcommand{\lyxdot}{.}
+\newcommand{\otl}{OTLv4}
+\newcommand{\otlprop}{OTLv4/propinquity}
 
 \floatstyle{ruled}
 \newfloat{algorithm}{tbp}{loa}
@@ -28,6 +30,14 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%% User specified LaTeX commands.
 \usepackage{algorithm,algpseudocode}
 \usepackage{lmodern}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks,
+    linkcolor={red!50!black},
+    citecolor={blue!50!black},
+    urlcolor={blue!80!black}
+}
 \definecolor{mylime}{RGB}{128,255,128}
 
 \@ifundefined{showcaptionsetup}{}{%
@@ -67,20 +77,25 @@ for millions of species}
 \begin{abstract}
 We present a new supertree method that enables rapid estimation of a
 summary tree on the scale of millions of leaves.  This supertree
-summarizes a collection of input phylogenies and an input taxonomy.
-We introduce formal requirements that such a supertree must satisfy in
-order to transparently and justifiably represent the input trees.   In
-addition to producing a tree, our method writes an annotations file
-that reports which grouping in the input trees support each of the
-groups in the supertree.
+method summarizes a collection of input phylogenies and an input taxonomy.
+We introduce formal goals and criteria for such a supertree to satisfy
+in order to transparently and justifiably represent the input
+trees. In addition to producing a supertree, our method computes
+annotations that describe which grouping in the input trees support
+and conflict with each group in the supertree. 
 
-We compare the performance of this new method to a previous supertree
-method on the inputs to the Open Tree of Life version 4, and find that
-the number of displayed input splits increases from 35,518 to 39,639 and the
-number of conflicting input splits decreases from 2760 to 1357.  The
-new supertree method also improves on the previous supertree
-construction method because it produces no unsupported branches, and
-it avoids unnecessary polytomies. 
+\medskip
+
+We compare our supertree construction method to a previously published
+supertree construction method by assessing their performance on input
+trees used to construct the Open Tree of Life version 4, and find that
+our method increases the number of displayed input splits from 35,518
+to 39,639 and decreases the number of conflicting input splits from
+2760 to 1357.  The new supertree method also improves on the previous
+supertree construction method in that it produces no unsupported
+branches and avoids unnecessary polytomies. 
+
+\medskip
 
 This pipeline is currently used by the Open Tree of Life project to
 produce all of the versions of project's ``synthetic tree'' starting
@@ -361,7 +376,7 @@ weights from the trees are so extreme that displaying one group from
 a highly ranked tree is preferred to displaying all of the groupings
 from lower ranked trees.
 
-\section{Description of the propinquity pipeline}
+\section{Description of the supertree method}
 
 \subsection{Preprocessing steps}
 
@@ -509,10 +524,8 @@ tree. Removing these tips produces a smaller input to the rest of
 the pipeline, which reduces running times. After producing the set
 of ``exemplified'' phylogenetic inputs, this tool exports a pruned
 down version of the taxonomy that only contains tips that are present
-in at least one phylogenetic input. In version 5.0 of the Open Tree
-of Life synthetic tree, this version of the taxonomic tree contained
-only 41,226 leaves (while the flag-cleaned version of OTT had 2,424,255
-leaves).
+in at least one phylogenetic input.
+
 \begin{figure}
 \subfloat[Tree 1]{\includegraphics[scale=0.4]{Figures__cleaned_phylo__ex_2@tree1\lyxdot tre}
 
@@ -617,19 +630,6 @@ tree) that contests a taxon to the corpus of input trees , then the
 next synthetic tree will no longer consider the taxon to be uncontested.
 Thus the procedure encourages curation of more phylogenetic inputs
 as a means of improving the summary tree. 
-
-In version 5.0 of the summary tree, this decomposition procedure produced
-5,545 subproblems, but only 1,586 of these were non-trivial to solve.
-If a subproblem contains only two tips it is trivial; 2,443 subproblems
-were trivial in this way. Similarly, if a subproblem contains only
-2 trees it is trivial to solve because the solution will simply be
-all of the groupings from the first tree combined with all of the
-groupings from the second tree that are compatible with the first
-tree; 2,838 subproblems were trivial in this way. The subproblem with
-the largest number of tips contained 953 tips. The largest subproblem,
-in terms of the number of input trees (including the taxonomic tree)
-that were relevant, had 18 trees. Without decomposition, the supertree
-problem would have had 512 input trees and 41,226 leaves.
 
 \begin{figure}
   \subfloat[Subproblem \emph{ABCD}]{\includegraphics[width=0.3\textwidth]{Figures__subproblems__14__1\lyxdot tre}%
@@ -1025,6 +1025,52 @@ each directory created during the pipeline to explain the artifacts
 held in that directory and report summary statistics about the summarization
 run.
 
+\section{Results}
+
+\subsection{Inputs}
+
+We seek to assess the performance of our new supertree method by
+comparing it to the supertree method of \cite{HinchliffEtAl2015}.  The
+method of \cite{HinchliffEtAl2015} was used to construct the Open Tree
+of Life v4 (\otl{}).  Therefore, in order to facilitate comparison, we 
+applied our method to same input trees and taxonomy used by
+\otl{}.  We used the same cleaning flags to trim the taxonomy and
+input trees.  We refer to the resulting supertree as \otlprop{} since it was
+constructed by applying the propinquity pipeline to the same inputs as
+\otl{}.
+The flag-cleaned version of OTT contained 2,424,255 leaves.  The
+\otl{} supertree was constructed from 482 phylogenetic inputs,
+containing a total of 45385 leaves, of which 41029 were unique.
+After flag-cleaning and exemplification by propinquity, these trees contained 40323
+unique tips. 
+
+\subsection{Subproblems}
+In the \otlprob{} summary tree, the decomposition procedure produced
+5,406 subproblems, but only 1,422 of these were non-trivial to solve.
+If a subproblem contains only two tips it is trivial; 2,362 subproblems
+were trivial in this way. Similarly, if a subproblem contains only
+2 trees it is trivial to solve because the solution will simply be
+all of the groupings from the first tree combined with all of the
+groupings from the second tree that are compatible with the first
+tree; 3,052 subproblems were trivial in this way. The subproblem with
+the largest number of tips contained 946 tips. The largest subproblem,
+in terms of the number of input trees (including the taxonomic tree)
+that were relevant, had 16 trees. Without decomposition, the supertree
+problem would have had 482 input trees and 41,226 leaves.
+
+
+\subsection{splits}
+We ran propinquity on the same input
+trees used to construct version Open Tree version 4. Unlike the version
+4 tree, the tree from propinquity contained no unsupported nodes or
+unnecessary polytomies. The number of displayed input splits increased
+from 35,518 (for version 4) to 39,639; an 11.2\% increase. The number
+of input splits that do not conflict with the summary tree, but are
+not incorporated dropped from 2718 to 0. The number of input splits
+that conflict with the phylogeny dropped from 2760 to 1357, a decrease
+of 1357, or 49.2\%. %
+
+
 \section{Conclusions}
 
 Here we have described the motivation and methodology used by the
@@ -1038,16 +1084,7 @@ from v5.0 to present) has decreased the computational time required
 to construct a supertree from several hours to about 8 minutes (after
 some preprocessing steps which only have to be performed when the
 input taxonomy changes). The amount of RAM required during tree construction
-has also decreased substantially. We ran propinquity on the same input
-trees used to construct version Open Tree version 4. Unlike the version
-4 tree, the tree from propinquity contained no unsupported nodes or
-unnecessary polytomies. The number of displayed input splits increased
-from 35,518 (for version 4) to 39,639; an 11.2\% increase. The number
-of input splits that do not conflict with the summary tree, but are
-not incorporated dropped from 2718 to 0. The number of input splits
-that conflict with the phylogeny dropped from 2760 to 1357, a decrease
-of 1357, or 49.2\%. %
-
+has also decreased substantially. 
 
 \section{Acknowledgements}
 
