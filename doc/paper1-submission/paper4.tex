@@ -1027,8 +1027,6 @@ run.
 
 \section{Results}
 
-\subsection{Inputs}
-
 We seek to assess the performance of our new supertree method by
 comparing it to the supertree method of \cite{HinchliffEtAl2015}.  The
 method of \cite{HinchliffEtAl2015} was used to construct the Open Tree
@@ -1038,6 +1036,9 @@ applied our method to same input trees and taxonomy used by
 input trees.  We refer to the resulting supertree as \otlprop{} since it was
 constructed by applying the propinquity pipeline to the same inputs as
 \otl{}.
+
+\subsection{Inputs}
+
 The flag-cleaned version of OTT contained 2,424,255 leaves.  The
 \otl{} supertree was constructed from 482 phylogenetic inputs,
 containing a total of 45385 leaves, of which 41029 were unique.
@@ -1059,7 +1060,38 @@ that were relevant, had 16 trees. Without decomposition, the supertree
 problem would have had 482 input trees and 41,226 leaves.
 
 
+% table
+
+% outputs - representation of input trees
+% outputs - annotations
+
+% conflicts in v4: 2760
+% conflicts in v4propr: 1357
+
+% displayed in v4: 35,518
+% displayed in v4propr: 39,639
+
+
+% # of input splits represented by v4, but not v4prop
+% # of input splits represented by v4prop, but not v4
+% # of input splits represented by v4 and v4prop
+
 \subsection{splits}
+
+\begin{tabular}{lcccccc}
+ & supported\_by & partial\_path\_of & terminal & conflicts\_with & resolves & resolved\_by\tabularnewline
+\hline 
+OTLv4 & 34,595 & 923 & 45,385 & 2760 & 473 & 2718\tabularnewline
+\hline 
+\textendash{} only & 745 & 54 & 0 & 2055 & 0 & 2718\tabularnewline
+\hline 
+OTLv4/propinquity & 38,521 & 1,118 & 45,385 & 1,357 & 515 & 0\tabularnewline
+\hline 
+\textendash{} only & 4,671 & 249 & 0 & 652 & 42 & 0\tabularnewline
+\hline 
+\end{tabular}
+
+
 We ran propinquity on the same input
 trees used to construct version Open Tree version 4. Unlike the version
 4 tree, the tree from propinquity contained no unsupported nodes or
