@@ -1031,9 +1031,9 @@ We seek to assess the performance of our new supertree method by
 comparing it to the supertree method of \cite{HinchliffEtAl2015}.  The
 method of \cite{HinchliffEtAl2015} was used to construct the Open Tree
 of Life v4 (\otl{}).  Therefore, in order to facilitate comparison, we 
-applied our method to same input trees and taxonomy used by
-\otl{}.  We used the same cleaning flags to trim the taxonomy and
-input trees.  We refer to the resulting supertree as \otlprop{} since it was
+applied our method to the same input trees and taxonomy used by
+\otl{}.  
+We refer to the resulting supertree as \otlprop{} since it was
 constructed by applying the propinquity pipeline to the same inputs as
 \otl{}.
 
@@ -1043,7 +1043,9 @@ The flag-cleaned version of OTT contained 2,424,255 leaves.  The
 \otl{} supertree was constructed from 482 phylogenetic inputs,
 containing a total of 45385 leaves, of which 41029 were unique.
 After flag-cleaning and exemplification by propinquity, these trees contained 40323
-unique tips. 
+unique tips. We used the same cleaning flags to trim the taxonomy and
+input trees when constructing \otlprop{}, so \otlprop{} contains the
+same number of leaves.
 
 \subsection{Subproblems}
 In the \otlprop{} summary tree, the decomposition procedure produced
@@ -1069,28 +1071,58 @@ problem would have had 482 input trees and 41,226 leaves.
 % conflicts in v4propr: 1357
 
 % displayed in v4: 35,518
-% displayed in v4propr: 39,639
+% displayed in v4prop: 39,639
 
 
 % # of input splits represented by v4, but not v4prop
 % # of input splits represented by v4prop, but not v4
 % # of input splits represented by v4 and v4prop
 
-\subsection{splits}
+\subsection{Representing input splits}
 
+\begin{table}
+
+\caption{Representation of input splits in the \otl{} tree and the \otlprop{} tree.}
+\resizebox{\textwidth}{!}{%
 \begin{tabular}{lcccccc}
  & supported\_by & partial\_path\_of & terminal & conflicts\_with & resolves & resolved\_by\tabularnewline
 \hline 
-OTLv4 & 34,595 & 923 & 45,385 & 2760 & 473 & 2718\tabularnewline
+\otl{} & 34,595 & 923 & 45,385 & 2760 & 473 & 2718\tabularnewline
 \hline 
-\textendash{} only & 745 & 54 & 0 & 2055 & 0 & 2718\tabularnewline
+\otl{} only & 745 & 54 & 0 & 2055 & 0 & 2718\tabularnewline
 \hline 
-OTLv4/propinquity & 38,521 & 1,118 & 45,385 & 1,357 & 515 & 0\tabularnewline
+\otlprop{} & 38,521 & 1,118 & 45,385 & 1,357 & 515 & 0\tabularnewline
 \hline 
-\textendash{} only & 4,671 & 249 & 0 & 652 & 42 & 0\tabularnewline
+\otlprop{} only & 4,671 & 249 & 0 & 652 & 42 & 0\tabularnewline
 \hline 
-\end{tabular}
+\end{tabular}}
 
+
+\end{table}
+
+\begin{table}
+
+\caption{Representation of taxonomy splits in the \otl{} tree and the \otlprop{} tree.}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{lcccccc}
+ & supported\_by & partial\_path\_of & terminal & conflicts\_with & resolves & resolved\_by\tabularnewline
+\hline 
+\otl{} & 125,384 & 0 & 2,424,255 & 1998 & 3676 & 4\tabularnewline
+\hline 
+\otl{} only & 296 & 0 & 0 & 19 & 17 & 4\tabularnewline
+\hline 
+\otlprop{} & 125,107 & 0 & 2,424,255 & 2,279 & 3,883 & 0\tabularnewline
+\hline 
+\otlprop{} only & 19 & 0 & 0 & 300 & 224 & 0\tabularnewline
+\hline 
+\end{tabular}}
+
+
+\end{table}
+
+
+We performed an annotation of the \otl{} tree to compare the ability
+of the \otl{} tree and the \otlprop{} to represent splits in the input trees.
 
 We ran propinquity on the same input
 trees used to construct version Open Tree version 4. Unlike the version
