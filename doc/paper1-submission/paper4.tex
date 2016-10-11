@@ -1089,15 +1089,15 @@ problem would have had 482 input trees and 41,226 leaves.
 \caption{Representation of input splits in the \otl{} tree and the \otlprop{} tree.}
 \resizebox{\textwidth}{!}{%
 \begin{tabular}{lcccccc}
- & \supportedby{} & \partialpathof{} & \terminal{} & \conflictswith{} & \resolves{} & \resolvedby{}\tabularnewline
+ & \supportedby{} & \partialpathof{} & \terminal{} & \conflictswith{} & \resolvedby{} & \resolves{}\tabularnewline
 \hline 
-\otl{} & 34,595 & 923 & 45,385 & 2760 & 473 & 2718\tabularnewline
+\otl{} & 34,595 & 923 & 45,385 & 2,760 & 2,718 & 473\tabularnewline
 \hline 
-\otl{} only & 745 & 54 & 0 & 2055 & 0 & 2718\tabularnewline
+\otl{} only & 745 & 54 & 0 & 2,055 & 2,718 & 0\tabularnewline
 \hline 
-\otlprop{} & 38,521 & 1,118 & 45,385 & 1,357 & 515 & 0\tabularnewline
+\otlprop{} & 38,521 & 1,118 & 45,385 & 1,357 & 0 & 515\tabularnewline
 \hline 
-\otlprop{} only & 4,671 & 249 & 0 & 652 & 42 & 0\tabularnewline
+\otlprop{} only & 4,671 & 249 & 0 & 652 & 0 & 42\tabularnewline
 \hline
 \label{tab:representinputs}
 \end{tabular}}
@@ -1110,15 +1110,15 @@ problem would have had 482 input trees and 41,226 leaves.
 \caption{Representation of taxonomy splits in the \otl{} tree and the \otlprop{} tree.}
 \resizebox{\textwidth}{!}{%
 \begin{tabular}{lcccccc}
- & \supportedby{} & \partialpathof{} & \terminal{} & \conflictswith{} & \resolves{} & \resolvedby{}\tabularnewline
+ & \supportedby{} & \partialpathof{} & \terminal{} & \conflictswith{} & \resolvedby{} & \resolves{}\tabularnewline
 \hline 
-\otl{} & 125,384 & 0 & 2,424,255 & 1998 & 3676 & 4\tabularnewline
+\otl{} & 125,384 & 0 & 2,424,255 & 1998 & 4 & 3676\tabularnewline
 \hline 
-\otl{} only & 296 & 0 & 0 & 19 & 17 & 4\tabularnewline
+\otl{} only & 296 & 0 & 0 & 19 & 4 & 17\tabularnewline
 \hline 
-\otlprop{} & 125,107 & 0 & 2,424,255 & 2,279 & 3,883 & 0\tabularnewline
+\otlprop{} & 125,107 & 0 & 2,424,255 & 2,279 & 0 & 3,883\tabularnewline
 \hline 
-\otlprop{} only & 19 & 0 & 0 & 300 & 224 & 0\tabularnewline
+\otlprop{} only & 19 & 0 & 0 & 300 & 0 & 224\tabularnewline
 \hline 
 \label{tab:representtaxonomy}
 \end{tabular}}
@@ -1131,41 +1131,64 @@ problem would have had 482 input trees and 41,226 leaves.
 We performed an annotation of both the \otl{} tree and the \otlprop{}
 tree as described in section \ref{sec:Annotation} to assess the
 ability of our new supertree method to represent splits from input
-phylogenies (Table \ref{tab:representinputs}).  This annotation
-classifies input phylogeny splits according to how they relate to a
-summmary tree, so that each input edge falls in one of \supportedby{},
-\partialpathof{}, \terminal{}, \conflictswith{}, or \resolvedby{}.
+phylogenies.  Table \ref{tab:representinputs} classifies the input
+phylogeny splits according to how they relate to a summmary tree, so
+that each input edge falls in one of \supportedby{}, \partialpathof{},
+\terminal{}, \conflictswith{}, or \resolvedby{}. For example, the
+numbers in the \conflictswith{} column indicate the number of input
+splits $j$ with at least one summary edge $x$ such that the relation
+``$x$ \conflictswith{} $j$'' holds.  The total number of non-terminal
+input phylogeny splits considered thus 40996.
 
-The number of displayed input splits (supported\_by +
-partial\_path\_of) increased from 35,518 (for version 4) to 39,639; an
-11.2\% increase. The \otlprop{} tree displays 4920 input splits that
-are not displayed by the \otl{} tree, but does not display 799 input
-splits that are displayed by the \otl{} tree. 
-
-Unlike the version 4 tree, the tree from propinquity contained no
-unsupported nodes or unnecessary polytomies. The number of input
+The number of displayed input splits (\supportedby{}
++ \partialpathof{}) increased from 35,518 (for \otl{}) to 39,639 (for \otlprop{});
+an 11.2\% increase. When examining which splits are displayed, we find
+that the \otlprop{} tree displays 4920 input splits that
+are not displayed by the \otl{} tree, whereas the \otl{} tree displays
+only 799 input splits that are not displayed by the \otlprop{} tree.  The number of input
+splits that conflict with the summary (conflicts\_with) dropped from
+2760 to 1357, a decrease of 1357, or 49.2\%.  In accordance with the
+goal of not containing unnecessary polytomies, the number of input
 splits that do not conflict with the summary tree, but are not
-incorporated (resolved\_by) dropped from 2718 to 0.
+incorporated (resolved\_by) dropped from 2718 to 0.  We also find that
+the number of polytomies in input phylogenies that are resolved by the
+summary tree increases from 473 for \otl{} to 515 for \otlprop{}.
 
-The number of input splits that conflict with the summary
-(conflicts\_with) dropped from 2760 to 1357, a decrease of 1357, or
-49.2\%. 
+We also performed an annotation of the \otl{} tree and the \otlprop{}
+tree to assess the degree to which these trees represent taxonomy
+splits (Table \ref{tab:representtaxonomy}).  The \otlprop{} tree
+conflicts with 281 more taxonomy splits than the \otl{} tree.  Since
+the taxonomy is the lowest ranked input tree, this increased conflict
+with the taxonomy is an expected result of incorporating more splits
+from input phylogenies.  
 
 
 \section{Conclusions}
 
-Here we have described the motivation and methodology used by the
-propinquity tool that is currently used by the Open Tree of Life project
-to build its summary tree. A modified version of the treemachine software
-which built the summary tree described in the \citet{HinchliffEtAl2015}
-paper is used by the project to serve the tree produced by propinquity
-via Open Tree of Life APIs. The migration of summary tree construction
-from treemachine (used for version 4) to propinquity (for all versions
-from v5.0 to present) has decreased the computational time required
-to construct a supertree from several hours to about 8 minutes (after
-some preprocessing steps which only have to be performed when the
-input taxonomy changes). The amount of RAM required during tree construction
-has also decreased substantially. 
+Here we have described the motivation and methodology used by our new
+supertree method that is currently used by the Open Tree of Life
+project to build its summary tree.  Our new method represented 11\%
+more input phylogeny splits with 49\% less conflict compared to the
+Open Tree of Life version 4 summary tree when applied to the same inputs.
+Unless the previous method \citep{HinchliffEtAl2015}, our new method
+is guaranteed to incorporate input splits that do not conflict with
+the summary tree. The method is implemented in the Open Source
+software package propinquity.  A modified version of the treemachine
+software which built the summary tree described in the
+\citet{HinchliffEtAl2015} paper is used by the project to serve the
+tree produced by propinquity via Open Tree of Life APIs. 
+
+The migration of summary tree construction from treemachine (used for
+version 4) to propinquity (for all versions from v5.0 to present) has
+increased the pace of synthesis tree releases from the Open Tree of
+Life project.  This is partly because the newly available annotations
+feature has made it possible to identify which input trees are
+responsible for taxa being included or excluded from the summary tree.
+Additionally, the new propinquity software pipeline has decreased the decreased
+the computational time required to construct a supertree from several
+hours to about 8 minutes (after some preprocessing steps which only
+have to be performed when the input taxonomy changes).  The amount of
+RAM required during tree construction has also decreased substantially. 
 
 \section{Acknowledgements}
 
