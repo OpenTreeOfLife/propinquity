@@ -21,6 +21,12 @@
 \newcommand{\lyxdot}{.}
 \newcommand{\otl}{OTLv4}
 \newcommand{\otlprop}{OTLv4$^\prime$}
+\newcommand{\supportedby}{\texttt{supported\_by}}
+\newcommand{\partialpathof}{\texttt{partial\_path\_of}}
+\newcommand{\terminal}{\texttt{terminal}}
+\newcommand{\conflictswith}{\texttt{conflicts\_with}}
+\newcommand{\resolves}{\texttt{resolves}}
+\newcommand{\resolvedby}{\texttt{resolved\_by}}
 
 \floatstyle{ruled}
 \newfloat{algorithm}{tbp}{loa}
@@ -862,7 +868,7 @@ of the tree (though the taxonomic content may change). The deterministic
 choice of designators also makes the labeling insensitive to branch
 rotation of the grafted solution tree.
 
-\subsubsection{Annotation}
+\subsubsection{Annotation}\label{sec:Annotation}
 
 \begin{figure}
 \subfloat[Input tree $T_{1}$ named ``tree1'']{%
@@ -959,18 +965,18 @@ To reveal the connections between the groupings found in the a summary
 supertree and the input trees, propinquity uses a few Python scripts
 and the \texttt{otc-annotate-synth} tool from otcetera to create an
 annotations file describing the pipeline used and the connections
-between phylogenetic information in the inputs and the summary. The
+between phylogenetic information in the inputs and the summary.  The
 JSON file produced by \texttt{otc-annotate-synth} encodes a ``nodes''
 property that holds a mapping between a node name for the summary
 tree (using the naming convention described in the previous section)
-and a node provenance object categorizes the relationship between
+and a node provenance object that categorizes the relationship between
 the node and the inputs. The node provenance object for node $x$
 uses several properties to categorize the relationship between the
 node and the inputs; each property in the node provenance object maps
 to a structure storing the tree ID and node IDs for the input tree
 nodes. 
 
-Conceptually, this annotation operation in equivalent to considering
+Conceptually, this annotation operation is equivalent to considering
 every node $j$ in each input tree $i$ and the summary tree node
 $x$. Because the vast majority of nodes in the input studies will
 be compatible but not directly relevant to node $x$ we do not list
@@ -983,7 +989,7 @@ parts of the summary tree. The only input nodes listed for node $x$
 are with rooted taxon bipartitions which conflict with, are displayed
 by, or are resolved by the the rooted taxonomic bipartition associated
 with node $x$. All input nodes that cannot be displayed by any supertree
-that contains $x$ are stored in a ``conflicts\_with'' property
+that contains $x$ are stored in a ``\conflictswith{}'' property
 of the node provenance object. If node $j$ of $T_{i}$ is displayed
 by the summary tree and $x$ is part of the path of $\mathcal{\mathbb{S}}(i)$
 that displays the split between descendants of $j$ and other taxa,
@@ -991,13 +997,13 @@ then a reference to the node $j$ will be in the node provenance object.
 The exact categorization of this annotation will depend on the configuration
 of node $x$ on the induced tree $\mathcal{\mathbb{S}}(i)$:
 \begin{itemize}
-\item if $x$ is a terminal path in the induced tree then node $j$ will
-be listed in the ``terminal'' property;
+\item if $x$ is on a terminal path in the induced tree then node $j$ will
+be listed in the ``\terminal{}'' property;
 \item if $x$ is along an internal path that contains some nodes with out-degree
-equal to 1, then node $j$ will be listed in the ``partial\_path\_of''
+equal to 1, then node $j$ will be listed in the ``\partialpathof{}''
 property; and
 \item if $x$ is along an internal path without any node of out-degree 1,
-then node $j$ will be listed in the ``supported\_by'' property,
+then node $j$ will be listed in the ``\supportedby{}'' property,
 because node $j$ supports the existence of grouping $x$ in the sense
 that collapsing the edge that separates $x$ from its parent would
 cause the summary tree to no longer display node $j$.
@@ -1006,13 +1012,13 @@ These three relationships are illustrated in Figure \ref{fig:displayed-annotatio
 Finally, if $T_{i}$ does not display $x$ from $\mathcal{\mathbb{S}}(i)$,
 but there exists an unresolved node $j$ in $T_{i}$ which could be
 resolved such that the tree would then display $x$, then a reference
-to node $j$ will be listed in the ``resolves'' property of node
+to node $j$ will be listed in the ``\resolves{}'' property of node
 $x$. 
 
 The otcetera annotation tool can also detect cases in which including
 information from node $j$ in $T_{i}$ could further resolve a polytomy
 $x$ in the summary tree; such a case would be annotated using the
-``resolved\_by'' property of $x$. However, because of our goal
+``\resolvedby{}'' property of $x$. However, because of our goal
 of excluding unnecessary polytomies, none of the nodes in propinquity's
 summary tree will use this annotation when they are annotated with
 the set of input trees.
@@ -1078,14 +1084,12 @@ problem would have had 482 input trees and 41,226 leaves.
 % # of input splits represented by v4prop, but not v4
 % # of input splits represented by v4 and v4prop
 
-\subsection{Representing input splits}
-
 \begin{table}
 
 \caption{Representation of input splits in the \otl{} tree and the \otlprop{} tree.}
 \resizebox{\textwidth}{!}{%
 \begin{tabular}{lcccccc}
- & supported\_by & partial\_path\_of & terminal & conflicts\_with & resolves & resolved\_by\tabularnewline
+ & \supportedby{} & \partialpathof{} & \terminal{} & \conflictswith{} & \resolves{} & \resolvedby{}\tabularnewline
 \hline 
 \otl{} & 34,595 & 923 & 45,385 & 2760 & 473 & 2718\tabularnewline
 \hline 
@@ -1094,7 +1098,8 @@ problem would have had 482 input trees and 41,226 leaves.
 \otlprop{} & 38,521 & 1,118 & 45,385 & 1,357 & 515 & 0\tabularnewline
 \hline 
 \otlprop{} only & 4,671 & 249 & 0 & 652 & 42 & 0\tabularnewline
-\hline 
+\hline
+\label{tab:representinputs}
 \end{tabular}}
 
 
@@ -1105,7 +1110,7 @@ problem would have had 482 input trees and 41,226 leaves.
 \caption{Representation of taxonomy splits in the \otl{} tree and the \otlprop{} tree.}
 \resizebox{\textwidth}{!}{%
 \begin{tabular}{lcccccc}
- & supported\_by & partial\_path\_of & terminal & conflicts\_with & resolves & resolved\_by\tabularnewline
+ & \supportedby{} & \partialpathof{} & \terminal{} & \conflictswith{} & \resolves{} & \resolvedby{}\tabularnewline
 \hline 
 \otl{} & 125,384 & 0 & 2,424,255 & 1998 & 3676 & 4\tabularnewline
 \hline 
@@ -1115,24 +1120,36 @@ problem would have had 482 input trees and 41,226 leaves.
 \hline 
 \otlprop{} only & 19 & 0 & 0 & 300 & 224 & 0\tabularnewline
 \hline 
+\label{tab:representtaxonomy}
 \end{tabular}}
 
 
 \end{table}
 
+\subsection{Representing input splits}
 
-We performed an annotation of the \otl{} tree to compare the ability
-of the \otl{} tree and the \otlprop{} to represent splits in the input trees.
+We performed an annotation of both the \otl{} tree and the \otlprop{}
+tree as described in section \ref{sec:Annotation} to assess the
+ability of our new supertree method to represent splits from input
+phylogenies (Table \ref{tab:representinputs}).  This annotation
+classifies input phylogeny splits according to how they relate to a
+summmary tree, so that each input edge falls in one of \supportedby{},
+\partialpathof{}, \terminal{}, \conflictswith{}, or \resolvedby{}.
 
-We ran propinquity on the same input
-trees used to construct version Open Tree version 4. Unlike the version
-4 tree, the tree from propinquity contained no unsupported nodes or
-unnecessary polytomies. The number of displayed input splits increased
-from 35,518 (for version 4) to 39,639; an 11.2\% increase. The number
-of input splits that do not conflict with the summary tree, but are
-not incorporated dropped from 2718 to 0. The number of input splits
-that conflict with the phylogeny dropped from 2760 to 1357, a decrease
-of 1357, or 49.2\%. %
+The number of displayed input splits (supported\_by +
+partial\_path\_of) increased from 35,518 (for version 4) to 39,639; an
+11.2\% increase. The \otlprop{} tree displays 4920 input splits that
+are not displayed by the \otl{} tree, but does not display 799 input
+splits that are displayed by the \otl{} tree. 
+
+Unlike the version 4 tree, the tree from propinquity contained no
+unsupported nodes or unnecessary polytomies. The number of input
+splits that do not conflict with the summary tree, but are not
+incorporated (resolved\_by) dropped from 2718 to 0.
+
+The number of input splits that conflict with the summary
+(conflicts\_with) dropped from 2760 to 1357, a decrease of 1357, or
+49.2\%. 
 
 
 \section{Conclusions}
