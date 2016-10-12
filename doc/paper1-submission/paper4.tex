@@ -377,7 +377,7 @@ a \emph{unique} optimum. The pipeline takes a greedy approach to producing
 a summary tree by attempting to add groupings from the trees in order
 of the trees ranking. This can be viewed as a greedy solution to the
 problem of finding the tree with the maximum sum of displayed groups'
-weighted scores criterion (described in the appendix A) where the
+weighted scores criterion (MSDGWS, described in the appendix A) where the
 weights from the trees are so extreme that displaying one group from
 a highly ranked tree is preferred to displaying all of the groupings
 from lower ranked trees.
@@ -570,7 +570,7 @@ After the preprocessing steps, the inputs have been converted to a
 set of rooted phylogenetic estimates in which each leaf is mapped
 to a terminal taxon in the exemplified taxonomic tree. The goal of
 the remainder of the pipeline is to construct a tree that maximizes
-the sum displayed groups' weighted scores criterion. This is accomplished
+the sum of displayed groups' weighted scores criterion. This is accomplished
 in four steps: (1) dividing the full problem into subproblems based
 on uncontested taxa, (2) constructing a summary solution for each
 subproblem by greedily creating a maximally-sized list of groupings
@@ -583,7 +583,7 @@ tree.
 
 For the sake of efficiency, propinquity uses a divide-and-conquer
 approach to construct the supertree. Subproblems are identified by
-searching through the taxonomy tree to find any taxa are not contested
+searching through the taxonomy tree to find any taxa that are not contested
 by any single input tree. Here we say that input tree $T_{i}$ contests
 taxon $x$ in the pruned taxonomy, if $x$ is not monophyletic in
 any resolution of tree $T_{i}$. Thus, polytomies in an input tree
@@ -731,7 +731,7 @@ attempt to break ties in a way that preserves some partial information
 from conflicting splits by attaching taxa from conflicting splits
 at their common ancestor. Figure \ref{fig:subproblem-solutions.}
 shows the solutions that would be obtained by applying our modified
-version of the BUILD algorithm to the subproblems show in figure \ref{fig:subproblems-example}.
+version of the BUILD algorithm to the subproblems shown in figure \ref{fig:subproblems-example}.
 
 \begin{figure}
 \hfill{}\subfloat[Solution to subproblem \emph{ABCD}]{\includegraphics[scale=0.55]{Figures__subproblem_solutions__ott14\lyxdot tre}
@@ -778,7 +778,7 @@ However, a taxon may be incompatible with the grafted solution; we
 refer to such taxa as ``broken taxa.'' If a broken taxon contains
 some unsampled children, it is not clear where these unsampled children
 should be attached to the grafted solution. One approach would be
-to mimic the application of apply Algorithm \ref{alg:ConsistentSplitsFromRankedList}
+to mimic the application of Algorithm \ref{alg:ConsistentSplitsFromRankedList}
 to the full (unpruned) taxonomic tree. This would be equivalent to
 collapsing each edge in the taxonomy that attaches a broken taxon
 to its parent. The unsampled children of broken taxa would attach
@@ -836,8 +836,8 @@ Taxa G and R in the taxonomy (a) are broken because they conflict
 with the grafted solution (b). Removing these broken taxa from the
 taxonomy before unpruning leads to taxa R4, R5, and R6 being attached
 directly at taxon N, as in tree (c). In tree (d), the children of
-the broken taxon R and instead attached at the MRCA of R1, R2, and
-R3.}
+the broken taxon R are instead attached at the MRCA of R1, R2, and
+R3. Our method follows the second approach.}
 \end{figure}
 
 \begin{figure}
@@ -855,7 +855,7 @@ In order to annotate each node in the summary supertree, it is first
 necessary that each node have a unique identifier. Nodes whose include
 group correspond exactly to the include group of a node in the taxonomy
 are given the same identifier as the corresponding taxonomy node.
-These identifier are of the form $ottX$ where $X$ is an integer
+These identifiers are of the form $ottX$ where $X$ is an integer
 OTT id. We generate a label of the form $mrcaottX_{1}ottX_{2}$ for
 an non-taxonomic node $n$ where $X_{1}$ and $X_{2}$ are the OTT
 ids for two leaves, $n$ is the MRCA of these leaves, and $X_{1}$
@@ -1227,7 +1227,7 @@ The input is the a ranked list of input trees and comprehensive taxonomy.
 
 \subsection{Creation of multigraph of the taxonomy with embedded trees}
 
-The tool creates a multigraph by starting with a graph is isomorphic
+The tool creates a multigraph by starting with a graph isomorphic
 to the taxonomic tree. The nodes and edges created in this step will
 be referred to as the ``taxonomic graph.'' Next, we add nodes and
 edges to that graph in a procedure that we refer to as ``embedding''
@@ -1270,7 +1270,7 @@ for tree $i$. These are the set of embedding edges that have $x$
 as a daughter and have a parent node that is not $x$ (ergo a parent
 node that is taxonomically higher than $x$). If there are more than
 one parent nodes in this set of exiting embedding edges, then tree
-$i$ contests that taxon. If there is only parent node, then the all
+$i$ contests that taxon. If there is only one parent node, then the all
 of the constituent taxa belonging to this taxon that are present in
 tree $i$ have one parent that is more inclusive; this means that
 the input tree does not contest monophyly of the taxon.
