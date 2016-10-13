@@ -97,7 +97,7 @@ supertree construction method by assessing their performance on input
 trees used to construct the Open Tree of Life version 4, and find that
 our method increases the number of displayed input splits from 35,518
 to 39,639 and decreases the number of conflicting input splits from
-2760 to 1357.  The new supertree method also improves on the previous
+2,760 to 1,357.  The new supertree method also improves on the previous
 supertree construction method in that it produces no unsupported
 branches and avoids unnecessary polytomies. 
 
@@ -179,7 +179,7 @@ $T_{i}$ if edge $j$ either is not included in the induced tree $\summaryTree(i)$
 or none of the edges in $T_{i}$ are in conflict with edge $j$ in
 the induced tree. 
 
-We can consider whether or not an node in an input tree is displayed
+We can consider whether or not a node in an input tree is displayed
 by $\summaryTree$. For any such node $j$ there is a set of taxa
 that are mapped to the tips that descend from the node. This set of
 taxa is the ``cluster'' of taxa corresponding to node $j$; it can
@@ -193,9 +193,9 @@ edge $j$ if the summary tree displays the child node of edge $j$.
 Operationally, we can find the most recent common ancestor (MRCA)
 node of $\mathcal{L}(i,j)$ in $\summaryTree$; the summary tree displays
 $j$ if and only if that MRCA node is not an ancestor of any member
-of the exclude set of $j$. We say that edge $k$ of the summary tree
+of the exclude set of $j$. We say that node $k$ of the summary tree
 is \emph{supported by} node $j$ in $T_{i}$ if the summary tree displays
-node $j$, but if we contracted edge $k$ then the modified summary
+node $j$, but if we contracted edge that separates $k$ from its parent then the modified summary
 tree would no longer display node $j$. 
 
 Note that stating that a node in the summary tree is supported by
@@ -328,7 +328,7 @@ tree the lowest ranked tree. In our current formulation, the taxonomy
 tree is also unique in that the taxonomy is the only source of taxonomic
 names. Each node in the taxonomy tree corresponds to a named group.
 Taxonomic groups may have the same name, but each node in the taxonomy
-tree is identified by a unique number (its OTT Id). Taxonomic groups
+tree is identified by a unique number (its OTT ID). Taxonomic groups
 are identified in the summary supertree by finding a branch (or ``node'')
 that has exactly the same include|exclude relationship. The taxonomy
 supertree can meaningfully possess degree-two nodes. Although these
@@ -346,10 +346,10 @@ by showing that the input edge conflicts with some edge of the summary
 tree. Note, that the requirement to not display unsupported groups
 leads to some ``necessary'' polytomies. For example any resolution
 of the polytomy shown in figure (\ref{fig:pairwisecompat}e) would
-continue to display the same two input groups, but the additional
+continue to display the same two input groups. However, the additional
 grouping would be unsupported, because the unresolved tree already
-displays the two input groups. Thus, the additional group would be
-unsupported and the unresolved tree would be preferred by our criterion.
+displays both input groups. Thus, the 
+unresolved tree would be preferred by our criterion.
 However, collapsing either internal edge of the tree shown in figure
 (\ref{fig:pairwisecompat}d) would result in a tree which displays
 only one input grouping. This tree would contain an unnecessary polytomy,
@@ -377,7 +377,7 @@ a \emph{unique} optimum. The pipeline takes a greedy approach to producing
 a summary tree by attempting to add groupings from the trees in order
 of the trees ranking. This can be viewed as a greedy solution to the
 problem of finding the tree with the maximum sum of displayed groups'
-weighted scores criterion (described in the appendix A) where the
+weighted scores criterion (MSDGWS, described in the appendix A) where the
 weights from the trees are so extreme that displaying one group from
 a highly ranked tree is preferred to displaying all of the groupings
 from lower ranked trees.
@@ -427,16 +427,16 @@ the NCBI refers to as ``unplaced'' are assigned an ``unplaced''
 flag) or can arise because of some form of conflict during taxonomy
 construction (for example, if two taxonomies disagree on the name
 for a taxon, then the taxon can be merged and the name will be retained
-without any descendants; this name will have an OTT Id, but will be
+without any descendants; this name will have an OTT ID, but will be
 flagged as ``barren''). Propinquity prunes the OTT down to a more
 reliable taxonomy by pruning off parts of the tree that are flagged
 with suspicious flags. The set of flags that lead to a subtree of
 the taxonomy being pruned is under the control of the user (the set
 of flags used by the Open Tree of Life project can be found in the
 \texttt{config.opentree.synth} file in the propinquity repository).
-For the purpose of the rest of the pipeline, an OTT Id that has been
+For the purpose of the rest of the pipeline, an OTT ID that has been
 pruned from the taxonomy will be treated in the same way as invalid
-OTT Id. The output of this step is stored in propinquity's \texttt{cleaned\_ott}
+OTT ID. The output of this step is stored in propinquity's \texttt{cleaned\_ott}
 subdirectory; this operation only needs to be performed when the OTT
 or the pruning flags change.
 
@@ -492,8 +492,8 @@ steps in the supertree would interpret the clade as a claim of monophyly
 for the taxon. The input tree may not have tested monophyly of the
 clade, so this interpretation is unwarranted. We avoid it by attaching
 exemplar taxa as child nodes of the higher taxonomic tip but then
-collapsing the edge between the node that connected the higher taxon
-to its parent. Thus, if $A$ is a non-terminal taxon containing terminal
+collapsing the edge between the former tip node and
+its parent. Thus, if $A$ is a non-terminal taxon containing terminal
 descendants $a_{1}$ and $a_{2}$ and $B$ is a non-terminal taxon
 containing terminal descendants $b_{1}$ and $b_{2}$ we would replace
 the subtree $((A,B),c)$ with $((a_{1},a_{2},b_{1},b_{2}),c)$ instead
@@ -570,7 +570,7 @@ After the preprocessing steps, the inputs have been converted to a
 set of rooted phylogenetic estimates in which each leaf is mapped
 to a terminal taxon in the exemplified taxonomic tree. The goal of
 the remainder of the pipeline is to construct a tree that maximizes
-the sum displayed groups' weighted scores criterion. This is accomplished
+the sum of displayed groups' weighted scores (MSDGWS) criterion. This is accomplished
 in four steps: (1) dividing the full problem into subproblems based
 on uncontested taxa, (2) constructing a summary solution for each
 subproblem by greedily creating a maximally-sized list of groupings
@@ -583,7 +583,7 @@ tree.
 
 For the sake of efficiency, propinquity uses a divide-and-conquer
 approach to construct the supertree. Subproblems are identified by
-searching through the taxonomy tree to find any taxa are not contested
+searching through the taxonomy tree to find any taxa that are not contested
 by any single input tree. Here we say that input tree $T_{i}$ contests
 taxon $x$ in the pruned taxonomy, if $x$ is not monophyletic in
 any resolution of tree $T_{i}$. Thus, polytomies in an input tree
@@ -609,7 +609,7 @@ allow us to find the tree that maximizes the MSDGWS score. For example,
 see figure \ref{fig:decompose-worsens}; that example is a variant
 of the situation shown in figure \ref{fig:pairwisecompat}. In this
 case the groupings from each of the phylogenetic estimates, shown
-in panels \ref{fig:decompose-worsens}a and (\ref{fig:decompose-worsens}b,
+in panels \ref{fig:decompose-worsens}a and \ref{fig:decompose-worsens}b,
 could be displayed. That solution is shown in panel \ref{fig:decompose-worsens}d,
 it displays two of the three input splits, but is optimal because
 no solution displays all three input groupings and the depicted solution
@@ -731,7 +731,7 @@ attempt to break ties in a way that preserves some partial information
 from conflicting splits by attaching taxa from conflicting splits
 at their common ancestor. Figure \ref{fig:subproblem-solutions.}
 shows the solutions that would be obtained by applying our modified
-version of the BUILD algorithm to the subproblems show in figure \ref{fig:subproblems-example}.
+version of the BUILD algorithm to the subproblems shown in figure \ref{fig:subproblems-example}.
 
 \begin{figure}
 \hfill{}\subfloat[Solution to subproblem \emph{ABCD}]{\includegraphics[scale=0.55]{Figures__subproblem_solutions__ott14\lyxdot tre}
@@ -778,7 +778,7 @@ However, a taxon may be incompatible with the grafted solution; we
 refer to such taxa as ``broken taxa.'' If a broken taxon contains
 some unsampled children, it is not clear where these unsampled children
 should be attached to the grafted solution. One approach would be
-to mimic the application of apply Algorithm \ref{alg:ConsistentSplitsFromRankedList}
+to mimic the application of Algorithm \ref{alg:ConsistentSplitsFromRankedList}
 to the full (unpruned) taxonomic tree. This would be equivalent to
 collapsing each edge in the taxonomy that attaches a broken taxon
 to its parent. The unsampled children of broken taxa would attach
@@ -801,7 +801,7 @@ because that is the least inclusive unbroken ancestor of R. The tree
 illustrated in Fig \ref{fig:Two-approaches-to-unpruning}d shows the
 tree that would be produced by propinquity; the children of the broken
 taxon R and instead attached at the MRCA of sampled children (R1,
-R2, and R3). Their attachment point does not correspond to a taxon
+R2, and R3). Their attachment point does not correspond to any taxon
 in the taxonomic tree.
 
 \begin{figure}
@@ -836,8 +836,8 @@ Taxa G and R in the taxonomy (a) are broken because they conflict
 with the grafted solution (b). Removing these broken taxa from the
 taxonomy before unpruning leads to taxa R4, R5, and R6 being attached
 directly at taxon N, as in tree (c). In tree (d), the children of
-the broken taxon R and instead attached at the MRCA of R1, R2, and
-R3.}
+the broken taxon R are instead attached at the MRCA of R1, R2, and
+R3. Our method follows the second approach.}
 \end{figure}
 
 \begin{figure}
@@ -855,14 +855,14 @@ In order to annotate each node in the summary supertree, it is first
 necessary that each node have a unique identifier. Nodes whose include
 group correspond exactly to the include group of a node in the taxonomy
 are given the same identifier as the corresponding taxonomy node.
-These identifier are of the form $ottX$ where $X$ is an integer
-OTT id. We generate a label of the form $mrcaottX_{1}ottX_{2}$ for
+These identifiers are of the form $ottX$ where $X$ is an integer
+OTT ID. We generate a label of the form $mrcaottX_{1}ottX_{2}$ for
 an non-taxonomic node $n$ where $X_{1}$ and $X_{2}$ are the OTT
-ids for two leaves, $n$ is the MRCA of these leaves, and $X_{1}$
+IDs for two leaves, $n$ is the MRCA of these leaves, and $X_{1}$
 is the numerically smallest OTT ID that is a descendant of $n$, and
 $X_{2}$ is the next the smallest ID that can be chosen to designate
 $n$ as the MRCA. Because new taxa added to OTT will be given higher
-OTT Ids, the use of the lowest numbered OTT Ids as designators increases
+OTT IDs, the use of the lowest numbered OTT IDs as designators increases
 the chance that a node label can be encountered in a subsequent version
 of the tree (though the taxonomic content may change). The deterministic
 choice of designators also makes the labeling insensitive to branch
@@ -949,7 +949,7 @@ rotation of the grafted solution tree.
 tree $\protect\summaryTree$ (b) to edges in the input tree $T_{1}$
 (a). Only edges of $\protect\summaryTree$ that are present in the
 induced tree $\protect\summaryTree(1)$ are represented by JSON annotations
-(d). Taxon names are here suppressed in favor of OTT ids, and edges
+(d). Taxon names are here suppressed in favor of OTT IDs, and edges
 are referenced via their tipward nodes. Edges in $\protect\summaryTree(1)$
 that correspond to terminal edges of $T_{1}$ are orange; edges of
 $\protect\summaryTree(1)$ that are supported by edges of $T_{1}$
@@ -1048,8 +1048,8 @@ constructed by applying the propinquity pipeline to the same inputs as
 The flag-cleaned version of OTT used in the construction of both
 supertrees contained 2,424,255 leaves.  The
 \otl{} supertree was constructed from 482 phylogenetic inputs,
-containing a total of 45385 leaves, of which 41029 were unique.
-After flag-cleaning and exemplification by propinquity, these trees contained 40323
+containing a total of 45,385 leaves, of which 41,029 were unique.
+After flag-cleaning and exemplification by propinquity, these trees contained 40,323
 unique tips. We used the same cleaning flags to trim the taxonomy and
 input trees when constructing \otlprop{}, so \otl{} and \otlprop{} contain the
 same number of leaves.
@@ -1074,8 +1074,8 @@ problem would have had 482 input trees and 41,226 leaves.
 % outputs - representation of input trees
 % outputs - annotations
 
-% conflicts in v4: 2760
-% conflicts in v4propr: 1357
+% conflicts in v4: 2,760
+% conflicts in v4propr: 1,357
 
 % displayed in v4: 35,518
 % displayed in v4prop: 39,639
@@ -1113,7 +1113,7 @@ problem would have had 482 input trees and 41,226 leaves.
 \begin{tabular}{lcccccc}
  & \supportedby{} & \partialpathof{} & \terminal{} & \conflictswith{} & \resolvedby{} & \resolves{}\tabularnewline
 \hline 
-\otl{} & 125,384 & 0 & 2,424,255 & 1998 & 4 & 3676\tabularnewline
+\otl{} & 125,384 & 0 & 2,424,255 & 1,998 & 4 & 3,676\tabularnewline
 \hline 
 \otl{} only & 296 & 0 & 0 & 19 & 4 & 17\tabularnewline
 \hline 
@@ -1139,19 +1139,19 @@ that each input edge falls in one of \supportedby{}, \partialpathof{},
 numbers in the \conflictswith{} column indicate the number of input
 splits $j$ with at least one summary edge $x$ such that the relation
 ``$x$ \conflictswith{} $j$'' holds.  The total number of non-terminal
-input phylogeny splits considered was 40996.
+input phylogeny splits considered was 40,996.
 
 The number of displayed input splits (\supportedby{}
 + \partialpathof{}) increased from 35,518 (for \otl{}) to 39,639 (for \otlprop{});
 an 11\% increase. When examining which splits are displayed, we find
-that the \otlprop{} tree displays 4920 input splits that
+that the \otlprop{} tree displays 4,920 input splits that
 are not displayed by the \otl{} tree, whereas the \otl{} tree displays
 only 799 input splits that are not displayed by the \otlprop{} tree.  The number of input
 splits that conflict with the summary (\conflictswith{}) dropped from
-2760 to 1357, a decrease of 1403, or 51\%.  In accordance with the
+2,760 to 1,357, a decrease of 1,403, or 51\%.  In accordance with the
 goal of not containing unnecessary polytomies, the number of input
 splits that do not conflict with the summary tree, but are not
-incorporated (\resolvedby{}) dropped from 2718 to 0.  We also find that
+incorporated (\resolvedby{}) dropped from 2,718 to 0.  We also find that
 the number of polytomies in input phylogenies that are resolved by the
 summary tree increases from 473 for \otl{} to 515 for \otlprop{}.
 
@@ -1194,7 +1194,7 @@ RAM required during tree construction has also decreased substantially.
 
 \section{Acknowledgements}
 
-Thanks to Karen Cranston, Jonathan Rees, Jim Allman, Cody Hinchliff,
+Thanks to Emily Jane McTavish, Karen Cranston, Jonathan Rees, Jim Allman, Cody Hinchliff,
 Stephen Smith, and Joseph Brown for discussions and feedback. Thanks
 to NSF grant 1208393 (DEB), part of the collaborative Open Tree of
 Life awards, the University of Kansas, and the Heidelberg Institute
@@ -1229,7 +1229,7 @@ The input is the a ranked list of input trees and comprehensive taxonomy.
 
 \subsection{Creation of multigraph of the taxonomy with embedded trees}
 
-The tool creates a multigraph by starting with a graph is isomorphic
+The tool creates a multigraph by starting with a graph isomorphic
 to the taxonomic tree. The nodes and edges created in this step will
 be referred to as the ``taxonomic graph.'' Next, we add nodes and
 edges to that graph in a procedure that we refer to as ``embedding''
@@ -1272,7 +1272,7 @@ for tree $i$. These are the set of embedding edges that have $x$
 as a daughter and have a parent node that is not $x$ (ergo a parent
 node that is taxonomically higher than $x$). If there are more than
 one parent nodes in this set of exiting embedding edges, then tree
-$i$ contests that taxon. If there is only parent node, then the all
+$i$ contests that taxon. If there is only one parent node, then the all
 of the constituent taxa belonging to this taxon that are present in
 tree $i$ have one parent that is more inclusive; this means that
 the input tree does not contest monophyly of the taxon.
