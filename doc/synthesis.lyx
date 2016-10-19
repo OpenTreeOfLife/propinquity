@@ -1,0 +1,452 @@
+#LyX 2.2 created this file. For more info see http://www.lyx.org/
+\lyxformat 508
+\begin_document
+\begin_header
+\save_transient_properties true
+\origin unavailable
+\textclass article
+\begin_preamble
+\sloppy
+\end_preamble
+\use_default_options true
+\maintain_unincluded_children false
+\language english
+\language_package default
+\inputencoding auto
+\fontencoding global
+\font_roman "default" "default"
+\font_sans "default" "default"
+\font_typewriter "default" "default"
+\font_math "auto" "auto"
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100 100
+\font_tt_scale 100 100
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\paperfontsize default
+\spacing single
+\use_hyperref false
+\papersize default
+\use_geometry true
+\use_package amsmath 1
+\use_package amssymb 1
+\use_package cancel 1
+\use_package esint 1
+\use_package mathdots 1
+\use_package mathtools 1
+\use_package mhchem 1
+\use_package stackrel 1
+\use_package stmaryrd 1
+\use_package undertilde 1
+\cite_engine basic
+\cite_engine_type default
+\biblio_style plain
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\justification true
+\use_refstyle 1
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\leftmargin 2cm
+\topmargin 2cm
+\rightmargin 2cm
+\bottommargin 2cm
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\paragraph_indentation default
+\quotes_language english
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Title
+Improvements to propinquity
+\end_layout
+
+\begin_layout Section
+Handling 
+\emph on
+incertae sedis
+\emph default
+ taxa
+\end_layout
+
+\begin_layout Standard
+In order to handle 
+\emph on
+incertae sedis
+\emph default
+ taxa we must modify three or four stages of the propinquity pipeline.
+ First, we must modify the decomposition into subproblems to place 
+\emph on
+incertae sedis
+\emph default
+ taxa in the correct subproblem and handle conflict between subproblems
+ in the placement of such taxa.
+ Second, we must extend the subproblem solver to correctly solve subproblems
+ that contain 
+\emph on
+incertae sedis
+\emph default
+ taxa.
+ Third, we 
+\emph on
+might
+\emph default
+ need to modify how unpruning works.
+ Lastly, we must modify the the naming of nodes to take into account the
+ fact that OTT taxa might have had 
+\emph on
+incertae sedis
+\emph default
+ taxa placed inside them, so that OTT taxa cannot be strictly identified
+ with their set of descendants anymore.
+\end_layout
+
+\begin_layout Subsection
+Decomposing into subproblems
+\end_layout
+
+\begin_layout Standard
+Decomposition involves subdividing the tree into subproblems that can (usually)
+ be solved independently.
+ When 
+\emph on
+incertae sedis
+\emph default
+ taxa are involved, we must place 
+\emph on
+incertae sedis
+\emph default
+ taxa into subproblems in such a way that the subproblem solver can perform
+ the placement inside the subproblem.
+ However, we must also handle conflicts of 
+\emph on
+incertae sedis
+\emph default
+ taxon placement.
+\end_layout
+
+\begin_layout Standard
+I think we can solve this in a logically coherent way by recognizing that
+ any taxonomy edges leading to conflicting placement on an 
+\emph on
+incertae sedis
+\emph default
+ taxon must end up in the same subproblem.
+ Thus, if one input phylogeny places the 
+\emph on
+incertae sedis
+\emph default
+ taxon 
+\begin_inset Formula $X$
+\end_inset
+
+ in 
+\begin_inset Formula $((X)B)A$
+\end_inset
+
+ and another input phylogeny places 
+\emph on
+incertae sedis
+\emph default
+ taxon 
+\begin_inset Formula $X$
+\end_inset
+
+ in 
+\begin_inset Formula $((X)C)A$
+\end_inset
+
+ then we must mark the edges 
+\begin_inset Formula $B$
+\end_inset
+
+ and 
+\begin_inset Formula $C$
+\end_inset
+
+ as contested edges, even if these edges would 
+\emph on
+not
+\emph default
+ be contested where taxon 
+\begin_inset Formula $X$
+\end_inset
+
+ to be removed.
+ This results in a new way to contest edges that involves the interaction
+ of two input trees, and not just the interaction of each input tree with
+ the taxonomy.
+\end_layout
+
+\begin_layout Standard
+The result of such a decomposition procedure would be that the subproblem
+ solve will handle any conflicting placement information.
+\end_layout
+
+\begin_layout Subsubsection
+Possible approach
+\end_layout
+
+\begin_layout Standard
+One approach would be to modify the taxonomy to place
+\emph on
+ incertae sedis 
+\emph default
+taxa when scanning input phylogenies.
+ A series of input phylogenies containing taxon 
+\begin_inset Formula $X$
+\end_inset
+
+ might not disagree, but might each place the taxon 
+\begin_inset Formula $X$
+\end_inset
+
+ successively more tipward.
+ However, when reading an input phylogeny that conflicts with the placement
+ of 
+\begin_inset Formula $X$
+\end_inset
+
+ resulting from previously processed input phylogenies, we would end up
+ marking the branches connecting the two attachment points as conflicting
+ with the most recently processed input phylogeny.
+ These branches would then not be used to separate subproblems from each
+ other, and would thus end up in the same subproblem.
+ 
+\emph on
+This is not proved - expand and check
+\emph default
+.
+\end_layout
+
+\begin_layout Standard
+If this does work, then it is hopeful that this would decrease the number
+ of subproblems too much.
+ It seems like it might be OK, since we already contest edges result from
+ alternative placement of non-
+\emph on
+incertae sedis
+\emph default
+ taxa.
+\end_layout
+
+\begin_layout Subsection
+Subproblem solution
+\end_layout
+
+\begin_layout Standard
+Subproblem solution does not need to be modified very much, since the BUILD
+ algorithm already natively supports building trees from partial splits.
+ Thus, we need to modify the subproblem solver to create the partial splits
+ from the incertae sedis information.
+\end_layout
+
+\begin_layout Subsubsection
+Reading incertae sedis information
+\end_layout
+
+\begin_layout Standard
+Currently, we read the 
+\emph on
+incertae sedis
+\emph default
+ information as a list of OTT ids for 
+\emph on
+incertae sedis
+\emph default
+ taxa.
+ This does not require adding further annotations to the node names.
+ Only taxonomy nodes can be 
+\emph on
+incertae sedis
+\emph default
+ at the moment, and only the taxonomy tree for the subproblem contains OTT
+ ids.
+ Therefore we handle 
+\emph on
+incertae sedis
+\emph default
+ information by constructing modified split sets for the lowest-ranked tree
+ when the list of 
+\emph on
+incertae sedis
+\emph default
+ nodes is not empty.
+\end_layout
+
+\begin_layout Subsubsection
+Exclude sets modified by 
+\emph on
+incertae sedis
+\emph default
+ marks
+\end_layout
+
+\begin_layout Standard
+
+\emph on
+Incertae sedis
+\emph default
+ information changes only the exclude set of splits, and only reduces this
+ set.
+ The exclude set for a node is is the union of the exclude set of the parent
+ node and the include sets of non-incertae sedis siblings.
+ If we use the terminology that the include and exclude sets for a node
+ 
+\begin_inset Formula $n$
+\end_inset
+
+ are 
+\begin_inset Formula $\mathcal{I}(n)$
+\end_inset
+
+ and 
+\begin_inset Formula $\mathcal{E}(n)$
+\end_inset
+
+, then we have 
+\begin_inset Formula 
+\begin{align*}
+\mathcal{E}(n) & =\mathcal{E}(parent(n))\cup\left[\mathcal{I}(m)\big|m\in siblings(n),m\text{ not \emph{incertae} \emph{sedis}}\right].
+\end{align*}
+
+\end_inset
+
+This leads to the algorithm to compute the exclude set for all nodes in
+ a tree.
+\end_layout
+
+\begin_layout Enumerate
+Set the exclude set of the root node to be empty
+\end_layout
+
+\begin_layout Enumerate
+For each 
+\emph on
+node
+\emph default
+ (except the root) in preorder
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+combine the 
+\emph on
+exclude
+\emph default
+ set of the parent node with the 
+\emph on
+include
+\emph default
+ set of non-
+\emph on
+incertae-sedis
+\emph default
+ siblings.
+\end_layout
+
+\begin_layout Itemize
+store this set in a hash, with key 
+\emph on
+node
+\end_layout
+
+\end_deeper
+\begin_layout Standard
+This is currently implemented in 
+\emph on
+otc-solve-subproblem
+\emph default
+.
+ We do not use bitmaps, but sets to store the sets right now.
+\end_layout
+
+\begin_layout Subsection
+Naming 
+\end_layout
+
+\begin_layout Standard
+Work on this next, but just for the output of 
+\emph on
+otc-solve-subproblem
+\emph default
+.
+\end_layout
+
+\begin_layout Subsection
+Unpruning
+\end_layout
+
+\begin_layout Standard
+Currently the unpruner might require that the OTT ids are named in the grafted
+ solution before unpruning starts.
+\end_layout
+
+\begin_layout Section
+Unified handling of incompatible splits and broken taxa
+\end_layout
+
+\begin_layout Standard
+Currently when an input tree split conflicts with a previously incorporated
+ split during subproblem solution we discard it altogether.
+ However, when handling a broken taxa during unpruning we do not discard
+ the broken taxon altogether, but instead attach its children at the MRCA
+ of included children.
+ This unpruning can be seen as the solution of a special kind of subproblem
+ that contains the grafted solution (which is pruned) and the full taxonomy
+ (which is not).
+ If the two procedures are not consistent, then pruning will lead to different
+ results.
+ Specifically, lack of pruning would lead not just to slower computation,
+ but to a tree which does not attach the children of broken taxa at the
+ MRCA.
+ Thus, we desire to achieve consistency between handling of broken taxa
+ during pruning and incompatible splits during subproblem solution.
+\end_layout
+
+\begin_layout Subsubsection
+Hypothetical/Platonic: Make the subproblem solver perform unpruning?
+\end_layout
+
+\begin_layout Standard
+Would it be theoretically possible to make the subproblem solver able to
+ perform unpruning by simply feeding the special subproblem
+\end_layout
+
+\begin_layout Verbatim
+grafted solution (pruned)
+\end_layout
+
+\begin_layout Verbatim
+cleaned ott (unpruned)
+\end_layout
+
+\begin_layout Standard
+to the subproblem solver? If so, that would simplify a lot of things conceptuall
+y.
+ However, this seems computationally challenging.
+\end_layout
+
+\end_body
+\end_document
