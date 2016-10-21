@@ -1,0 +1,7 @@
+[taxonomy]
+cleaning_flags = major_rank_conflict,major_rank_conflict_inherited,environmental,unclassified_inherited,unclassified,viral,barren,not_otu,incertae_sedis,incertae_sedis_inherited,extinct_inherited,extinct,hidden,unplaced,unplaced_inherited,was_container,inconsistent,hybrid,merged
+
+[synthesis]
+collections = pcart/cnidaria kcranston/barnacles opentreeoflife/metazoa opentreeoflife/default 
+root_ott_id = 641033
+synth_id = cnidaria7.2
