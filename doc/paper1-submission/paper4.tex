@@ -400,7 +400,7 @@ subdirectory) to make it easier to replicate the operation (because
 the collection of trees and the tree files change due to curation).
 \begin{figure}
 \begin{centering}
-\includegraphics[height=0.75\paperheight]{pipeline-tools.pdf}
+\includegraphics[height=0.70\paperheight]{pipeline-tools.pdf}
 \par\end{centering}
 \caption{Organization of the \emph{propinquity} pipeline. Each colored pentagon
 labels a program (blue for otcetera-based tools and red for python
@@ -1045,12 +1045,13 @@ constructed by applying the propinquity pipeline to the same inputs as
 
 \subsection{Inputs}
 
-The flag-cleaned version of OTT contained 2,424,255 leaves.  The
+The flag-cleaned version of OTT used in the construction of both
+supertrees contained 2,424,255 leaves.  The
 \otl{} supertree was constructed from 482 phylogenetic inputs,
 containing a total of 45,385 leaves, of which 41,029 were unique.
 After flag-cleaning and exemplification by propinquity, these trees contained 40,323
 unique tips. We used the same cleaning flags to trim the taxonomy and
-input trees when constructing \otlprop{}, so \otlprop{} contains the
+input trees when constructing \otlprop{}, so \otl{} and \otlprop{} contain the
 same number of leaves.
 
 \subsection{Subproblems}
@@ -1142,15 +1143,15 @@ input phylogeny splits considered was 40,996.
 
 The number of displayed input splits (\supportedby{}
 + \partialpathof{}) increased from 35,518 (for \otl{}) to 39,639 (for \otlprop{});
-an 11.2\% increase. When examining which splits are displayed, we find
+an 11\% increase. When examining which splits are displayed, we find
 that the \otlprop{} tree displays 4,920 input splits that
 are not displayed by the \otl{} tree, whereas the \otl{} tree displays
 only 799 input splits that are not displayed by the \otlprop{} tree.  The number of input
-splits that conflict with the summary (conflicts\_with) dropped from
-2,760 to 1,357, a decrease of 1,357, or 49.2\%.  In accordance with the
+splits that conflict with the summary (\conflictswith{}) dropped from
+2,760 to 1,357, a decrease of 1,403, or 51\%.  In accordance with the
 goal of not containing unnecessary polytomies, the number of input
 splits that do not conflict with the summary tree, but are not
-incorporated (resolved\_by) dropped from 2,718 to 0.  We also find that
+incorporated (\resolvedby{}) dropped from 2,718 to 0.  We also find that
 the number of polytomies in input phylogenies that are resolved by the
 summary tree increases from 473 for \otl{} to 515 for \otlprop{}.
 
@@ -1160,23 +1161,24 @@ splits (Table \ref{tab:representtaxonomy}).  The \otlprop{} tree
 conflicts with 281 more taxonomy splits than the \otl{} tree.  Since
 the taxonomy is the lowest ranked input tree, this increased conflict
 with the taxonomy is an expected result of incorporating more splits
-from input phylogenies.  
+from higher-ranked input phylogenies.  
 
 
 \section{Conclusions}
 
 Here we have described the motivation and methodology used by our new
 supertree method that is currently used by the Open Tree of Life
-project to build its summary tree.  Our new method represented 11\%
-more input phylogeny splits with 49\% less conflict compared to the
-Open Tree of Life version 4 summary tree when applied to the same inputs.
-Unlike the previous method \citep{HinchliffEtAl2015}, our new method
-is guaranteed to incorporate input splits that do not conflict with
-the summary tree. The method is implemented in the Open Source
-software package propinquity.  A modified version of the treemachine
-software which built the summary tree described in the
-\citet{HinchliffEtAl2015} paper is used by the project to serve the
-tree produced by propinquity via Open Tree of Life APIs. 
+project to build summary supertrees on the scale of millions of leaves.
+Our new method represented 11\% more input phylogeny splits with 51\%
+less conflict compared to the Open Tree of Life version 4 summary
+tree, when applied to the same inputs. Unlike the previous method
+\citep{HinchliffEtAl2015}, our new method is guaranteed to incorporate
+input splits unless they conflict with the summary tree. The method is
+implemented in the Open Source software package propinquity.  A
+modified version of the treemachine software which built the summary
+tree described in the \citet{HinchliffEtAl2015} paper is used by the
+project to serve the tree produced by propinquity via Open Tree of
+Life APIs.
 
 The migration of summary tree construction from treemachine (used for
 version 4) to propinquity (for all versions from v5.0 to present) has

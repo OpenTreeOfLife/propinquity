@@ -4,7 +4,7 @@ FIGURES=$(grep '{.*/' paper.tex | sed 's|.*{\(.*/.*\)}.*|\1|'| sed 's|\\lyxdot |
 for figure in $FIGURES ; do
     filename="../${figure}"
     new_filename=$(echo $figure | sed 's|/|__|g')
-    echo "\n\n'$figure' -> ${new_filename}"
+    echo -e "\n\n'$figure' -> ${new_filename}"
     # If the lyx svg-to-pdf command is correctly set to do "--export-area-drawing", then regenerating pdfs is unnecessary.
     if [ -f "${filename}" ] ; then
 	ln -s "$filename" "$new_filename"
