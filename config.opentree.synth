@@ -2,6 +2,6 @@
 cleaning_flags = major_rank_conflict,major_rank_conflict_inherited,environmental,unclassified_inherited,unclassified,viral,barren,not_otu,incertae_sedis,incertae_sedis_inherited,extinct_inherited,extinct,hidden,unplaced,unplaced_inherited,was_container,inconsistent,hybrid,merged
 
 [synthesis]
-collections = pcart/cnidaria josephwb/hypocreales kcranston/barnacles opentreeoflife/plants opentreeoflife/metazoa opentreeoflife/fungi opentreeoflife/safe-microbes opentreeoflife/default 
+collections = pcart/cnidaria mwestneat/reef-fishes josephwb/hypocreales kcranston/barnacles opentreeoflife/plants opentreeoflife/metazoa opentreeoflife/fungi opentreeoflife/safe-microbes opentreeoflife/default 
 root_ott_id = 93302
-synth_id = opentree7.0
+synth_id = opentree7.1
