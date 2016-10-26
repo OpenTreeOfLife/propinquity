@@ -34,26 +34,26 @@ with open(id_list_file, 'r') as inp:
             sys.exit('ID file entry "{}" does not end with ott[0-9]+\n'.format(ls))
         ott_id = m.group(3)
         name = m.group(1)
-        label = '<a href="https://tree.opentreeoflife.org/taxonomy/browse?id={i}">{n}</a>'.format(i=ott_id, n=name)
+        label = '<a target="_blank" href="https://tree.opentreeoflife.org/taxonomy/browse?id={i}">{n}</a>'.format(i=ott_id, n=name)
         idstr = 'ott{}'.format(ott_id)
         blob = broken.get(idstr)
         fragout = StringIO()
         if blob is None:
-            fragout.write('  <li>{l} recovered as monophyletic at <a href="{p}@{n}">{n}</a>.</li>\n'.format(l=label, p=pref, n=idstr))
+            fragout.write('  <li>{l} recovered as monophyletic at <a target="_blank" href="{p}@{n}">{n}</a>.</li>\n'.format(l=label, p=pref, n=idstr))
         else:
             ct = contesting.get(unicode(idstr), {})
             fragout.write('  <li>{} was not monophyletic. It was contested by <ol>\n'.format(label))
             for tfn in ct.keys():
                 assert tfn.endswith('.tre')
                 k = tfn[:-4]
-                tmpl = 'the study@tree pair <a href="https://tree.opentreeoflife.org/curator/study/view/{s}/?tab=trees&tree={t}">{i}</a>'
+                tmpl = 'the study@tree pair <a target="_blank" href="https://tree.opentreeoflife.org/curator/study/view/{s}/?tab=trees&tree={t}">{i}</a>'
                 s, t = k.split('@')
                 treelink = tmpl.format(s=s, t=t, i=k)
                 fragout.write('      <li>{}</li>\n'.format(treelink))
             fragout.write("    </ol>\n")
             fragout.write("    Members of the taxon are attached to the full tree at<ol>\n")
             for x in blob.get('attachment_points', {}).keys():
-                tmpl = 'synth node <a href="{p}@{n}">{n}</a>'
+                tmpl = 'synth node <a target="_blank" href="{p}@{n}">{n}</a>'
                 s, t = k.split('@')
                 treelink = tmpl.format(p=pref, n=x)
                 fragout.write('      <li>{}</li>\n'.format(treelink))
