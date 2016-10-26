@@ -387,11 +387,285 @@ Naming
 \end_layout
 
 \begin_layout Standard
-Work on this next, but just for the output of 
+After solving a supertree (sub) problem, we need to assign taxon names to
+ the supertree nodes based on the taxonomy tree in the problem.
+ Each taxonomy node 
+\begin_inset Formula $n$
+\end_inset
+
+ is the tipward vertex of an edge in the taxonomy tree, and thus corresponds
+ to a split 
 \emph on
-otc-solve-subproblem
+include|exclude
 \emph default
 .
+ Without 
+\emph on
+incertae sedis
+\emph default
+, the split information reduces to the set of tip nodes in the 
+\emph on
+include
+\emph default
+ group.
+ Thus, we may simply search the tree for a node 
+\begin_inset Formula $m$
+\end_inset
+
+ that has the same include group as our taxonomy node 
+\begin_inset Formula $n$
+\end_inset
+
+ and then draw a correspondence between the two nodes by assigning the taxon
+ name for 
+\begin_inset Formula $n$
+\end_inset
+
+ in the taxonomy to 
+\begin_inset Formula $m$
+\end_inset
+
+ in the supertree.
+\end_layout
+
+\begin_layout Standard
+In the 
+\emph on
+incertae sedis 
+\emph default
+framework, this is complicated by the fact that the exclude group is not
+ just 
+\begin_inset Formula $\mathcal{L}-include$
+\end_inset
+
+, but may be smaller.
+ This raises the question of whether one name could apply to multiple nodes,
+ or whether multiple names could apply to one node.
+ 
+\end_layout
+
+\begin_layout Subsubsection
+Multiple nodes that fit one name
+\end_layout
+
+\begin_layout Standard
+A node 
+\begin_inset Formula $m$
+\end_inset
+
+ is consistent with a split 
+\begin_inset Formula $A_{1}|A_{2}$
+\end_inset
+
+ for a taxon name if the node 
+\begin_inset Formula $m$
+\end_inset
+
+ is the tip-ward vertex of a branch with split 
+\begin_inset Formula $B_{1}|B_{2}$
+\end_inset
+
+ and 
+\begin_inset Formula $A_{1}\subseteq B_{1}$
+\end_inset
+
+ and 
+\begin_inset Formula $A_{2}\subseteq B_{2}$
+\end_inset
+
+.
+ So, suppose that node 
+\begin_inset Formula $m$
+\end_inset
+
+ in the supertree is consistent with split 
+\begin_inset Formula $A_{1}|A_{2}$
+\end_inset
+
+ for node 
+\begin_inset Formula $n$
+\end_inset
+
+ in the taxonomy tree.
+ Now suppose that in the supertree, 
+\begin_inset Formula $m$
+\end_inset
+
+ has only one other sibling, which is an 
+\emph on
+incertae sedis
+\emph default
+ taxon placed here from a more root-ward position in the taxonomy.
+ Since the sibling is incertae sedis, it won't be in the exclude group 
+\begin_inset Formula $A_{2}$
+\end_inset
+
+, and therefore the split 
+\begin_inset Formula $A_{1}|A_{2}$
+\end_inset
+
+ will apply to the parent of 
+\begin_inset Formula $n$
+\end_inset
+
+ as well.
+ Thus, it is possible to find a series of connected nodes that satisfy the
+ same taxonomy split, if the include groups of the nodes differ only in
+ their inclusion of 
+\emph on
+incertae sedis
+\emph default
+ taxa.
+\end_layout
+
+\begin_layout Standard
+In this case, we find the most tipward node and attach the name to this
+ node.
+\end_layout
+
+\begin_layout Subsubsection
+Multiple names fit a single node
+\end_layout
+
+\begin_layout Standard
+Suppose that 
+\begin_inset Formula $n_{2}$
+\end_inset
+
+ is the child of 
+\begin_inset Formula $n_{1}$
+\end_inset
+
+, and the only other child 
+\begin_inset Formula $n_{3}$
+\end_inset
+
+ of 
+\begin_inset Formula $n_{1}$
+\end_inset
+
+ is incertae sedis.
+ Also suppose that there is a supertree node 
+\begin_inset Formula $m$
+\end_inset
+
+ that contains the children of 
+\begin_inset Formula $n_{2}$
+\end_inset
+
+ and that 
+\begin_inset Formula $n_{3}$
+\end_inset
+
+ is placed deeply inside 
+\begin_inset Formula $m$
+\end_inset
+
+.
+ This can happen because 
+\begin_inset Formula $n_{2}$
+\end_inset
+
+ does not exclude 
+\begin_inset Formula $n_{3}$
+\end_inset
+
+, since 
+\begin_inset Formula $n_{3}$
+\end_inset
+
+ is 
+\emph on
+incertae sedis
+\emph default
+.
+ In this case, the names 
+\begin_inset Formula $n_{1}$
+\end_inset
+
+ and 
+\begin_inset Formula $n_{2}$
+\end_inset
+
+ will 
+\emph on
+both
+\emph default
+ apply to 
+\begin_inset Formula $m$
+\end_inset
+
+.
+ 
+\end_layout
+
+\begin_layout Standard
+In general, if a taxon contains 2 non-IS taxa, then it cannot be identical
+ with any of its children in the synthesis tree.
+\end_layout
+
+\begin_layout Standard
+In general, if a taxon contains 1 non-IS taxon and 
+\begin_inset Formula $\ge1$
+\end_inset
+
+ IS taxa, then the taxon could be identical with is non-IS child in the
+ synthesis tree, if the IS taxa are placed within the child.
+\end_layout
+
+\begin_layout Standard
+If a node contains 0 non-IS taxa and 1 IS taxon, then the IS taxa behaves
+ no differently than a non-IS taxa, since is has no siblings it could be
+ placed into.
+\end_layout
+
+\begin_layout Standard
+If a node contains 0 non-IS taxa and 
+\begin_inset Formula $\ge2$
+\end_inset
+
+ IS taxa, then then taxon 
+\emph on
+could
+\emph default
+ be identical with a non-IS child in the synthesis tree, if all but one
+ IS children are placed with in one of the IS children.
+\end_layout
+
+\begin_layout Standard
+When we assign multiple names to the same node, then we expand the node
+ with multiple names to have monotypic parents, and assign the series of
+ names to the monotypic parents.
+ Another way of saying this is that when a node has 
+\begin_inset Formula $\le1$
+\end_inset
+
+ non-IS taxon and 
+\begin_inset Formula $\ge2$
+\end_inset
+
+ taxa then the node could become monotypic by placement of the IS taxa.
+\end_layout
+
+\begin_layout Subsubsection
+Should the synthesis tree 
+\emph on
+also
+\emph default
+ have incertae sedis taxa?
+\end_layout
+
+\begin_layout Standard
+Yes, it probably should.
+\end_layout
+
+\begin_layout Standard
+One question is if we can represent all possible patterns of uncertainty
+ through the used of 
+\emph on
+incertae sedis
+\emph default
+ labels on certain synthesis tree nodes.
 \end_layout
 
 \begin_layout Subsection
@@ -435,10 +709,12 @@ Would it be theoretically possible to make the subproblem solver able to
 \end_layout
 
 \begin_layout Verbatim
+
 grafted solution (pruned)
 \end_layout
 
 \begin_layout Verbatim
+
 cleaned ott (unpruned)
 \end_layout
 
