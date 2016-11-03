@@ -387,11 +387,304 @@ Naming
 \end_layout
 
 \begin_layout Standard
-Work on this next, but just for the output of 
+After solving a supertree (sub) problem, we need to assign taxon names to
+ the supertree nodes based on the taxonomy tree in the problem.
+ Each taxonomy node 
+\begin_inset Formula $n$
+\end_inset
+
+ is the tipward vertex of an edge in the taxonomy tree, and thus corresponds
+ to a split 
 \emph on
-otc-solve-subproblem
+include|exclude
 \emph default
 .
+ Without 
+\emph on
+incertae sedis
+\emph default
+, the split information reduces to the set of tip nodes in the 
+\emph on
+include
+\emph default
+ group.
+ Thus, we may simply search the tree for a node 
+\begin_inset Formula $m$
+\end_inset
+
+ that has the same include group as our taxonomy node 
+\begin_inset Formula $n$
+\end_inset
+
+ and then draw a correspondence between the two nodes by assigning the taxon
+ name for 
+\begin_inset Formula $n$
+\end_inset
+
+ in the taxonomy to 
+\begin_inset Formula $m$
+\end_inset
+
+ in the supertree.
+\end_layout
+
+\begin_layout Standard
+In the 
+\emph on
+incertae sedis 
+\emph default
+framework, this is complicated by the fact that the exclude group is not
+ just 
+\begin_inset Formula $\mathcal{L}-include$
+\end_inset
+
+, but may be smaller.
+ This raises the question of whether one name could apply to multiple nodes,
+ or whether multiple names could apply to one node.
+ 
+\end_layout
+
+\begin_layout Subsubsection
+Multiple nodes that fit one name
+\end_layout
+
+\begin_layout Standard
+A node 
+\begin_inset Formula $m$
+\end_inset
+
+ is consistent with a split 
+\begin_inset Formula $A_{1}|A_{2}$
+\end_inset
+
+ for a taxon name if the node 
+\begin_inset Formula $m$
+\end_inset
+
+ is the tip-ward vertex of a branch with split 
+\begin_inset Formula $B_{1}|B_{2}$
+\end_inset
+
+ and 
+\begin_inset Formula $A_{1}\subseteq B_{1}$
+\end_inset
+
+ and 
+\begin_inset Formula $A_{2}\subseteq B_{2}$
+\end_inset
+
+.
+ So, suppose that node 
+\begin_inset Formula $m$
+\end_inset
+
+ in the supertree is consistent with split 
+\begin_inset Formula $A_{1}|A_{2}$
+\end_inset
+
+ for node 
+\begin_inset Formula $n$
+\end_inset
+
+ in the taxonomy tree.
+ Now suppose that in the supertree, 
+\begin_inset Formula $m$
+\end_inset
+
+ has only one other sibling, which is an 
+\emph on
+incertae sedis
+\emph default
+ taxon placed here from a more root-ward position in the taxonomy.
+ Since the sibling is incertae sedis, it won't be in the exclude group 
+\begin_inset Formula $A_{2}$
+\end_inset
+
+, and therefore the split 
+\begin_inset Formula $A_{1}|A_{2}$
+\end_inset
+
+ will apply to the parent of 
+\begin_inset Formula $n$
+\end_inset
+
+ as well.
+ Thus, it is possible to find a series of connected nodes that satisfy the
+ same taxonomy split, if the include groups of the nodes differ only in
+ their inclusion of 
+\emph on
+incertae sedis
+\emph default
+ taxa.
+\end_layout
+
+\begin_layout Standard
+In this case, we find the most tipward node and attach the name to this
+ node.
+\end_layout
+
+\begin_layout Subsubsection
+Multiple names fit a single node
+\end_layout
+
+\begin_layout Standard
+Suppose that 
+\begin_inset Formula $n_{2}$
+\end_inset
+
+ is the child of 
+\begin_inset Formula $n_{1}$
+\end_inset
+
+, and the only other child 
+\begin_inset Formula $n_{3}$
+\end_inset
+
+ of 
+\begin_inset Formula $n_{1}$
+\end_inset
+
+ is incertae sedis.
+ Also suppose that there is a supertree node 
+\begin_inset Formula $m$
+\end_inset
+
+ that contains the children of 
+\begin_inset Formula $n_{2}$
+\end_inset
+
+ and that 
+\begin_inset Formula $n_{3}$
+\end_inset
+
+ is placed deeply inside 
+\begin_inset Formula $m$
+\end_inset
+
+.
+ This can happen because 
+\begin_inset Formula $n_{2}$
+\end_inset
+
+ does not exclude 
+\begin_inset Formula $n_{3}$
+\end_inset
+
+, since 
+\begin_inset Formula $n_{3}$
+\end_inset
+
+ is 
+\emph on
+incertae sedis
+\emph default
+.
+ In this case, the names 
+\begin_inset Formula $n_{1}$
+\end_inset
+
+ and 
+\begin_inset Formula $n_{2}$
+\end_inset
+
+ will 
+\emph on
+both
+\emph default
+ apply to 
+\begin_inset Formula $m$
+\end_inset
+
+.
+ 
+\end_layout
+
+\begin_layout Standard
+In general, if a taxon contains 2 non-IS taxa, then it cannot be identical
+ with any of its children in the synthesis tree.
+\end_layout
+
+\begin_layout Standard
+In general, if a taxon contains 1 non-IS taxon and 
+\begin_inset Formula $\ge1$
+\end_inset
+
+ IS taxa, then the taxon could be identical with is non-IS child in the
+ synthesis tree, if the IS taxa are placed within the child.
+\end_layout
+
+\begin_layout Standard
+If a node contains 0 non-IS taxa and 1 IS taxon, then the IS taxa behaves
+ no differently than a non-IS taxa, since is has no siblings it could be
+ placed into.
+\end_layout
+
+\begin_layout Standard
+If a node contains 0 non-IS taxa and 
+\begin_inset Formula $\ge2$
+\end_inset
+
+ IS taxa, then then taxon 
+\emph on
+could
+\emph default
+ be identical with a non-IS child in the synthesis tree, if all but one
+ IS children are placed with in one of the IS children.
+\end_layout
+
+\begin_layout Standard
+When we assign multiple names to the same node, then we expand the node
+ with multiple names to have monotypic parents, and assign the series of
+ names to the monotypic parents.
+ Another way of saying this is that when a node has 
+\begin_inset Formula $\le1$
+\end_inset
+
+ non-IS taxon and 
+\begin_inset Formula $\ge2$
+\end_inset
+
+ taxa then the node could become monotypic by placement of the IS taxa.
+\end_layout
+
+\begin_layout Subsubsection
+Should the solution tree 
+\emph on
+also
+\emph default
+ have incertae sedis taxa?
+\end_layout
+
+\begin_layout Standard
+Yes, it probably should.
+\end_layout
+
+\begin_layout Standard
+One question is if we can represent all possible patterns of uncertainty
+ through the used of 
+\emph on
+incertae sedis
+\emph default
+ labels on certain synthesis tree nodes.
+\end_layout
+
+\begin_layout Subsubsection
+Implementation
+\end_layout
+
+\begin_layout Standard
+So, if we know which nodes in the taxonomy are consistent with the solution,
+ then we can simply find the MRCA and assign a name to it.
+ If we attempt to assign a name to an already-named node, we create a new
+ monotypic ancestor that is rootward of all the existing monotypic ancestors,
+ and assign the name there.
+ This probably requires walking the taxonomy tree in post-order.
+\end_layout
+
+\begin_layout Standard
+continue: 
+\emph on
+See modifications in solve-subproblem...
 \end_layout
 
 \begin_layout Subsection
@@ -403,6 +696,137 @@ Currently the unpruner might require that the OTT ids are named in the grafted
  solution before unpruning starts.
 \end_layout
 
+\begin_layout Subsection
+Annotation
+\end_layout
+
+\begin_layout Standard
+Actually we do not need to change annotation as long as we are not running
+ conflict analysis on the synthesis tree.
+ Basically naming the nodes 
+\emph on
+is
+\emph default
+ a (almost) run of conflict analysis on the synthesis tree.
+\end_layout
+
+\begin_layout Standard
+However, we would like to be able to do this.
+\end_layout
+
+\begin_layout Subsubsection
+Conflict algorithm
+\end_layout
+
+\begin_layout Enumerate
+Get induced trees on intersection of leaf sets
+\end_layout
+
+\begin_layout Enumerate
+Compute depth
+\end_layout
+
+\begin_layout Enumerate
+Compute number of tips at or below each node (nd->n_tips)
+\end_layout
+
+\begin_layout Enumerate
+for each input tree node -> 
+\begin_inset Formula $nd$
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Enumerate
+skip the root
+\end_layout
+
+\begin_layout Enumerate
+skip monotypic
+\end_layout
+
+\begin_layout Enumerate
+if its a tip then find corresponding (
+\begin_inset Quotes eld
+\end_inset
+
+terminal
+\begin_inset Quotes erd
+\end_inset
+
+) edges in synth tree and continue
+\end_layout
+
+\begin_layout Enumerate
+leaves1 <- get the list of leaves in the include group of 
+\begin_inset Formula $nd$
+\end_inset
+
+ (in input)
+\end_layout
+
+\begin_layout Enumerate
+L2 <- find the total number of tips
+\end_layout
+
+\begin_layout Enumerate
+leaves2 <- get list of corresponding leaves (in synth)
+\end_layout
+
+\begin_layout Enumerate
+nodes <- find all nodes between leaves2 and the MRCA (in synth)
+\end_layout
+
+\begin_layout Enumerate
+MRCA <- mrca of leaves2 (in synth)
+\end_layout
+
+\begin_layout Enumerate
+Compute number of tips in the include set (nd->include_tips) below each
+ node in 
+\begin_inset Formula $nodes$
+\end_inset
+
+ (in synth)
+\end_layout
+
+\begin_layout Enumerate
+if n_include_tips(MRCA) == n_tips(MRCA) then the MRCA displays 
+\begin_inset Formula $nd$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Enumerate
+if n_include_tips(MRCA) < n_tips(MRCA) then
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+foreach node in nodes
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+if (n_include_tipes(nd) < n_tips(nd) and n_include_tips(nd) < l2)
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+this is a conflict!
+\end_layout
+
+\end_deeper
+\end_deeper
+\begin_layout Itemize
+if there are no conflicts, then this is a resolved_by.
+\end_layout
+
+\end_deeper
+\end_deeper
 \begin_layout Section
 Unified handling of incompatible splits and broken taxa
 \end_layout
@@ -435,10 +859,12 @@ Would it be theoretically possible to make the subproblem solver able to
 \end_layout
 
 \begin_layout Verbatim
+
 grafted solution (pruned)
 \end_layout
 
 \begin_layout Verbatim
+
 cleaned ott (unpruned)
 \end_layout
 
