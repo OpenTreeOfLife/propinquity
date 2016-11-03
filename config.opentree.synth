@@ -4,4 +4,4 @@ cleaning_flags = major_rank_conflict,major_rank_conflict_inherited,environmental
 [synthesis]
 collections = pcart/cnidaria mwestneat/reef-fishes josephwb/hypocreales kcranston/barnacles opentreeoflife/plants opentreeoflife/metazoa opentreeoflife/fungi opentreeoflife/safe-microbes opentreeoflife/default 
 root_ott_id = 93302
-synth_id = opentree7.1
+synth_id = opentree7.3
