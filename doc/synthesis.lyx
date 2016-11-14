@@ -123,6 +123,121 @@ incertae sedis
 \end_layout
 
 \begin_layout Subsection
+Annotations
+\end_layout
+
+\begin_layout Standard
+After we allow 
+\emph on
+incertae
+\emph default
+ sedis taxa in the taxonomy, the relationships of edges in the taxonomy
+ to edges in each input tree become more interesting.
+ Without 
+\emph on
+incertae sedis
+\emph default
+ taxa, taxonomy splits always divide the full leaf set, and so we can say
+ that taxonomy split 
+\begin_inset Formula $A$
+\end_inset
+
+ displays an input split 
+\begin_inset Formula $B$
+\end_inset
+
+ if 
+\begin_inset Formula $B_{1}\subseteq A_{1}$
+\end_inset
+
+ and 
+\begin_inset Formula $B_{2}\subseteq A_{2}$
+\end_inset
+
+.
+ Thus, a taxonomy split always has more information than an input split
+ 
+\begin_inset Formula $B$
+\end_inset
+
+ that it displays.
+ However, with 
+\emph on
+incertae sedis
+\emph default
+ taxa in the taxonomy, it is possible that the input split 
+\begin_inset Formula $B$
+\end_inset
+
+ 
+\begin_inset Quotes eld
+\end_inset
+
+aligns
+\begin_inset Quotes erd
+\end_inset
+
+ to a taxonomy split 
+\begin_inset Formula $A$
+\end_inset
+
+ and 
+\emph on
+also
+\emph default
+ performs a placement.
+ In this case the input split 
+\begin_inset Formula $B$
+\end_inset
+
+ has more information than the taxonomy split 
+\begin_inset Formula $A$
+\end_inset
+
+ that it aligns to.
+ 
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+BDR: Question: when comparing the taxonomy to an input tree, how do we deal
+ with conflict & alignment?
+\end_layout
+
+\begin_layout Itemize
+If we remove all taxonomy splits that are not pairwise compatible with each
+ input tree edge, are all taxonomy edges jointly compatible with all input
+ tree edges?
+\end_layout
+
+\begin_deeper
+\begin_layout Enumerate
+It is possible for two taxonomy edges to be implied by the same input tree
+ edge.
+\end_layout
+
+\begin_layout Enumerate
+It is possible for two input tree edges to imply the same taxonomy edge.
+\end_layout
+
+\begin_layout Enumerate
+Each input tree edge is full rank on the induced tree.
+\end_layout
+
+\begin_layout Enumerate
+Now, each taxonomy edge is either equivalent an input tree edge, or on one
+ side of it, since they are compatible.
+\end_layout
+
+\begin_layout Enumerate
+This imposes a directed flow on the input tree for each taxonomy edge, so
+ that it moves to a node or a connected group of edges, all of which imply
+ it.
+\end_layout
+
+\end_deeper
+\begin_layout Subsection
 Decomposing into subproblems
 \end_layout
 
@@ -139,21 +254,22 @@ incertae sedis
 \emph default
  taxa into subproblems in such a way that the subproblem solver can perform
  the placement inside the subproblem.
- However, we must also handle conflicts of 
+ However, we must also handle conflicting placements of 
 \emph on
 incertae sedis
 \emph default
- taxon placement.
+ taxa by different input trees.
 \end_layout
 
 \begin_layout Standard
 I think we can solve this in a logically coherent way by recognizing that
- any taxonomy edges leading to conflicting placement on an 
+ any taxonomy edges leading to conflicting placement of an 
 \emph on
 incertae sedis
 \emph default
- taxon must end up in the same subproblem.
- Thus, if one input phylogeny places the 
+ taxon must end up in the same subproblem (i.e.
+ they must be collapsed).
+ Thus, if one input tree places the 
 \emph on
 incertae sedis
 \emph default
@@ -201,7 +317,239 @@ not
 
 \begin_layout Standard
 The result of such a decomposition procedure would be that the subproblem
- solve will handle any conflicting placement information.
+ solver will handle any conflicting placement information.
+\end_layout
+
+\begin_layout Subsubsection
+Example 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Figures/placement1/tax.tre.svg
+	scale 50
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Taxonomy 
+\begin_inset Formula $\boldsymbol{T}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Figures/placement1/input1.tre.svg
+	scale 50
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+\begin_inset Formula $\tau_{1}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Figures/placement1/input2.tre.svg
+	scale 50
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+\begin_inset Formula $\tau_{2}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:placement-example1"
+
+\end_inset
+
+Example.
+ An incertae sedis clade (ott6,ott7) is placed in different subtrees by
+ input trees 
+\begin_inset Formula $\tau_{1}$
+\end_inset
+
+ and 
+\begin_inset Formula $\tau_{2}$
+\end_inset
+
+.
+ In 
+\begin_inset Formula $\tau_{1}$
+\end_inset
+
+, two nodes that correspond to the taxonomy their ingroup extended to include
+ (ott6,ott7), and the branches leading to these nodes have been colored
+ blue.
+ The dashed blue edge leads to a node that is a newly-introduced degree-2
+ node which does not correspond to any taxonomy node.
+ In 
+\begin_inset Formula $\tau_{2}$
+\end_inset
+
+, only one node that corresponds to a taxonomy node needs to have its ingroup
+ extended.
+ The placement of (ott6,ott7) into ott8 toward ott1 by 
+\begin_inset Formula $\tau_{1}$
+\end_inset
+
+ conflicts with the placement of (ott6,ott7) into ott9 toward ott3 by 
+\begin_inset Formula $\tau_{2},$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+ In Figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:placement-example1"
+
+\end_inset
+
+, we can establish correspondences between branches in 
+\begin_inset Formula $\boldsymbol{T}|\tau_{1}$
+\end_inset
+
+ and 
+\begin_inset Formula $\tau_{1}$
+\end_inset
+
+ as follows:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{align*}
+\text{ott12: }1\,2\,3\,4\,\boldsymbol{6\,7}\,|\,5 & \sim1\,2\,3\,4\,\boldsymbol{6\,7}\,|\,5\\
+\text{ott11: }1\,2\,3\,\boldsymbol{6\,7}\,|\,4\,5 & \sim1\,2\,3\,\boldsymbol{6\,7}\,|\,4\,5\\
+\text{ott9: }1\,2\,3\,|\,4\,5 & \sim1\,2\,3\,\boldsymbol{6\,7}\,|\,4\,5\\
+\text{ott8: }1\,2\,|\,3\,4\,5 & \sim1\,2\,\boldsymbol{6\,7}\,|\,3\,4\,5\\
+? & \sim1\,\boldsymbol{6\,7\,}|\,2\,3\,4\,5
+\end{align*}
+
+\end_inset
+
+This mapping is based on the idea that, after conflicting branches are removed
+ from 
+\begin_inset Formula $\boldsymbol{T}|\tau$
+\end_inset
+
+, then its remaining splits and the splits of 
+\begin_inset Formula $\tau$
+\end_inset
+
+ will be jointly compatible.
+ Some of the splits of 
+\begin_inset Formula $\boldsymbol{T}|\tau$
+\end_inset
+
+ can be extended using 
+\begin_inset Formula $Z$
+\end_inset
+
+-closure (?).
+\end_layout
+
+\begin_layout Standard
+This is not completely clear though.
+ 
+\begin_inset Formula $\tau$
+\end_inset
+
+ contains only full splits, whereas splits from 
+\begin_inset Formula $\boldsymbol{T}|\tau$
+\end_inset
+
+ can be partial.
+ 
 \end_layout
 
 \begin_layout Subsubsection
@@ -321,6 +669,65 @@ it could place some descendant taxa of
 different place
 \emph default
  than another input tree.
+\end_layout
+
+\begin_layout Standard
+An conflict analysis between the taxonomy 
+\begin_inset Formula $\boldsymbol{T}$
+\end_inset
+
+ and an input tree 
+\begin_inset Formula $\tau$
+\end_inset
+
+ should yield, for the induced tree 
+\begin_inset Formula $\boldsymbol{T}|\tau$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+which branches correspond between 
+\begin_inset Formula $\boldsymbol{T}|\tau\longleftrightarrow\tau$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Itemize
+which branches of 
+\begin_inset Formula $\boldsymbol{T}|\tau$
+\end_inset
+
+ the input tree 
+\begin_inset Formula $\tau$
+\end_inset
+
+ conflicts with.
+\end_layout
+
+\begin_layout Subsubsection
+Possible issue:
+\end_layout
+
+\begin_layout Standard
+If two siblings are 
+\emph on
+incertae sedis
+\emph default
+, then they could each be subgroups of the other.
+ This means that the groups don't form a proper multi-connected tree, which
+ could be problematic.
+ We could therefore make 
+\emph on
+incertae sedis
+\emph default
+ groups impenetrable to other 
+\emph on
+incertae sedis
+\emph default
+ siblings.
 \end_layout
 
 \begin_layout Subsubsection
@@ -974,10 +1381,12 @@ Would it be theoretically possible to make the subproblem solver able to
 \end_layout
 
 \begin_layout Verbatim
+
 grafted solution (pruned)
 \end_layout
 
 \begin_layout Verbatim
+
 cleaned ott (unpruned)
 \end_layout
 
