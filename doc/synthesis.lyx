@@ -205,6 +205,125 @@ The result of such a decomposition procedure would be that the subproblem
 \end_layout
 
 \begin_layout Subsubsection
+Interactions between input trees and 
+\emph on
+incertae sedis
+\emph default
+ taxa
+\end_layout
+
+\begin_layout Standard
+
+\emph on
+Incertae sedis
+\emph default
+ nodes are features of the taxonomy.
+ Each input tree can relate to an 
+\emph on
+incertae sedis
+\emph default
+ taxon 
+\begin_inset Formula $(A,B,C)D$
+\end_inset
+
+ in a number of ways
+\end_layout
+
+\begin_layout Itemize
+it could place a descendant taxon of 
+\begin_inset Formula $D$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+descendants of incertae sedis taxa may be placed on branches, as well as
+ nodes.
+ That is the taxa will probably be places on new degree-2 nodes that bisect
+ branches, instead of being places on nodes.
+\end_layout
+
+\begin_layout Itemize
+it could place children of the branch in multiple places, thus conflicting
+ with the branch.
+ If the 
+\emph on
+incertae sedis
+\emph default
+ taxon 
+\begin_inset Formula $(A,B,C)$
+\end_inset
+
+ is broken, then 
+\begin_inset Formula $A$
+\end_inset
+
+, 
+\begin_inset Formula $B$
+\end_inset
+
+ and 
+\begin_inset Formula $C$
+\end_inset
+
+ become 
+\emph on
+incertae sedis
+\emph default
+ clades in their own right, that may attach separately.
+ This is because none of 
+\begin_inset Formula $A$
+\end_inset
+
+, 
+\begin_inset Formula $B$
+\end_inset
+
+, or 
+\begin_inset Formula $C$
+\end_inset
+
+ is in the exclude set of the siblings of 
+\begin_inset Formula $D$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Itemize
+it could resolve 
+\begin_inset Formula $A$
+\end_inset
+
+, 
+\begin_inset Formula $B$
+\end_inset
+
+, 
+\begin_inset Formula $C$
+\end_inset
+
+, or 
+\begin_inset Formula $D$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Itemize
+it could place some descendant taxa of 
+\begin_inset Formula $D$
+\end_inset
+
+ in a 
+\emph on
+different place
+\emph default
+ than another input tree.
+\end_layout
+
+\begin_layout Subsubsection
 Possible approach
 \end_layout
 
@@ -678,13 +797,9 @@ So, if we know which nodes in the taxonomy are consistent with the solution,
  If we attempt to assign a name to an already-named node, we create a new
  monotypic ancestor that is rootward of all the existing monotypic ancestors,
  and assign the name there.
- This probably requires walking the taxonomy tree in post-order.
-\end_layout
-
-\begin_layout Standard
-continue: 
-\emph on
-See modifications in solve-subproblem...
+ This requires that we process the displayed taxonomy nodes in post-order,
+ so we add more root-ward monotypic nodes second, so that they end up more
+ root-ward on the solution tree.
 \end_layout
 
 \begin_layout Subsection
@@ -859,12 +974,10 @@ Would it be theoretically possible to make the subproblem solver able to
 \end_layout
 
 \begin_layout Verbatim
-
 grafted solution (pruned)
 \end_layout
 
 \begin_layout Verbatim
-
 cleaned ott (unpruned)
 \end_layout
 
