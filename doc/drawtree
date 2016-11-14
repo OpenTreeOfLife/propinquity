@@ -11,6 +11,10 @@ if(length(args) < 1) {
 ## Parse arguments (we expect the form --arg=value)
 parseArgs <- function(x) strsplit(sub("^--", "", x), "=")
 argsDF <- as.data.frame(do.call("rbind", parseArgs(args)))
+if (is.null(argsDF$V2))
+{
+    argsDF$V2 = argsDF$V1
+}
 argsL <- as.list(as.character(argsDF$V2))
 #print("argsL")
 #print(argsL)
@@ -18,6 +22,7 @@ argsL <- as.list(as.character(argsDF$V2))
 #print(argsDF$V1)
 #print("argsDF$V2")
 #print(argsDF$V2)
+
 names(argsL) <- argsDF$V1
 
 ## Error conditions
