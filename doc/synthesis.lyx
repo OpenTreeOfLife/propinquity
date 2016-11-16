@@ -7,6 +7,7 @@
 \textclass article
 \begin_preamble
 \sloppy
+%\setlength{\parskip}{6pt}
 \end_preamble
 \use_default_options true
 \maintain_unincluded_children false
@@ -63,8 +64,8 @@
 \bottommargin 2cm
 \secnumdepth 3
 \tocdepth 3
-\paragraph_separation indent
-\paragraph_indentation default
+\paragraph_separation skip
+\defskip 6pt
 \quotes_language english
 \papercolumns 1
 \papersides 1
@@ -321,7 +322,7 @@ The result of such a decomposition procedure would be that the subproblem
 \end_layout
 
 \begin_layout Subsubsection
-Example 
+Example 1
 \end_layout
 
 \begin_layout Standard
@@ -550,6 +551,23 @@ This is not completely clear though.
 
  can be partial.
  
+\end_layout
+
+\begin_layout Subsubsection
+Example 2
+\end_layout
+
+\begin_layout Standard
+Suppose that 
+\begin_inset Formula $\tau_{1}$
+\end_inset
+
+ contests the 
+\emph on
+incertae sedis
+\emph default
+ clade (ott6,ott7).
+ What then?
 \end_layout
 
 \begin_layout Subsubsection
@@ -808,7 +826,7 @@ incertae sedis
 incertae sedis
 \emph default
  at the moment, and only the taxonomy tree for the subproblem contains OTT
- ids.
+ ids for internal nodes.
  Therefore we handle 
 \emph on
 incertae sedis
@@ -837,7 +855,11 @@ Incertae sedis
  information changes only the exclude set of splits, and only reduces this
  set.
  The exclude set for a node is is the union of the exclude set of the parent
- node and the include sets of non-incertae sedis siblings.
+ node and the include sets of non-
+\emph on
+incertae sedis
+\emph default
+ siblings.
  If we use the terminology that the include and exclude sets for a node
  
 \begin_inset Formula $n$
@@ -905,7 +927,79 @@ This is currently implemented in
 otc-solve-subproblem
 \emph default
 .
- We do not use bitmaps, but sets to store the sets right now.
+ We store the sets as 
+\emph on
+std::set
+\emph default
+.
+\end_layout
+
+\begin_layout Subsubsection
+Should the solution tree 
+\emph on
+also
+\emph default
+ have incertae sedis taxa?
+\end_layout
+
+\begin_layout Standard
+It would be nice if the solution tree could have 
+\emph on
+incertae sedis
+\emph default
+ taxa.
+ Specifically, it would be nice to be able to reproduce the input in the
+ case where the input consists only of a taxonomy (subproblem) with 
+\emph on
+incertae sedis
+\emph default
+ taxa.
+\end_layout
+
+\begin_layout Standard
+In general, we should be able to assign splits from the subproblem trees
+ to edges in the solution tree, although this assignment will not be unique.
+ Labeling solution edges with splits in this way will identify cases where
+ the split associated with an edge is a partial split, and we can float
+ sibling subtrees across the edge.
+ When a node can float all the way to the tips of all of its siblings
+\begin_inset Foot
+status collapsed
+
+\begin_layout Plain Layout
+Or, all of its non-
+\emph on
+incertae sedis
+\emph default
+ siblings, if we disallow floating across 
+\emph on
+incertae sedis
+\emph default
+ branches
+\end_layout
+
+\end_inset
+
+, we could label such a node 
+\emph on
+incertae sedis
+\emph default
+ in the solution.
+ Such a node may not have an OTT name.
+\end_layout
+
+\begin_layout Standard
+When the problems are 
+\emph on
+sub
+\emph default
+problems, an issue arises about whether a node can float to the tips of
+ its sibling subtrees after these subtrees are extended by grafting.
+ BDR: Would this always be possible if the node was originally an 
+\emph on
+incertae sedis
+\emph default
+ taxonomy node?
 \end_layout
 
 \begin_layout Subsection
@@ -1174,27 +1268,6 @@ When we assign multiple names to the same node, then we expand the node
 \end_layout
 
 \begin_layout Subsubsection
-Should the solution tree 
-\emph on
-also
-\emph default
- have incertae sedis taxa?
-\end_layout
-
-\begin_layout Standard
-Yes, it probably should.
-\end_layout
-
-\begin_layout Standard
-One question is if we can represent all possible patterns of uncertainty
- through the used of 
-\emph on
-incertae sedis
-\emph default
- labels on certain synthesis tree nodes.
-\end_layout
-
-\begin_layout Subsubsection
 Implementation
 \end_layout
 
@@ -1218,8 +1291,70 @@ Currently the unpruner might require that the OTT ids are named in the grafted
  solution before unpruning starts.
 \end_layout
 
+\begin_layout Standard
+The unpruner should record when unpruned nodes are 
+\emph on
+incertae sedis
+\emph default
+.
+ In combination with the 
+\end_layout
+
+\begin_layout Subsection
+Labelled supertree
+\end_layout
+
+\begin_layout Standard
+
+\emph on
+Question:
+\emph default
+ Does the synthesis tree contain any 
+\emph on
+incertae sedis
+\emph default
+ groups?
+\begin_inset Newline newline
+\end_inset
+
+
+\emph on
+Answer:
+\emph default
+ The grafted supertree will not contain any 
+\emph on
+incertae sedis
+\emph default
+ groups.
+ However, when we attach pruned nodes to a parent in the grafted supertree,
+ we could mark such nodes 
+\emph on
+incertae sedis
+\emph default
+ if we want.
+\end_layout
+
 \begin_layout Subsection
 Annotation
+\end_layout
+
+\begin_layout Standard
+The synthesis tree itself does not currently have 
+\emph on
+incertae sedis 
+\emph default
+groups.
+ Furthermore, the primary goal is to avoid excluding 
+\emph on
+incertae sedis
+\emph default
+ taxa, whereas displaying 
+\emph on
+incertae sedis 
+\emph default
+status for solution nodes in the tree viewer is a secondary goal.
+ Therefore, solution nodes can be regarded (for the moment) as always implying
+ full splits.
 \end_layout
 
 \begin_layout Standard
