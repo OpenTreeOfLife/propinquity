@@ -79,6 +79,69 @@
 
 \begin_body
 
+\begin_layout Standard
+\begin_inset FormulaMacro
+\newcommand{\taxonomy}{\mbox{\mathbb{T}}}
+{\mbox{\mathbb{T}}}
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset FormulaMacro
+\newcommand{\prunedTaxonomy}{\taxonomy_{P}}
+{\taxonomy_{P}}
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset FormulaMacro
+\newcommand{\phyloinputs}{\mathcal{T}}
+{\mathcal{T}}
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset FormulaMacro
+\newcommand{\expandedPhylo}{\phyloinputs_{E}}
+{\phyloinputs_{E}}
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset FormulaMacro
+\newcommand{\summaryTree}{\mathbb{S}}
+{\mathbb{S}}
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset FormulaMacro
+\newcommand{\prunedSummary}{\summaryTree_{P}}
+{\summaryTree_{P}}
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset FormulaMacro
+\newcommand{\collections}{\mathcal{C}}
+{\mathcal{C}}
+\end_inset
+
+
+\end_layout
+
 \begin_layout Title
 Improvements to propinquity
 \end_layout
@@ -352,7 +415,7 @@ status open
 
 \begin_layout Plain Layout
 Taxonomy 
-\begin_inset Formula $\boldsymbol{T}$
+\begin_inset Formula $\taxonomy$
 \end_inset
 
 
@@ -496,7 +559,7 @@ reference "fig:placement-example1"
 \end_inset
 
 , we can establish correspondences between branches in 
-\begin_inset Formula $\boldsymbol{T}|\tau_{1}$
+\begin_inset Formula $\taxonomy|\tau_{1}$
 \end_inset
 
  and 
@@ -520,7 +583,7 @@ reference "fig:placement-example1"
 
 This mapping is based on the idea that, after conflicting branches are removed
  from 
-\begin_inset Formula $\boldsymbol{T}|\tau$
+\begin_inset Formula $\taxonomy|\tau$
 \end_inset
 
 , then its remaining splits and the splits of 
@@ -529,7 +592,7 @@ This mapping is based on the idea that, after conflicting branches are removed
 
  will be jointly compatible.
  Some of the splits of 
-\begin_inset Formula $\boldsymbol{T}|\tau$
+\begin_inset Formula $\taxonomy|\tau$
 \end_inset
 
  can be extended using 
@@ -546,7 +609,7 @@ This is not completely clear though.
 \end_inset
 
  contains only full splits, whereas splits from 
-\begin_inset Formula $\boldsymbol{T}|\tau$
+\begin_inset Formula $\taxonomy|\tau$
 \end_inset
 
  can be partial.
@@ -558,7 +621,7 @@ Example 2
 \end_layout
 
 \begin_layout Standard
-Suppose that 
+Question: Suppose that 
 \begin_inset Formula $\tau_{1}$
 \end_inset
 
@@ -566,8 +629,45 @@ Suppose that
 \emph on
 incertae sedis
 \emph default
- clade (ott6,ott7).
+ clade (ott6,ott7)ott9.
  What then?
+\begin_inset Newline newline
+\end_inset
+
+Answer: Any taxa with ott6 or ott7 placed into them should not be broken
+ if they would have allowed ott9.
+\end_layout
+
+\begin_layout Standard
+Question: Suppose that 
+\begin_inset Formula $\tau_{1}$
+\end_inset
+
+ contests the 
+\emph on
+incertae sedis
+\emph default
+ clade (ott6,ott7)ott9 and attaches ott6 and ott7 separately to the ott3
+ terminal edge?
+\begin_inset Newline newline
+\end_inset
+
+Answer: In this case the breaking of ott9 and the separate placement of
+ ott6 and ott7 together constitute the 
+\begin_inset Quotes eld
+\end_inset
+
+placement
+\begin_inset Quotes erd
+\end_inset
+
+ of ott9.
+ Thus, we need to be able to represent the conflict/annotation of the taxonomy
+ tree and the input tree 
+\begin_inset Formula $\tau_{1}$
+\end_inset
+
+.
 \end_layout
 
 \begin_layout Subsubsection
@@ -691,7 +791,7 @@ different place
 
 \begin_layout Standard
 An conflict analysis between the taxonomy 
-\begin_inset Formula $\boldsymbol{T}$
+\begin_inset Formula $\taxonomy$
 \end_inset
 
  and an input tree 
@@ -699,7 +799,7 @@ An conflict analysis between the taxonomy
 \end_inset
 
  should yield, for the induced tree 
-\begin_inset Formula $\boldsymbol{T}|\tau$
+\begin_inset Formula $\taxonomy|\tau$
 \end_inset
 
 
@@ -707,7 +807,7 @@ An conflict analysis between the taxonomy
 
 \begin_layout Itemize
 which branches correspond between 
-\begin_inset Formula $\boldsymbol{T}|\tau\longleftrightarrow\tau$
+\begin_inset Formula $\taxonomy|\tau\longleftrightarrow\tau$
 \end_inset
 
 .
@@ -715,7 +815,7 @@ which branches correspond between
 
 \begin_layout Itemize
 which branches of 
-\begin_inset Formula $\boldsymbol{T}|\tau$
+\begin_inset Formula $\taxonomy|\tau$
 \end_inset
 
  the input tree 
@@ -1000,6 +1100,19 @@ problems, an issue arises about whether a node can float to the tips of
 incertae sedis
 \emph default
  taxonomy node?
+\end_layout
+
+\begin_layout Standard
+Hmm...
+ I was initially thinking that an incertae sedis taxon could get further
+ placed but remain incertae sedis.
+ For example, suppose we have a taxon that is incertae sedis within Vertebrata.
+ Could an input tree place this taxon within Mammals, but not say where?
+ I guess this could happen if the input tree had Theria and Prototheria
+ as tip children.
+ In that case, then the input tree could include a polytomy (which would
+ place the taxon in Mammals), or could place the taxon on (say) the Theria
+ edge, which would exclude it from Prototheria.
 \end_layout
 
 \begin_layout Subsection
