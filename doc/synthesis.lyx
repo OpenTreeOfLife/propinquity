@@ -143,7 +143,9 @@
 \end_layout
 
 \begin_layout Title
-Improvements to propinquity
+Improvements to 
+\family typewriter
+propinquity
 \end_layout
 
 \begin_layout Section
@@ -159,156 +161,363 @@ In order to handle
 \emph on
 incertae sedis
 \emph default
- taxa we must modify three or four stages of the propinquity pipeline.
- First, we must modify the decomposition into subproblems to place 
+ taxa we must modify some of the stages (and maybe concepts) of the propinquity
+ pipeline.
+ 
+\end_layout
+
+\begin_layout Itemize
+
+\series bold
+Subproblem decomposition
+\series default
+ must be modified to place 
 \emph on
 incertae sedis
 \emph default
- taxa in the correct subproblem and handle conflict between subproblems
- in the placement of such taxa.
- Second, we must extend the subproblem solver to correctly solve subproblems
- that contain 
+ taxa in the correct subproblem, and to handle conflict in placement information
+ between input trees.
+\end_layout
+
+\begin_layout Itemize
+The 
+\series bold
+subproblem solver
+\series default
+ has been modified to read 
+\emph on
+incertae sedis
+\emph default
+ information, solve problems which include that information, and name OTT
+ nodes that have 
+\emph on
+incertae sedis
+\emph default
+ taxa newly placed within them.
+\end_layout
+
+\begin_layout Itemize
+Q: does 
+\series bold
+unpruning
+\series default
+ need to be modified, in theory, or in terms of the code we currently have?
+\end_layout
+
+\begin_layout Standard
+We will also generate another product, the 
+\emph on
+placed taxonomy
+\emph default
+.
+ The placed taxonomy will probably not have any 
 \emph on
 incertae sedis
 \emph default
  taxa.
- Third, we 
-\emph on
-might
-\emph default
- need to modify how unpruning works.
- Lastly, we must modify the the naming of nodes to take into account the
- fact that OTT taxa might have had 
+ Subproblem decomposition will place 
 \emph on
 incertae sedis
 \emph default
- taxa placed inside them, so that OTT taxa cannot be strictly identified
- with their set of descendants anymore.
+ taxa up to sub-problem resolution, but will not resolve conflicting placements
+ within subproblems.
+ Conflicting placements withing subproblems will be resolved by the subproblem
+ solver.
 \end_layout
 
-\begin_layout Subsection
-Annotations
-\end_layout
-
-\begin_layout Standard
-After we allow 
-\emph on
-incertae
-\emph default
- sedis taxa in the taxonomy, the relationships of edges in the taxonomy
- to edges in each input tree become more interesting.
- Without 
-\emph on
-incertae sedis
-\emph default
- taxa, taxonomy splits always divide the full leaf set, and so we can say
- that taxonomy split 
-\begin_inset Formula $A$
-\end_inset
-
- displays an input split 
-\begin_inset Formula $B$
-\end_inset
-
- if 
-\begin_inset Formula $B_{1}\subseteq A_{1}$
-\end_inset
-
- and 
-\begin_inset Formula $B_{2}\subseteq A_{2}$
-\end_inset
-
-.
- Thus, a taxonomy split always has more information than an input split
- 
-\begin_inset Formula $B$
-\end_inset
-
- that it displays.
- However, with 
-\emph on
-incertae sedis
-\emph default
- taxa in the taxonomy, it is possible that the input split 
-\begin_inset Formula $B$
-\end_inset
-
- 
-\begin_inset Quotes eld
-\end_inset
-
-aligns
-\begin_inset Quotes erd
-\end_inset
-
- to a taxonomy split 
-\begin_inset Formula $A$
-\end_inset
-
- and 
-\emph on
-also
-\emph default
- performs a placement.
- In this case the input split 
-\begin_inset Formula $B$
-\end_inset
-
- has more information than the taxonomy split 
-\begin_inset Formula $A$
-\end_inset
-
- that it aligns to.
- 
-\end_layout
-
-\begin_layout Standard
-
-\series bold
-BDR: Question: when comparing the taxonomy to an input tree, how do we deal
- with conflict & alignment?
-\end_layout
-
-\begin_layout Itemize
-If we remove all taxonomy splits that are not pairwise compatible with each
- input tree edge, are all taxonomy edges jointly compatible with all input
- tree edges?
-\end_layout
-
-\begin_deeper
-\begin_layout Enumerate
-It is possible for two taxonomy edges to be implied by the same input tree
- edge.
-\end_layout
-
-\begin_layout Enumerate
-It is possible for two input tree edges to imply the same taxonomy edge.
-\end_layout
-
-\begin_layout Enumerate
-Each input tree edge is full rank on the induced tree.
-\end_layout
-
-\begin_layout Enumerate
-Now, each taxonomy edge is either equivalent an input tree edge, or on one
- side of it, since they are compatible.
-\end_layout
-
-\begin_layout Enumerate
-This imposes a directed flow on the input tree for each taxonomy edge, so
- that it moves to a node or a connected group of edges, all of which imply
- it.
-\end_layout
-
-\end_deeper
 \begin_layout Subsection
 Decomposing into subproblems
 \end_layout
 
+\begin_layout Subsubsection
+Uncontested edges in an 
+\emph on
+incertae sedis
+\emph default
+ world
+\end_layout
+
 \begin_layout Standard
-Decomposition involves subdividing the tree into subproblems that can (usually)
- be solved independently.
- When 
+Decomposition is based on the claims that
+\end_layout
+
+\begin_layout Enumerate
+if a taxonomy edge 
+\emph on
+is
+\emph default
+ included in the final tree, then we can solve conflicts on either side
+ of the edge independently, and
+\end_layout
+
+\begin_layout Enumerate
+non-contested taxonomy edges will certainly be included in the final tree.
+\end_layout
+
+\begin_layout Standard
+The first claim is true without 
+\emph on
+incertae sedis
+\emph default
+ taxa, but becomes untrue when we allow 
+\emph on
+incertae sedis
+\emph default
+ taxa, because edges are not required to partition all tip taxa.
+ The second claim is a heuristic assumption that would usually be true.
+ We may thus enforce this condition without (we hope) producing a tree that
+ is very different from the tree we would get if we did not perform subproblem
+ decomposition.
+ Thus, with the addition of 
+\emph on
+incertae sedis
+\emph default
+ taxa, we could also attempt to enforce the inclusion of non-contested edges,
+ while keeping in mind that such edges do not partition all leaf taxa.
+ Specifically, they do not partition 
+\emph on
+incertae sedis
+\emph default
+ taxa.
+ Thus they act as partitions up to, but not beyond, the issue of placement.
+ In order to use these edges to partition subproblems, we must therefore
+ extend these edges to partition all leaf taxa.
+ This correspond to placing 
+\emph on
+incertae sedis 
+\emph default
+taxa on one side of the edge.
+\end_layout
+
+\begin_layout Subsubsection
+Extending uncontested edges to place 
+\emph on
+incertae sedis
+\emph default
+ taxa
+\end_layout
+
+\begin_layout Standard
+One approach would be to extend edges to place 
+\emph on
+incertae sedis 
+\emph default
+tips if all input trees agree on which side of the edge each tip should
+ go on.
+ If they do 
+\emph on
+not
+\emph default
+ agree, we would mark the edge as contested instead of extending it.
+ This would make sense if 
+\emph on
+incertae sedis
+\emph default
+ taxa can be placed independently.
+ 
+\end_layout
+
+\begin_layout Standard
+This becomes more complicated when we consider that 
+\emph on
+incertae sedis
+\emph default
+ taxa may not be tip taxa.
+ For example, we might have an 
+\emph on
+incertae sedis
+\emph default
+ clade 
+\begin_inset Formula $(A,B)$
+\end_inset
+
+ where 
+\begin_inset Formula $A$
+\end_inset
+
+ is placed on one side of an uncontested edge and 
+\begin_inset Formula $B$
+\end_inset
+
+ is placed on the other side of the edge.
+ If these placements occur in a single tree, then that tree will conflict
+ with the edge 
+\begin_inset Formula $(A,B)$
+\end_inset
+
+.
+ However, if these placements occur in 
+\emph on
+different
+\emph default
+ trees, then the above procedure would extend the uncontested edge to conflict
+ with the 
+\begin_inset Formula $(A,B)$
+\end_inset
+
+ edge.
+ In that case, the taxonomy is ranked last, and we could simply mark the
+ 
+\begin_inset Formula $(A,B)$
+\end_inset
+
+ edge as contested.
+ When collapsing an edge to an 
+\emph on
+incertae sedis
+\emph default
+ taxon, we can preserve the correct information about taxon floating by
+ marking all the children of the removed 
+\emph on
+incertae sedis
+\emph default
+ node as 
+\emph on
+incertae sedis
+\emph default
+, except that this makes the children if 
+\emph on
+incertae sedis
+\emph default
+ taxa able to float into each other.
+ Thus, contesting 
+\emph on
+incertae sedis
+\emph default
+ taxa makes this much more complicated...
+\end_layout
+
+\begin_layout Standard
+Now, if the 
+\begin_inset Formula $(A,B)$
+\end_inset
+
+ grouping occurs in an input tree, then I think we will simply mark the
+ edge that is extended to have 
+\begin_inset Formula $A$
+\end_inset
+
+ and 
+\begin_inset Formula $B$
+\end_inset
+
+ on different sides as contested.
+ That would be best.
+ Huh.
+ This might actually work.
+\end_layout
+
+\begin_layout Subsubsection
+Example A
+\end_layout
+
+\begin_layout Standard
+OK, so suppose we have
+\end_layout
+
+\begin_layout Itemize
+cd|e, ac|d, bd|c, ab|cde
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+OK, so in this case ab|cde conflicts with a lot of edges.
+ In synth, it would just be not included.
+ In analysis for contesting, it seems like ac|d and bd|c should be contested.
+\end_layout
+
+\end_deeper
+\begin_layout Itemize
+cd|e, ac|d, ab|cde, bd|c
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+OK, so in this case, it seems like bd|c contests ac|d and ab|cde
+\end_layout
+
+\end_deeper
+\begin_layout Itemize
+cd|e, ab|cde, ac|d, bd|c
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+bd|c conflicts with abc|de
+\end_layout
+
+\end_deeper
+\begin_layout Standard
+These cases seem complicated, but in fact in all cases the edge 
+\begin_inset Formula $cd|e$
+\end_inset
+
+ is not really contested.
+ It is just the 
+\emph on
+other
+\emph default
+ edges.
+ And, in fact, we seem justified in concluding 
+\begin_inset Formula $abcd|e$
+\end_inset
+
+ in all cases.
+ This is an extension of 
+\begin_inset Formula $cd|e$
+\end_inset
+
+ to place 
+\begin_inset Formula $a$
+\end_inset
+
+ and 
+\begin_inset Formula $b$
+\end_inset
+
+ tipward of it.
+\end_layout
+
+\begin_layout Subsubsection
+Example B
+\end_layout
+
+\begin_layout Itemize
+Uncontested edge wx|y
+\end_layout
+
+\begin_layout Itemize
+IS taxon vz|wxy
+\end_layout
+
+\begin_layout Itemize
+tree 1 says vw|x
+\end_layout
+
+\begin_layout Itemize
+tree 2 says xy|z
+\end_layout
+
+\begin_layout Itemize
+optionally, tree 3 says vz|wxy
+\end_layout
+
+\begin_layout Standard
+In this case we want to conclude that the edge 
+\begin_inset Formula $wx|y$
+\end_inset
+
+ is contested by conflicting placement information.
+ And I think we want to conclude that the IS taxon is also contested by
+ placement information that would tend to break up the clade.
+\end_layout
+
+\begin_layout Subsubsection
+What to do
+\end_layout
+
+\begin_layout Standard
+When 
 \emph on
 incertae sedis
 \emph default
@@ -369,7 +578,7 @@ incertae sedis
 \emph on
 not
 \emph default
- be contested where taxon 
+ be contested were taxon 
 \begin_inset Formula $X$
 \end_inset
 
@@ -392,7 +601,7 @@ Example 1
 \begin_inset Float figure
 wide false
 sideways false
-status open
+status collapsed
 
 \begin_layout Plain Layout
 \begin_inset Float figure
@@ -826,7 +1035,7 @@ which branches of
 \end_layout
 
 \begin_layout Subsubsection
-Possible issue:
+Possible issue 1:
 \end_layout
 
 \begin_layout Standard
@@ -846,6 +1055,61 @@ incertae sedis
 incertae sedis
 \emph default
  siblings.
+\end_layout
+
+\begin_layout Subsubsection
+Possible issue 2:
+\end_layout
+
+\begin_layout Standard
+If the decomposer places IS taxa to subproblem resolution, then their new
+ placement no longer specifies exactly which taxa they float over, right?
+ Suppose 
+\begin_inset Formula $X$
+\end_inset
+
+ floats over 
+\begin_inset Formula $(A,B)$
+\end_inset
+
+, and 
+\begin_inset Formula $A$
+\end_inset
+
+ floats over 
+\begin_inset Formula $B$
+\end_inset
+
+.
+ Then if 
+\begin_inset Formula $X$
+\end_inset
+
+ and 
+\begin_inset Formula $A$
+\end_inset
+
+ are placed within 
+\begin_inset Formula $B$
+\end_inset
+
+ within subproblem 
+\begin_inset Formula $ottid$
+\end_inset
+
+, then the fact that 
+\begin_inset Formula $X$
+\end_inset
+
+ floats over 
+\begin_inset Formula $A$
+\end_inset
+
+ but not 
+\emph on
+vice versa
+\emph default
+ will be lost.
 \end_layout
 
 \begin_layout Subsubsection
@@ -893,6 +1157,130 @@ If this does work, then it is hopeful that this would decrease the number
 incertae sedis
 \emph default
  taxa.
+\end_layout
+
+\begin_layout Subsection
+Annotations
+\end_layout
+
+\begin_layout Standard
+After we allow 
+\emph on
+incertae
+\emph default
+ sedis taxa in the taxonomy, the relationships of edges in the taxonomy
+ to edges in each input tree become more interesting.
+ Without 
+\emph on
+incertae sedis
+\emph default
+ taxa, taxonomy splits always divide the full leaf set, and so we can say
+ that taxonomy split 
+\begin_inset Formula $A$
+\end_inset
+
+ displays an input split 
+\begin_inset Formula $B$
+\end_inset
+
+ if 
+\begin_inset Formula $B_{1}\subseteq A_{1}$
+\end_inset
+
+ and 
+\begin_inset Formula $B_{2}\subseteq A_{2}$
+\end_inset
+
+.
+ Thus, a taxonomy split always has more information than an input split
+ 
+\begin_inset Formula $B$
+\end_inset
+
+ that it displays.
+ However, with 
+\emph on
+incertae sedis
+\emph default
+ taxa in the taxonomy, it is possible that the input split 
+\begin_inset Formula $B$
+\end_inset
+
+ 
+\begin_inset Quotes eld
+\end_inset
+
+aligns
+\begin_inset Quotes erd
+\end_inset
+
+ to a taxonomy split 
+\begin_inset Formula $A$
+\end_inset
+
+ and 
+\emph on
+also
+\emph default
+ performs a placement.
+ In this case the input split 
+\begin_inset Formula $B$
+\end_inset
+
+ has more information than the taxonomy split 
+\begin_inset Formula $A$
+\end_inset
+
+ that it aligns to.
+ 
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+BDR: Question: when comparing the taxonomy to an input tree, how do we deal
+ with conflict & alignment?
+\end_layout
+
+\begin_layout Itemize
+If we remove all taxonomy splits that are not pairwise compatible with each
+ input tree edge, are all taxonomy edges jointly compatible with all input
+ tree edges?
+\end_layout
+
+\begin_deeper
+\begin_layout Enumerate
+It is possible for two taxonomy edges to be implied by the same input tree
+ edge.
+\end_layout
+
+\begin_layout Enumerate
+It is possible for two input tree edges to imply the same taxonomy edge.
+\end_layout
+
+\begin_layout Enumerate
+Each input tree edge is full rank on the induced tree.
+\end_layout
+
+\begin_layout Enumerate
+Now, each taxonomy edge is either equivalent an input tree edge, or on one
+ side of it, since they are compatible.
+\end_layout
+
+\begin_layout Enumerate
+This imposes a directed flow on the input tree for each taxonomy edge, so
+ that it moves to a node or a connected group of edges, all of which imply
+ it.
+\end_layout
+
+\end_deeper
+\begin_layout Itemize
+We annotate the synthesis tree, not the taxonomy tree.
+\end_layout
+
+\begin_layout Itemize
+Adding incertae sedis info would complicate performing conflict analysis
+ against the taxonomy.
 \end_layout
 
 \begin_layout Subsection
