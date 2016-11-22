@@ -8,11 +8,19 @@ def get_decisions():
     decisions = []
     for x in sys.argv[1:]:
         name = os.path.basename(x)
-        study_tree = re.compile(r'([^_]+_[0-9]+)@([^_]+)\.tre')
+        study_tree = re.compile(r'([^_]+_[0-9]+)@([^@]+)\.tre')
         m = study_tree.match(name)
+        if m is None:
+            sys.stderr.write("\n\nError: Name '{}' does not match require pattern! Not generating fake collection.\n".format(name))
+            exit(1)
         study = m.group(1)
         tree = m.group(2)
-        decisions.append({"studyID":study,"treeID":tree,"SHA":0,"name":name})
+        decisions.append({"studyID": study,
+                          "treeID": tree,
+                          "SHA": 0,
+                          "name": name,
+                          "decision": "INCLUDED"
+                          })
     return decisions
 
 

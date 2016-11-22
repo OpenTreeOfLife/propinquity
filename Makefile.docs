@@ -14,6 +14,34 @@ HARDCODED_DOC_STEMS = README.md \
 	cleaned_ott/README.md \
 	logs/index.html
 
+
+HTML_ARTIFACTS = $(PROPINQUITY_OUT_DIR)/annotated_supertree/index.html \
+	$(PROPINQUITY_OUT_DIR)/annotated_supertree/index.json \
+	$(PROPINQUITY_OUT_DIR)/assessments/index.html \
+	$(PROPINQUITY_OUT_DIR)/assessments/index.json \
+	$(PROPINQUITY_OUT_DIR)/cleaned_ott/index.html \
+	$(PROPINQUITY_OUT_DIR)/cleaned_ott/index.json \
+	$(PROPINQUITY_OUT_DIR)/cleaned_phylo/index.json \
+	$(PROPINQUITY_OUT_DIR)/cleaned_phylo/index.html \
+	$(PROPINQUITY_OUT_DIR)/exemplified_phylo/index.html \
+	$(PROPINQUITY_OUT_DIR)/exemplified_phylo/index.json \
+	$(PROPINQUITY_OUT_DIR)/grafted_solution/index.html \
+	$(PROPINQUITY_OUT_DIR)/grafted_solution/index.json \
+	$(PROPINQUITY_OUT_DIR)/index.html \
+	$(PROPINQUITY_OUT_DIR)/index.json \
+	$(PROPINQUITY_OUT_DIR)/logs/index.html \
+	$(PROPINQUITY_OUT_DIR)/logs/myeasylog.log \
+	$(PROPINQUITY_OUT_DIR)/labelled_supertree/index.html \
+	$(PROPINQUITY_OUT_DIR)/labelled_supertree/index.json \
+	$(PROPINQUITY_OUT_DIR)/phylo_input/index.json \
+	$(PROPINQUITY_OUT_DIR)/phylo_input/index.html \
+	$(PROPINQUITY_OUT_DIR)/subproblems/index.html \
+	$(PROPINQUITY_OUT_DIR)/subproblems/index.json \
+	$(PROPINQUITY_OUT_DIR)/subproblem_solutions/index.html \
+	$(PROPINQUITY_OUT_DIR)/subproblem_solutions/index.json \
+	$(PROPINQUITY_OUT_DIR)/phylo_snapshot/index.html \
+	$(PROPINQUITY_OUT_DIR)/phylo_snapshot/index.json
+
 # if PROPINQUITY_OUT_DIR is just ., then we set up 
 #	a bogus input to avoid a circular dependency
 #	note that the rule to build HARDCODED_DOC_ARTIFACTS
@@ -26,15 +54,20 @@ endif
 
 HARDCODED_DOC_ARTIFACTS := $(addprefix $(PROPINQUITY_OUT_DIR)/, $(HARDCODED_DOC_STEMS))
 
+cleandoc:
+	rm -f $(HTML_ARTIFACTS)
+	rm -f $(HARDCODED_DOC_ARTIFACTS)
+
+
 $(PROPINQUITY_OUT_DIR)/assessments/supertree_degree_distribution.txt: $(PROPINQUITY_OUT_DIR)/labelled_supertree/labelled_supertree.tre
 	@if ! test -d $(PROPINQUITY_OUT_DIR)/assessments ; then mkdir -p $(PROPINQUITY_OUT_DIR)/assessments ; fi
-	cd $(PROPINQUITY_OUT_DIR) ; otc-degree-distribution \
+	otc-degree-distribution \
 		$(PROPINQUITY_OUT_DIR)/labelled_supertree/labelled_supertree.tre \
 		> $(PROPINQUITY_OUT_DIR)/assessments/supertree_degree_distribution.txt
 
 $(PROPINQUITY_OUT_DIR)/assessments/taxonomy_degree_distribution.txt: $(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaned_ott.tre
 	@if ! test -d $(PROPINQUITY_OUT_DIR)/assessments ; then mkdir -p $(PROPINQUITY_OUT_DIR)/assessments ; fi
-	cd $(PROPINQUITY_OUT_DIR) ; otc-degree-distribution $(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaned_ott.tre > $(PROPINQUITY_OUT_DIR)/assessments/taxonomy_degree_distribution.txt
+	otc-degree-distribution $(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaned_ott.tre > $(PROPINQUITY_OUT_DIR)/assessments/taxonomy_degree_distribution.txt
 
 $(PROPINQUITY_OUT_DIR)/assessments/lost_taxa.txt: $(PROPINQUITY_OUT_DIR)/labelled_supertree/labelled_supertree.tre
 	@if ! test -d $(PROPINQUITY_OUT_DIR)/assessments ; then mkdir -p $(PROPINQUITY_OUT_DIR)/assessments ; fi
@@ -49,7 +82,9 @@ $(PROPINQUITY_OUT_DIR)/assessments/lost_taxa.txt: $(PROPINQUITY_OUT_DIR)/labelle
 $(PROPINQUITY_OUT_DIR)/assessments/summary.json: $(PROPINQUITY_OUT_DIR)/annotated_supertree/annotations.json \
 						  $(PROPINQUITY_OUT_DIR)/assessments/taxonomy_degree_distribution.txt \
 	                      $(PROPINQUITY_OUT_DIR)/assessments/supertree_degree_distribution.txt \
-	                      $(PROPINQUITY_OUT_DIR)/assessments/lost_taxa.txt
+	                      $(PROPINQUITY_OUT_DIR)/assessments/lost_taxa.txt \
+	                      $(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaned_ott.tre \
+	                      $(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaned_ott.json
 	@if ! test -d $(PROPINQUITY_OUT_DIR)/assessments ; then mkdir -p $(PROPINQUITY_OUT_DIR)/assessments ; fi
 	@rm -f $(PROPINQUITY_OUT_DIR)/assessments/summary.json 2>/dev/null
 	./bin/run_assessments.py $(PROPINQUITY_OUT_DIR) $(PROPINQUITY_OUT_DIR)/assessments/summary.json 2>&1 | tee $(PROPINQUITY_OUT_DIR)/assessments/log.txt || true
@@ -64,7 +99,7 @@ check: $(PROPINQUITY_OUT_DIR)/assessments/summary.json
 
 html-output: $(PROPINQUITY_OUT_DIR)/assessments/summary.json \
 				   $(PROPINQUITY_OUT_DIR)/phylo_snapshot/collections_git_shas.txt
-	bin/document_outputs.py --config=$(CONFIG_FILENAME) $(PROPINQUITY_OUT_DIR)
+	./bin/document_outputs.py --config=$(CONFIG_FILENAME) $(PROPINQUITY_OUT_DIR)
 	@echo 'Documentation created'
 
 

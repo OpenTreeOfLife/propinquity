@@ -1,0 +1,4 @@
+digraph "make" {
+graph [ranksep=0.25, fontname=Arial,  nodesep=0.25, ranksep=0.5];
+node [fontname=Arial, style=filled, height=0, width=0, shape=box];
+edge [style="setlinewidth(2)"];

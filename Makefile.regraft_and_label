@@ -1,0 +1,126 @@
+# Somewhat confusingly this part of the pipeline deals takes grafted_solution/* as input.
+# It contains rules for regrafting taxonomy-only tips, labelling the tree, and making annotations
+# This completes the construction of the summary tree.
+
+FULL_SUPERTREE_ARTIFACTS=$(PROPINQUITY_OUT_DIR)/full_supertree/full_supertree.tre
+
+LABELLED_SUPERTREE_ARTIFACTS=$(PROPINQUITY_OUT_DIR)/labelled_supertree/broken_taxa.json \
+	  $(PROPINQUITY_OUT_DIR)/labelled_supertree/input_output_stats.json \
+	  $(PROPINQUITY_OUT_DIR)/labelled_supertree/labelled_supertree.tre \
+	  $(PROPINQUITY_OUT_DIR)/labelled_supertree/labelled_supertree_out_degree_distribution.txt \
+	  $(PROPINQUITY_OUT_DIR)/labelled_supertree/labelled_supertree_ottnames.tre \
+	  $(PROPINQUITY_OUT_DIR)/labelled_supertree/labelled_supertree_ottnames_without_monotypic.tre \
+	  $(PROPINQUITY_OUT_DIR)/labelled_supertree/labelled_supertree_simplified_ottnames.tre \
+	  $(PROPINQUITY_OUT_DIR)/labelled_supertree/labelled_supertree_simplified_ottnames_without_monotypic.tre
+
+ANNOTATED_SUPERTREE_ARTIFACTS=$(PROPINQUITY_OUT_DIR)/annotated_supertree/annotations.json \
+	$(PROPINQUITY_OUT_DIR)/annotated_supertree/annotations1.json \
+	$(PROPINQUITY_OUT_DIR)/annotated_supertree/annotations2.json
+
+FULL_TREE_ARTIFACTS= $(FULL_SUPERTREE_ARTIFACTS) \
+	  $(LABELLED_SUPERTREE_ARTIFACTS) \
+	  $(ANNOTATED_SUPERTREE_ARTIFACTS)
+
+
+# Full supertree without labels. This is not used. It is pretty deprecated, but the 
+#	rule remains, in case someone wants a small version of the tree (fewer labels and short tip labels)
+$(PROPINQUITY_OUT_DIR)/full_supertree/full_supertree.tre: $(PROPINQUITY_OUT_DIR)/grafted_solution/grafted_solution.tre \
+														  $(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaned_ott.tre
+	@if ! test -d $(PROPINQUITY_OUT_DIR)/full_supertree ; then mkdir -p $(PROPINQUITY_OUT_DIR)/full_supertree ; fi
+	otc-unprune-solution \
+		$(PROPINQUITY_OUT_DIR)/grafted_solution/grafted_solution.tre \
+		$(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaned_ott.tre \
+		> $(PROPINQUITY_OUT_DIR)/full_supertree/full_supertree.tre
+
+$(PROPINQUITY_OUT_DIR)/labelled_supertree/labelled_supertree.tre: $(PROPINQUITY_OUT_DIR)/grafted_solution/grafted_solution.tre \
+																  $(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaned_ott.tre
+	@if ! test -d $(PROPINQUITY_OUT_DIR)/labelled_supertree ; then mkdir -p $(PROPINQUITY_OUT_DIR)/labelled_supertree ; fi
+	otc-unprune-solution-and-name-unnamed-nodes \
+		$(PROPINQUITY_OUT_DIR)/grafted_solution/grafted_solution.tre \
+		$(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaned_ott.tre \
+		-j$(PROPINQUITY_OUT_DIR)/labelled_supertree/broken_taxa.json \
+		-s$(PROPINQUITY_OUT_DIR)/labelled_supertree/input_output_stats.json \
+		> $(PROPINQUITY_OUT_DIR)/labelled_supertree/labelled_supertree.tre
+
+$(PROPINQUITY_OUT_DIR)/labelled_supertree/labelled_supertree_out_degree_distribution.txt: $(PROPINQUITY_OUT_DIR)/labelled_supertree/labelled_supertree.tre
+	@if ! test -d $(PROPINQUITY_OUT_DIR)/labelled_supertree ; then mkdir -p $(PROPINQUITY_OUT_DIR)/labelled_supertree ; fi
+	otc-degree-distribution \
+		$(PROPINQUITY_OUT_DIR)/labelled_supertree/labelled_supertree.tre \
+		> $(PROPINQUITY_OUT_DIR)/labelled_supertree/labelled_supertree_out_degree_distribution.txt
+
+$(PROPINQUITY_OUT_DIR)/labelled_supertree/labelled_supertree_ottnames.tre: $(PROPINQUITY_OUT_DIR)/labelled_supertree/labelled_supertree.tre
+	@if ! test -d $(PROPINQUITY_OUT_DIR)/labelled_supertree ; then mkdir -p $(PROPINQUITY_OUT_DIR)/labelled_supertree ; fi
+	otc-relabel-tree \
+		$(PROPINQUITY_OUT_DIR)/labelled_supertree/labelled_supertree.tre \
+		--taxonomy=$(OTT_DIR) \
+		--format-tax="%N ott%I" \
+		> $(PROPINQUITY_OUT_DIR)/labelled_supertree/labelled_supertree_ottnames.tre
+
+# Not currently used.  This is a placeholder rule to keep track of how to use otc-relabel-tree for this purpose.
+$(PROPINQUITY_OUT_DIR)/labelled_supertree/labelled_supertree_simplified_ottnames2.tre: $(PROPINQUITY_OUT_DIR)/labelled_supertree/labelled_supertree_ottnames.tre
+	otc-relabel-tree --replace "/,\(\):;\[\]\{\}\'\t\n/ /" \
+		$(PROPINQUITY_OUT_DIR)/labelled_supertree/labelled_supertree_ottnames.tre \
+		>$(PROPINQUITY_OUT_DIR)/labelled_supertree/labelled_supertree_simplified_ottnames2.tre
+
+$(PROPINQUITY_OUT_DIR)/labelled_supertree/labelled_supertree_simplified_ottnames.tre: $(PROPINQUITY_OUT_DIR)/labelled_supertree/labelled_supertree_ottnames.tre
+	otc-munge-names \
+		$(PROPINQUITY_OUT_DIR)/labelled_supertree/labelled_supertree_ottnames.tre \
+		>$(PROPINQUITY_OUT_DIR)/labelled_supertree/labelled_supertree_simplified_ottnames.tre \
+		2>$(PROPINQUITY_OUT_DIR)/labelled_supertree/simplified_ottnames.log
+
+$(PROPINQUITY_OUT_DIR)/labelled_supertree/labelled_supertree_simplified_ottnames_without_monotypic.tre: $(PROPINQUITY_OUT_DIR)/labelled_supertree/labelled_supertree_ottnames_without_monotypic.tre
+	otc-munge-names \
+		$(PROPINQUITY_OUT_DIR)/labelled_supertree/labelled_supertree_ottnames_without_monotypic.tre \
+		>$(PROPINQUITY_OUT_DIR)/labelled_supertree/labelled_supertree_simplified_ottnames_without_monotypic.tre \
+		2>$(PROPINQUITY_OUT_DIR)/labelled_supertree/simplified_ottnames_without_monotypic.log
+
+$(PROPINQUITY_OUT_DIR)/labelled_supertree/labelled_supertree_ottnames_without_monotypic.tre: $(PROPINQUITY_OUT_DIR)/labelled_supertree/labelled_supertree.tre
+	@if ! test -d $(PROPINQUITY_OUT_DIR)/labelled_supertree ; then mkdir -p $(PROPINQUITY_OUT_DIR)/labelled_supertree ; fi
+	otc-relabel-tree \
+		$(PROPINQUITY_OUT_DIR)/labelled_supertree/labelled_supertree.tre \
+		--taxonomy=$(OTT_DIR) \
+		--format-tax="%N ott%I" \
+		--del-monotypic \
+		> $(PROPINQUITY_OUT_DIR)/labelled_supertree/labelled_supertree_ottnames_without_monotypic.tre
+
+# added $(PROPINQUITY_OUT_DIR)/exemplified_phylo/pruned_taxonomy_degree_distribution.txt
+# to hack in a new annotation at the request of JAR
+# So we head, tail, and awk the # of exemplified tips from that output into a temporary file called num_phylo_tips.json
+# and then use merge-json.py to add that info to the annotations2.json
+$(PROPINQUITY_OUT_DIR)/annotated_supertree/annotations.json: $(PROPINQUITY_OUT_DIR)/labelled_supertree/labelled_supertree.tre \
+															 $(PROPINQUITY_OUT_DIR)/exemplified_phylo/nonempty_trees.txt \
+															 $(PROPINQUITY_OUT_DIR)/exemplified_phylo/pruned_taxonomy_degree_distribution.txt
+	@if ! test -d $(PROPINQUITY_OUT_DIR)/annotated_supertree ; then mkdir -p $(PROPINQUITY_OUT_DIR)/annotated_supertree ; fi
+	cat $(PROPINQUITY_OUT_DIR)/exemplified_phylo/pruned_taxonomy_degree_distribution.txt \
+		| head -n2 \
+		| tail -n1 \
+		| awk '{print "{\"x\": " $$2 "}" }' \
+		> $(PROPINQUITY_OUT_DIR)/annotated_supertree/num_phylo_tips.json
+	otc-annotate-synth \
+		$(PROPINQUITY_OUT_DIR)/labelled_supertree/labelled_supertree.tre \
+		$$(sed "s:^:$(PROPINQUITY_OUT_DIR)/exemplified_phylo/:" $(PROPINQUITY_OUT_DIR)/exemplified_phylo/nonempty_trees.txt) \
+		> $(PROPINQUITY_OUT_DIR)/annotated_supertree/preannotations1.json
+	bin/add_subproblem_info_to_annotations.py \
+		$(PROPINQUITY_OUT_DIR)/subproblems/subproblem-ids.txt \
+		$(PROPINQUITY_OUT_DIR)/annotated_supertree/preannotations1.json \
+		$(PROPINQUITY_OUT_DIR)/annotated_supertree/annotations1.json
+	@rm $(PROPINQUITY_OUT_DIR)/annotated_supertree/preannotations1.json
+	bin/gen_attributes.py $(CONFIG_FILENAME) $(HOME)/.opentree --out-dir=$(PROPINQUITY_OUT_DIR) \
+		> $(PROPINQUITY_OUT_DIR)/annotated_supertree/preannotations2.json
+	bin/merge-json.py \
+		$(PROPINQUITY_OUT_DIR)/annotated_supertree/num_phylo_tips.json \
+		x \
+		$(PROPINQUITY_OUT_DIR)/annotated_supertree/preannotations2.json \
+		num_leaves_in_exemplified_taxonomy \
+		> $(PROPINQUITY_OUT_DIR)/annotated_supertree/annotations2.json
+	@rm $(PROPINQUITY_OUT_DIR)/annotated_supertree/preannotations2.json
+	@rm $(PROPINQUITY_OUT_DIR)/annotated_supertree/num_phylo_tips.json
+	bin/merge-json.py \
+		$(PROPINQUITY_OUT_DIR)/annotated_supertree/annotations1.json \
+		$(PROPINQUITY_OUT_DIR)/annotated_supertree/annotations2.json \
+		> $(PROPINQUITY_OUT_DIR)/annotated_supertree/annotations.json
+
+cleanfinal:
+	rm -f $(FULL_TREE_ARTIFACTS)
+	rm -f $(PROPINQUITY_OUT_DIR)/labelled_supertree/simplified_ottnames.log
+	rm -f $(PROPINQUITY_OUT_DIR)/labelled_supertree/simplified_ottnames_without_monotypic.log

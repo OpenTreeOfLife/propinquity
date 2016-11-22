@@ -1,0 +1,40 @@
+"config[opentree]ott" [style=filled, color="#AAFFAA"] ;
+"config" -> "config[opentree]ott" ;
+"<OTT>" [style=filled, color="#AAFFAA"] ;
+"config[opentree]ott"-> "<OTT>" ;
+
+"cleaned_ott/cleaning_flags.txt" -> "write_needs_updating"
+"cleaned_ott/root_ott_id.txt" -> "write_needs_updating"
+"phylo_input/study_tree_pairs.txt" -> "write_needs_updating"
+"write_needs_updating" -> "cleaned_phylo/needs_updating.txt"
+"write_needs_updating"   [style=filled, color="#EEBBDD"]
+
+"cleaned_phylo/needs_updating.txt" -> "prune_to_clean_mapped.py" ;
+"cleaned_ott/cleaning_flags.txt" -> "prune_to_clean_mapped.py" ;
+"cleaned_phylo/root_ott_it.txt" -> "prune_to_clean_mapped.py" ;
+"cleaned_ott/cleaned_ott_pruned_nonflagged.json"  -> "prune_to_clean_mapped.py" ;
+"<OTT>" -> "prune_to_clean_mapped.py" ;
+"phylo_snapshot/concrete_rank_collection.json" -> "prune_to_clean_mapped.py"
+"prune_to_clean_mapped.py"  [style=filled, color="#EEBBDD"]
+"prune_to_clean_mapped.py" -> "cleaned_phylo/phylo_inputs_cleaned.txt"
+"prune_to_clean_mapped.py" -> "cleaned_phylo/*.json"
+"prune_to_clean_mapped.py" -> "cleaned_phylo/*.tre"
+
+"phylo_input/study_tree_pairs.txt" -> "sed" ;
+"sed" [style=filled, color="#EEBBDD"];
+"sed" -> "exemplified_phylo/args.txt" ;
+
+"otc-nonterminalstoexemplars"  [style=filled, color="#EEBBDD"]
+"cleaned_phylo/*.tre" -> "otc-nonterminalstoexemplars" ;
+"cleaned_ott/cleaned_ott.tre" -> "otc-nonterminalstoexemplars"
+"exemplified_phylo/args.txt" -> "otc-nonterminalstoexemplars"
+"cleaned_phylo/phylo_inputs_cleaned.txt" -> "otc-nonterminalstoexemplars"
+"otc-nonterminalstoexemplars" -> "exemplified_phylo/nonempty_trees.txt"
+"otc-nonterminalstoexemplars" -> "exemplified_phylo/taxonomy.tre" ;
+"otc-nonterminalstoexemplars" -> "exemplified_phylo/study*tree*.tre" ;
+"otc-nonterminalstoexemplars" -> "exemplified_phylo/exemplified_log.json" ;
+
+"otc-degree-distribution"  [style=filled, color="#EEBBDD"] ;
+"exemplified_phylo/taxonomy.tre" -> "otc-degree-distribution" ;
+"otc-degree-distribution" -> "exemplified_phylo/pruned_taxonomy_degree_distribution.txt";
+

@@ -1,8 +1,19 @@
 digraph P {
-    ottflags [shape=diamond label="OTT Flags"];
+    homeconfig [shape=house label="~/.opentree"];
+    inputconfig [shape=house label="config"];
+    impliedconfig [shape=house label="implied full config"];
+    homeconfig -> impliedconfig;
+    inputconfig -> impliedconfig;
+
+    ottflags [shape=house label="OTT Flags"];
+    impliedconfig -> ottflags ;
+
     ott [shape=oval label="OTT"];
     phylesystem [shape=oval label="phylesystem"];
-    synthcoll [shape=oval label="synth. collection"];
+    synthcoll [shape=oval label="collection"];
+
+    #inpspecifiers [shape=house label="config [opentree]collections"];
+    #impliedconfig -> inpspecifiers;
 
     cleanedotttool [shape=invhouse label="suppress_by_flag", style=filled, color="#EEBBDD"];
     cleanedott [shape=box label="cleaned_ott"];
@@ -12,6 +23,7 @@ digraph P {
 
     phyloinputtool [shape=invhouse label="collection_export.py", style=filled, color="#EEBBDD"];
     phyloinput [shape=box label="phylo_input"];
+    impliedconfig -> phyloinputtool ;
     synthcoll -> phyloinputtool ;
     phyloinputtool -> phyloinput;
 
@@ -26,21 +38,19 @@ digraph P {
     phylosnapshot -> cleanedphylotool ;
     ottflags -> cleanedphylotool ;
     ott -> cleanedphylotool ;
+    cleanedott -> cleanedphylotool ;
     cleanedphylotool -> cleanedphylo;
 
     phyloinducedtaxonomytool [shape=invhouse label="otc-nonterminals-to-exemplars" style=filled color="#CCCCFF"];
-    phyloinducedtaxonomy [shape=box label="phylo_induced_taxonomy"];
     exemplifiedphylo [shape=box label="exemplified_phylo"];
     cleanedphylo -> phyloinducedtaxonomytool;
     cleanedott -> phyloinducedtaxonomytool;
-    phyloinducedtaxonomytool -> phyloinducedtaxonomy;
     phyloinducedtaxonomytool -> exemplifiedphylo;
 
 
 
     subproblemstool [shape=invhouse label="otc-uncontested-decompose" style=filled color="#CCCCFF"];
     subproblems [shape=box label="subproblems"];
-    phyloinducedtaxonomy -> subproblemstool;
     exemplifiedphylo -> subproblemstool;
     subproblemstool -> subproblems;
 
@@ -54,16 +64,16 @@ digraph P {
     subproblemsoln -> graftedsolntool;
     graftedsolntool -> graftedsoln;
 
-    supertreetopotool [shape=invhouse label="otc-unprune-solution" style=filled color="#CCCCFF"];
-    supertreetopo [shape=box label="full_supertree"];
-    graftedsoln -> supertreetopotool;
-    cleanedott -> supertreetopotool;
-    supertreetopotool -> supertreetopo;
+    #supertreetopotool [shape=invhouse label="otc-unprune-solution" style=filled color="#CCCCFF"];
+    #supertreetopo [shape=box label="full_supertree"];
+    #graftedsoln -> supertreetopotool;
+    #cleanedott -> supertreetopotool;
+    #supertreetopotool -> supertreetopo;
 
     taxolabelledsupertreetool [shape=invhouse label="otc-name-unnamed-nodes" style=filled color="#CCCCFF"];
     taxolabelledsupertree [shape=box label="labelled_supertree"];
     cleanedott -> taxolabelledsupertreetool;
-    supertreetopo -> taxolabelledsupertreetool;
+    graftedsoln -> taxolabelledsupertreetool;
     taxolabelledsupertreetool -> taxolabelledsupertree;
 
     supertreewithsupporttool [shape=invhouse label="otc-annotate-synth" style=filled color="#CCCCFF"];

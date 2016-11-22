@@ -1,6 +1,6 @@
 # propinquity
 
-Propinquity is a make-based pipeline for constructing a synthetic tree of life.  
+Propinquity is a make-based pipeline for constructing a synthetic tree of life.  See https://peerj.com/preprints/2538/ for a description and comparison of its performance to the previous tool used to build the Open Tree of Life's summary tree.
 
 It takes as input a collection of phylogenetic trees from the Open Tree of Life
 datastore and a local copy of the Open Tree of Life Taxonomy. See the [collections documentation](https://github.com/OpenTreeOfLife/opentree/wiki/Working-with-tree-collections) for input on putting trees into collections.
@@ -123,7 +123,7 @@ mentioned above).
       ...
 
   The actual `phylesystem-1` repo cloned from git should be in a
-  directory `{opentree.phylesystem}/DIR/shards/phylesystem-1`, where
+  directory `{opentree.phylesystem}/shards/phylesystem-1`, where
   `{opentree.phylesystem}` is the directory referred to above.
 
 

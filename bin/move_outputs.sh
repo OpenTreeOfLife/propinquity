@@ -35,3 +35,7 @@ done
 
 # and now copy the doc files
 cp -Rp index* $outputdir
+
+# and the config
+cp -Rp config $outputdir
+

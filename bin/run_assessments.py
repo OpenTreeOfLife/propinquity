@@ -56,6 +56,7 @@ if __name__ == '__main__':
     assessments_dir = os.path.join(top_dir, 'assessments')
     assert os.path.isdir(top_dir)
     cleaned_taxonomy = os.path.join(top_dir, 'cleaned_ott', 'cleaned_ott.tre')
+    cleaned_taxonomy_json = os.path.join(top_dir, 'cleaned_ott', 'cleaned_ott.json')
     final_tree = os.path.join(top_dir, 'labelled_supertree', 'labelled_supertree.tre')
     # Check that we have the same # of leaves in the cleaned_ott and the final tree
     #
@@ -81,10 +82,21 @@ if __name__ == '__main__':
     bt_name = 'otc-unprune-solution-and-name-unnamed-nodes broken_taxa.json'
     bt_pair  = [bt_file, bt_name]
     bt_dict = read_as_json(bt_file)['non_monophyletic_taxa']
+    if not bt_dict:
+        bt_dict = {}
+    cleaned_ott_json_pruned = read_as_json(cleaned_taxonomy_json).get('pruned', {})
+    # pruned because they became empty
+    httip_key = 'higher-taxon-tip'
+    int_key = 'empty-after-higher-taxon-tip-prune'
+    htpruned_ids = set()
+    for key in [httip_key, int_key]:
+        pl = set(cleaned_ott_json_pruned.get(key, []))
+        htpruned_ids.update(pl)
+
     lte = {}
     for ott_id in lt_set:
         ott_id_str = 'ott{}'.format(ott_id)
-        if ott_id_str not in bt_dict:
+        if (ott_id_str not in bt_dict) and (ott_id not in htpruned_ids):
             err('{} was in {} but not {}'.format(ott_id_str, lt_name, bt_name))
             lte[ott_id_str] = {'listed': lt_pair, 'absent': bt_pair}
     if bool(lte) or len(lt_set) != len(bt_dict):

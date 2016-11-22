@@ -1,0 +1,48 @@
+config [style=filled, color="#AAFFAA"] ;
+"config[synthesis]collections" [style=filled, color="#AAFFAA"] ;
+config -> "config[synthesis]collections" ;
+"config[opentree]collections" [style=filled, color="#AAFFAA"] ;
+config -> "config[opentree]collections" ;
+"config[opentree]phylesystem" [style=filled, color="#AAFFAA"] ;
+config -> "config[opentree]phylesystem" ;
+"<phylesystem>" [style=filled, color="#AAFFAA"] ;
+"config[opentree]phylesystem" -> "<phylesystem>";
+"<collections>" [style=filled, color="#AAFFAA"] ;
+"config[opentree]collections" -> "<collections>";
+
+# collections.txt
+"config[synthesis]collections" -> "config_checker.py" ;
+"config_checker.py"  [style=filled, color="#EEBBDD"] ;
+"config_checker.py" -> "phylo_input/collections.txt" ;
+
+# concept of the JSON files for the relevant collections
+"<collections>" -> "relevant collections/*/*.json" ;
+"relevant collections/*/*.json" [style=filled, color="#AAFFAA"] ;
+
+# rank_collection.json concatenation of relevant collections
+"relevant collections/*/*.json" -> "reaggregate_synth_collections.sh"
+"reaggregate_synth_collections.sh" [style=filled, color="#EEBBDD"]
+"reaggregate_synth_collections.sh" -> "phylo_input/rank_collection.json"
+
+
+"<phylesystem>" -> "shard_shas.sh" ;
+"shard_shas.sh" [style=filled, color="#EEBBDD"] ;
+"shard_shas.sh" -> "phylo_snapshot/git_shas.txt" ;
+
+"phylo_snapshot/git_shas.txt" ->  "export_studies_from_collection.py"
+"phylo_input/rank_collection.json" -> "export_studies_from_collection.py"
+"export_studies_from_collection.py" -> "phylo_snapshot/concrete_rank_collection.json"
+"export_studies_from_collection.py"  [style=filled, color="#EEBBDD"]
+
+"<collections>" -> "collections_shard_shas.sh" ;
+"collections_shard_shas.sh" [style=filled, color="#EEBBDD"] ;
+"collections_shard_shas.sh" -> "phylo_snapshot/collections_git_shas.txt" ;
+
+
+# study_tree_pairs.txt from concrete_rank_collection.json
+"collection_export.py --export=studyID_treeID" [style=filled, color="#EEBBDD"]
+"phylo_snapshot/concrete_rank_collection.json" -> "collection_export.py --export=studyID_treeID"
+"collection_export.py --export=studyID_treeID" -> "phylo_input/study_tree_pairs.txt"
+
+
+"export_studies_from_collection.py" -> "phylo_snapshot/study*@tree*.json" ;

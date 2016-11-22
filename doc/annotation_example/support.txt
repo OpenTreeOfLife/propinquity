@@ -1,0 +1,13 @@
+{
+ "nodes": {
+  "mrcaott1ott4": { "partial_path_of": { "input1": "node15" } },
+  "mrcaott5ott7": { "supported_by": { "input1": "node16" } },
+  "ott1": { "terminal": { "input1": "ott1" } },
+  "ott10": { "partial_path_of": { "input1": "node15" } },
+  "ott11": { "terminal": { "input1": "ott5" } },
+  "ott2": { "terminal": { "input1": "ott2" } },
+  "ott5": { "terminal": { "input1": "ott5" } },
+  "ott7": { "terminal": { "input1": "ott7" } }
+  },
+  ...
+}
