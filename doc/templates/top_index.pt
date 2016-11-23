@@ -21,7 +21,7 @@
 <h2 id="configuration-phylogenies">Phylogenetic inputs</h2>
 
 <p>The phylesystem shards for this run were located under <code>${config.phylesystem_root}</code></p>
-<p>The collections shards for this run were located under <code>${config.collections_root}</code>. ${len(config.collections)} <a href="https://tree.opentreeoflife.org/curator/collections">collections</a> were used:</p>
+<p>The collections shards for this run were located under <code>${config.collections_root}</code>. ${len(config.collections)} <a href="https://tree.opentreeoflife.org/curator/collections">collections</a> were used, ranked in this order:</p>
     <ol>
         <li tal:repeat="collection config.collections" ><a href="https://raw.githubusercontent.com/OpenTreeOfLife/collections-1/master/collections-by-owner/${collection}.json">${collection}</a></li>
     </ol>

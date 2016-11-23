@@ -4,8 +4,37 @@
 
 import simplejson as json
 import argparse
-import glob,os,re
+import glob,os,re,csv
 import requests
+from peyotl import ott
+
+def broken_taxa_diffs(run1,run2,verbose,names=False):
+# file of interest is labelled_supertree/broken_taxa.json
+    jsonfile = "{d}/labelled_supertree/broken_taxa.json".format(d=run1)
+    lsbt1 = json.load(open(jsonfile, 'r'))['non_monophyletic_taxa']
+    broken_taxa1 = lsbt1.keys() if lsbt1 else set()
+    jsonfile = "{d}/labelled_supertree/broken_taxa.json".format(d=run2)
+    lsbt2 = json.load(open(jsonfile, 'r'))['non_monophyletic_taxa']
+    broken_taxa2 = lsbt2.keys() if lsbt2 else set()
+    compare_lists("Broken taxa",broken_taxa1,broken_taxa2,verbose)
+    if (names):
+        broken_taxa_report(set(broken_taxa1),set(broken_taxa2))
+
+# writes details of the broken taxa to a file that can be input by
+# report_on_broken_taxa.py
+def broken_taxa_report(s1,s2):
+    # print details of names in 2 but not in 1 (the 'newly broken names')
+    diff = s2.difference(s1)
+    broken_taxa_filename = 'broken_taxa_report.csv'
+    print "printing details of {x} broken taxa to {f}".format(
+        x=len(diff),
+        f=broken_taxa_filename
+        )
+    with open(broken_taxa_filename, 'w') as f:
+        for ottID in diff:
+            (name,rank)=get_taxon_details(ottID)
+            f.write("{n}_{i}\n".format(n=name,i=ottID))
+    f.close()
 
 # generic function to compare two lists: number of items in each,
 # items in first but not second and items in second but not first
@@ -25,13 +54,13 @@ def compare_lists(type,list1,list2,verbose=False):
             print " in common = {l}".format(t=type,l=len(common))
         diff1 = s1.difference(s2)
         if len(diff1) > 0:
-            print " in run1 but not run2 = {l}".format(t=type,l=len(diff1))
+            print " in run1 but not run2 = {l}".format(l=len(diff1))
             if (verbose):
                 print " {t} in run1 but not run2:".format(t=type)
                 print ', '.join(diff1)
         diff2 = s2.difference(s1)
         if len(diff2) > 0:
-            print " in run2 but not run1 = {l}".format(t=type,l=len(diff2))
+            print " in run2 but not run1 = {l}".format(l=len(diff2))
             if (verbose):
                 print " {t} in run2 but not run1:".format(t=type)
                 print ', '.join(diff2)
@@ -42,14 +71,13 @@ def compare_lists(type,list1,list2,verbose=False):
 
 # list of collections, list of trees, compare SHAs
 # look at phylo_snapshot/concrete_rank_collection.json for each run
-def config_diffs(run1,run2):
+def config_diffs(run1,run2,verbose):
     # get the data from both top-level index.json files
     jsonfile = "{d}/index.json".format(d=run1)
     jsondata1 = json.load(open(jsonfile, 'r'))['config']
     jsonfile = "{d}/index.json".format(d=run2)
     jsondata2 = json.load(open(jsonfile, 'r'))['config']
 
-    countmismatch = 0
     # do ott versions match
     ott1 = jsondata1['ott_version']
     ott2 = jsondata2['ott_version']
@@ -61,34 +89,42 @@ def config_diffs(run1,run2):
     root2 = int(jsondata2["root_ott_id"])
     if root1 != root2:
         print "root id1 ({r1}) != root id2 ({r2})".format(r1=root1,r2=root2)
-        countmismatch += 1
 
     # do collections match
     collections1 = jsondata1["collections"]
     collections2 = jsondata2["collections"]
-    if (compare_lists("collections",collections1,collections2,False)):
-        countmismatch += 1
-        print "{d} collections: {c}".format(d=run1,c=collections1)
-        print "{d} collections: {c}".format(d=run2,c=collections2)
+    compare_lists("Collections",collections1,collections2,verbose)
 
     # do flags match
     flags1 = jsondata1["taxonomy_cleaning_flags"]
     flags2 = jsondata2["taxonomy_cleaning_flags"]
-    countmismatch += compare_lists("flags",flags1,flags2,True)
+    compare_lists("Flags",flags1,flags2,verbose)
 
-    if (countmismatch == 0):
-        print "no differences in root id, collections, or flags"
+# note that ottid is in form 'ott####'
+def get_taxon_details(ottid):
+    pattern = re.compile(r'ott')
+    int_id = re.sub(pattern,'',ottid)
+    method_url = "https://api.opentreeoflife.org/v3/taxonomy/taxon_info"
+    header = {'content-type':'application/json'}
+    payload = {"ott_id":int_id}
+    r = requests.post(method_url,headers=header,data=json.dumps(payload))
+    try:
+        taxon_name = r.json()['name']
+        rank = r.json()["rank"]
+        return (taxon_name,rank)
+    except KeyError:
+        print "no name returned for {id}".format(id=ottid)
+    #print '{i}:{n}'.format(i=ottid,n=taxon_name)
 
 # check the lists of input trees
 # does not check SHAs, just study@tree lists
-def phylo_input_diff(run1,run2):
+def phylo_input_diff(run1,run2,verbose):
     # get the data from the phylo_input study_tree_pairs.txt files
     treefile = "{d}/phylo_input/study_tree_pairs.txt".format(d=run1)
     treedata1 = open(treefile, 'r').read().splitlines()
     treefile = "{d}/phylo_input/study_tree_pairs.txt".format(d=run2)
     treedata2 = open(treefile, 'r').read().splitlines()
-    countmismatch = 0
-    countmismatch += compare_lists("input trees",treedata1,treedata2,True)
+    compare_lists("Input trees",treedata1,treedata2,verbose)
 
     # check lists of non-empty tree files after cleaning
     searchstr = "{d}/cleaned_phylo/*[0-9].tre".format(d=run1)
@@ -101,20 +137,16 @@ def phylo_input_diff(run1,run2):
     for f in glob.glob(searchstr):
         if os.stat(f).st_size != 0:
             nonempty2.append(os.path.basename(f))
-    countmismatch += compare_lists('non-empty trees',nonempty1,nonempty2,False)
-
-    if (countmismatch == 0):
-        print "no differences in input trees"
+    compare_lists('Non-empty trees',nonempty1,nonempty2,verbose)
 
 # number (and size) of subproblems
-def subproblem_diff(run1,run2):
+def subproblem_diff(run1,run2,verbose):
     # number of subproblems
     subpfile = "{d}/subproblems/subproblem-ids.txt".format(d=run1)
     subproblems1 = open(subpfile, 'r').read().splitlines()
     subpfile = "{d}/subproblems/subproblem-ids.txt".format(d=run2)
     subproblems2 = open(subpfile, 'r').read().splitlines()
-    countmismatch = 0
-    countmismatch += compare_lists("subproblems",subproblems1,subproblems2,False)
+    compare_lists("Subproblems",subproblems1,subproblems2,verbose)
 
 # Summary of subproblem size distributions
 # Relevent file is subproblem_solutions/solution-degree-distributions.txt
@@ -128,7 +160,7 @@ def subproblem_distributions(run1,run2):
     # trivial < 3, small < 20, med < 100-499, large > 500
     limits = [3,20,500]
 
-    print "subproblem size summary:"
+    print "Subproblem size summary:"
     print " run,trivial,small,med,large"
     print " ---------------------------"
     size_summary("run1",limits,data1)
@@ -207,46 +239,6 @@ def synthesis_tree_diffs(run1,run2):
     diff = int(taxa2-taxa1)
     print "broken taxa,{n1},{n2},{d}".format(n1=taxa1,n2=taxa2,d=diff)
 
-def broken_taxa_diffs(run1,run2,names=False):
-# file of interest is labelled_supertree/broken_taxa.json
-    jsonfile = "{d}/labelled_supertree/broken_taxa.json".format(d=run1)
-    lsbt1 = json.load(open(jsonfile, 'r'))['non_monophyletic_taxa']
-    broken_taxa1 = lsbt1.keys() if lsbt1 else set()
-    jsonfile = "{d}/labelled_supertree/broken_taxa.json".format(d=run2)
-    lsbt2 = json.load(open(jsonfile, 'r'))['non_monophyletic_taxa']
-    broken_taxa2 = lsbt2.keys() if lsbt2 else set()
-    countmismatch = 0
-    countmismatch += compare_lists("broken taxa",broken_taxa1,broken_taxa2,True)
-    if (names):
-        s1 = set(broken_taxa1)
-        s2 = set(broken_taxa2)
-        # names in 2 but not in 1 (the 'newly broken names')
-        diff = s2.difference(s1)
-        if len(diff) > 0:
-            print "broken taxa in run2:"
-            #broken_names={}
-            for i in diff:
-                (name,rank)=get_taxon_details(i)
-                print "{id}\t{n}\t{r}".format(id=i,n=name,r=rank)
-                # if (taxon_name):
-                #     broken_names[i]=taxon_name
-
-# note that ottid is in form 'ott####'
-def get_taxon_details(ottid):
-    pattern = re.compile(r'ott')
-    int_id = re.sub(pattern,'',ottid)
-    method_url = "https://api.opentreeoflife.org/v3/taxonomy/taxon_info"
-    header = {'content-type':'application/json'}
-    payload = {"ott_id":int_id}
-    r = requests.post(method_url,headers=header,data=json.dumps(payload))
-    try:
-        taxon_name = r.json()['name']
-        rank = r.json()["rank"]
-        return (taxon_name,rank)
-    except KeyError:
-        print "no name returned for {id}".format(id=ottid)
-    #print '{i}:{n}'.format(i=ottid,n=taxon_name)
-
 if __name__ == "__main__":
     # get command line arguments (the two directories to compare)
     parser = argparse.ArgumentParser(description='set up database tables')
@@ -259,17 +251,22 @@ if __name__ == "__main__":
     parser.add_argument('-b',
         dest='print_broken_taxa',
         action='store_true',
-        help='whether to print info on newly-broken taxa'
+        help='print info on newly-broken taxa; default false'
+        )
+    parser.add_argument('-v',
+        dest='verbose',
+        action='store_true',
+        help='print info on diffs; default false'
         )
     args = parser.parse_args()
     print "run 1 output: {d}".format(d=args.run1)
     print "run 2 output: {d}".format(d=args.run2)
     print "\n# Comparing inputs"
-    config_diffs(args.run1,args.run2)
-    phylo_input_diff(args.run1,args.run2)
+    config_diffs(args.run1,args.run2,args.verbose)
+    phylo_input_diff(args.run1,args.run2,args.verbose)
     print "\n# Comparing subproblems"
-    subproblem_diff(args.run1,args.run2)
+    subproblem_diff(args.run1,args.run2,args.verbose)
     subproblem_distributions(args.run1,args.run2)
     print "\n# Comparing broken taxa"
-    broken_taxa_diffs(args.run1,args.run2,args.print_broken_taxa)
+    broken_taxa_diffs(args.run1,args.run2,args.verbose,args.print_broken_taxa)
     synthesis_tree_diffs(args.run1,args.run2)
