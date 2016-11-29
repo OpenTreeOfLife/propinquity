@@ -224,6 +224,8 @@ def render_annotated_supertree_index(container, template, html_out, json_out):
     html_out.write(template())
 def render_assessments_index(container, template, html_out, json_out):
     html_out.write(template(assessments=container.assessments))
+# def render_broken_taxa_report(container, template, html_out, json_out):
+#     html_out.write(template(broken_taxa=container.broken_taxa))
 
 def node_label2obj(nl):
     '''Node labels in cleaned input trees are quirky, this tries to parse them...'''
@@ -287,6 +289,7 @@ class DocGen(object):
         self.subproblems = self.read_subproblems()
         self.labelled_supertree = self.read_labelled_supertree()
         self.assessments = self.read_assessments()
+        #self.broken_taxa = self.read_broken_taxa()
     def read_assessments(self):
         d = os.path.join(self.top_output_dir, 'assessments')
         blob = Extensible()
@@ -299,6 +302,11 @@ class DocGen(object):
                 blob.categories_of_checks_with_errors.append(k)
         blob.categories_of_checks_with_errors.sort()
         return blob
+    # def read_broken_taxa(self):
+    #     d = os.path.join(self.top_output_dir, 'labelled_supertree')
+    #     blob = Extensible()
+    #     blob.assessments = read_as_json(os.path.join(d, 'broken_taxa.json'))
+
     def read_labelled_supertree(self):
         d = os.path.join(self.top_output_dir, 'labelled_supertree')
         p = 'labelled_supertree_out_degree_distribution.txt'
@@ -309,7 +317,7 @@ class DocGen(object):
         blob = Extensible()
         blob.unprune_stats = read_as_json(os.path.join(d, 'input_output_stats.json'))
         blob.non_monophyletic_taxa = read_as_json(os.path.join(d, 'broken_taxa.json'))
-        if not blob.non_monophyletic_taxa['non_monophyletic_taxa'] is None:
+        if blob.non_monophyletic_taxa['non_monophyletic_taxa'] is None:
             blob.non_monophyletic_taxa['non_monophyletic_taxa'] = {}
         return blob
     def read_subproblem_solutions(self):

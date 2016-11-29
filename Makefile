@@ -20,7 +20,7 @@ export PEYOTL_ROOT
 OTT_DIR := $(shell bin/config_checker.py opentree.ott $(CONFIG_FILENAME))
 export OTT_DIR
 
-# This list of files for each OTT release are used below to create the 
+# This list of files for each OTT release are used below to create the
 #	full paths to the OTT inputs
 OTT_FILENAMES=about.json \
 	conflicts.tsv \
@@ -68,19 +68,31 @@ clean: cleanpre \
 	   cleandoc
 	rm -f $(ASSESSMENT_ARTIFACTS)
 
-	if test -d $(PROPINQUITY_OUT_DIR)/phylo_input ; then rmdir --ignore-fail-on-non-empty $(PROPINQUITY_OUT_DIR)/phylo_input ; fi
-	if test -d $(PROPINQUITY_OUT_DIR)/phylo_snapshot ; then rmdir --ignore-fail-on-non-empty $(PROPINQUITY_OUT_DIR)/phylo_snapshot ; fi
-	if test -d $(PROPINQUITY_OUT_DIR)/cleaned_ott ; then rmdir --ignore-fail-on-non-empty $(PROPINQUITY_OUT_DIR)/cleaned_ott ; fi
-	if test -d $(PROPINQUITY_OUT_DIR)/cleaned_phylo ; then rmdir --ignore-fail-on-non-empty $(PROPINQUITY_OUT_DIR)/cleaned_phylo ; fi
-	if test -d $(PROPINQUITY_OUT_DIR)/exemplified_phylo ; then rmdir --ignore-fail-on-non-empty $(PROPINQUITY_OUT_DIR)/exemplified_phylo ; fi
-	if test -d $(PROPINQUITY_OUT_DIR)/subproblems/scratch ; then rmdir --ignore-fail-on-non-empty $(PROPINQUITY_OUT_DIR)/subproblems/scratch ; fi
-	if test -d $(PROPINQUITY_OUT_DIR)/subproblems ; then rmdir --ignore-fail-on-non-empty $(PROPINQUITY_OUT_DIR)/subproblems ; fi
-	if test -d $(PROPINQUITY_OUT_DIR)/subproblem_solutions ; then rmdir --ignore-fail-on-non-empty $(PROPINQUITY_OUT_DIR)/subproblem_solutions ; fi
-	if test -d $(PROPINQUITY_OUT_DIR)/grafted_solution ; then rmdir --ignore-fail-on-non-empty $(PROPINQUITY_OUT_DIR)/grafted_solution ; fi
-	if test -d $(PROPINQUITY_OUT_DIR)/labelled_supertree ; then rmdir --ignore-fail-on-non-empty $(PROPINQUITY_OUT_DIR)/labelled_supertree ; fi
-	if test -d $(PROPINQUITY_OUT_DIR)/annotated_supertree ; then rmdir --ignore-fail-on-non-empty $(PROPINQUITY_OUT_DIR)/annotated_supertree ; fi
-	if test -d $(PROPINQUITY_OUT_DIR)/assessments ; then rmdir --ignore-fail-on-non-empty $(PROPINQUITY_OUT_DIR)/assessments ; fi
-	if test -d $(PROPINQUITY_OUT_DIR)/logs ; then rmdir --ignore-fail-on-non-empty $(PROPINQUITY_OUT_DIR)/logs ; fi
+	rmdir $(PROPINQUITY_OUT_DIR)/phylo_input || true
+	rmdir $(PROPINQUITY_OUT_DIR)/phylo_snapshot || true
+	rmdir $(PROPINQUITY_OUT_DIR)/cleaned_ott || true
+	rmdir $(PROPINQUITY_OUT_DIR)/cleaned_phylo || true
+	rmdir $(PROPINQUITY_OUT_DIR)/exemplified_phylo || true
+	rmdir $(PROPINQUITY_OUT_DIR)/subproblems/scratch || true
+	rmdir $(PROPINQUITY_OUT_DIR)/subproblems || true
+	rmdir $(PROPINQUITY_OUT_DIR)/subproblem_solutions || true
+	rmdir $(PROPINQUITY_OUT_DIR)/grafted_solution || true
+	rmdir $(PROPINQUITY_OUT_DIR)/labelled_supertree || true
+	rmdir $(PROPINQUITY_OUT_DIR)/annotated_supertree || true
+	rmdir $(PROPINQUITY_OUT_DIR)/logs || true
+	# if test -d $(PROPINQUITY_OUT_DIR)/phylo_input ; then rmdir --ignore-fail-on-non-empty $(PROPINQUITY_OUT_DIR)/phylo_input ; fi
+	# if test -d $(PROPINQUITY_OUT_DIR)/phylo_snapshot ; then rmdir --ignore-fail-on-non-empty $(PROPINQUITY_OUT_DIR)/phylo_snapshot ; fi
+	# if test -d $(PROPINQUITY_OUT_DIR)/cleaned_ott ; then rmdir --ignore-fail-on-non-empty $(PROPINQUITY_OUT_DIR)/cleaned_ott ; fi
+	# if test -d $(PROPINQUITY_OUT_DIR)/cleaned_phylo ; then rmdir --ignore-fail-on-non-empty $(PROPINQUITY_OUT_DIR)/cleaned_phylo ; fi
+	# if test -d $(PROPINQUITY_OUT_DIR)/exemplified_phylo ; then rmdir --ignore-fail-on-non-empty $(PROPINQUITY_OUT_DIR)/exemplified_phylo ; fi
+	# if test -d $(PROPINQUITY_OUT_DIR)/subproblems/scratch ; then rmdir --ignore-fail-on-non-empty $(PROPINQUITY_OUT_DIR)/subproblems/scratch ; fi
+	# if test -d $(PROPINQUITY_OUT_DIR)/subproblems ; then rmdir --ignore-fail-on-non-empty $(PROPINQUITY_OUT_DIR)/subproblems ; fi
+	# if test -d $(PROPINQUITY_OUT_DIR)/subproblem_solutions ; then rmdir --ignore-fail-on-non-empty $(PROPINQUITY_OUT_DIR)/subproblem_solutions ; fi
+	# if test -d $(PROPINQUITY_OUT_DIR)/grafted_solution ; then rmdir --ignore-fail-on-non-empty $(PROPINQUITY_OUT_DIR)/grafted_solution ; fi
+	# if test -d $(PROPINQUITY_OUT_DIR)/labelled_supertree ; then rmdir --ignore-fail-on-non-empty $(PROPINQUITY_OUT_DIR)/labelled_supertree ; fi
+	# if test -d $(PROPINQUITY_OUT_DIR)/annotated_supertree ; then rmdir --ignore-fail-on-non-empty $(PROPINQUITY_OUT_DIR)/annotated_supertree ; fi
+	# if test -d $(PROPINQUITY_OUT_DIR)/assessments ; then rmdir --ignore-fail-on-non-empty $(PROPINQUITY_OUT_DIR)/assessments ; fi
+	# if test -d $(PROPINQUITY_OUT_DIR)/logs ; then rmdir --ignore-fail-on-non-empty $(PROPINQUITY_OUT_DIR)/logs ; fi
 
 realclean: realcleanottproducts clean
 	# No op
