@@ -31,8 +31,15 @@ def read_contesting_trees(out_dir):
         data = json.load(inp)
     return data
 
+def update_tree_counts(tree,tree_dict):
+    if tree in tree_dict:
+        tree_dict[tree] += 1
+    else:
+        tree_dict[tree] = 1
+    return tree_dict
+
 # output the html to stdout
-def write_output(hels,ntaxa):
+def write_output(hels,tree_counts,ntaxa):
     hels.sort()
     li_els = [i[1] for i in hels]
     out = sys.stdout
@@ -41,14 +48,32 @@ def write_output(hels,ntaxa):
       <title>Report on Broken taxa</title>
       </head>
     <body>
-    <p>This is a report on the handling of the given taxa based on a draft of the Open Tree synthetic tree. The report contain info on {n} broken (non-monophyletic) taxa.
+    <p>This is a report on the handling of the {n} taxa broken (non-monophyletic)
+    in opentree8.0 but in not the previous version (i.e. the newly-broken taxa).
+    Scroll to the bottom to see a list of input trees and the number of taxa
+    broken by each tree.
     </p>
-    <ul>
     """.format(n=ntaxa))
+
+    # print detail about each non-monophyletic taxa
+    out.write("<ul>")
     for li in li_els:
         out.write(li)
-    out.write("""</ul>
-    </body>
+    out.write("</ul>")
+
+    # print info about how many taxa broken by various studies
+    out.write("""<p><strong>Effect of input trees</strong></p>""")
+    out.write("""<p>The offending trees (and number of taxa broken by each) are:</p><ul>""")
+    for i in sorted(tree_counts, key=tree_counts.get, reverse=True):
+    #for i in sorted(tree_counts.items(), key=lambda x: x[1]):
+    #for k in tree_counts.keys():
+        out.write("""<li>{n} broken taxa because of {t}</li>""".format(
+            n=tree_counts[i],
+            t=i))
+    out.write("</ul>")
+
+    # close the body and html tags
+    out.write("""</body>
     </html>
     """)
 
@@ -56,7 +81,7 @@ if __name__ == "__main__":
     # get command line arguments (the list of taxa and the output dir)
     parser = argparse.ArgumentParser(description='write broken taxa report')
     parser.add_argument('id_list_file',
-        help='file with a list of taxa in format name_ott###'
+        help='file with a list of taxa to summarize in format name_ott###'
         )
     parser.add_argument('out_dir',
         help='path to the PROPINQUITY_OUT_DIR'
@@ -64,7 +89,7 @@ if __name__ == "__main__":
     parser.add_argument('-a',
         dest='print_all',
         action='store_true',
-        help='print results for all taxa in list; omit for only broken taxa'
+        help='print results for all taxa in input file; default = only broken taxa'
         )
     args = parser.parse_args()
 
@@ -78,6 +103,7 @@ if __name__ == "__main__":
     tax_url = 'https://tree.opentreeoflife.org/taxonomy/browse?id='
     hels = []
     non_monophyletic = 0
+    tree_counts = {}
     with open(args.id_list_file, 'r') as inp:
         for line in inp:
             ls = line.strip()
@@ -111,6 +137,7 @@ if __name__ == "__main__":
                     s, t = k.split('@')
                     treelink = tmpl.format(s=s, t=t, i=k)
                     fragout.write('      <li>{}</li>\n'.format(treelink))
+                    update_tree_counts(k,tree_counts)
                 fragout.write("    </ol>\n")
                 fragout.write("    Members of the taxon are attached to the full tree at<ol>\n")
                 for x in blob.get('attachment_points', {}).keys():
@@ -121,4 +148,4 @@ if __name__ == "__main__":
                 fragout.write("    </ol>\n")
             hels.append([ls, fragout.getvalue()])
         inp.close()
-        write_output(hels,non_monophyletic)
+        write_output(hels,tree_counts,non_monophyletic)
