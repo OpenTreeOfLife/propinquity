@@ -149,6 +149,107 @@ propinquity
 \end_layout
 
 \begin_layout Section
+Interpretation of 
+\emph on
+incertae sedis
+\emph default
+ taxa
+\end_layout
+
+\begin_layout Standard
+A taxon that is marked 
+\emph on
+incertae sedis
+\emph default
+ is not excluded from its sibling subtrees.
+ This changes the splits induced by each edge only by shrinking their exclude
+ sets.
+ The exclude set for a node is is the union of the exclude set of the parent
+ node and the include sets of non-
+\emph on
+incertae sedis
+\emph default
+ siblings.
+ If we use the terminology that the include and exclude sets for a node
+ 
+\begin_inset Formula $n$
+\end_inset
+
+ are 
+\begin_inset Formula $\mathcal{I}(n)$
+\end_inset
+
+ and 
+\begin_inset Formula $\mathcal{E}(n)$
+\end_inset
+
+, then we have 
+\begin_inset Formula 
+\begin{align*}
+\mathcal{E}(n) & =\mathcal{E}(parent(n))\cup\left[\mathcal{I}(m)\big|m\in siblings(n),m\text{ not \emph{incertae} \emph{sedis}}\right],
+\end{align*}
+
+\end_inset
+
+if we consider the exclude set of the root node to be empty, and the include
+ set of the root node to contain all tip taxa:
+\begin_inset Formula 
+\begin{align*}
+\mathcal{E}(root) & =\{\}\\
+\mathcal{I}(root) & =\mathcal{L}.
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+If no taxa are 
+\emph on
+incertae sedis
+\emph default
+, then the exclude set for a node is just the total tip set minus the include
+ set for the node:
+\begin_inset Formula 
+\begin{align*}
+\mathcal{E}(n) & =\mathcal{L}-\mathcal{I}(n).
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Containers
+\end_layout
+
+\begin_layout Standard
+Some taxonomies have nodes with names like 
+\begin_inset Quotes eld
+\end_inset
+
+Incertae sedis (Bacteria)
+\begin_inset Quotes erd
+\end_inset
+
+.
+ Such nodes are called containers.
+ They indicate that each child node is an 
+\emph on
+incertae sedis
+\emph default
+ child of the container node's parent.
+ The OTT retains container nodes with the 
+\emph on
+was_container
+\emph default
+ flag, but seems to have already moved all of the container's children to
+ the container's parent.
+\end_layout
+
+\begin_layout Section
 Handling 
 \emph on
 incertae sedis
@@ -201,7 +302,8 @@ Q: does
 \series bold
 unpruning
 \series default
- need to be modified, in theory, or in terms of the code we currently have?
+ need to be modified, either in theory, or in terms of the code we currently
+ have?
 \end_layout
 
 \begin_layout Standard
@@ -227,6 +329,16 @@ incertae sedis
 
 \begin_layout Subsection
 Decomposing into subproblems
+\end_layout
+
+\begin_layout Standard
+Subproblem decomposition currently involves finding taxonomy edges that
+ are consistent with every input tree, inserting these edges into each input
+ tree, and dividing each input tree along the edge to create two subproblems.
+ If the taxon set of the input tree is entirely in the include set or entirely
+ in the exclude set of the taxonomy edge, then the input tree will not be
+ split, but will end up in one subproblem in its entirely.
+ It will then not contribute to the other subproblem.
 \end_layout
 
 \begin_layout Subsubsection
@@ -264,7 +376,7 @@ incertae sedis
 incertae sedis
 \emph default
  taxa, because edges are not required to partition all tip taxa.
- The second claim is a heuristic assumption that would usually be true.
+ The second claim is a heuristic assumption that is usually true.
  We may thus enforce this condition without (we hope) producing a tree that
  is very different from the tree we would get if we did not perform subproblem
  decomposition.
@@ -309,7 +421,10 @@ tips if all input trees agree on which side of the edge each tip should
 not
 \emph default
  agree, we would mark the edge as contested instead of extending it.
- This would make sense if 
+ By refusing to decompose along edges where different input trees disagree
+ about placement, we would be punting the solution to conflicting placement
+ to the subproblem solver instead of trying to solve it in the decomposer.
+ This approach would probably work well if 
 \emph on
 incertae sedis
 \emph default
@@ -510,6 +625,27 @@ In this case we want to conclude that the edge
  is contested by conflicting placement information.
  And I think we want to conclude that the IS taxon is also contested by
  placement information that would tend to break up the clade.
+\end_layout
+
+\begin_layout Subsubsection
+Example C - Nested 
+\emph on
+incertae sedis
+\emph default
+ taxa
+\end_layout
+
+\begin_layout Standard
+We could have a clade that is 
+\emph on
+incertae sedis
+\emph default
+.
+ One of its descendant nodes could also be marked 
+\emph on
+incertae sedis
+\emph default
+.
 \end_layout
 
 \begin_layout Subsubsection
@@ -1336,39 +1472,6 @@ incertae sedis
 \end_layout
 
 \begin_layout Standard
-
-\emph on
-Incertae sedis
-\emph default
- information changes only the exclude set of splits, and only reduces this
- set.
- The exclude set for a node is is the union of the exclude set of the parent
- node and the include sets of non-
-\emph on
-incertae sedis
-\emph default
- siblings.
- If we use the terminology that the include and exclude sets for a node
- 
-\begin_inset Formula $n$
-\end_inset
-
- are 
-\begin_inset Formula $\mathcal{I}(n)$
-\end_inset
-
- and 
-\begin_inset Formula $\mathcal{E}(n)$
-\end_inset
-
-, then we have 
-\begin_inset Formula 
-\begin{align*}
-\mathcal{E}(n) & =\mathcal{E}(parent(n))\cup\left[\mathcal{I}(m)\big|m\in siblings(n),m\text{ not \emph{incertae} \emph{sedis}}\right].
-\end{align*}
-
-\end_inset
-
 This leads to the algorithm to compute the exclude set for all nodes in
  a tree.
 \end_layout
