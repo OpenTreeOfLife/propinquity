@@ -241,14 +241,18 @@ def synthesis_tree_diffs(run1,run2):
 def print_table_row(cells):
     print "<tr>"
     for i in cells:
-        print "   <th>{value}</th>".format(value=i)
+        print "   <td>{value}</th>".format(value=i)
     print "</tr>"
 
 # outputs the table for the release notes
 def summary_table(run1,run2):
+    # print header; uses <th> for each cell
     print '<table class="table table-condensed">'
-    cells = [ '<!--statistic-->&nbsp;', 'version7.0','version8.0','change' ]
-    print_table_row(cells)
+    print '<tr>'
+    print '<th><!--statistic-->&nbsp;</th>'
+    print '<th>version7.0</th>'
+    print '<th>version8.0</th>'
+    print '<th>change</th>'
 
     # read summary files
     jsonfile = "{d}/labelled_supertree/input_output_stats.json".format(d=run1)
