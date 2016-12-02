@@ -249,7 +249,6 @@ def summary_table(run1,run2):
     print '<table class="table table-condensed">'
     cells = [ '<!--statistic-->&nbsp;', 'version7.0','version8.0','change' ]
     print_table_row(cells)
-    print '</table>'
 
     # read summary files
     jsonfile = "{d}/labelled_supertree/input_output_stats.json".format(d=run1)
@@ -291,6 +290,8 @@ def summary_table(run1,run2):
     subproblems2 = open(subpfile, 'r').read().splitlines()
     d2=len(subproblems2)
     print_table_row(['subproblems',d1,d2,d2-d1])
+
+    print '</table>'
 
 if __name__ == "__main__":
     # get command line arguments (the two directories to compare)
