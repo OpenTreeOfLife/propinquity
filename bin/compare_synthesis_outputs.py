@@ -261,15 +261,15 @@ def summary_table(run1,run2):
     jsonfile = "{d}/labelled_supertree/input_output_stats.json".format(d=run2)
     data2 = json.load(open(jsonfile, 'r'))
 
-    # tips from taxonomy
-    ott1 = data1['input']['num_taxonomy_leaves']
-    ott2 = data2['input']['num_taxonomy_leaves']
+    # total tips
+    tips1 = data1['input']['num_taxonomy_leaves']
+    tips2 = data2['input']['num_taxonomy_leaves']
+    print_table_row(['total tips',tips1,tips2,tips2-tips1])
 
     # tips from phylogeny
     phylo1 = data1['input']['num_solution_leaves']
     phylo2 = data2['input']['num_solution_leaves']
 
-    print_table_row(['total tips',phylo1+ott1,phylo2+ott2,phylo2+ott2-phylo1-ott1])
     print_table_row(['tips from phylogeny',phylo1,phylo2,phylo2-phylo1])
 
     # internal taxonomy nodes
