@@ -239,6 +239,69 @@ def synthesis_tree_diffs(run1,run2):
     diff = int(taxa2-taxa1)
     print "broken taxa,{n1},{n2},{d}".format(n1=taxa1,n2=taxa2,d=diff)
 
+def print_table_row(cells):
+    print "<tr>"
+    for i in cells:
+        print "   <th>{value}</th>".format(value=i)
+    print "</tr>"
+
+# outputs the table for the release notes
+def summary_table(run1,run2):
+    print "\n#Summary table for release notes"
+    print '<table class="table table-condensed">'
+    cells = [ '<!--statistic-->&nbsp;', 'version7.0','version8.0','change' ]
+    print_table_row(cells)
+    print '</table>'
+
+    # read summary files
+    jsonfile = "{d}/labelled_supertree/input_output_stats.json".format(d=run1)
+    data1 = json.load(open(jsonfile, 'r'))
+    jsonfile = "{d}/labelled_supertree/input_output_stats.json".format(d=run2)
+    data2 = json.load(open(jsonfile, 'r'))
+
+    # tips from taxonomy
+    ott1 = data1['input']['num_taxonomy_leaves']
+    ott2 = data2['input']['num_taxonomy_leaves']
+
+    # tips from phylogeny
+    phylo1 = data1['input']['num_solution_leaves']
+    phylo2 = data2['input']['num_solution_leaves']
+
+    print_table_row(['total tips',phylo1+ott1,phylo2+ott2,phylo2+ott2-phylo1-ott1])
+    print_table_row(['tips from phylogeny',phylo1,phylo2,phylo2-phylo1])
+
+    # internal taxonomy nodes
+    d1 = data1['input']['num_taxonomy_internals']
+    d2 = data2['input']['num_taxonomy_internals']
+    print_table_row(['internal nodes in taxonomy',d1,d2,d2-d1])
+
+    # internal phylogeny nodes
+    d1 = data1['input']['num_solution_internals']
+    d2 = data2['input']['num_solution_internals']
+    print_table_row(['internal nodes from phylogeny',d1,d2,d2-d1])
+
+    # broken taxa
+    d1 = data1['output']['num_taxa_rejected']
+    d2 = data2['output']['num_taxa_rejected']
+    print_table_row(['broken taxa',d1,d2,d2-d1])
+
+    # subproblems
+    subpfile = "{d}/subproblems/subproblem-ids.txt".format(d=run1)
+    subproblems1 = open(subpfile, 'r').read().splitlines()
+    d1=len(subproblems1)
+    subpfile = "{d}/subproblems/subproblem-ids.txt".format(d=run2)
+    subproblems2 = open(subpfile, 'r').read().splitlines()
+    d2=len(subproblems2)
+    print_table_row(['subproblems',d1,d2,d2-d1])
+
+ # <tr>
+ #  <th>subproblems</th>
+ #  <td>5854</td>
+ #  <td>6712</td>
+ #  <td>858</td>
+ # </tr>
+# </table>
+
 if __name__ == "__main__":
     # get command line arguments (the two directories to compare)
     parser = argparse.ArgumentParser(description='set up database tables')
@@ -270,3 +333,4 @@ if __name__ == "__main__":
     print "\n# Comparing broken taxa"
     broken_taxa_diffs(args.run1,args.run2,args.verbose,args.print_broken_taxa)
     synthesis_tree_diffs(args.run1,args.run2)
+    summary_table(args.run1,args.run2)
