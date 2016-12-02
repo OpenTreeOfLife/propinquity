@@ -240,8 +240,9 @@ def synthesis_tree_diffs(run1,run2):
 
 def print_table_row(cells):
     print "<tr>"
+    print "   <th>{first}</th>".format(first=cells.pop(0))
     for i in cells:
-        print "   <td>{value}</th>".format(value=i)
+        print "   <td>{value}</td>".format(value=i)
     print "</tr>"
 
 # outputs the table for the release notes
