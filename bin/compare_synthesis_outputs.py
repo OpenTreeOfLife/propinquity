@@ -212,7 +212,6 @@ def synthesis_tree_diffs(run1,run2):
     data1 = json.load(open(jsonfile, 'r'))
     jsonfile = "{d}/labelled_supertree/input_output_stats.json".format(d=run2)
     data2 = json.load(open(jsonfile, 'r'))
-    print "\n# Synthetic tree summary"
     print "statistic,run1,run2,difference"
     print "-------------------------------"
     # number of taxonomy tips
@@ -247,7 +246,6 @@ def print_table_row(cells):
 
 # outputs the table for the release notes
 def summary_table(run1,run2):
-    print "\n#Summary table for release notes"
     print '<table class="table table-condensed">'
     cells = [ '<!--statistic-->&nbsp;', 'version7.0','version8.0','change' ]
     print_table_row(cells)
@@ -294,14 +292,6 @@ def summary_table(run1,run2):
     d2=len(subproblems2)
     print_table_row(['subproblems',d1,d2,d2-d1])
 
- # <tr>
- #  <th>subproblems</th>
- #  <td>5854</td>
- #  <td>6712</td>
- #  <td>858</td>
- # </tr>
-# </table>
-
 if __name__ == "__main__":
     # get command line arguments (the two directories to compare)
     parser = argparse.ArgumentParser(description='set up database tables')
@@ -332,5 +322,7 @@ if __name__ == "__main__":
     subproblem_distributions(args.run1,args.run2)
     print "\n# Comparing broken taxa"
     broken_taxa_diffs(args.run1,args.run2,args.verbose,args.print_broken_taxa)
+    print "\n# Synthetic tree summary"
     synthesis_tree_diffs(args.run1,args.run2)
+    print "\n#Summary table for release notes"
     summary_table(args.run1,args.run2)
