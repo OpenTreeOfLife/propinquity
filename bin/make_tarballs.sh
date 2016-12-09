@@ -50,6 +50,7 @@ cp -p $outputdir/grafted_solution/grafted_solution_ottnames.tre $tar_dir1/grafte
 cp -p $outputdir/annotated_supertree/annotations.json $tar_dir1/
 
 # readme file
+echo 'printing readme file'
 files_url="http://files.opentreeoflife.org/synthesis/$treeid/output"
 touch $tar_dir1/README.md
 printf "[Release notes for version %s](https://github.com/OpenTreeOfLife/germinator/blob/release_notes/doc/ot-synthesis-v%s.md)\n" $version > $tar_dir1/README.md
@@ -63,7 +64,9 @@ printf "\n   * \`grafted_solution.tre\` - synthetic tree without taxonomy-only o
 printf "\n   * \`grafted_solution_ottnames.tre\` - synthetic tree without taxonomy-only outputs; labels are name_ottid" >> $tar_dir1/README.md
 
 # tar these babies up
-tar -czvf $tar_dir1.tar.gz $tar_dir1
+echo 'creating full archive'
+tar -czf $tar_dir1.tgz $tar_dir1
 
+echo 'creating tree-only archive'
 # all synthesis outputs
-tar -czvf ${outputdir}_output.tar.gz $outputdir
+tar -czf ${outputdir}_output.tgz $outputdir
