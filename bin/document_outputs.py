@@ -65,6 +65,7 @@ def parse_config(config_filepath):
     config.taxonomy_cleaning_flags.sort()
     config.collections = [i.strip() for i in get_property(config_filepaths, 'synthesis', 'collections').strip().split()]
     config.root_ott_id = get_property(config_filepaths, 'synthesis', 'root_ott_id')
+    config.synth_id = get_property(config_filepaths, 'synthesis', 'synth_id')
     config.peyotl_root = get_property(config_filepaths, 'opentree', 'peyotl')
     config.phylesystem_root = get_property(config_filepaths, 'opentree', 'phylesystem')
     config.collections_root = get_property(config_filepaths, 'opentree', 'collections')

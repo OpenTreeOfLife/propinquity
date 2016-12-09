@@ -5,6 +5,13 @@
     a <a href="https://www.gnu.org/software/make/">make</a>-based pipeline for phylogenetic supertrees.
 </p>
 <h1 id="configuration">Configuration</h1>
+
+<div tal:switch="bool(config.synth_id)">
+    <div tal:case="True">
+      <p>The Open Tree of Life version is <strong><code>${config.synth_id}</code></strong>.</p>
+    </div>
+</div>
+
 <p>The configuration file for the propinquity run was at: <code>${config.config_filepath}</code></p>
 
 <h2 id="configuration-taxonomy">Taxonomy</h2>
@@ -52,7 +59,7 @@
 
 <h2>Processing of phylogenetic inputs</h2>
 <ol>
-    <li> <a href="./phylo_input/index.html">phylo_input/index.html</a> discusses 
+    <li> <a href="./phylo_input/index.html">phylo_input/index.html</a> discusses
 the list of ${len(phylo_input.study_id_tree_id_pairs)} input phylogenetic trees that were identified from the collections.</li>
     <li><a href="./phylo_snapshot/index.html">phylo_snapshot/index.html</a> links to
 the git SHA of these trees and copies of them as they existed when the supertree pipeline
@@ -83,7 +90,7 @@ pruning of tips from input phylogenies due to mapping to problematic taxa. There
 <p>Logs for these steps are <a href="logs/log-of-annotations.txt">here (stdout)</a> and <a href="logs/log-of-annotations-err.txt">here (stderr)</a></p>
 
 <h2>Assessment of the pipeline</h2>
-<p>See <a href="./assessments/index.html">assessments/index.html</a> discusses what tests were 
+<p>See <a href="./assessments/index.html">assessments/index.html</a> discusses what tests were
 run to assess the supertree.</p>
 
 <p>Logs for these steps are <a href="logs/log-of-assessments.txt">here (stdout)</a> and <a href="logs/log-of-assessments-err.txt">here (stderr)</a></p>
