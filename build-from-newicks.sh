@@ -90,6 +90,6 @@ echo "done."
 
 # Fake export_studies_from_collection
 echo -n "Generating collection JSON for supplied newicks ... "
-bin/fake-collection.py $(cat "${phyloranking}") > $PROPINQUITY_OUT_DIR/phylo_snapshot/concrete_rank_collection.json
+cat "${phyloranking}" | bin/fake-collection.py  > $PROPINQUITY_OUT_DIR/phylo_snapshot/concrete_rank_collection.json
 
 make fakephylesystem
