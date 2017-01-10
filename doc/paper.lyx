@@ -334,6 +334,242 @@ supported by
 \end_layout
 
 \begin_layout Standard
+Cutting any edge 
+\series bold
+
+\begin_inset Formula $j$
+\end_inset
+
+ 
+\series default
+of a rooted tree induces a bi-partition 
+\begin_inset Formula $S(j)$
+\end_inset
+
+ of the leaf taxa into two non-empty groups 
+\begin_inset Formula $S_{1}(j)$
+\end_inset
+
+ and 
+\begin_inset Formula $S_{2}(j)$
+\end_inset
+
+.
+ Such a bi-partition is called a rooted split and written 
+\begin_inset Formula $S(j)=S_{1}(j)|\bullet S_{2}(j)$
+\end_inset
+
+, where 
+\begin_inset Formula $\bullet$
+\end_inset
+
+ indicates the root node.
+ Here 
+\begin_inset Formula $S_{1}(j)$
+\end_inset
+
+ is called the 
+\begin_inset Quotes eld
+\end_inset
+
+cluster
+\begin_inset Quotes erd
+\end_inset
+
+ of 
+\begin_inset Formula $j$
+\end_inset
+
+, and contains tip taxa on the side of edge 
+\begin_inset Formula $j$
+\end_inset
+
+ that does not contain the root.
+ 
+\begin_inset Formula $S_{2}(j)$
+\end_inset
+
+ contains the tip taxa on the side of edge 
+\begin_inset Formula $j$
+\end_inset
+
+ that contains the root.
+ We refer to 
+\begin_inset Formula $S(j)$
+\end_inset
+
+ as a 
+\emph on
+rooted
+\emph default
+ split because the right side of the split implicitly contains the root
+ node.
+\end_layout
+
+\begin_layout Standard
+For any two splits 
+\begin_inset Formula $A=A_{1}|\bullet A_{2}$
+\end_inset
+
+ and 
+\begin_inset Formula $B=B_{1}|\bullet B_{2}$
+\end_inset
+
+, we say that 
+\begin_inset Formula $A$
+\end_inset
+
+ 
+\emph on
+displays
+\emph default
+ 
+\begin_inset Formula $B$
+\end_inset
+
+ if 
+\begin_inset Formula $B_{1}\subseteq A_{1}$
+\end_inset
+
+ and 
+\begin_inset Formula $B_{2}\subseteq A_{2}$
+\end_inset
+
+.
+ We also say that 
+\begin_inset Formula $A$
+\end_inset
+
+ and 
+\begin_inset Formula $B$
+\end_inset
+
+ 
+\emph on
+conflict
+\emph default
+ if none of 
+\begin_inset Formula $A_{1}\cap B_{1}$
+\end_inset
+
+, 
+\begin_inset Formula $A_{1}\cap B_{2}$
+\end_inset
+
+, and 
+\begin_inset Formula $B_{2}\cap A_{1}$
+\end_inset
+
+ are empty
+\begin_inset Foot
+status collapsed
+
+\begin_layout Plain Layout
+The intersection of the right sides of the splits is considered to be non-empty
+ even if 
+\begin_inset Formula $A_{2}\cap B_{2}$
+\end_inset
+
+ is empty, because the right sides implicitly contain the root.
+\end_layout
+
+\end_inset
+
+.
+ If 
+\begin_inset Formula $A$
+\end_inset
+
+ and 
+\begin_inset Formula $B$
+\end_inset
+
+ do not conflict, then we say that they are 
+\emph on
+compatible
+\emph default
+
+\begin_inset Foot
+status collapsed
+
+\begin_layout Plain Layout
+It is possible to construct a rooted tree that displays both 
+\begin_inset Formula $A$
+\end_inset
+
+ and 
+\begin_inset Formula $B$
+\end_inset
+
+ if and only if 
+\begin_inset Formula $A$
+\end_inset
+
+ and 
+\begin_inset Formula $B$
+\end_inset
+
+ are compatible
+\end_layout
+
+\end_inset
+
+.
+ If 
+\begin_inset Formula $A$
+\end_inset
+
+ displays 
+\begin_inset Formula $B$
+\end_inset
+
+, then 
+\begin_inset Formula $A$
+\end_inset
+
+ and 
+\begin_inset Formula $B$
+\end_inset
+
+ must be compatible, since 
+\begin_inset Formula $A_{1}\cap B_{2}$
+\end_inset
+
+ and 
+\begin_inset Formula $B_{1}\cap A_{2}$
+\end_inset
+
+ must be empty.
+ We adopt the shorthand of referring to an edge 
+\begin_inset Formula $k$
+\end_inset
+
+ when we mean the split 
+\begin_inset Formula $S(k)$
+\end_inset
+
+.
+ So, when we say that edge 
+\begin_inset Formula $j$
+\end_inset
+
+ conflicts with edge 
+\begin_inset Formula $k$
+\end_inset
+
+, we mean that 
+\begin_inset Formula $S(j)$
+\end_inset
+
+ conflicts with 
+\begin_inset Formula $S(k)$
+\end_inset
+
+.
+ 
+\end_layout
+
+\begin_layout Standard
 Let 
 \begin_inset Formula $\summaryTree$
 \end_inset
@@ -347,7 +583,111 @@ Let
 \end_inset
 
 th input tree.
- The set of taxa that are mapped to the tips of the tree 
+ We say that 
+\begin_inset Formula $\summaryTree$
+\end_inset
+
+ displays an edge 
+\begin_inset Formula $j$
+\end_inset
+
+ of 
+\begin_inset Formula $T_{i}$
+\end_inset
+
+ if any edge of 
+\begin_inset Formula $\summaryTree$
+\end_inset
+
+ displays 
+\begin_inset Formula $j$
+\end_inset
+
+.
+ We say that 
+\begin_inset Formula $\summaryTree$
+\end_inset
+
+ conflicts with a edge 
+\begin_inset Formula $j$
+\end_inset
+
+ of 
+\begin_inset Formula $T_{i}$
+\end_inset
+
+ if any edge of 
+\begin_inset Formula $\summaryTree$
+\end_inset
+
+ conflicts with 
+\begin_inset Formula $j$
+\end_inset
+
+; otherwise 
+\begin_inset Formula $\summaryTree$
+\end_inset
+
+ is compatible with 
+\begin_inset Formula $j$
+\end_inset
+
+.
+ We say that edge 
+\begin_inset Formula $k$
+\end_inset
+
+ of 
+\begin_inset Formula $\summaryTree$
+\end_inset
+
+ is 
+\emph on
+supported by
+\emph default
+ edge 
+\begin_inset Formula $j$
+\end_inset
+
+ of 
+\begin_inset Formula $T_{i}$
+\end_inset
+
+ if 
+\begin_inset Formula $\summaryTree$
+\end_inset
+
+ displays 
+\begin_inset Formula $j$
+\end_inset
+
+, but 
+\begin_inset Formula $\summaryTree$
+\end_inset
+
+ would not display 
+\begin_inset Formula $j$
+\end_inset
+
+ if we contracted edge 
+\begin_inset Formula $k$
+\end_inset
+
+.
+ We also adopt the shorthand of referring to edges by their tipward endpoint.
+ By combining this with the above shorthand, we could say that a node 
+\begin_inset Formula $j$
+\end_inset
+
+ conflicts or does not conflict with another node 
+\begin_inset Formula $k$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+The set of taxa that are mapped to the tips of the tree 
 \begin_inset Formula $T_{i}$
 \end_inset
 
@@ -367,183 +707,12 @@ th input tree.
 
  and the most recent common ancestor of those leaves, and any other node
  that is an ancestor of some but not all of these leaves.
- We say that edge 
-\begin_inset Formula $j$
-\end_inset
-
- of the supertree is compatible with an input tree, 
-\begin_inset Formula $T_{i}$
-\end_inset
-
- if edge 
-\begin_inset Formula $j$
-\end_inset
-
- either is not included in the induced tree 
-\begin_inset Formula $\summaryTree(i)$
-\end_inset
-
- or none of the edges in 
-\begin_inset Formula $T_{i}$
-\end_inset
-
- are in conflict with edge 
-\begin_inset Formula $j$
-\end_inset
-
- in the induced tree.
  
 \end_layout
 
 \begin_layout Standard
-We can consider whether or not an node in an input tree is displayed by
- 
-\begin_inset Formula $\summaryTree$
-\end_inset
-
-.
- For any such node 
-\begin_inset Formula $j$
-\end_inset
-
- there is a set of taxa that are mapped to the tips that descend from the
- node.
- This set of taxa is the 
-\begin_inset Quotes eld
-\end_inset
-
-cluster
-\begin_inset Quotes erd
-\end_inset
-
- of taxa corresponding to node 
-\begin_inset Formula $j$
-\end_inset
-
-; it can be denoted 
-\begin_inset Formula $\mathcal{L}(i,j)$
-\end_inset
-
-.
- It will also be referred to as the 
-\begin_inset Quotes eld
-\end_inset
-
-include set
-\begin_inset Quotes erd
-\end_inset
-
- of the node.
- The 
-\begin_inset Quotes eld
-\end_inset
-
-exclude set
-\begin_inset Quotes erd
-\end_inset
-
- of 
-\begin_inset Formula $j$
-\end_inset
-
- in 
-\begin_inset Formula $T_{i}$
-\end_inset
-
- is the set of taxa in 
-\begin_inset Formula $\mathcal{L}(i)$
-\end_inset
-
- but not in 
-\begin_inset Formula $\mathcal{L}(i,j)$
-\end_inset
-
-.
- If the cluster of taxa for any supertree node in 
-\begin_inset Formula $\summaryTree(i)$
-\end_inset
-
- is identical to 
-\begin_inset Formula $\mathcal{L}(i,j)$
-\end_inset
-
-, then we say that 
-\begin_inset Formula $\summaryTree$
-\end_inset
-
- displays node 
-\begin_inset Formula $j$
-\end_inset
-
- of 
-\begin_inset Formula $T_{i}$
-\end_inset
-
-.
- We say that the summary tree 
-\emph on
-displays
-\emph default
- edge 
-\begin_inset Formula $j$
-\end_inset
-
- if the summary tree displays the child node of edge 
-\begin_inset Formula $j$
-\end_inset
-
-.
- Operationally, we can find the most recent common ancestor (MRCA) node
- of 
-\begin_inset Formula $\mathcal{L}(i,j)$
-\end_inset
-
- in 
-\begin_inset Formula $\summaryTree$
-\end_inset
-
-; the summary tree displays 
-\begin_inset Formula $j$
-\end_inset
-
- if and only if that MRCA node is not an ancestor of any member of the exclude
- set of 
-\begin_inset Formula $j$
-\end_inset
-
-.
- We say that edge 
-\begin_inset Formula $k$
-\end_inset
-
- of the summary tree is 
-\emph on
-supported by
-\emph default
- node 
-\begin_inset Formula $j$
-\end_inset
-
- in 
-\begin_inset Formula $T_{i}$
-\end_inset
-
- if the summary tree displays node 
-\begin_inset Formula $j$
-\end_inset
-
-, but if we contracted edge 
-\begin_inset Formula $k$
-\end_inset
-
- then the modified summary tree would no longer display node 
-\begin_inset Formula $j$
-\end_inset
-
-.
- 
 \begin_inset Note Note
-status collapsed
+status open
 
 \begin_layout Plain Layout
 We can consider whether or not an edge in an input tree is displayed by
@@ -621,7 +790,7 @@ th input tree.
 \end_inset
 
 .
- We assocate the edge 
+ We associate the edge 
 \begin_inset Formula $\boldsymbol{e}$
 \end_inset
 
@@ -1032,7 +1201,7 @@ reference "fig:toyambig"
 d), whereas taxon A does not.
  
 \begin_inset Note Note
-status collapsed
+status open
 
 \begin_layout Plain Layout
 Our current method of solving subproblems (BUILD) places each 
