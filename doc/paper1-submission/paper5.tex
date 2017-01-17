@@ -1186,7 +1186,7 @@ with the taxonomy is an expected result of incorporating more splits
 from higher-ranked input phylogenies.  
 
 \subsection{Checking reliability of the method}
-To test the reliability of our methods, we divided the OTLv4' summary
+To test the reliability of our methods, we divided the \otlprop{} summary
 tree into a collection of input trees. The input trees were obtained
 by splitting the grafted tree at each taxonomy node, so that each
 input tree has a taxonomy node at the root, and taxonomy nodes as
@@ -1195,7 +1195,11 @@ internal taxon was then replaced with a leaf taxon. This approach
 ensures that any taxa that were contested in the original analyses
 remain contested in this new analysis.  We then constructed a summary
 tree from these input trees using the propinquity pipeline.  The
-resulting summary tree was identical to the OTLV4' summary tree.  
+resulting summary tree was identical to the \otlprop{} summary tree.
+
+\subsection{Sensitivity of the \otlprop{} supertree to ranks}
+We ran the pipeline on the OTL4 data with the ranks reversed.  This drastic alteration of the ranks lead to a summary supertree that conflicted with 1264 branches of the \otlprop{}.  Compared to this, the \otl{} supertree tree conflicts with 1387 branches of the \otlprop{}.  However, a total of 36533 edges of the grafted tree could be altered by changing the ranks, and most of these edges are unaffected.
+
 \section{Conclusions}
 
 Here we have described the motivation and methodology used by our new

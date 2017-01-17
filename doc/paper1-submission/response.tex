@@ -1,6 +1,7 @@
 \documentclass{article}
 \usepackage[margin=1in]{geometry}
 \usepackage{titlesec}
+\usepackage{natbib}
 %\usepackage{a4wide}
 %\usepackage{parskip}
 \setlength{\parindent}{0pt}
@@ -59,15 +60,40 @@ The manuscript ``A supertree pipeline for summarizing phylogenetic and taxonomic
 
 I think there are three issues that should be addressed in a paper like this: 1) does the proposed supertree algorithm have any fundamental flaws?; 2) can the method address the unequal quality of source trees?; and 3) will large-scale synthetic trees generated using this method be useful to the biological community? The third issue is important for a resource like opentree, where a large community might wish to have a single place to retrieve a tree that can be used for comparative methods and/or ancestral state reconstruction. R\&H lay out a relatively convincing case for the first two; they do not address the third.
 
+\begin{reply}
+The first reviewer doesn't number their points, so we will divide them into
+three groups (1, 2, and 3) following the reviewer's ``three issues'',
+with sub-points indicated by letters.
+\end{reply}.
+
 I do not believe that there is no such problem with the approach proposed by R\&H. They clearly lay out their desiderata for a “good” supertree method. The most important (in my opinion) is described by their first goal: that “each grouping is supported by at least one input [tree]”. This avoids the problem of completely “emergent” groups, which can occur in some supertree methods (Gatesy and Springer 2004). With supermatrix methods it is reasonable (indeed, it is desirable) to find clades that are absent from the estimates of phylogeny for each individual partition. In contrast, the emergence of clades that are not present in any individual source tree is undesirable for supertree methods. The method proposed by R\&H appears to be designed to avoid this problem.
 
 \begin{reply}
-1. It seems that the reviewer is satisfied with our criteria for the supertree method.
+1. It seems that the reviewer is satisfied with our criteria for what
+counts as a good supertree.
 \end{reply}
 
 The other challenge for supertrees is the low quality of some source trees (this may be a larger problem for older trees). If the tree quality issue is not addressed supertrees are likely to converge on “traditional relationships,” since older trees supporting those relationships may be more numerous and taxonomies often reflect those traditional relationships. This tendency is evident if we focus on a well-studied group (mammals) where an older supertree analyses (e.g., Liu et al. 2001) exhibited this problem (Springer \& de Jong 2001; Gatesy et al. 2002). The problem is even more evident in similar studies of birds, where a supertree effort (Davis and Page 2014) recovered many “traditional” relationships for major groups that were not found in large-scale avian trees (Hackett et al. 2008; Jarvis et al. 2014; Prum et al. 2015). The “newer” molecular relationships were also recovered in a large-scale supermatrix (Burleigh et al. 2015) that provides a large-scale tree with many of the benefits of large-scale supertree studies without the drawbacks
 
+\begin{reply}
+2a. The reviewer seems to assume that out supertree algorithm is designed to infer the true tree from the input trees, as supertree algorithms were used in the supertree-versus-supermatrix debate.  However, we don't say that anywhere, and are not in fact trying to do that.  We agree with the reviewer that there are a lot of problems with trying to infer phylogenies from input trees, as expressed in Gatesy et al (2004).  We will address this underlying concern at the end.  We note addressing individual concerns in the order in which they are written.
+
+We appreciate that attempting to infer the true tree from a collection of input trees could be undermined by the inclusion of multiple trees that all represent ``traditional'' relationships.  However: (1) our supertree approach is not designed to estimate the true tree, but to represent the input trees even if they are incorrect (2) we handle conflict by allow curators to influence the supertree via ranking as discussed in the text:
+
+\begin{quote}
+If an expert were quite confident in the c grouping, then she could assign that input node a high ranking. A supertree that used ranks could then recover this grouping even if its inclusion did not increase the total number of input nodes that are displayed by the summary tree.
+\end{quote}
+
+Note that in our rank-based system ``traditional'' relationships are not favored in conflict resolution, even if they do occur in more input trees.
+\end{reply}
+
 The issue of including data from “bad” trees is especially acute when taxonomies and/or “conglomerated trees” (i.e., trees based on expert evaluation of the literature that largely reflect the consensus at that time; cf. Gatesy et al. 2002). R\&H’s use of weighted trees should address this issue, at least to some degree, since the method downweights specific trees. Hopefully, the downweighted tree will correspond to less reliable sources of phylogenetic information.
+
+\begin{reply}
+2b. We agree that if we were attempting to infer the true tree from the input trees, downweighting bad trees might improve the results somewhat.  However, we really are trying to represent the input trees, so this is not directly a concern.
+  
+However, while it is indeed possible to recast our method as an optimization problem by assigning weights to the input trees, we are not trying to weight the evidence in the input trees, and we do not actually ever calculate these weights in our pipeline.
+\end{reply}
 
 I have two concerns regarding the use of tree weights. First, it seems clear that weights could have an extremely large impact in the R\&H method. According to part A of their appendix:
 
@@ -75,34 +101,51 @@ I have two concerns regarding the use of tree weights. First, it seems clear tha
 
 Some elaboration on the sensitivity of their method to tree weights seems warranted. Moreover, the weights are appear to be applied for trees rather than nodes. I recognize that weighting nodes is likely to be impractical, but it could create problems if different source trees have different likelihoods of correctly resolving nodes at various depths in the tree, as seems likely to be the case (e.g., Chen et al. 2015). Perhaps the authors could elaborate on this issue.
 
+\begin{reply}
+2c. We agree that the ranks have a large impact on the supertree algorithm.   If this were not the case, then ranks could not achieve their stated goal of allowing users to use ranks to fix problems in the tree.  If we were performing phylogeny estimation, then these ranks might not give low-ranked trees sufficient weight in conflict resolution.  However, again, we do not seek to infer the correct tree by treating the input trees as data.
+
+We agree with the reviewer that applying weights to trees rather than nodes is problematic, and have added the following to the discussion:
+\begin{quote}
+ say that applying weights to trees is problematic.
+\end{quote}
+\end{reply}
+
 Second, I am not sure that weights for trees can be obtained in a truly principled manner. I recognize that one could use any weighting scheme with the R\&H method but it would seem valuable to have an empirical example where a specific weighting scheme is used. Obviously, the weights used in opentree would be the most appropriate to examine. To evaluate those weights I found myself looking to Hinchliff et al. (2015) paper and the current tree on the opentree website. Overall, it would be good for readers to have as much information as possible about the weighting used by Hinchliff et al. (2015); I found the description of the weighting used by Hinchliff et al. (2015) difficult to understand. It would be useful for R\&H to provide as much additional information about Hinchliff et al. (2015) weights as possible, probably in the discussion.
+
+\begin{reply}
+2d. Explaining the Hinchliff (2015) paper is beyond the scope of the current manuscript.
+\end{reply}
 
 With these concerns out of the way I will add that I am uncertain whether a supertree method that achieves “perfect” (or nearly perfect) weighting can be devised. The only method I can think of that might allow principled estimation of tree weights would be a version of the maximum likelihood supertree method described by Steel and Rodrigo (2008). However, I doubt that such an ML supertree method would meet all of the desiderata for a good supertree method that R\&H articulate (especially their first goal). It would be valuable for the authors to expand on the potential advantages (which appear to be largely computational) and pitfalls of their extreme weighting method.
 
 \begin{reply}
-2a. Concern: incorrect input trees could lead to a supertree that is not correct.  Response: our goal is to summarize the input trees, not to infer the true tree.  This would work just fine with incorrect input trees.
-
-2b. Concern: hypotheses that occur in more input trees might not be correct, so a supertree method should not favor hypotheses just based on frequency.  Response: our method does not support hypotheses because of their frequency.  We use ranks instead.
-
-2c. Concern: bad input trees could compromise the correctness of inferred phylogeny.  Downweighting bad input trees might assuage this.  Response: we are not performing a phylogeny inference, but attemptint to summarize input trees, so the correctness of the phylogeny is not an issue.  While it is possible to describe weights so that we can phrase our rank-based procedure as an optimization problem, at no point do we ever construct weights.
-
-2d. Concern: the weights have a large impact on the method.  Please describe how sensitive the method is to the weights.  Response: we indeed hope that the ranking has a substantial effect on the resulting tree.  If this were not the case, then ranks could not achieve their stated goal of allowing users to use ranks to fix problems in the tree.
-
-Despite this, we ran the pipeline with the ranks reversed.  This drastic alteration of the ranks lead to a supertree that conflicted with 1264 branches of the original supertree.  Compared to this, the opentree 4.0 summary tree that used preceding methodology conflicts with 1387 branches of the 4.0’ tree using current methods.  However, most of the 36533 internal edges of the grafted tree are not altered. 
-
-2e. Concern: the weights are applied to trees rather than nodes.  This seems to be the only valid concern.
-
-2f. Concern: the weights cannot be derived in a principled manner.  Results: we are not trying to estimate the weights from the input trees.  We would only need to estimate weights if we were trying to infer the true phylogeny from the input trees, a la the supertree versus supermatrix debate.  But we are not, therefore there is no need to derive weights.
+We agree that trying to derive weights from the input trees alone in a principled manner would be extremely difficult.  That is why we do not attempt it.  Again, our goal in constructing the supertree is not to find the correct tree, and we rely use ranks to allow curators to influence conflict resolution.
 
 2.  It seems that the reviewer thinks that we are trying to infer the true tree from a dataset consisting of the input trees, like Bininda-Edmonds.  Such an inference would need a principled method of resolving conflicts between input trees using only the information in the set of input trees.  The resulting supertree could then be used to critique the input trees, so that input trees that don't match the supertree would be considered to be incorrect (up to estimation error).
 
 However, our approach is fundamentally different.  We do not seek to infer a tree that is more accurate than any individual input tree.  Instead we seek to summarize and describe the set of input trees.  While the supertree must conflict with some input trees, we do not claim that this constitutes an estimate of which input trees are correct or incorrect.  Instead we seek to represent all input trees (including those that conflict with the phylogeny estimate) by linking from summary tree edges to conflicting input tree edges via our annotations file.
 
-Our approach does involve the resolution of conflict.  However, our conflict resolution is not phrased as an estimate of the true tree.  Instead, we supply rankings to allow curators to select which trees should win conflicts.
+Our approach does involve the resolution of conflict.  However, our conflict resolution is not phrased as an estimate of the true tree.  Instead, we supply rankings to allow curators to influence conflict resolution to produce the summary tree that is most useful to them.
 
-We describe how our ranking method could be considered as a weight-based method for the purposes of optimization.  However, such weights should not be interpreted as an attempt to using the (weighted) input trees to decide which alternative phylogenetic hypotheses are correct, and in fact we never say anything like this. Our weights are not computed from the input trees, because we are not performing phylogeny estimation.  
+We appreciate the amount of thought the reviewer put into articulating their concerns, and suspect that a number of readers will have the same assumptions.  To avoid confusion, we therefore added the following to our section on goals:
+\begin{quote}
+Although other researchers construct supertrees for the purpose of
+inferring the true tree from the input trees \citep{BinindaEmonds2007b,Davis2014},
+we note that phylogeny estimation is an explicit non-goal of our
+supertree method.  We do not treat input trees as data or as surrogates for
+data matrices \citep{gatesy2004critique}, and we do not claim that our
+summary supertree is more accurate than the input trees because more
+data lies behind it. Instead we seek to \emph{summarize and represent}
+the input trees, even when they conflict with each other.  The
+annotations file constructed by our pipeline is essential for this
+task because it includes information about conflict with our supertree
+as well as support for it.
+\end{quote}
 
-The fact that rankings apply to entire trees is indeed an issue with the method.
+Furthermore, it would be interesting to know how much effect the ranks had.  We therefore add the following section:
+\begin{quote}
+We ran the pipeline on the OTL4 data with the ranks reversed.  This drastic alteration of the ranks lead to a summary supertree that conflicted with 1264 branches of the OTLv4'.  Compared to this, the OTLv4 supertree tree conflicts with 1387 branches of the OTLv4’.  However, a total of 36533 edges of the grafted tree could be altered by changing the ranks, and most of these edges are unaffected.
+\end{quote}
 
 % Summary: argh.
 
@@ -196,11 +239,8 @@ tree from these input trees using the propinquity pipeline.  The
 resulting summary tree was identical to the OTLV4' summary tree.  
 \end{quote}
 
-Note that we are not trying to perform phylogeny estimation here like Bininda-Edmonds, so we are not treating the input trees as stand-ins for the data matrices that they may have been constructed from.  Because of this, we aren't treating the input tree collection as a data set.  To clarify this to the readers, we add the following text to the Background section:
-\begin{quote}
-Add non-goals section here (to be written).
-\end{quote}
-
 \end{reply}
 
+\bibliographystyle{upmplainnat}
+\bibliography{otcetera}
 \end{document}
