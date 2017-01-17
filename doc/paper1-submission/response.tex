@@ -182,10 +182,25 @@ Thanks - fixed.
 3. Performance: The authors chose one data set. Could they do an analysis of some additional data sets? For example, they can try the "perfect" case in which they take one of the supertrees they got, get out of it many subtrees (so, they know that these subtrees could be put back together into a supertree, and they know what that supertree is), and then run the methods?
 
 \begin{reply}
-  We performed this experiment and added the following section describing the experiment and the results:
-  \begin{quote}
-    To test the reliability of our methods, we divided the OpenTree 4' summary tree into a collection of input trees. The input trees were obtained by splitting the grafted tree at each taxonomy node, so that each input tree has a taxonomy node at the root, and taxonomy nodes as tips, but no taxonomy nodes internally. \emph{is this right?}  This approach ensures that any taxa that were contested in the original analyses remain contested in this new analysis.  We then constructed a summary tree from these input trees using the propinquity pipeline.  The resulting summary tree was identical to the OpenTree 4' summary tree.
-  \end{quote}
+Thanks for this suggestion.  We performed this experiment and added the following section describing the experiment and the results: \textcolor{red}{\textbf{Mark please check}}
+\begin{quote}
+To test the reliability of our methods, we divided the OTLv4' summary
+tree into a collection of input trees. The input trees were obtained
+by splitting the grafted tree at each taxonomy node, so that each
+input tree has a taxonomy node at the root, and taxonomy nodes as
+tips, but no taxonomy nodes internally.  Each leaf node that was an
+internal taxon was then replaced with a leaf taxon. This approach
+ensures that any taxa that were contested in the original analyses
+remain contested in this new analysis.  We then constructed a summary
+tree from these input trees using the propinquity pipeline.  The
+resulting summary tree was identical to the OTLV4' summary tree.  
+\end{quote}
+
+Note that we are not trying to perform phylogeny estimation here like Bininda-Edmonds, so we are not treating the input trees as stand-ins for the data matrices that they may have been constructed from.  Because of this, we aren't treating the input tree collection as a data set.  To clarify this to the readers, we add the following text to the Background section:
+\begin{quote}
+Add non-goals section here (to be written).
+\end{quote}
+
 \end{reply}
 
 \end{document}
