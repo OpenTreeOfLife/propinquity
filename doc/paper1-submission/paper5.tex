@@ -154,7 +154,19 @@ pipeline was designed to create a tree which:
 \end{enumerate}
 These goals are described more fully below. In order to accomplish
 transparency and justification, our pipeline also produces annotations
-files with information about conflict and support. 
+files with information about conflict and support.
+
+Although other researchers construct supertrees for the purpose of
+inferring the true tree from the input trees \citep{BinindaEmonds2007b,Davis2014},
+we note that phylogeny estimation is an explicit non-goal of our
+supertree method.  We do not treat input trees as data or as surrogates for
+data matrices \citep{gatesy2004critique}, and we do not claim that our
+summary supertree is more accurate than the input trees because more
+data lies behind it. Instead we seek to \emph{summarize and represent}
+the input trees, even when they conflict with each other.  The
+annotations file constructed by our pipeline is essential for this
+task because it includes information about conflict with our supertree
+as well as support for it.
 
 \subsubsection{Goal 1: Each grouping is supported by at least one input}
 
@@ -661,7 +673,7 @@ as a means of improving the summary tree.
 }
 
 \caption{Subproblems generated from the exemplified trees shown in figure \ref{fig:exemplify-example}.
-A trivial statemen from the first tree that a taxon labelled $ABCD$
+A trivial statement from the first tree that a taxon labelled $ABCD$
 is sister to $E$ has been omitted, because trees with only 2 leaves
 do not contain phylogenetic information.}
 \label{fig:subproblems-example}
