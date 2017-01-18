@@ -117,6 +117,12 @@ the components are free software and are available on GitHub.
 \maketitle
 \thispagestyle{empty}
 
+% TODO: add stuff to paper
+% R1.2 Mention that applying ranks to trees instead of nodes is problematic.
+%      Mention transparency?
+% R2.1: Add paragraph mentioning MRP, MinCut, and how they are different. - 1.1.6
+
+
 \section{Background}
 
 The Open Tree of Life project seeks to build a platform for summarizing
@@ -1198,7 +1204,7 @@ tree from these input trees using the propinquity pipeline.  The
 resulting summary tree was identical to the \otlprop{} summary tree.
 
 \subsection{Sensitivity of the \otlprop{} supertree to ranks}
-We ran the pipeline on the OTL4 data with the ranks reversed.  This drastic alteration of the ranks lead to a summary supertree that conflicted with 1264 branches of the \otlprop{}.  Compared to this, the \otl{} supertree tree conflicts with 1387 branches of the \otlprop{}.  However, a total of 36533 edges of the grafted tree could be altered by changing the ranks, and most of these edges are unaffected.
+We ran the pipeline on the OTL4 data with the ranks reversed.  This drastic alteration of the ranks lead to a summary supertree that conflicted with 1264 branches of the \otlprop{}.  Compared to this, the \otl{} supertree tree conflicts with 1387 branches of the \otlprop{} supertree.  Thus, reversing the ranks makes a smaller different in the \otlprop{} supertree than the new synthesis algorithm.  We also note that a total of 36533 edges of the grafted tree could be altered by changing the ranks, and most of these edges are unaffected.
 
 \section{Conclusions}
 
