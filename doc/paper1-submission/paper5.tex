@@ -710,7 +710,9 @@ as a means of improving the summary tree.
 \caption{Subproblems generated from the exemplified trees shown in figure \ref{fig:exemplify-example}.
 A trivial statement from the first tree that a taxon labelled $ABCD$
 is sister to $E$ has been omitted, because trees with only 2 leaves
-do not contain phylogenetic information.}
+do not contain phylogenetic information.
+Similarly, the trivial problems that list E1 and F1 as the only daughters
+of taxa E and F have been omitted.}
 \label{fig:subproblems-example}
 \end{figure}
 \begin{figure}
@@ -820,7 +822,10 @@ and then merging the nodes that are labeled with the same OTT ID.
 \caption{Grafted solution produced from the subproblems from
 figure \ref{fig:subproblem-solutions.} and which is the 
 backbone onto which taxa that are not included in any phylogeny
-will be placed.}
+will be placed.
+In a real analysis, the tips shown as E and F here
+would be monotypic taxa (with children E1 and F1, respectively)
+from the trivial subproblems that were omitted from from figure \ref{fig:subproblems-example}.}
 \label{fig:grafted-solution}
 \end{figure}
 
@@ -904,8 +909,9 @@ R3. Our method follows the second approach.}
 \begin{centering}
 \includegraphics[scale=0.5]{Figures__labelled_supertree__labelled_supertree_only_taxon_names\lyxdot tre}
 \par\end{centering}
-\caption{Unpruned tree with internal taxa. Nodes E2, F2, and D have been re-added
-to the tree. The nodes E and F are no longer monotypic.}
+\caption{Unpruned tree with internal taxa. Taxa unsampled in phylogenetic
+statements have been added to the grafted tree shown
+in figure \ref{fig:grafted-solution}.}
 \end{figure}
 
 
