@@ -410,19 +410,20 @@ weighted scores criterion (MSDGWS, described in the appendix A) where the
 weights from the trees are so extreme that displaying one group from
 a highly ranked tree is preferred to displaying all of the groupings
 from lower ranked trees.
+Note that in this extreme form of weighting, we do not have to calculate
+the score of a tree, we simply traverse the groupings by order of rank
+and add a group if it is compatible with the previously added groups.
 
 \subsubsection{Comparison to other supertree methods}
 
-So, we also consider MRP and MinCut.  MRP can display edges not found
+We also consider matrix representation with parsimony (MRP) and MinCut.
+MRP can display edges not found
 in any input tree, and so fails criterion \#1.  MRP is used in many
 studies that attempt to infer the true tree from a lot of input
 trees.  To some extent, MRP tries to treat each tree as data, which
 differs from our approach here.
-
 MinCut (and Modified MinCut) attempts to favor relationships present
 in multiple input trees during conflict resolution.
-
-
 Both MRP and MinCut attempt to adjudicate conflicts in a way that
 favors relationships present in more input trees.  Thus, they perform
 something more like a weighted average.  However, the reason the
@@ -806,7 +807,7 @@ version of the BUILD algorithm to the subproblems shown in figure \ref{fig:subpr
 To produce a tree that spans all of the taxa sampled in the exemplified
 set of input trees, we graft the subproblem solutions into a single
 tree (stored as the \texttt{grafted\_solution/grafted\_solution.tre}
-by propinquity). Recall that each non-root uncontested taxon used
+by propinquity); see figure \ref{fig:grafted-solution}. Recall that each non-root uncontested taxon used
 for decomposition occurs as a leaf taxon in one subproblem and as
 a root taxon in one other subproblem. Thus, the grafting operation
 simply consists of reading all of the subproblem solutions into memory
@@ -816,8 +817,11 @@ and then merging the nodes that are labeled with the same OTT ID.
 \begin{centering}
 \includegraphics[scale=0.5]{Figures__grafted_solution__grafted_solution_ottnames\lyxdot tre}
 \par\end{centering}
-\caption{Grafted solution. The nodes E and F are monotypic here, but will end
-up being polytypic after unpruning is performed.}
+\caption{Grafted solution produced from the subproblems from
+figure \ref{fig:subproblem-solutions.} and which is the 
+backbone onto which taxa that are not included in any phylogeny
+will be placed.}
+\label{fig:grafted-solution}
 \end{figure}
 
 
