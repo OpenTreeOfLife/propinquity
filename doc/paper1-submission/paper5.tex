@@ -81,7 +81,7 @@ for millions of species}
 % \keywords{Keyword1, Keyword2, Keyword3}
 
 \begin{abstract}
-We present a new supertree method that enables rapid estimation of a
+We present a new supertree method that enables rapid construction of a
 summary tree on the scale of millions of leaves.  This supertree
 method summarizes a collection of input phylogenies and an input taxonomy.
 We introduce formal goals and criteria for such a supertree to satisfy
@@ -93,7 +93,7 @@ and conflict with each group in the supertree.
 \medskip
 
 We compare our supertree construction method to a previously published
-supertree construction method by assessing their performance on input
+method by assessing their performance on input
 trees used to construct the Open Tree of Life version 4, and find that
 our method increases the number of displayed input splits from 35,518
 to 39,639 and decreases the number of conflicting input splits from
@@ -131,7 +131,7 @@ what is known about phylogenetic relationships across all of Life
 build a summary tree from a comprehensive taxonomic tree and a set
 of published trees. The summary tree is intended to transparently
 and justifiably represent phylogenetic information from these inputs.
-The taxonomic tree is derived from the Open Tree Taxonomy (OTT hereafter,
+The taxonomic tree is derived from the Open Tree Taxonomy (OTT hereafter;
 publication in preparation). The phylogenetic inputs are published
 trees that have been curated to align the tips to OTT and to identify
 the correct rooting (see \citealt{McTavishEtAt2015} for further details
@@ -199,9 +199,10 @@ For any two rooted splits $A=A_{1}|\bullet A_{2}$ and $B=B_{1}|\bullet B_{2}$,
 we say that $A$ \emph{displays} $B$ if $B_{1}\subseteq A_{1}$ and
 $B_{2}\subseteq A_{2}$. We also say that $A$ and $B$ \emph{conflict}
 if none of $A_{1}\cap B_{1}$, $A_{1}\cap B_{2}$, and $B_{2}\cap A_{1}$
-are empty\footnote{The intersection of the right sides of the splits is considered to
+are empty.
+Note that the intersection of the right sides of the splits is considered to
 be non-empty even if $A_{2}\cap B_{2}$ is empty, because the right
-sides implicitly contain the root.}. If $A$ and $B$ do not conflict, then we say that they are \emph{compatible}\footnote{It is possible to construct a rooted tree that displays both $A$
+sides implicitly contain the root. If $A$ and $B$ do not conflict, then we say that they are \emph{compatible}\footnote{It is possible to construct a rooted tree that displays both $A$
 and $B$ if and only if $A$ and $B$ are compatible}. If $A$ displays $B$, then $A$ and $B$ must be compatible, since
 $A_{1}\cap B_{2}$ and $B_{1}\cap A_{2}$ must be empty. We adopt
 the shorthand of referring to an edge $k$ when we mean the split
@@ -279,7 +280,7 @@ without decreasing the support from any input tree.
 An appealing goal for the summarization would be to find the supertree
 that displays the largest number of input tree edges. As discussed
 in \citet[pages 92 and 131;][]{HusonRS2010} the maximum compatibility
-problem is known to be $NP$-hard via a reduction from Max-Clique \citep{Karp1972}.
+problem is known to be $NP$-hard via a reduction to Max-Clique \citep{Karp1972}.
 In addition to being computationally daunting, this formulation of
 the supertree problem does not provide biologists who use the summarization
 tool with an obvious avenue for fixing perceived problems with the
@@ -413,7 +414,7 @@ from lower ranked trees.
 \subsubsection{Comparison to other supertree methods}
 
 So, we also consider MRP and MinCut.  MRP can display edges not found
-in any input tree, and so fails criterion #1.  MRP is used in many
+in any input tree, and so fails criterion \#1.  MRP is used in many
 studies that attempt to infer the true tree from a lot of input
 trees.  To some extent, MRP tries to treat each tree as data, which
 differs from our approach here.
@@ -432,7 +433,7 @@ supertree.
 A number of other supertree methods exist, including Matrix
 Representation with Parsimony (MRP) and MinCut.  MRP
 % http://currents.plos.org/treeoflife/article/reweaving-the-tapestry-a-supertree-of-birds/
-MRP - displays unsupported groups (#1), not rank-based (#2), ?
+MRP - displays unsupported groups (\#1), not rank-based (\#2), ?
 SuperFine - computes a strict consensus, then MRP
 Minimum Flip - 
 (Modified) MinCut - 
