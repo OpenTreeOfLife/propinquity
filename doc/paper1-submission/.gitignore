@@ -1,3 +1,8 @@
 paper?.log
 paper?.out
 paper?.pdf
+*__*.pdf
+*__*.tre
+*__*.svg
+response.log
+response.pdf
