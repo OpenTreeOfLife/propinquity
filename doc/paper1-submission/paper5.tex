@@ -410,6 +410,33 @@ weights from the trees are so extreme that displaying one group from
 a highly ranked tree is preferred to displaying all of the groupings
 from lower ranked trees.
 
+\subsubsection{Comparison to other supertree methods}
+
+So, we also consider MRP and MinCut.  MRP can display edges not found
+in any input tree, and so fails criterion #1.  MRP is used in many
+studies that attempt to infer the true tree from a lot of input
+trees.  To some extent, MRP tries to treat each tree as data, which
+differs from our approach here.
+
+MinCut (and Modified MinCut) attempts to favor relationships present
+in multiple input trees during conflict resolution.
+
+
+Both MRP and MinCut attempt to adjudicate conflicts in a way that
+favors relationships present in more input trees.  Thus, they perform
+something more like a weighted average.  However, the reason the
+supertree resolves conflicts in a particular way is not clear and
+transparent, and does not allow a method for curators to adjust the
+supertree.
+
+A number of other supertree methods exist, including Matrix
+Representation with Parsimony (MRP) and MinCut.  MRP
+% http://currents.plos.org/treeoflife/article/reweaving-the-tapestry-a-supertree-of-birds/
+MRP - displays unsupported groups (#1), not rank-based (#2), ?
+SuperFine - computes a strict consensus, then MRP
+Minimum Flip - 
+(Modified) MinCut - 
+
 \section{Description of the supertree method}
 
 \subsection{Preprocessing steps}
