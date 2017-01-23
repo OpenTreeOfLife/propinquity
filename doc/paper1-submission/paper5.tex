@@ -162,18 +162,6 @@ These goals are described more fully below. In order to accomplish
 transparency and justification, our pipeline also produces annotations
 files with information about conflict and support.
 
-Although other researchers construct supertrees for the purpose of
-inferring the true tree from the input trees \citep{BinindaEmonds2007b,Davis2014},
-we note that phylogeny estimation is an explicit non-goal of our
-supertree method.  We do not treat input trees as data or as surrogates for
-data matrices \citep{gatesy2004critique}, and we do not claim that our
-summary supertree is more accurate than the input trees because more
-data lies behind it. Instead we seek to \emph{summarize and represent}
-the input trees, even when they conflict with each other.  The
-annotations file constructed by our pipeline is essential for this
-task because it includes information about conflict with our supertree
-as well as support for it.
-
 \subsubsection{Goal 1: Each grouping is supported by at least one input}
 
 We require that each edge in the supertree be supported by at least
@@ -392,6 +380,13 @@ tree nodes as possible. Since non-included input tree nodes must conflict
 with the supertree (or they would have been added), this criterion
 is the same as minimizing the number of input nodes that conflict
 with the supertree.
+
+\subsubsection{Non-goal: phylogeny estimation}
+Many researchers construct supertrees for the purpose of inferring the true tree from the input trees \citep{BinindaEmonds2007b,Davis2014}.  Such approaches treat input trees as data or as surrogates for data matrices \citep{gatesy2004critique}, and the supertree is seen as more accurate than the individual input trees because more input trees (and presumably more data) stand behind it.  For such methods, conflict resolution is a primary aim of the method.
+
+Our supertree method operates in a different paradigm.  Phylogeny estimation is an explicit non-goal of our supertree algorithm.  We do not claim that the supertree is more accurate than the input trees it summarizes, and so conflict resolution is not a primary aim of the method. Most of our input trees have non-overlapping taxon sets, and so conflict resolution is not the primary problem.  Instead, seek to merge and aggregate phylogenetic information on the largest possible scale.  Therefore, the primary aim of our supertree method is to \emph{summarize and represent} the input trees, even when they conflict with each other.  The annotations file constructed by our pipeline is essential output because it includes information about conflict with our supertree as well as support for it.
+
+Our method must resolve conflicts in order to construct a single supertree.  However, the rank information used to resolve conflicts is an input to the method, not an output from the method.  We thus perform curation-based conflict resolution, not inference-based conflict resolution.
 
 \subsubsection{Summary of goals}
 
