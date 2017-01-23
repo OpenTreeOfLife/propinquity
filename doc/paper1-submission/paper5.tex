@@ -117,12 +117,6 @@ the components are free software and are available on GitHub.
 \maketitle
 \thispagestyle{empty}
 
-% TODO: add stuff to paper
-% R1.2 Mention that applying ranks to trees instead of nodes is problematic.
-%      Mention transparency?
-% R2.1: Add paragraph mentioning MRP, MinCut, and how they are different. - 1.1.6
-
-
 \section{Background}
 
 The Open Tree of Life project seeks to build a platform for summarizing
@@ -411,28 +405,23 @@ and add a group if it is compatible with the previously added groups.
 
 \subsubsection{Comparison to other supertree methods}
 
-We also consider matrix representation with parsimony (MRP) and MinCut.
-MRP can display edges not found
-in any input tree, and so fails criterion \#1.  MRP is used in many
-studies that attempt to infer the true tree from a lot of input
-trees.  To some extent, MRP tries to treat each tree as data, which
-differs from our approach here.
-MinCut (and Modified MinCut) attempts to favor relationships present
-in multiple input trees during conflict resolution.
-Both MRP and MinCut attempt to adjudicate conflicts in a way that
-favors relationships present in more input trees.  Thus, they perform
-something more like a weighted average.  However, the reason the
-supertree resolves conflicts in a particular way is not clear and
-transparent, and does not allow a method for curators to adjust the
-supertree.
+Matrix Representation Parsimony (MRP) is one of the
+most widely used supertree approaches \citep{baum1992combining,BinindaEmonds2007b,Davis2014}.
+MRP attempts to encode branches of input trees as characters in a data
+matrix, and then find an optimal tree according to the maximum
+parsimony criterion. Such an approach does not provide a clear and transparent
+explanation for including particular edges in the supertree.
+MRP can also infer edges that exist in none of the input trees, which 
+violates our Goal \#1 \citep{gatesy2004critique}.
 
-A number of other supertree methods exist, including Matrix
-Representation with Parsimony (MRP) and MinCut.  MRP
-% http://currents.plos.org/treeoflife/article/reweaving-the-tapestry-a-supertree-of-birds/
-MRP - displays unsupported groups (\#1), not rank-based (\#2), ?
-SuperFine - computes a strict consensus, then MRP
-Minimum Flip - 
-(Modified) MinCut - 
+Another commonly used method is MinCut \citep{semple2000supertree} or
+Modified MinCut \citep{page2002modified}.  Like our approach, MinCut
+is based on the BUILD algorithm \citep{AhoSSU1981}.  However, MinCut deals
+with conflicts by modifying the BUILD algorithm to resolve
+incompatibilities by discarding edges that are present in the smallest 
+number of input trees.  This approach thus violates our Goal \#2 of
+resolving conflict via ranks that can be altered by a curator to
+influence the output tree.
 
 \section{Description of the supertree method}
 
