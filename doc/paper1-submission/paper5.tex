@@ -1260,6 +1260,18 @@ tree described in the \citet{HinchliffEtAl2015} paper is used by the
 project to serve the tree produced by propinquity via Open Tree of
 Life APIs.
 
+Our supertree pipeline makes it possible to summarize and merge
+information from across the tree of life.  However, we do not claim
+that our supertree is more accurate than the input trees that is
+summarizes.  We demonstrate that ranks supplied by curators have
+substantial effects on the output of the pipeline.  Currently every
+node in an input tree must recieve the same rank, and bootstrap
+proportions and posterior probabilities are not taken into account.
+Therefore, before using the output of our supertree pipeiline in an
+evolutionary analysis, researchers must first assess the accuracy of
+the output supertree, possibly adjusting the ranks of the input trees
+to produce a more useful outcome.
+
 The migration of summary tree construction from treemachine (used for
 version 4) to propinquity (for all versions from v5.0 to present) has
 increased the pace of synthesis tree releases from the Open Tree of
