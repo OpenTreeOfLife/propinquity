@@ -404,7 +404,7 @@ problem of finding the tree with the maximum sum of displayed groups'
 weighted scores criterion (MSDGWS, described in the appendix A) where the
 weights from the trees are so extreme that displaying one group from
 a highly ranked tree is preferred to displaying all of the groupings
-from lower ranked trees.
+from lower ranked trees.  These large weights help to achieve our goal of allowing curators to fix problems in the tree.  While it is possible to view our pipeline as an optimization algorithm by assigning weights to the input trees in this way, we are not trying to weight the evidence in the input trees, and we do not actually ever calculate these weights in our pipeline.
 Note that in this extreme form of weighting, we do not have to calculate
 the score of a tree, we simply traverse the groupings by order of rank
 and add a group if it is compatible with the previously added groups.
