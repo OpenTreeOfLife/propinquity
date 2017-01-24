@@ -1,7 +1,7 @@
 \documentclass[fleqn,12pt,lineno,english]{wlpeerj}
 %DIF LATEXDIFF DIFFERENCE FILE
 %DIF DEL paper4.tex   Thu Oct 13 13:46:43 2016
-%DIF ADD paper5.tex   Mon Jan 23 17:57:11 2017
+%DIF ADD paper5.tex   Tue Jan 24 17:03:02 2017
 \usepackage[T1]{fontenc}
 %\usepackage[latin9]{inputenc}
 %\usepackage{geometry}
@@ -218,8 +218,8 @@ the induced tree. }%DIFDELCMD <
 %DIFDELCMD < %%%
 \DIFdel{We can consider whether or not a node in an input tree is displayed
 by $\summaryTree$.
-For any such node $j$ there is a set of taxa
-that are mapped to the tips that descend from the node. This set of taxa is the }\DIFdelend \DIFaddbegin \DIFadd{Cutting any edge }\textbf{\DIFadd{$j$ }}\DIFadd{of a rooted tree induces a bi-partition
+For any such node }\DIFdelend \DIFaddbegin \DIFadd{Cutting any edge }\DIFaddend $j$ \DIFdelbegin \DIFdel{there is a set of taxa
+that are mapped to the tips that descend from the node. This set of taxa is the }\DIFdelend \DIFaddbegin \DIFadd{of a rooted tree induces a bi-partition
 $S(j)$ of the leaf taxa into two connected groups $S_{1}(j)$ and
 $S_{2}(j)$. Such a bi-partition is called a rooted split and written
 $S(j)=S_{1}(j)|\bullet S_{2}(j)$. Here $S_{1}(j)$ is called the }\DIFaddend ``cluster'' of \DIFdelbegin \DIFdel{taxa corresponding to
@@ -448,7 +448,7 @@ with the supertree.
 , and the supertree is seen as more accurate than the individual input trees because more input trees (and presumably more data) stand behind it.  For such methods, conflict resolution is a primary aim of the method.
 }
 
-\DIFadd{Our supertree method operates in a different paradigm.  Phylogeny estimation is an explicit non-goal of our supertree algorithm.  We do not claim that the supertree is more accurate than the input trees it summarizes, and so conflict resolution is not a primary aim of the method. Most of our input trees have non-overlapping taxon sets, and so conflict resolution is not the primary problem.  Instead, we seek to merge and aggregate phylogenetic information on the largest possible scale.  Therefore, the primary aim of our supertree method is to }\emph{\DIFadd{summarize and represent}} \DIFadd{the input trees, even when they conflict with each other.  The annotations file constructed by our pipeline is an essential for this task because it includes information about conflict with our supertree as well as support for it.
+\DIFadd{Our supertree method operates in a different paradigm.  Phylogeny estimation is an explicit non-goal of our supertree algorithm.  We do not claim that the supertree is more accurate than the input trees it summarizes, and so conflict resolution is not a primary aim of the method. Most of our input trees have non-overlapping taxon sets, and so conflict resolution is not the primary problem.  Instead, we seek to merge and aggregate phylogenetic information on the largest possible scale.  Therefore, the primary aim of our supertree method is to }\emph{\DIFadd{summarize and represent}} \DIFadd{the input trees, even when they conflict with each other.  The annotations file constructed by our pipeline is essential for this task because it includes information about conflict with our supertree as well as support for it.
 }
 
 \DIFadd{Our method must resolve conflicts in order to construct a single supertree.  However, the rank information used to resolve conflicts is an input to the method, not an output from the method.  We thus perform curation-based conflict resolution, not inference-based conflict resolution.
@@ -1314,7 +1314,7 @@ resulting summary tree was identical to the \otlprop{} summary tree.
 }
 
 \subsection{\DIFadd{Sensitivity of the \otlprop{} supertree to ranks}}
-\DIFadd{We ran the pipeline on the OTL4 data with the ranks reversed.  This drastic alteration of the ranks lead to a summary supertree that conflicted with 1264 branches of the \otlprop{}.  Compared to this, the \otl{} supertree tree conflicts with 1387 branches of the \otlprop{} supertree.  Thus, reversing the ranks makes a smaller different in the \otlprop{} supertree than the new synthesis algorithm.  We also note that a total of 36533 edges of the grafted tree could be altered by changing the ranks, and most of these edges are unaffected.
+\DIFadd{We ran the pipeline on the OTL4 data with the ranks reversed.  This drastic alteration of the ranks led to a summary supertree that conflicted with 1264 branches of the \otlprop{}.  Compared to this, the \otl{} supertree tree conflicts with 1387 branches of the \otlprop{} supertree.  Thus, reversing the ranks makes a smaller different in the \otlprop{} supertree than the new synthesis algorithm.  We also note that a total of 36533 edges of the grafted tree could be altered by changing the ranks, and most of these edges are unaffected.
 }
 
 \DIFaddend \section{Conclusions}
@@ -1334,16 +1334,20 @@ project to serve the tree produced by propinquity via Open Tree of
 Life APIs.
 
 \DIFaddbegin \DIFadd{Our supertree pipeline makes it possible to summarize and merge
-information from across the tree of life.  However, we do not claim
-that our supertree is more accurate than the input trees that is
-summarizes.  We demonstrate that ranks supplied by curators have
-substantial effects on the output of the pipeline.  Currently every
-node in an input tree must recieve the same rank, and bootstrap
-proportions and posterior probabilities are not taken into account.
-Therefore, before using the output of our supertree pipeiline in an
-evolutionary analysis, researchers must first assess the accuracy of
-the output supertree, possibly adjusting the ranks of the input trees
-to produce a more useful outcome.
+information from across the Tree of Life.  However, we do not claim
+that our supertree is more accurate than the input trees that it
+summarizes.  Before using the output of our supertree pipeline
+as input to an evolutionary analysis, researchers should first assess
+the accuracy of the output supertree in the clade of interest,
+possibly adjusting the ranks of the input trees to produce a more
+useful outcome.  We have demonstrated that ranks supplied by curators
+have substantial effects on the output of the pipeline.  This
+can be considered to be a benefit of our approach, since it allows
+curators to adjust the output of the pipeline, and it is easy to see
+why the supertree contains the relationships that it does.  However,
+one downside of our current approach is that every node in an input
+tree must recieve the same rank.  As a result, bootstrap proportions
+and posterior probabilities are not taken into account.
 }
 
 \DIFaddend The migration of summary tree construction from treemachine (used for
