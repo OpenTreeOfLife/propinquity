@@ -848,7 +848,7 @@ in the taxonomic tree.
 \begin{figure}
   
 \begin{centering}
-\includegraphics[scale=0.5]{Figures__labelled_supertree__labelled_supertree_only_taxon_names\lyxdot tre}
+\includegraphics[scale=0.5]{Fig11}
 \par\end{centering}
 \caption{\label{fig:unprune}Unpruned tree with internal taxa. Taxa unsampled in phylogenetic
 statements have been added to the grafted tree shown
@@ -860,14 +860,14 @@ in Fig. \ref{fig:grafted-solution}.}
 \subfloat[Taxonomy]{\begin{centering}
 \begin{minipage}[c][1\totalheight][t]{0.45\columnwidth}%
 \begin{center}
-\includegraphics[scale=0.38]{example3__cleaned_ott-labels\lyxdot tre}
+\includegraphics[scale=0.38]{Fig12a}
 \par\end{center}%
 \end{minipage}
 \par\end{centering}
 }\hfill{}\subfloat[Grafted solution]{\begin{centering}
 \begin{minipage}[c][1\totalheight][t]{0.45\columnwidth}%
 \begin{center}
-\includegraphics[scale=0.38]{example3__grafted_solution-labels\lyxdot tre}
+\includegraphics[scale=0.38]{Fig12b}
 \par\end{center}%
 \end{minipage}
 \par\end{centering}
@@ -875,10 +875,10 @@ in Fig. \ref{fig:grafted-solution}.}
 \par\end{centering}
 \begin{centering}
 \subfloat[Unpruned tree - broken taxa removed]{\begin{centering}
-\includegraphics[scale=0.38]{example3__unprune-old-labels\lyxdot tre}
+\includegraphics[scale=0.38]{Fig12c}
 \par\end{centering}
 }\hfill{}\subfloat[Unpruned tree with MRCA-attachment]{\begin{centering}
-\includegraphics[scale=0.38]{example3__unprune-new-labels2\lyxdot tre}
+\includegraphics[scale=0.38]{Fig12d}
 \par\end{centering}
 }
 \par\end{centering}
@@ -916,17 +916,17 @@ rotation of the grafted solution tree.
 \begin{figure}
 \subfloat[Input tree $T_{1}$ named ``tree1'']{%
 \begin{minipage}[c][1\totalheight][t]{0.25\columnwidth}%
-\includegraphics[scale=0.5]{annotation_example__input1\lyxdot tre}%
+\includegraphics[scale=0.5]{Fig13a}%
 \end{minipage}
 
 }\hfill{}\subfloat[Summary Tree $\protect\summaryTree$]{%
 \begin{minipage}[c][1\totalheight][t]{0.35\columnwidth}%
-\includegraphics[scale=0.5]{annotation_example__summary\lyxdot tre}%
+\includegraphics[scale=0.5]{Fig13b}%
 \end{minipage}
 
 }\hfill{}\subfloat[Induced Tree $\protect\summaryTree(1)$]{%
 \begin{minipage}[c][1\totalheight][t]{0.35\columnwidth}%
-\includegraphics[scale=0.5]{annotation_example__induced1_color}%
+\includegraphics[scale=0.5]{Fig13c}%
 \end{minipage}
 
 }
@@ -936,56 +936,7 @@ rotation of the grafted solution tree.
 \bigskip{}
 
 \hfill{}\subfloat[JSON annotations relating edges of (c) to edges of (a)]{%
-\shadowbox{\begin{minipage}[t]{1.0\columnwidth}%
-\texttt{\{}
-
-\texttt{~~\textquotedbl{}nodes\textquotedbl{}: \{}
-
-\texttt{~~~~\textquotedbl{}mrcaott1ott4\textquotedbl{}: \{ \textquotedbl{}}\texttt{\textcolor{blue}{partial\_path\_of}}\texttt{\textquotedbl{}: \{
-\textquotedbl{}tree1\textquotedbl{}: \textquotedbl{}node15\textquotedbl{},
-... \} \},}
-
-\texttt{~~~~\textquotedbl{}ott10\textquotedbl{}:~~~~~~~~~\{
-\textquotedbl{}}\texttt{\textcolor{blue}{partial\_path\_of}}\texttt{\textquotedbl{}: \{
-\textquotedbl{}tree1\textquotedbl{}: \textquotedbl{}node15\textquotedbl{},
-... \} \},}
-
-\texttt{~~~~\textquotedbl{}mrcaott5ott7\textquotedbl{}: \{ \textquotedbl{}\textcolor{mylime}{supported\_by}\textquotedbl{}:~~~
-\{ \textquotedbl{}tree1\textquotedbl{}: \textquotedbl{}node16\textquotedbl{},
-... \} \},}
-
-\texttt{~~~~\textquotedbl{}ott1\textquotedbl{}:~~~~~~~~~~\{
-\textquotedbl{}}\texttt{\textcolor{orange}{terminal}}\texttt{\textquotedbl{}: ~~~~~~~\{
-\textquotedbl{}tree1\textquotedbl{}: \textquotedbl{}ott1\textquotedbl{},
-... ~~\} \},}
-
-\texttt{~~~~\textquotedbl{}ott2\textquotedbl{}:~~~~~~~~~~\{
-\textquotedbl{}}\texttt{\textcolor{orange}{terminal}}\texttt{\textquotedbl{}: ~~~~~~~\{
-\textquotedbl{}tree1\textquotedbl{}: \textquotedbl{}ott2\textquotedbl{},
-... ~~\} \},}
-
-\texttt{~~~~\textquotedbl{}ott5\textquotedbl{}:~~~~~~~~~~\{
-\textquotedbl{}}\texttt{\textcolor{orange}{terminal}}\texttt{\textquotedbl{}: ~~~~~~~\{
-\textquotedbl{}tree1\textquotedbl{}: \textquotedbl{}ott5\textquotedbl{},
-... ~~\} \},}
-
-\texttt{~~~~\textquotedbl{}ott11\textquotedbl{}:~~~~~~~~~\{
-\textquotedbl{}}\texttt{\textcolor{orange}{terminal}}\texttt{\textquotedbl{}: ~~~~~~~\{
-\textquotedbl{}tree1\textquotedbl{}: \textquotedbl{}ott5\textquotedbl{},
-... ~~\} \},}
-
-\texttt{~~~~\textquotedbl{}ott7\textquotedbl{}:~~~~~~~~~~\{
-\textquotedbl{}}\texttt{\textcolor{orange}{terminal}}\texttt{\textquotedbl{}: ~~~~~~~\{
-\textquotedbl{}tree1\textquotedbl{}: \textquotedbl{}ott7\textquotedbl{},
-... ~~\} \}}
-
-\texttt{~~\},}
-
-\texttt{~~...}
-
-\texttt{\} }%
-\end{minipage}}
-
+\includegraphics{Fig13d}%
 }\hfill{}
 
 \caption{\label{fig:displayed-annotations}The relationship of edges in summary
