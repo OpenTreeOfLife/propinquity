@@ -279,7 +279,7 @@ to use a ranking of groupings. If an expert were quite confident in
 the $c$ grouping, then she could assign that input node a high ranking.
 A supertree that used ranks could then recover this grouping even
 if its inclusion did not increase the total number of input nodes
-that are displayed by the summary tree. Figure (\ref{fig:pairwisecompat})
+that are displayed by the summary tree. Figure \ref{fig:pairwisecompat}
 shows an example of 3 input trees for which there is no pairwise incompatibility,
 but no solution displays all of the input groups. Alternative rankings
 of inputs can result in one of three summary trees shown in panels
@@ -556,9 +556,9 @@ Reading all of the inputs is necessary to assure that each higher
 taxon is replaced with the same set of exemplars regardless of which
 tree the higher taxon occurs in, and that the exemplars for a higher
 taxon is the union on the set of descendant terminal taxa that have
-been sampled in a phylogenetic input. Figure \ref{fig:exemplify-example}
-shows an example of how the trees in figure \ref{fig:cleaned-phylo-example}
-would be exemplified.
+been sampled in a phylogenetic input. For example, the trees in Figure
+\ref{fig:cleaned-phylo-example} would exemplified as shown in Figure
+\ref{fig:exemplify-example}.
 
 We prune the taxonomy by removing tips that are not present in any
 input tree to produce the pruned taxonomy $\mathbb{T}_{p}$. The tips
@@ -821,7 +821,9 @@ phylogenetic input are pruned from the taxonomy for the sake of efficiency.
 These taxa are reattached by an ``unpruning step.'' For those taxa
 that are compatible with the grafted tree, this step simply amounts
 to adding any unsampled taxonomic children to the node that represents
-the taxon in the grafted solution tree.
+the taxon in the grafted solution tree.  For example, the tree in
+Figure \ref{fig:grafted-solution} is unpruned to produce the tree in
+Figure \ref{fig:unprune}.
 
 However, a taxon may be incompatible with the grafted solution; we
 refer to such taxa as ``broken taxa.'' If a broken taxon contains
@@ -852,6 +854,17 @@ tree that would be produced by propinquity; the children of the broken
 taxon R and instead attached at the MRCA of sampled children (R1,
 R2, and R3). Their attachment point does not correspond to any taxon
 in the taxonomic tree.
+
+
+\begin{figure}
+  
+\begin{centering}
+\includegraphics[scale=0.5]{Figures__labelled_supertree__labelled_supertree_only_taxon_names\lyxdot tre}
+\par\end{centering}
+\caption{\label{fig:unprune}Unpruned tree with internal taxa. Taxa unsampled in phylogenetic
+statements have been added to the grafted tree shown
+in figure \ref{fig:grafted-solution}.}
+\end{figure}
 
 \begin{figure}
 \begin{centering}
@@ -887,15 +900,6 @@ taxonomy before unpruning leads to taxa R4, R5, and R6 being attached
 directly at taxon N, as in tree (c). In tree (d), the children of
 the broken taxon R are instead attached at the MRCA of R1, R2, and
 R3. Our method follows the second approach.}
-\end{figure}
-
-\begin{figure}
-\begin{centering}
-\includegraphics[scale=0.5]{Figures__labelled_supertree__labelled_supertree_only_taxon_names\lyxdot tre}
-\par\end{centering}
-\caption{Unpruned tree with internal taxa. Taxa unsampled in phylogenetic
-statements have been added to the grafted tree shown
-in figure \ref{fig:grafted-solution}.}
 \end{figure}
 
 

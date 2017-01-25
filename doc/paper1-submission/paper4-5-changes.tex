@@ -1,7 +1,7 @@
 \documentclass[fleqn,12pt,lineno,english]{wlpeerj}
 %DIF LATEXDIFF DIFFERENCE FILE
 %DIF DEL paper4.tex   Thu Oct 13 13:46:43 2016
-%DIF ADD paper5.tex   Tue Jan 24 17:03:02 2017
+%DIF ADD paper5.tex   Wed Jan 25 12:49:55 2017
 \usepackage[T1]{fontenc}
 %\usepackage[latin9]{inputenc}
 %\usepackage{geometry}
@@ -344,8 +344,10 @@ to use a ranking of groupings. If an expert were quite confident in
 the $c$ grouping, then she could assign that input node a high ranking.
 A supertree that used ranks could then recover this grouping even
 if its inclusion did not increase the total number of input nodes
-that are displayed by the summary tree. Figure (\ref{fig:pairwisecompat})
-shows an example of 3 input trees for which there is no pairwise incompatibility,
+that are displayed by the summary tree. Figure \DIFdelbegin \DIFdel{(\ref{fig:pairwisecompat}
+)
+}\DIFdelend \DIFaddbegin \DIFadd{\ref{fig:pairwisecompat}
+}\DIFaddend shows an example of 3 input trees for which there is no pairwise incompatibility,
 but no solution displays all of the input groups. Alternative rankings
 of inputs can result in one of three summary trees shown in panels
 (d-f). 
@@ -641,9 +643,10 @@ Reading all of the inputs is necessary to assure that each higher
 taxon is replaced with the same set of exemplars regardless of which
 tree the higher taxon occurs in, and that the exemplars for a higher
 taxon is the union on the set of descendant terminal taxa that have
-been sampled in a phylogenetic input. Figure \ref{fig:exemplify-example}
-shows an example of how the trees in figure \ref{fig:cleaned-phylo-example}
-would be exemplified.
+been sampled in a phylogenetic input. \DIFdelbegin \DIFdel{Figure \ref{fig:exemplify-example}
+shows an exampleof how }\DIFdelend \DIFaddbegin \DIFadd{For example, }\DIFaddend the trees in \DIFdelbegin \DIFdel{figure \ref{fig:cleaned-phylo-example} would be exemplified }\DIFdelend \DIFaddbegin \DIFadd{Figure
+\ref{fig:cleaned-phylo-example} would exemplified as shown in Figure
+\ref{fig:exemplify-example}}\DIFaddend .
 
 We prune the taxonomy by removing tips that are not present in any
 input tree to produce the pruned taxonomy $\mathbb{T}_{p}$. The tips
@@ -907,7 +910,10 @@ phylogenetic input are pruned from the taxonomy for the sake of efficiency.
 These taxa are reattached by an ``unpruning step.'' For those taxa
 that are compatible with the grafted tree, this step simply amounts
 to adding any unsampled taxonomic children to the node that represents
-the taxon in the grafted solution tree.
+the taxon in the grafted solution tree.  \DIFaddbegin \DIFadd{For example, the tree in
+Figure \ref{fig:grafted-solution} is unpruned to produce the tree in
+Figure \ref{fig:unprune}.
+}\DIFaddend 
 
 However, a taxon may be incompatible with the grafted solution; we
 refer to such taxa as ``broken taxa.'' If a broken taxon contains
@@ -939,8 +945,20 @@ taxon R and instead attached at the MRCA of sampled children (R1,
 R2, and R3). Their attachment point does not correspond to any taxon
 in the taxonomic tree.
 
+
 \begin{figure}
+  \DIFaddbeginFL 
+
 \begin{centering}
+\includegraphics[scale=0.5]{Figures__labelled_supertree__labelled_supertree_only_taxon_names\lyxdot tre}
+\par\end{centering}
+\caption{\label{fig:unprune}\DIFaddFL{Unpruned tree with internal taxa. Taxa unsampled in phylogenetic
+statements have been added to the grafted tree shown
+in figure \ref{fig:grafted-solution}.}}
+\end{figure}
+
+\begin{figure}
+\DIFaddendFL \begin{centering}
 \subfloat[Taxonomy]{\begin{centering}
 \begin{minipage}[c][1\totalheight][t]{0.45\columnwidth}%
 \begin{center}
@@ -975,18 +993,22 @@ the broken taxon R are instead attached at the MRCA of R1, R2, and
 R3. Our method follows the second approach.}
 \end{figure}
 
-\begin{figure}
-\begin{centering}
-\includegraphics[scale=0.5]{Figures__labelled_supertree__labelled_supertree_only_taxon_names\lyxdot tre}
-\par\end{centering}
-\caption{Unpruned tree with internal taxa. \DIFdelbeginFL \DIFdelFL{Nodes E2, F2, and D }\DIFdelendFL \DIFaddbeginFL \DIFaddFL{Taxa unsampled in phylogenetic
-statements }\DIFaddendFL have been \DIFdelbeginFL \DIFdelFL{re-added
-}\DIFdelendFL \DIFaddbeginFL \DIFaddFL{added }\DIFaddendFL to the \DIFaddbeginFL \DIFaddFL{grafted }\DIFaddendFL tree \DIFdelbeginFL \DIFdelFL{. The nodes E and F are no longer monotypic}\DIFdelendFL \DIFaddbeginFL \DIFaddFL{shown
-in figure \ref{fig:grafted-solution}}\DIFaddendFL .}
-\end{figure}
 
+\DIFdelbegin %DIFDELCMD < \begin{figure}
+%DIFDELCMD < \begin{centering}
+%DIFDELCMD < \includegraphics[scale=0.5]{Figures__labelled_supertree__labelled_supertree_only_taxon_names\lyxdot tre}
+%DIFDELCMD < \par\end{centering}
+%DIFDELCMD < %%%
+%DIFDELCMD < \caption{%
+{%DIFAUXCMD
+\DIFdelFL{Unpruned tree with internal taxa. Nodes E2, F2, and D have been re-added
+to the tree. The nodes E and F are no longer monotypic.}}
+%DIFAUXCMD
+%DIFDELCMD < \end{figure}
+%DIFDELCMD < 
 
-\subsubsection{Naming unnamed nodes}
+%DIFDELCMD < %%%
+\DIFdelend \subsubsection{Naming unnamed nodes}
 
 In order to annotate each node in the summary supertree, it is first
 necessary that each node have a unique identifier. Nodes whose include
