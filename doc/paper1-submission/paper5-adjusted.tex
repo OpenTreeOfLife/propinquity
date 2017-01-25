@@ -727,7 +727,7 @@ from the pipeline that uses uncontested taxon decomposition.}
 
 When solving sub-problems, we sequentially incorporate splits from
 trees in order of ranking, retaining splits that are compatible with
-the current set of splits (Alg \ref{alg:ConsistentSplitsFromRankedList}).
+the current set of splits (Fig. \ref{alg:ConsistentSplitsFromRankedList}).
 The order of splits from the same tree is not specified by this approach,
 and we incorporate splits using one of the possible post-order traversals
 of the tree. We make use of the BUILD algorithm \citep{AhoSSU1981}
@@ -738,21 +738,10 @@ use the BUILD algorithm to construct a supertree displaying all of
 the splits in the set of compatible splits. Using the BUILD algorithm
 to construct the subproblem summary tree satisfies criterion 3, because
 trees from the BUILD algorithm do not contain unsupported branches.
-\begin{algorithm}
-\begin{algorithmic}
-\Require An ordered list of $M$ splits, $\mathcal{R} = [R_1, R_2, R_3, \ldots, R3, \ldots, R_M]$
-\State $\mathcal{C} = [R_1]$
-\For{each split $i$ in $[2, 3 \ldots M]$}
-   \State $\mathcal{T} \leftarrow \mathcal{C} + R_i$ \Comment{where `+' means concatenating 2 lists}
-   \If{\textsc{BUILD}$(\mathcal{T})$ does not return null}
-      \State $\mathcal{C} \leftarrow \mathcal{T}$
-   \EndIf
-\EndFor{}
-\State\Return $\mathcal{C}$
-\end{algorithmic}
-
-\caption{\label{alg:ConsistentSplitsFromRankedList}ConsistentSplitsFromRankedList}
-\end{algorithm}
+\begin{figure}
+\includegraphics[width=0.9\textwidth]{fig8}
+\caption{\label{alg:ConsistentSplitsFromRankedList}Algorithm \texttt{ConsistentSplitsFromRankedList}}
+\end{figure}
 
 The BUILD algorithm as originally stated by \citet{AhoSSU1981} applies
 to a collection of rooted triplets. Instead of decomposing each input
@@ -829,7 +818,7 @@ However, a taxon may be incompatible with the grafted solution; we
 refer to such taxa as ``broken taxa.'' If a broken taxon contains
 some unsampled children, it is not clear where these unsampled children
 should be attached to the grafted solution. One approach would be
-to mimic the application of Algorithm \ref{alg:ConsistentSplitsFromRankedList}
+to mimic the application of Algorithm $\texttt{ConsistentSplitsFromRankedList}$ (Fig. \ref{alg:ConsistentSplitsFromRankedList})
 to the full (unpruned) taxonomic tree. This would be equivalent to
 collapsing each edge in the taxonomy that attaches a broken taxon
 to its parent. The unsampled children of broken taxa would attach
