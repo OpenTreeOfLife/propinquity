@@ -213,17 +213,17 @@ Note that stating that a node in the summary tree is supported by
 an input does not imply that every descendant of that node must be
 present in the input nor that every taxon that is not a descendant
 must be excluded in order to display the node. Consider the problem
-shown in figure \ref{fig:toyambig}; panels (\ref{fig:toyambig}a)
-and (\ref{fig:toyambig}b) show two input trees. Because taxa A and
+shown in Fig. \ref{fig:toyambig}; panels \ref{fig:toyambig}a
+and \ref{fig:toyambig}b show two input trees. Because taxa A and
 E do not occur together in either input, there is some uncertainty
 about where to place them. By our terminology, either output shown
-in (\ref{fig:toyambig}c) or (\ref{fig:toyambig}d) would be characterized
+in Fig. \ref{fig:toyambig}c or Fig. \ref{fig:toyambig}d would be characterized
 as a tree that displays all of the input groupings and which has no
 unsupported groups. Clearly these criteria are insufficient to specify
 a unique solution, and users of the output tree need to be aware that
 it may be possible for some taxa to ``float'' to multiple positions.
-In figure \ref{fig:toyambig}, taxon E floats to different positions
-in (\ref{fig:toyambig}c) and (\ref{fig:toyambig}d), whereas taxon
+In Fig. \ref{fig:toyambig}, taxon E floats to different positions
+in \ref{fig:toyambig}c and \ref{fig:toyambig}d, whereas taxon
 A does not. 
 
 \begin{figure}
@@ -243,7 +243,7 @@ A does not.
 does not imply entire composition of a grouping. (a) and (b) show
 2 input trees and (c) and (d) depict trees that each display each
 of the groupings in the input trees and which have no unsupported
-nodes. The BUILD algorithm (section \ref{fig:subproblem-solutions.})
+nodes. The BUILD algorithm (section \ref{subsec:Subproblem-solution})
 would choose tree (d) that floats taxon E closer to the root.}
 
 \label{fig:toyambig}
@@ -279,11 +279,11 @@ to use a ranking of groupings. If an expert were quite confident in
 the $c$ grouping, then she could assign that input node a high ranking.
 A supertree that used ranks could then recover this grouping even
 if its inclusion did not increase the total number of input nodes
-that are displayed by the summary tree. Figure \ref{fig:pairwisecompat}
+that are displayed by the summary tree. Fig. \ref{fig:pairwisecompat}
 shows an example of 3 input trees for which there is no pairwise incompatibility,
 but no solution displays all of the input groups. Alternative rankings
 of inputs can result in one of three summary trees shown in panels
-(d-f). 
+d-f. 
 
 \begin{figure}
 \subfloat[Input tree 1]{\includegraphics[scale=0.57]{Figures__toy_pairwise_compat__abc}
@@ -356,13 +356,13 @@ that is \emph{not} included, we can point to a reason for non-inclusion
 by showing that the input edge conflicts with some edge of the summary
 tree. Note, that the requirement to not display unsupported groups
 leads to some ``necessary'' polytomies. For example any resolution
-of the polytomy shown in figure (\ref{fig:pairwisecompat}e) would
+of the polytomy shown in Fig. \ref{fig:pairwisecompat}e would
 continue to display the same two input groups. However, the additional
 grouping would be unsupported, because the unresolved tree already
 displays both input groups. Thus, the 
 unresolved tree would be preferred by our criterion.
-However, collapsing either internal edge of the tree shown in figure
-(\ref{fig:pairwisecompat}d) would result in a tree which displays
+However, collapsing either internal edge of the tree shown in Fig.
+\ref{fig:pairwisecompat}d would result in a tree which displays
 only one input grouping. This tree would contain an unnecessary polytomy,
 because the polytomy would permit refinement to the depicted tree
 which displays more input groupings.
@@ -434,7 +434,7 @@ trees and a phylogenetic taxonomy. The phylesystem API \citep{McTavishEtAt2015}
 of Open Tree allows users to curate published estimates of trees and
 create ranked collections of these trees. Early steps in the propinquity
 pipeline manipulate the phylogenetic input trees to improve their
-usability and reliability. The first steps of the pipeline (see Figure
+usability and reliability. The first steps of the pipeline (see Fig.
 \ref{fig:pipeline}) collect a list of trees to include (in the \texttt{phylo\_input}
 subdirectory) and store copies of these files (in the \texttt{phylo\_snapshot}
 subdirectory) to make it easier to replicate the operation (because
@@ -556,8 +556,8 @@ Reading all of the inputs is necessary to assure that each higher
 taxon is replaced with the same set of exemplars regardless of which
 tree the higher taxon occurs in, and that the exemplars for a higher
 taxon is the union on the set of descendant terminal taxa that have
-been sampled in a phylogenetic input. For example, the trees in Figure
-\ref{fig:cleaned-phylo-example} would exemplified as shown in Figure
+been sampled in a phylogenetic input. For example, the trees in Fig.
+\ref{fig:cleaned-phylo-example} would exemplified as shown in Fig.
 \ref{fig:exemplify-example}.
 
 We prune the taxonomy by removing tips that are not present in any
@@ -595,7 +595,7 @@ in at least one phylogenetic input.
 
 }
 
-\caption{Exemplified input trees and taxonomy tree from figure \ref{fig:cleaned-phylo-example}.
+\caption{Exemplified input trees and taxonomy tree from Fig. \ref{fig:cleaned-phylo-example}.
 E in tree1 is exemplified by E1. Pruned taxa are E2, F2, and D. The
 taxa E and F are retained as monotypic taxa in the pruned taxonomy
 $\protect\prunedTaxonomy$, but are not shown in panel c. The red
@@ -638,17 +638,17 @@ each of which corresponds to a slice of the taxonomy and corresponding
 slices through each relevant input tree. Each uncontested non-terminal
 and non-root taxon will show up in two subproblems: it will be the
 root of its own subproblem and it will be tip in the subproblem that
-covers the next slice deeper in the tree. The red edge in figure \ref{fig:exemplify-example}c
-highlights the taxa that are not contested by the input shown in \ref{fig:exemplify-example};
-figure \ref{fig:subproblems-example} shows the subproblems that would
+covers the next slice deeper in the tree. The red edge in Fig. \ref{fig:exemplify-example}c
+highlights the taxa that are not contested by the input shown in Fig. \ref{fig:exemplify-example};
+Fig. \ref{fig:subproblems-example} shows the subproblems that would
 be emitted as a result of this set of inputs. The supertree operation
 of \citet{HinchliffEtAl2015} also used this otcetera-based decomposition
 step.
 
 Note that decomposition into uncontested groups does not necessarily
 allow us to find the tree that maximizes the MSDGWS score. For example,
-see figure \ref{fig:decompose-worsens}; that example is a variant
-of the situation shown in figure \ref{fig:pairwisecompat}. In this
+see Fig. \ref{fig:decompose-worsens}; that example is a variant
+of the situation shown in Fig. \ref{fig:pairwisecompat}. In this
 case the groupings from each of the phylogenetic estimates, shown
 in panels \ref{fig:decompose-worsens}a and \ref{fig:decompose-worsens}b,
 could be displayed. That solution is shown in panel \ref{fig:decompose-worsens}d,
@@ -691,7 +691,7 @@ as a means of improving the summary tree.
 
 }
 
-\caption{Subproblems generated from the exemplified trees shown in figure \ref{fig:exemplify-example}.
+\caption{Subproblems generated from the exemplified trees shown in Fig. \ref{fig:exemplify-example}.
 A trivial statement from the first tree that a taxon labelled $ABCD$
 is sister to $E$ has been omitted, because trees with only 2 leaves
 do not contain phylogenetic information.
@@ -772,9 +772,9 @@ approach splits are either entirely retained or entirely discarded
 However, when unpruning taxonomy-only taxa (see below), we make an
 attempt to break ties in a way that preserves some partial information
 from conflicting splits by attaching taxa from conflicting splits
-at their common ancestor. Figure \ref{fig:subproblem-solutions.}
+at their common ancestor. Fig. \ref{fig:subproblem-solutions.}
 shows the solutions that would be obtained by applying our modified
-version of the BUILD algorithm to the subproblems shown in figure \ref{fig:subproblems-example}.
+version of the BUILD algorithm to the subproblems shown in Fig. \ref{fig:subproblems-example}.
 
 \begin{figure}
 \hfill{}\subfloat[Solution to subproblem \emph{ABCD}]{\includegraphics[scale=0.55]{Figures__subproblem_solutions__ott14\lyxdot tre}
@@ -783,7 +783,7 @@ version of the BUILD algorithm to the subproblems shown in figure \ref{fig:subpr
 
 }\hfill{}
 
-\caption{Solutions to the subproblems depicted in figure \ref{fig:subproblems-example}}
+\caption{Solutions to the subproblems depicted in Fig. \ref{fig:subproblems-example}}
 \label{fig:subproblem-solutions.}
 \end{figure}
 
@@ -793,7 +793,7 @@ version of the BUILD algorithm to the subproblems shown in figure \ref{fig:subpr
 To produce a tree that spans all of the taxa sampled in the exemplified
 set of input trees, we graft the subproblem solutions into a single
 tree (stored as the \texttt{grafted\_solution/grafted\_solution.tre}
-by propinquity); see figure \ref{fig:grafted-solution}. Recall that each non-root uncontested taxon used
+by propinquity); see Fig. \ref{fig:grafted-solution}. Recall that each non-root uncontested taxon used
 for decomposition occurs as a leaf taxon in one subproblem and as
 a root taxon in one other subproblem. Thus, the grafting operation
 simply consists of reading all of the subproblem solutions into memory
@@ -804,12 +804,12 @@ and then merging the nodes that are labeled with the same OTT ID.
 \includegraphics[scale=0.5]{Figures__grafted_solution__grafted_solution_ottnames\lyxdot tre}
 \par\end{centering}
 \caption{Grafted solution produced from the subproblems from
-figure \ref{fig:subproblem-solutions.} and which is the 
+Fig. \ref{fig:subproblem-solutions.} and which is the 
 backbone onto which taxa that are not included in any phylogeny
 will be placed.
 In a real analysis, the tips shown as E and F here
 would be monotypic taxa (with children E1 and F1, respectively)
-from the trivial subproblems that were omitted from from figure \ref{fig:subproblems-example}.}
+from the trivial subproblems that were omitted from from Fig. \ref{fig:subproblems-example}.}
 \label{fig:grafted-solution}
 \end{figure}
 
@@ -822,8 +822,8 @@ These taxa are reattached by an ``unpruning step.'' For those taxa
 that are compatible with the grafted tree, this step simply amounts
 to adding any unsampled taxonomic children to the node that represents
 the taxon in the grafted solution tree.  For example, the tree in
-Figure \ref{fig:grafted-solution} is unpruned to produce the tree in
-Figure \ref{fig:unprune}.
+Fig. \ref{fig:grafted-solution} is unpruned to produce the tree in
+Fig. \ref{fig:unprune}.
 
 However, a taxon may be incompatible with the grafted solution; we
 refer to such taxa as ``broken taxa.'' If a broken taxon contains
@@ -841,15 +841,15 @@ The \texttt{otc-unprune-solution-and-name-unnamed-nodes} tool from
 otcetera attaches the unsampled children of a broken taxa to the grafted
 solution as children of the MRCA of the sampled children.
 
-Figure \ref{fig:Two-approaches-to-unpruning} illustrates the two
+Fig. \ref{fig:Two-approaches-to-unpruning} illustrates the two
 approaches to unpruning. Taxa G, M, and R (Fig \ref{fig:Two-approaches-to-unpruning}a)
 are broken because they conflict with the grafted solution (Fig \ref{fig:Two-approaches-to-unpruning}b);
 among these, only taxon R has children that were unsampled in the
 grafted solution. Ignoring all broken taxa when unpruning would cause
 the unsampled children (R4, R5, and R6) to attached directly at taxon
-N (as in the tree shown in Fig \ref{fig:Two-approaches-to-unpruning}c),
+N (as in the tree shown in Fig. \ref{fig:Two-approaches-to-unpruning}c),
 because that is the least inclusive unbroken ancestor of R. The tree
-illustrated in Fig \ref{fig:Two-approaches-to-unpruning}d shows the
+illustrated in Fig. \ref{fig:Two-approaches-to-unpruning}d shows the
 tree that would be produced by propinquity; the children of the broken
 taxon R and instead attached at the MRCA of sampled children (R1,
 R2, and R3). Their attachment point does not correspond to any taxon
@@ -863,7 +863,7 @@ in the taxonomic tree.
 \par\end{centering}
 \caption{\label{fig:unprune}Unpruned tree with internal taxa. Taxa unsampled in phylogenetic
 statements have been added to the grafted tree shown
-in figure \ref{fig:grafted-solution}.}
+in Fig. \ref{fig:grafted-solution}.}
 \end{figure}
 
 \begin{figure}
@@ -1062,7 +1062,7 @@ because node $j$ supports the existence of grouping $x$ in the sense
 that collapsing the edge that separates $x$ from its parent would
 cause the summary tree to no longer display node $j$.
 \end{itemize}
-These three relationships are illustrated in Figure \ref{fig:displayed-annotations}.
+These three relationships are illustrated in Fig. \ref{fig:displayed-annotations}.
 Finally, if $T_{i}$ does not display $x$ from $\mathcal{\mathbb{S}}(i)$,
 but there exists an unresolved node $j$ in $T_{i}$ which could be
 resolved such that the tree would then display $x$, then a reference
