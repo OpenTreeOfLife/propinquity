@@ -1,0 +1,29 @@
+\documentclass[12pt,preview]{standalone}
+\usepackage[labelfont={bf,sf}]{caption}
+\usepackage[verbose,tmargin=1in,bmargin=1in,lmargin=1in,rmargin=1in]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage{float}
+\usepackage{graphicx}
+\usepackage{lmodern}
+\usepackage{subfig}
+%\usepackage{subcaption}
+\begin{document}
+\begin{figure}
+\subfloat[Input tree 1]{\includegraphics[scale=0.57]{Fig2a}
+
+}\hfill{}\subfloat[Input tree 2]{\includegraphics[scale=0.57]{Fig2b}
+
+}\hfill{}\subfloat[Input tree 3]{\includegraphics[scale=0.57]{Fig2c}
+
+}
+
+\subfloat[Summary tree]{\includegraphics[scale=0.57]{Fig2d}
+
+}\hfill{}\subfloat[Summary tree]{\includegraphics[scale=0.57]{Fig2e}
+
+}\hfill{}\subfloat[Summary tree]{\includegraphics[scale=0.57]{Fig2f}
+
+}
+
+\end{figure}
+\end{document}
