@@ -1,7 +1,7 @@
 \documentclass[fleqn,12pt,lineno,english]{wlpeerj}
 %DIF LATEXDIFF DIFFERENCE FILE
-%DIF DEL paper4.tex   Thu Oct 13 13:46:43 2016
-%DIF ADD paper5.tex   Wed Jan 25 12:49:55 2017
+%DIF DEL paper4.tex            Thu Oct 20 12:15:37 2016
+%DIF ADD paper5-adjusted.tex   Mon Jan 30 17:28:48 2017
 \usepackage[T1]{fontenc}
 %\usepackage[latin9]{inputenc}
 %\usepackage{geometry}
@@ -278,37 +278,47 @@ Note that stating that a node in the summary tree is supported by
 an input does not imply that every descendant of that node must be
 present in the input nor that every taxon that is not a descendant
 must be excluded in order to display the node. Consider the problem
-shown in figure \ref{fig:toyambig}; panels (\ref{fig:toyambig}a)
-and (\ref{fig:toyambig}b) show two input trees. Because taxa A and
+shown in \DIFdelbegin \DIFdel{figure }\DIFdelend \DIFaddbegin \DIFadd{Fig. }\DIFaddend \ref{fig:toyambig}; panels \DIFdelbegin \DIFdel{(\ref{fig:toyambig}a
+)
+and (\ref{fig:toyambig}b ) }\DIFdelend \DIFaddbegin \DIFadd{\ref{fig:toyambig}a
+and \ref{fig:toyambig}b }\DIFaddend show two input trees. Because taxa A and
 E do not occur together in either input, there is some uncertainty
 about where to place them. By our terminology, either output shown
-in (\ref{fig:toyambig}c) or (\ref{fig:toyambig}d) would be characterized
+in \DIFdelbegin \DIFdel{(\ref{fig:toyambig}c ) or (\ref{fig:toyambig}d ) }\DIFdelend \DIFaddbegin \DIFadd{Fig. \ref{fig:toyambig}c or Fig. \ref{fig:toyambig}d }\DIFaddend would be characterized
 as a tree that displays all of the input groupings and which has no
 unsupported groups. Clearly these criteria are insufficient to specify
 a unique solution, and users of the output tree need to be aware that
 it may be possible for some taxa to ``float'' to multiple positions.
-In figure \ref{fig:toyambig}, taxon E floats to different positions
-in (\ref{fig:toyambig}c) and (\ref{fig:toyambig}d), whereas taxon
+In \DIFdelbegin \DIFdel{figure }\DIFdelend \DIFaddbegin \DIFadd{Fig. }\DIFaddend \ref{fig:toyambig}, taxon E floats to different positions
+in \DIFdelbegin \DIFdel{(\ref{fig:toyambig}c ) and (\ref{fig:toyambig}d)}\DIFdelend \DIFaddbegin \DIFadd{\ref{fig:toyambig}c and \ref{fig:toyambig}d}\DIFaddend , whereas taxon
 A does not. 
 
 \begin{figure}
-\subfloat[Input tree 1]{\includegraphics[width=0.45\textwidth]{Figures__toy_ambig__abcd}
+\DIFdelbeginFL %DIFDELCMD < \subfloat[Input tree 1]{\includegraphics[width=0.45\textwidth]{Figures__toy_ambig__abcd}
+%DIFDELCMD < 
 
-}\hfill{}\subfloat[Input tree 2]{\includegraphics[width=0.45\textwidth]{Figures__toy_ambig__bcde}
+%DIFDELCMD < }\hfill{}\subfloat[Input tree 2]{\includegraphics[width=0.45\textwidth]{Figures__toy_ambig__bcde}
+%DIFDELCMD < 
 
-}
+%DIFDELCMD < }
+%DIFDELCMD < 
 
-\subfloat[Summary tree]{\includegraphics[width=0.45\textwidth]{Figures__toy_ambig__soln1}
+%DIFDELCMD < \subfloat[Summary tree]{\includegraphics[width=0.45\textwidth]{Figures__toy_ambig__soln1}
+%DIFDELCMD < 
 
-}\hfill{}\subfloat[Summary tree]{\includegraphics[width=0.45\textwidth]{Figures__toy_ambig__soln2}
+%DIFDELCMD < }\hfill{}\subfloat[Summary tree]{\includegraphics[width=0.45\textwidth]{Figures__toy_ambig__soln2}
+%DIFDELCMD < 
 
-}
+%DIFDELCMD < }
+%DIFDELCMD < %%%
+\DIFdelendFL \DIFaddbeginFL \includegraphics[width=1.0\textwidth]{Fig1}  
+\DIFaddendFL 
 
 \caption{An example demonstrating that our definition of ``supported by''
 does not imply entire composition of a grouping. (a) and (b) show
 2 input trees and (c) and (d) depict trees that each display each
 of the groupings in the input trees and which have no unsupported
-nodes. The BUILD algorithm (section \ref{fig:subproblem-solutions.})
+nodes. The BUILD algorithm (section \DIFdelbeginFL \DIFdelFL{\ref{fig:subproblem-solutions.}}\DIFdelendFL \DIFaddbeginFL \DIFaddFL{\ref{subsec:Subproblem-solution}}\DIFaddendFL )
 would choose tree (d) that floats taxon E closer to the root.}
 
 \label{fig:toyambig}
@@ -344,30 +354,40 @@ to use a ranking of groupings. If an expert were quite confident in
 the $c$ grouping, then she could assign that input node a high ranking.
 A supertree that used ranks could then recover this grouping even
 if its inclusion did not increase the total number of input nodes
-that are displayed by the summary tree. Figure \DIFdelbegin \DIFdel{(\ref{fig:pairwisecompat}
+that are displayed by the summary tree. \DIFdelbegin \DIFdel{Figure (\ref{fig:pairwisecompat}
 )
-}\DIFdelend \DIFaddbegin \DIFadd{\ref{fig:pairwisecompat}
+}\DIFdelend \DIFaddbegin \DIFadd{Fig. \ref{fig:pairwisecompat}
 }\DIFaddend shows an example of 3 input trees for which there is no pairwise incompatibility,
 but no solution displays all of the input groups. Alternative rankings
 of inputs can result in one of three summary trees shown in panels
-(d-f). 
+\DIFdelbegin \DIFdel{(}\DIFdelend d-f\DIFdelbegin \DIFdel{)}\DIFdelend . 
 
 \begin{figure}
-\subfloat[Input tree 1]{\includegraphics[scale=0.57]{Figures__toy_pairwise_compat__abc}
+\DIFdelbeginFL %DIFDELCMD < \subfloat[Input tree 1]{\includegraphics[scale=0.57]{Figures__toy_pairwise_compat__abc}
+%DIFDELCMD < 
 
-}\hfill{}\subfloat[Input tree 2]{\includegraphics[scale=0.57]{Figures__toy_pairwise_compat__acd}
+%DIFDELCMD < }\hfill{}\subfloat[Input tree 2]{\includegraphics[scale=0.57]{Figures__toy_pairwise_compat__acd}
+%DIFDELCMD < 
 
-}\hfill{}\subfloat[Input tree 3]{\includegraphics[scale=0.57]{Figures__toy_pairwise_compat__bcd}
+%DIFDELCMD < }\hfill{}\subfloat[Input tree 3]{\includegraphics[scale=0.57]{Figures__toy_pairwise_compat__bcd}
+%DIFDELCMD < 
 
-}
+%DIFDELCMD < }
+%DIFDELCMD < 
 
-\subfloat[Summary tree]{\includegraphics[scale=0.57]{Figures__toy_pairwise_compat__s12}
+%DIFDELCMD < \subfloat[Summary tree]{\includegraphics[scale=0.57]{Figures__toy_pairwise_compat__s12}
+%DIFDELCMD < 
 
-}\hfill{}\subfloat[Summary tree]{\includegraphics[scale=0.57]{Figures__toy_pairwise_compat__s13}
+%DIFDELCMD < }\hfill{}\subfloat[Summary tree]{\includegraphics[scale=0.57]{Figures__toy_pairwise_compat__s13}
+%DIFDELCMD < 
 
-}\hfill{}\subfloat[Summary tree]{\includegraphics[scale=0.57]{Figures__toy_pairwise_compat__s23}
+%DIFDELCMD < }\hfill{}\subfloat[Summary tree]{\includegraphics[scale=0.57]{Figures__toy_pairwise_compat__s23}
+%DIFDELCMD < 
 
-}
+%DIFDELCMD < }
+%DIFDELCMD < %%%
+\DIFdelendFL \DIFaddbeginFL \includegraphics[width=1.0\textwidth]{Fig2}
+\DIFaddendFL 
 
 \caption{An example of 3 input trees shown in (a), (b), and (c) which do not
 conflict in a pairwise manner, but cannot be jointly displayed in
@@ -423,13 +443,14 @@ that is \emph{not} included, we can point to a reason for non-inclusion
 by showing that the input edge conflicts with some edge of the summary
 tree. Note, that the requirement to not display unsupported groups
 leads to some ``necessary'' polytomies. For example any resolution
-of the polytomy shown in figure (\ref{fig:pairwisecompat}e) would
+of the polytomy shown in \DIFdelbegin \DIFdel{figure (\ref{fig:pairwisecompat}e ) }\DIFdelend \DIFaddbegin \DIFadd{Fig. \ref{fig:pairwisecompat}e }\DIFaddend would
 continue to display the same two input groups. However, the additional
 grouping would be unsupported, because the unresolved tree already
 displays both input groups. Thus, the 
 unresolved tree would be preferred by our criterion.
-However, collapsing either internal edge of the tree shown in figure
-(\ref{fig:pairwisecompat}d) would result in a tree which displays
+However, collapsing either internal edge of the tree shown in \DIFdelbegin \DIFdel{figure
+(\ref{fig:pairwisecompat}d ) }\DIFdelend \DIFaddbegin \DIFadd{Fig.
+\ref{fig:pairwisecompat}d }\DIFaddend would result in a tree which displays
 only one input grouping. This tree would contain an unnecessary polytomy,
 because the polytomy would permit refinement to the depicted tree
 which displays more input groupings.
@@ -521,15 +542,18 @@ trees and a phylogenetic taxonomy. The phylesystem API \citep{McTavishEtAt2015}
 of Open Tree allows users to curate published estimates of trees and
 create ranked collections of these trees. Early steps in the propinquity
 pipeline manipulate the phylogenetic input trees to improve their
-usability and reliability. The first steps of the pipeline (see Figure
-\ref{fig:pipeline}) collect a list of trees to include (in the \texttt{phylo\_input}
+usability and reliability. The first steps of the pipeline (see \DIFdelbegin \DIFdel{Figure
+}\DIFdelend \DIFaddbegin \DIFadd{Fig.
+}\DIFaddend \ref{fig:pipeline}) collect a list of trees to include (in the \texttt{phylo\_input}
 subdirectory) and store copies of these files (in the \texttt{phylo\_snapshot}
 subdirectory) to make it easier to replicate the operation (because
 the collection of trees and the tree files change due to curation).
 \begin{figure}
 \begin{centering}
-\includegraphics[height=0.70\paperheight]{pipeline-tools.pdf}
-\par\end{centering}
+\DIFdelbeginFL %DIFDELCMD < \includegraphics[height=0.70\paperheight]{pipeline-tools.pdf}
+%DIFDELCMD < %%%
+\DIFdelendFL \DIFaddbeginFL \includegraphics[height=0.70\paperheight]{Fig3.pdf}
+\DIFaddendFL \par\end{centering}
 \caption{Organization of the \emph{propinquity} pipeline. Each colored pentagon
 labels a program (blue for otcetera-based tools and red for python
 scripts in the propinquity or peyotl repository) that performs the
@@ -644,8 +668,8 @@ taxon is replaced with the same set of exemplars regardless of which
 tree the higher taxon occurs in, and that the exemplars for a higher
 taxon is the union on the set of descendant terminal taxa that have
 been sampled in a phylogenetic input. \DIFdelbegin \DIFdel{Figure \ref{fig:exemplify-example}
-shows an exampleof how }\DIFdelend \DIFaddbegin \DIFadd{For example, }\DIFaddend the trees in \DIFdelbegin \DIFdel{figure \ref{fig:cleaned-phylo-example} would be exemplified }\DIFdelend \DIFaddbegin \DIFadd{Figure
-\ref{fig:cleaned-phylo-example} would exemplified as shown in Figure
+shows an exampleof how }\DIFdelend \DIFaddbegin \DIFadd{For example, }\DIFaddend the trees in \DIFdelbegin \DIFdel{figure \ref{fig:cleaned-phylo-example} would be exemplified }\DIFdelend \DIFaddbegin \DIFadd{Fig.
+\ref{fig:cleaned-phylo-example} would exemplified as shown in Fig.
 \ref{fig:exemplify-example}}\DIFaddend .
 
 We prune the taxonomy by removing tips that are not present in any
@@ -662,31 +686,42 @@ down version of the taxonomy that only contains tips that are present
 in at least one phylogenetic input.
 
 \begin{figure}
-\subfloat[Tree 1]{\includegraphics[scale=0.4]{Figures__cleaned_phylo__ex_2@tree1\lyxdot tre}
+\DIFdelbeginFL %DIFDELCMD < \subfloat[Tree 1]{\includegraphics[scale=0.4]{Figures__cleaned_phylo__ex_2@tree1\lyxdot tre}
+%DIFDELCMD < 
 
-}\hfill{}\subfloat[Tree 2]{\includegraphics[scale=0.4]{Figures__cleaned_phylo__ex_2@tree2\lyxdot tre}
+%DIFDELCMD < }\hfill{}\subfloat[Tree 2]{\includegraphics[scale=0.4]{Figures__cleaned_phylo__ex_2@tree2\lyxdot tre}
+%DIFDELCMD < 
 
-}\hfill{}\subfloat[Taxonomy Tree]{\includegraphics[scale=0.4]{Figures__cleaned_ott__cleaned_ott\lyxdot tre}
+%DIFDELCMD < }\hfill{}\subfloat[Taxonomy Tree]{\includegraphics[scale=0.4]{Figures__cleaned_ott__cleaned_ott\lyxdot tre}
+%DIFDELCMD < 
 
-}
+%DIFDELCMD < }
+%DIFDELCMD < %%%
+\DIFdelendFL \DIFaddbeginFL \includegraphics[width=1.0\textwidth]{Fig4}
+\DIFaddendFL 
 
-\caption{Input trees and taxonomy tree}
+\caption{Input trees \DIFaddbeginFL \DIFaddFL{(a-b) }\DIFaddendFL and taxonomy tree \DIFaddbeginFL \DIFaddFL{(c).}\DIFaddendFL }
 \label{fig:cleaned-phylo-example}
 \end{figure}
 
 \begin{figure}
-\subfloat[Tree 1]{\includegraphics[scale=0.4]{Figures__exemplified_phylo__ex_2@tree1\lyxdot tre}
+\DIFdelbeginFL %DIFDELCMD < \subfloat[Tree 1]{\includegraphics[scale=0.4]{Figures__exemplified_phylo__ex_2@tree1\lyxdot tre}
+%DIFDELCMD < 
 
-}\hfill{}\subfloat[Tree 2]{\includegraphics[scale=0.4]{Figures__exemplified_phylo__ex_2@tree2\lyxdot tre}
+%DIFDELCMD < }\hfill{}\subfloat[Tree 2]{\includegraphics[scale=0.4]{Figures__exemplified_phylo__ex_2@tree2\lyxdot tre}
+%DIFDELCMD < 
 
-}\hfill{}\subfloat[Pruned taxonomy tree $\protect\prunedTaxonomy$]{\includegraphics[scale=0.4]{Figures__exemplified_phylo_taxonomy_uncontested\lyxdot tre}
+%DIFDELCMD < }\hfill{}\subfloat[Pruned taxonomy tree $\protect\prunedTaxonomy$]{\includegraphics[scale=0.4]{Figures__exemplified_phylo_taxonomy_uncontested\lyxdot tre}
+%DIFDELCMD < 
 
-}
+%DIFDELCMD < }
+%DIFDELCMD < %%%
+\DIFdelendFL \DIFaddbeginFL \includegraphics[width=1.0\textwidth]{Fig5}
+\DIFaddendFL 
 
-\caption{Exemplified input trees and taxonomy tree from figure \ref{fig:cleaned-phylo-example}.
-E in tree1 is exemplified by E1. Pruned taxa are E2, F2, and D. The
-taxa E and F are retained as monotypic taxa in the pruned taxonomy
-$\protect\prunedTaxonomy$, but are not shown in panel c. The red
+\caption{Exemplified input trees \DIFaddbeginFL \DIFaddFL{(a-b) }\DIFaddendFL and \DIFaddbeginFL \DIFaddFL{pruned }\DIFaddendFL taxonomy tree \DIFaddbeginFL \DIFaddFL{(c) }\DIFaddendFL from \DIFdelbeginFL \DIFdelFL{figure }\DIFdelendFL \DIFaddbeginFL \DIFaddFL{Fig. }\DIFaddendFL \ref{fig:cleaned-phylo-example}.
+\DIFaddbeginFL \DIFaddFL{Taxon }\DIFaddendFL E in \DIFdelbeginFL \DIFdelFL{tree1 }\DIFdelendFL \DIFaddbeginFL \DIFaddFL{the first input tree }\DIFaddendFL is exemplified by E1 \DIFaddbeginFL \DIFaddFL{in (a)}\DIFaddendFL . Pruned taxa are E2, F2, and D. The
+taxa E and F are retained as monotypic taxa in the pruned taxonomy\DIFdelbeginFL \DIFdelFL{$\protect\prunedTaxonomy$, but are not shown in panel c}\DIFdelendFL . The red
 edge in the pruned taxonomy tree is an uncontested higher taxon in
 the exemplified taxonomy (as explained in section \ref{subsec:Subproblem-decomposition})}
 \label{fig:exemplify-example}
@@ -720,23 +755,24 @@ are treated as soft polytomies, and a taxon is not contested merely
 because it is not displayed by an input tree. 
 
 This operation is performed by the \texttt{otc-uncontested-decompose}
-tool in otcetera; see appendix \ref{sec:Decompose-algorithm} for
+tool in otcetera; see appendix \DIFdelbegin \DIFdel{\ref{sec:Decompose-algorithm} }\DIFdelend \DIFaddbegin \DIFadd{B }\DIFaddend for
 a description of the algorithm. The output is a series of subproblems,
 each of which corresponds to a slice of the taxonomy and corresponding
 slices through each relevant input tree. Each uncontested non-terminal
 and non-root taxon will show up in two subproblems: it will be the
 root of its own subproblem and it will be tip in the subproblem that
-covers the next slice deeper in the tree. The red edge in figure \ref{fig:exemplify-example}c
-highlights the taxa that are not contested by the input shown in \ref{fig:exemplify-example};
-figure \ref{fig:subproblems-example} shows the subproblems that would
+covers the next slice deeper in the tree. The red edge in \DIFdelbegin \DIFdel{figure }\DIFdelend \DIFaddbegin \DIFadd{Fig. }\DIFaddend \ref{fig:exemplify-example}c
+highlights the taxa that are not contested by the input shown in \DIFdelbegin \DIFdel{\ref{fig:exemplify-example};
+figure }\DIFdelend \DIFaddbegin \DIFadd{Fig. \ref{fig:exemplify-example};
+Fig. }\DIFaddend \ref{fig:subproblems-example} shows the subproblems that would
 be emitted as a result of this set of inputs. The supertree operation
 of \citet{HinchliffEtAl2015} also used this otcetera-based decomposition
 step.
 
 Note that decomposition into uncontested groups does not necessarily
 allow us to find the tree that maximizes the MSDGWS score. For example,
-see figure \ref{fig:decompose-worsens}; that example is a variant
-of the situation shown in figure \ref{fig:pairwisecompat}. In this
+see \DIFdelbegin \DIFdel{figure }\DIFdelend \DIFaddbegin \DIFadd{Fig. }\DIFaddend \ref{fig:decompose-worsens}; that example is a variant
+of the situation shown in \DIFdelbegin \DIFdel{figure }\DIFdelend \DIFaddbegin \DIFadd{Fig. }\DIFaddend \ref{fig:pairwisecompat}. In this
 case the groupings from each of the phylogenetic estimates, shown
 in panels \ref{fig:decompose-worsens}a and \ref{fig:decompose-worsens}b,
 could be displayed. That solution is shown in panel \ref{fig:decompose-worsens}d,
@@ -767,40 +803,53 @@ Thus the procedure encourages curation of more phylogenetic inputs
 as a means of improving the summary tree. 
 
 \begin{figure}
-  \subfloat[Subproblem \emph{ABCD}]{\includegraphics[width=0.3\textwidth]{Figures__subproblems__14__1\lyxdot tre}%
-    \hfill{}\includegraphics[width=0.3\textwidth]{Figures__subproblems__14__2\lyxdot tre}%
-    \hfill{}\includegraphics[width=0.3\textwidth]{Figures__subproblems__14__3\lyxdot tre}
+\DIFdelbeginFL %DIFDELCMD < \subfloat[Subproblem \emph{ABCD}]{\includegraphics[width=0.3\textwidth]{Figures__subproblems__14__1\lyxdot tre}%
+%DIFDELCMD <     \hfill{}\includegraphics[width=0.3\textwidth]{Figures__subproblems__14__2\lyxdot tre}%
+%DIFDELCMD <     \hfill{}\includegraphics[width=0.3\textwidth]{Figures__subproblems__14__3\lyxdot tre}
+%DIFDELCMD < 
 
-}
+%DIFDELCMD < }
+%DIFDELCMD < 
 
-  \subfloat[Subproblem \emph{root}]{\includegraphics[width=0.3\textwidth]{Figures__subproblems__17__1\lyxdot tre}%
-    \hfill{}\includegraphics[width=0.3\textwidth]{Figures__subproblems__17__2\lyxdot tre}%
-    \hfill{}\includegraphics[width=0.3\textwidth]{Figures__subproblems__17__3\lyxdot tre}
+%DIFDELCMD <   \subfloat[Subproblem \emph{root}]{\includegraphics[width=0.3\textwidth]{Figures__subproblems__17__1\lyxdot tre}%
+%DIFDELCMD <     \hfill{}\includegraphics[width=0.3\textwidth]{Figures__subproblems__17__2\lyxdot tre}%
+%DIFDELCMD <     \hfill{}\includegraphics[width=0.3\textwidth]{Figures__subproblems__17__3\lyxdot tre}
+%DIFDELCMD < 
 
-}
+%DIFDELCMD < }
+%DIFDELCMD < %%%
+\DIFdelendFL \DIFaddbeginFL \includegraphics[width=1.0\textwidth]{Fig6}
+\DIFaddendFL 
 
-\caption{Subproblems generated from the exemplified trees shown in figure \ref{fig:exemplify-example}.
+\caption{Subproblems \DIFaddbeginFL \DIFaddFL{(a) }\emph{\DIFaddFL{ABCD}} \DIFaddFL{and (b) }\emph{\DIFaddFL{root}} \DIFaddendFL generated from the exemplified trees shown in \DIFdelbeginFL \DIFdelFL{figure }\DIFdelendFL \DIFaddbeginFL \DIFaddFL{Fig. }\DIFaddendFL \ref{fig:exemplify-example}.
 A trivial \DIFdelbeginFL \DIFdelFL{statemen }\DIFdelendFL \DIFaddbeginFL \DIFaddFL{statement }\DIFaddendFL from the first tree that a taxon labelled $ABCD$
 is sister to $E$ has been omitted, because trees with only 2 leaves
-do not contain phylogenetic information.
-\DIFaddbeginFL \DIFaddFL{Similarly, the trivial problems that list E1 and F1 as the only daughters
-of taxa E and F have been omitted.}\DIFaddendFL }
+do not contain phylogenetic information.}
 \label{fig:subproblems-example}
 \end{figure}
 \begin{figure}
-\subfloat[]{\includegraphics[scale=0.57]{Figures__uncontested_worsens_score__ab1c}
+\DIFdelbeginFL %DIFDELCMD < \subfloat[]{\includegraphics[scale=0.57]{Figures__uncontested_worsens_score__ab1c}
+%DIFDELCMD < 
 
-}\hfill{}\subfloat[]{\includegraphics[scale=0.57]{Figures__uncontested_worsens_score__acb2}
+%DIFDELCMD < }\hfill{}\subfloat[]{\includegraphics[scale=0.57]{Figures__uncontested_worsens_score__acb2}
+%DIFDELCMD < 
 
-}\hfill{}\subfloat[]{\includegraphics[scale=0.57]{Figures__uncontested_worsens_score__tax}
+%DIFDELCMD < }\hfill{}\subfloat[]{\includegraphics[scale=0.57]{Figures__uncontested_worsens_score__tax}
+%DIFDELCMD < 
 
-}
+%DIFDELCMD < }
+%DIFDELCMD < 
 
-\hfill{}\subfloat[]{\includegraphics[scale=0.57]{Figures__uncontested_worsens_score__opt}
+%DIFDELCMD < \hfill{}\subfloat[]{\includegraphics[scale=0.57]{Figures__uncontested_worsens_score__opt}
+%DIFDELCMD < 
 
-}\hfill{}\subfloat[]{\includegraphics[scale=0.57]{Figures__uncontested_worsens_score__returned}
+%DIFDELCMD < }\hfill{}\subfloat[]{\includegraphics[scale=0.57]{Figures__uncontested_worsens_score__returned}
+%DIFDELCMD < 
 
-}\hfill{}
+%DIFDELCMD < }\hfill{}
+%DIFDELCMD < %%%
+\DIFdelendFL \DIFaddbeginFL \includegraphics[width=1.0\textwidth]{Fig7}
+\DIFaddendFL 
 
 \caption{An example with three input trees: the highest ranked phylogenetic
 input panel (a), the second ranked phylogenetic input (b), and the
@@ -815,7 +864,7 @@ from the pipeline that uses uncontested taxon decomposition.}
 
 When solving sub-problems, we sequentially incorporate splits from
 trees in order of ranking, retaining splits that are compatible with
-the current set of splits (Alg \ref{alg:ConsistentSplitsFromRankedList}).
+the current set of splits (\DIFdelbegin \DIFdel{Alg }\DIFdelend \DIFaddbegin \DIFadd{Fig. }\DIFaddend \ref{alg:ConsistentSplitsFromRankedList}).
 The order of splits from the same tree is not specified by this approach,
 and we incorporate splits using one of the possible post-order traversals
 of the tree. We make use of the BUILD algorithm \citep{AhoSSU1981}
@@ -826,21 +875,33 @@ use the BUILD algorithm to construct a supertree displaying all of
 the splits in the set of compatible splits. Using the BUILD algorithm
 to construct the subproblem summary tree satisfies criterion 3, because
 trees from the BUILD algorithm do not contain unsupported branches.
-\begin{algorithm}
-\begin{algorithmic}
-\Require An ordered list of $M$ splits, $\mathcal{R} = [R_1, R_2, R_3, \ldots, R3, \ldots, R_M]$
-\State $\mathcal{C} = [R_1]$
-\For{each split $i$ in $[2, 3 \ldots M]$}
-   \State $\mathcal{T} \leftarrow \mathcal{C} + R_i$ \Comment{where `+' means concatenating 2 lists}
-   \If{\textsc{BUILD}$(\mathcal{T})$ does not return null}
-      \State $\mathcal{C} \leftarrow \mathcal{T}$
-   \EndIf
-\EndFor{}
-\State\Return $\mathcal{C}$
-\end{algorithmic}
+\DIFdelbegin %DIFDELCMD < \begin{algorithm}
+%DIFDELCMD < \begin{algorithmic}
+%DIFDELCMD < \Require %%%
+\DIFdel{An ordered list of $M$ splits, $\mathcal{R} = [R_1, R_2, R_3, \ldots, R3, \ldots, R_M]$
+}%DIFDELCMD < \State %%%
+\DIFdel{$\mathcal{C} = [R_1]$
+}%DIFDELCMD < \For{each split $i$ in $[2, 3 \ldots M]$}
+%DIFDELCMD <    \State %%%
+\DIFdel{$\mathcal{T} \leftarrow \mathcal{C} + R_i$ }%DIFDELCMD < \Comment{where `+' means concatenating 2 lists}
+%DIFDELCMD <    \If{\textsc{BUILD}$(\mathcal{T})$ does not return null}
+%DIFDELCMD <       \State %%%
+\DIFdel{$\mathcal{C} \leftarrow \mathcal{T}$
+   }%DIFDELCMD < \EndIf
+%DIFDELCMD < \EndFor{}
+%DIFDELCMD < \State\Return %%%
+\DIFdel{$\mathcal{C}$
+}%DIFDELCMD < \end{algorithmic}
+%DIFDELCMD < 
 
-\caption{\label{alg:ConsistentSplitsFromRankedList}ConsistentSplitsFromRankedList}
-\end{algorithm}
+%DIFDELCMD < %%%
+\DIFdelend \DIFaddbegin \begin{figure}
+\includegraphics[width=0.9\textwidth]{fig8}
+\DIFaddendFL \caption{\label{alg:ConsistentSplitsFromRankedList}\DIFdelbeginFL \DIFdelFL{ConsistentSplitsFromRankedList}\DIFdelendFL \DIFaddbeginFL \DIFaddFL{Algorithm }\texttt{\DIFaddFL{ConsistentSplitsFromRankedList}}\DIFaddendFL }
+\DIFdelbeginFL %DIFDELCMD < \end{algorithm}
+%DIFDELCMD < %%%
+\DIFdelendFL \DIFaddbeginFL \end{figure}
+\DIFaddend 
 
 The BUILD algorithm as originally stated by \citet{AhoSSU1981} applies
 to a collection of rooted triplets. Instead of decomposing each input
@@ -860,18 +921,23 @@ approach splits are either entirely retained or entirely discarded
 However, when unpruning taxonomy-only taxa (see below), we make an
 attempt to break ties in a way that preserves some partial information
 from conflicting splits by attaching taxa from conflicting splits
-at their common ancestor. Figure \ref{fig:subproblem-solutions.}
+at their common ancestor. \DIFdelbegin \DIFdel{Figure }\DIFdelend \DIFaddbegin \DIFadd{Fig. }\DIFaddend \ref{fig:subproblem-solutions.}
 shows the solutions that would be obtained by applying our modified
-version of the BUILD algorithm to the subproblems shown in figure \ref{fig:subproblems-example}.
+version of the BUILD algorithm to the subproblems shown in \DIFdelbegin \DIFdel{figure }\DIFdelend \DIFaddbegin \DIFadd{Fig. }\DIFaddend \ref{fig:subproblems-example}.
 
 \begin{figure}
-\hfill{}\subfloat[Solution to subproblem \emph{ABCD}]{\includegraphics[scale=0.55]{Figures__subproblem_solutions__ott14\lyxdot tre}
+\DIFdelbeginFL %DIFDELCMD < \hfill{}\subfloat[Solution to subproblem \emph{ABCD}]{\includegraphics[scale=0.55]{Figures__subproblem_solutions__ott14\lyxdot tre}
+%DIFDELCMD < 
 
-}\hfill{}\subfloat[Solution to subproblem \emph{root}]{\includegraphics[scale=0.55]{Figures__subproblem_solutions__ott17\lyxdot tre}
+%DIFDELCMD < }\hfill{}\subfloat[Solution to subproblem \emph{root}]{\includegraphics[scale=0.55]{Figures__subproblem_solutions__ott17\lyxdot tre}
+%DIFDELCMD < 
 
-}\hfill{}
+%DIFDELCMD < }\hfill{}
+%DIFDELCMD < %%%
+\DIFdelendFL \DIFaddbeginFL \includegraphics[width=1.0\textwidth]{Fig9}  
+\DIFaddendFL 
 
-\caption{Solutions to the subproblems depicted in figure \ref{fig:subproblems-example}}
+\caption{Solutions to \DIFdelbeginFL \DIFdelFL{the subproblems }\DIFdelendFL \DIFaddbeginFL \DIFaddFL{(a) subproblem }\emph{\DIFaddFL{ABCD}} \DIFaddFL{and (b) subproblem }\emph{\DIFaddFL{root}} \DIFaddendFL depicted in \DIFdelbeginFL \DIFdelFL{figure }\DIFdelendFL \DIFaddbeginFL \DIFaddFL{Fig. }\DIFaddendFL \ref{fig:subproblems-example}\DIFaddbeginFL \DIFaddFL{.}\DIFaddendFL }
 \label{fig:subproblem-solutions.}
 \end{figure}
 
@@ -881,7 +947,7 @@ version of the BUILD algorithm to the subproblems shown in figure \ref{fig:subpr
 To produce a tree that spans all of the taxa sampled in the exemplified
 set of input trees, we graft the subproblem solutions into a single
 tree (stored as the \texttt{grafted\_solution/grafted\_solution.tre}
-by propinquity)\DIFaddbegin \DIFadd{; see figure \ref{fig:grafted-solution}}\DIFaddend . Recall that each non-root uncontested taxon used
+by propinquity)\DIFaddbegin \DIFadd{; see Fig. \ref{fig:grafted-solution}}\DIFaddend . Recall that each non-root uncontested taxon used
 for decomposition occurs as a leaf taxon in one subproblem and as
 a root taxon in one other subproblem. Thus, the grafting operation
 simply consists of reading all of the subproblem solutions into memory
@@ -889,16 +955,15 @@ and then merging the nodes that are labeled with the same OTT ID.
 
 \begin{figure}
 \begin{centering}
-\includegraphics[scale=0.5]{Figures__grafted_solution__grafted_solution_ottnames\lyxdot tre}
-\par\end{centering}
+\DIFdelbeginFL %DIFDELCMD < \includegraphics[scale=0.5]{Figures__grafted_solution__grafted_solution_ottnames\lyxdot tre}
+%DIFDELCMD < %%%
+\DIFdelendFL \DIFaddbeginFL \includegraphics[scale=0.5]{Fig10.pdf}
+\DIFaddendFL \par\end{centering}
 \caption{Grafted solution \DIFaddbeginFL \DIFaddFL{produced from the subproblems from
-figure \ref{fig:subproblem-solutions.} and which is the 
-backbone onto which taxa that are not included in any phylogeny
-will be placed}\DIFaddendFL .
-\DIFdelbeginFL \DIFdelFL{The nodes }\DIFdelendFL \DIFaddbeginFL \DIFaddFL{In a real analysis, the tips shown as }\DIFaddendFL E and F \DIFdelbeginFL \DIFdelFL{are monotypic }\DIFdelendFL here
-\DIFaddbeginFL \DIFaddFL{would be monotypic taxa (with children E1 and F1}\DIFaddendFL , \DIFdelbeginFL \DIFdelFL{but will end
-up being polytypic after unpruning is performed}\DIFdelendFL \DIFaddbeginFL \DIFaddFL{respectively)
-from the trivial subproblems that were omitted from from figure \ref{fig:subproblems-example}}\DIFaddendFL .}
+Fig}\DIFaddendFL . \DIFdelbeginFL \DIFdelFL{The nodes E }\DIFdelendFL \DIFaddbeginFL \DIFaddFL{\ref{fig:subproblem-solutions.} }\DIFaddendFL and \DIFdelbeginFL \DIFdelFL{F }\DIFdelendFL \DIFaddbeginFL \DIFaddFL{which is the 
+backbone onto which taxa that }\DIFaddendFL are \DIFdelbeginFL \DIFdelFL{monotypic here, but }\DIFdelendFL \DIFaddbeginFL \DIFaddFL{not included in any phylogeny
+}\DIFaddendFL will \DIFdelbeginFL \DIFdelFL{end
+up being polytypic after unpruning is performed}\DIFdelendFL \DIFaddbeginFL \DIFaddFL{be placed}\DIFaddendFL .}
 \DIFaddbeginFL \label{fig:grafted-solution}
 \DIFaddendFL \end{figure}
 
@@ -911,16 +976,17 @@ These taxa are reattached by an ``unpruning step.'' For those taxa
 that are compatible with the grafted tree, this step simply amounts
 to adding any unsampled taxonomic children to the node that represents
 the taxon in the grafted solution tree.  \DIFaddbegin \DIFadd{For example, the tree in
-Figure \ref{fig:grafted-solution} is unpruned to produce the tree in
-Figure \ref{fig:unprune}.
+Fig. \ref{fig:grafted-solution} is unpruned to produce the tree in
+Fig. \ref{fig:unprune}.
 }\DIFaddend 
 
 However, a taxon may be incompatible with the grafted solution; we
 refer to such taxa as ``broken taxa.'' If a broken taxon contains
 some unsampled children, it is not clear where these unsampled children
 should be attached to the grafted solution. One approach would be
-to mimic the application of Algorithm \ref{alg:ConsistentSplitsFromRankedList}
-to the full (unpruned) taxonomic tree. This would be equivalent to
+to mimic the application of Algorithm \DIFdelbegin \DIFdel{\ref{alg:ConsistentSplitsFromRankedList}
+}\DIFdelend \DIFaddbegin \DIFadd{$\texttt{ConsistentSplitsFromRankedList}$ (Fig. \ref{alg:ConsistentSplitsFromRankedList})
+}\DIFaddend to the full (unpruned) taxonomic tree. This would be equivalent to
 collapsing each edge in the taxonomy that attaches a broken taxon
 to its parent. The unsampled children of broken taxa would attach
 at their least inclusive ancestral taxon which is unbroken. In cases
@@ -931,15 +997,15 @@ The \texttt{otc-unprune-solution-and-name-unnamed-nodes} tool from
 otcetera attaches the unsampled children of a broken taxa to the grafted
 solution as children of the MRCA of the sampled children.
 
-Figure \ref{fig:Two-approaches-to-unpruning} illustrates the two
+\DIFdelbegin \DIFdel{Figure }\DIFdelend \DIFaddbegin \DIFadd{Fig. }\DIFaddend \ref{fig:Two-approaches-to-unpruning} illustrates the two
 approaches to unpruning. Taxa G, M, and R (Fig \ref{fig:Two-approaches-to-unpruning}a)
 are broken because they conflict with the grafted solution (Fig \ref{fig:Two-approaches-to-unpruning}b);
 among these, only taxon R has children that were unsampled in the
 grafted solution. Ignoring all broken taxa when unpruning would cause
 the unsampled children (R4, R5, and R6) to attached directly at taxon
-N (as in the tree shown in Fig \ref{fig:Two-approaches-to-unpruning}c),
+N (as in the tree shown in Fig\DIFaddbegin \DIFadd{. }\DIFaddend \ref{fig:Two-approaches-to-unpruning}c),
 because that is the least inclusive unbroken ancestor of R. The tree
-illustrated in Fig \ref{fig:Two-approaches-to-unpruning}d shows the
+illustrated in Fig\DIFaddbegin \DIFadd{. }\DIFaddend \ref{fig:Two-approaches-to-unpruning}d shows the
 tree that would be produced by propinquity; the children of the broken
 taxon R and instead attached at the MRCA of sampled children (R1,
 R2, and R3). Their attachment point does not correspond to any taxon
@@ -949,42 +1015,43 @@ in the taxonomic tree.
 \begin{figure}
   \DIFaddbeginFL 
 
-\begin{centering}
-\includegraphics[scale=0.5]{Figures__labelled_supertree__labelled_supertree_only_taxon_names\lyxdot tre}
-\par\end{centering}
-\caption{\label{fig:unprune}\DIFaddFL{Unpruned tree with internal taxa. Taxa unsampled in phylogenetic
+\DIFaddendFL \begin{centering}
+\DIFdelbeginFL %DIFDELCMD < \subfloat[Taxonomy]{\begin{centering}
+%DIFDELCMD < \begin{minipage}[c][1\totalheight][t]{0.45\columnwidth}%
+%DIFDELCMD < \begin{center}
+%DIFDELCMD < \includegraphics[scale=0.38]{example3__cleaned_ott-labels\lyxdot tre}
+%DIFDELCMD < \par\end{center}%
+%DIFDELCMD < \end{minipage}
+%DIFDELCMD < \par\end{centering}
+%DIFDELCMD < }\hfill{}\subfloat[Grafted solution]{\begin{centering}
+%DIFDELCMD < \begin{minipage}[c][1\totalheight][t]{0.45\columnwidth}%
+%DIFDELCMD < \begin{center}
+%DIFDELCMD < \includegraphics[scale=0.38]{example3__grafted_solution-labels\lyxdot tre}
+%DIFDELCMD < \par\end{center}%
+%DIFDELCMD < \end{minipage}
+%DIFDELCMD < \par\end{centering}
+%DIFDELCMD < }\hfill{}
+%DIFDELCMD < \par\end{centering}
+%DIFDELCMD < \begin{centering}
+%DIFDELCMD < \subfloat[Unpruned tree - broken taxa removed]{\begin{centering}
+%DIFDELCMD < \includegraphics[scale=0.38]{example3__unprune-old-labels\lyxdot tre}
+%DIFDELCMD < \par\end{centering}
+%DIFDELCMD < }\hfill{}\subfloat[Unpruned tree with MRCA-attachment]{\begin{centering}
+%DIFDELCMD < \includegraphics[scale=0.38]{example3__unprune-new-labels2\lyxdot tre}
+%DIFDELCMD < \par\end{centering}
+%DIFDELCMD < }
+%DIFDELCMD < %%%
+\DIFdelendFL \DIFaddbeginFL \includegraphics[scale=0.5]{Fig11}
+\DIFaddendFL \par\end{centering}
+\caption{\DIFaddbeginFL \label{fig:unprune}\DIFaddFL{Unpruned tree with internal taxa. Taxa unsampled in phylogenetic
 statements have been added to the grafted tree shown
-in figure \ref{fig:grafted-solution}.}}
+in Fig. \ref{fig:grafted-solution}.}}
 \end{figure}
 
 \begin{figure}
-\DIFaddendFL \begin{centering}
-\subfloat[Taxonomy]{\begin{centering}
-\begin{minipage}[c][1\totalheight][t]{0.45\columnwidth}%
-\begin{center}
-\includegraphics[scale=0.38]{example3__cleaned_ott-labels\lyxdot tre}
-\par\end{center}%
-\end{minipage}
-\par\end{centering}
-}\hfill{}\subfloat[Grafted solution]{\begin{centering}
-\begin{minipage}[c][1\totalheight][t]{0.45\columnwidth}%
-\begin{center}
-\includegraphics[scale=0.38]{example3__grafted_solution-labels\lyxdot tre}
-\par\end{center}%
-\end{minipage}
-\par\end{centering}
-}\hfill{}
-\par\end{centering}
-\begin{centering}
-\subfloat[Unpruned tree - broken taxa removed]{\begin{centering}
-\includegraphics[scale=0.38]{example3__unprune-old-labels\lyxdot tre}
-\par\end{centering}
-}\hfill{}\subfloat[Unpruned tree with MRCA-attachment]{\begin{centering}
-\includegraphics[scale=0.38]{example3__unprune-new-labels2\lyxdot tre}
-\par\end{centering}
-}
-\par\end{centering}
-\caption{\label{fig:Two-approaches-to-unpruning}Two approaches to unpruning.
+\includegraphics[width=1.0\textwidth]{Fig12}  
+
+\caption{\DIFaddendFL \label{fig:Two-approaches-to-unpruning}Two approaches to unpruning.
 Taxa G and R in the taxonomy (a) are broken because they conflict
 with the grafted solution (b). Removing these broken taxa from the
 taxonomy before unpruning leads to taxa R4, R5, and R6 being attached
@@ -998,12 +1065,9 @@ R3. Our method follows the second approach.}
 %DIFDELCMD < \begin{centering}
 %DIFDELCMD < \includegraphics[scale=0.5]{Figures__labelled_supertree__labelled_supertree_only_taxon_names\lyxdot tre}
 %DIFDELCMD < \par\end{centering}
-%DIFDELCMD < %%%
-%DIFDELCMD < \caption{%
-{%DIFAUXCMD
+%DIFDELCMD < \caption{%%%
 \DIFdelFL{Unpruned tree with internal taxa. Nodes E2, F2, and D have been re-added
-to the tree. The nodes E and F are no longer monotypic.}}
-%DIFAUXCMD
+to the tree. The nodes E and F are no longer monotypic.}%DIFDELCMD < }
 %DIFDELCMD < \end{figure}
 %DIFDELCMD < 
 
@@ -1030,85 +1094,107 @@ rotation of the grafted solution tree.
 \subsubsection{Annotation}\label{sec:Annotation}
 
 \begin{figure}
-\subfloat[Input tree $T_{1}$ named ``tree1'']{%
-\begin{minipage}[c][1\totalheight][t]{0.25\columnwidth}%
-\includegraphics[scale=0.5]{annotation_example__input1\lyxdot tre}%
-\end{minipage}
+\DIFdelbeginFL %DIFDELCMD < \subfloat[Input tree $T_{1}$ named ``tree1'']{%
+%DIFDELCMD < \begin{minipage}[c][1\totalheight][t]{0.25\columnwidth}%
+%DIFDELCMD < \includegraphics[scale=0.5]{annotation_example__input1\lyxdot tre}%
+%DIFDELCMD < \end{minipage}
+%DIFDELCMD < 
 
-}\hfill{}\subfloat[Summary Tree $\protect\summaryTree$]{%
-\begin{minipage}[c][1\totalheight][t]{0.35\columnwidth}%
-\includegraphics[scale=0.5]{annotation_example__summary\lyxdot tre}%
-\end{minipage}
+%DIFDELCMD < }\hfill{}\subfloat[Summary Tree $\protect\summaryTree$]{%
+%DIFDELCMD < \begin{minipage}[c][1\totalheight][t]{0.35\columnwidth}%
+%DIFDELCMD < \includegraphics[scale=0.5]{annotation_example__summary\lyxdot tre}%
+%DIFDELCMD < \end{minipage}
+%DIFDELCMD < 
 
-}\hfill{}\subfloat[Induced Tree $\protect\summaryTree(1)$]{%
-\begin{minipage}[c][1\totalheight][t]{0.35\columnwidth}%
-\includegraphics[scale=0.5]{annotation_example__induced1_color}%
-\end{minipage}
+%DIFDELCMD < }\hfill{}\subfloat[Induced Tree $\protect\summaryTree(1)$]{%
+%DIFDELCMD < \begin{minipage}[c][1\totalheight][t]{0.35\columnwidth}%
+%DIFDELCMD < \includegraphics[scale=0.5]{annotation_example__induced1_color}%
+%DIFDELCMD < \end{minipage}
+%DIFDELCMD < 
 
-}
+%DIFDELCMD < }
+%DIFDELCMD < 
 
-\bigskip{}
+%DIFDELCMD < \bigskip{}
+%DIFDELCMD < 
 
-\bigskip{}
+%DIFDELCMD < \bigskip{}
+%DIFDELCMD < 
 
-\hfill{}\subfloat[JSON annotations relating edges of (c) to edges of (a)]{%
-\shadowbox{\begin{minipage}[t]{1.0\columnwidth}%
-\texttt{\{}
+%DIFDELCMD < \hfill{}\subfloat[JSON annotations relating edges of (c) to edges of (a)]{%
+%DIFDELCMD < \shadowbox{\begin{minipage}[t]{1.0\columnwidth}%
+%DIFDELCMD < \texttt{\{}
+%DIFDELCMD < 
 
-\texttt{~~\textquotedbl{}nodes\textquotedbl{}: \{}
+%DIFDELCMD < \texttt{~~\textquotedbl{}nodes\textquotedbl{}: \{}
+%DIFDELCMD < 
 
-\texttt{~~~~\textquotedbl{}mrcaott1ott4\textquotedbl{}: \{ \textquotedbl{}}\texttt{\textcolor{blue}{partial\_path\_of}}\texttt{\textquotedbl{}: \{
-\textquotedbl{}tree1\textquotedbl{}: \textquotedbl{}node15\textquotedbl{},
-... \} \},}
+%DIFDELCMD < \texttt{~~~~\textquotedbl{}mrcaott1ott4\textquotedbl{}: \{ \textquotedbl{}}\texttt{\textcolor{blue}{partial\_path\_of}}\texttt{\textquotedbl{}: \{
+%DIFDELCMD < \textquotedbl{}tree1\textquotedbl{}: \textquotedbl{}node15\textquotedbl{},
+%DIFDELCMD < ... \} \},}
+%DIFDELCMD < 
 
-\texttt{~~~~\textquotedbl{}ott10\textquotedbl{}:~~~~~~~~~\{
-\textquotedbl{}}\texttt{\textcolor{blue}{partial\_path\_of}}\texttt{\textquotedbl{}: \{
-\textquotedbl{}tree1\textquotedbl{}: \textquotedbl{}node15\textquotedbl{},
-... \} \},}
+%DIFDELCMD < \texttt{~~~~\textquotedbl{}ott10\textquotedbl{}:~~~~~~~~~\{
+%DIFDELCMD < \textquotedbl{}}\texttt{\textcolor{blue}{partial\_path\_of}}\texttt{\textquotedbl{}: \{
+%DIFDELCMD < \textquotedbl{}tree1\textquotedbl{}: \textquotedbl{}node15\textquotedbl{},
+%DIFDELCMD < ... \} \},}
+%DIFDELCMD < 
 
-\texttt{~~~~\textquotedbl{}mrcaott5ott7\textquotedbl{}: \{ \textquotedbl{}\textcolor{mylime}{supported\_by}\textquotedbl{}:~~~
-\{ \textquotedbl{}tree1\textquotedbl{}: \textquotedbl{}node16\textquotedbl{},
-... \} \},}
+%DIFDELCMD < \texttt{~~~~\textquotedbl{}mrcaott5ott7\textquotedbl{}: \{ \textquotedbl{}\textcolor{mylime}{supported\_by}\textquotedbl{}:~~~
+%DIFDELCMD < \{ \textquotedbl{}tree1\textquotedbl{}: \textquotedbl{}node16\textquotedbl{},
+%DIFDELCMD < ... \} \},}
+%DIFDELCMD < 
 
-\texttt{~~~~\textquotedbl{}ott1\textquotedbl{}:~~~~~~~~~~\{
-\textquotedbl{}}\texttt{\textcolor{orange}{terminal}}\texttt{\textquotedbl{}: ~~~~~~~\{
-\textquotedbl{}tree1\textquotedbl{}: \textquotedbl{}ott1\textquotedbl{},
-... ~~\} \},}
+%DIFDELCMD < \texttt{~~~~\textquotedbl{}ott1\textquotedbl{}:~~~~~~~~~~\{
+%DIFDELCMD < \textquotedbl{}}\texttt{\textcolor{orange}{terminal}}\texttt{\textquotedbl{}: ~~~~~~~\{
+%DIFDELCMD < \textquotedbl{}tree1\textquotedbl{}: \textquotedbl{}ott1\textquotedbl{},
+%DIFDELCMD < ... ~~\} \},}
+%DIFDELCMD < 
 
-\texttt{~~~~\textquotedbl{}ott2\textquotedbl{}:~~~~~~~~~~\{
-\textquotedbl{}}\texttt{\textcolor{orange}{terminal}}\texttt{\textquotedbl{}: ~~~~~~~\{
-\textquotedbl{}tree1\textquotedbl{}: \textquotedbl{}ott2\textquotedbl{},
-... ~~\} \},}
+%DIFDELCMD < \texttt{~~~~\textquotedbl{}ott2\textquotedbl{}:~~~~~~~~~~\{
+%DIFDELCMD < \textquotedbl{}}\texttt{\textcolor{orange}{terminal}}\texttt{\textquotedbl{}: ~~~~~~~\{
+%DIFDELCMD < \textquotedbl{}tree1\textquotedbl{}: \textquotedbl{}ott2\textquotedbl{},
+%DIFDELCMD < ... ~~\} \},}
+%DIFDELCMD < 
 
-\texttt{~~~~\textquotedbl{}ott5\textquotedbl{}:~~~~~~~~~~\{
-\textquotedbl{}}\texttt{\textcolor{orange}{terminal}}\texttt{\textquotedbl{}: ~~~~~~~\{
-\textquotedbl{}tree1\textquotedbl{}: \textquotedbl{}ott5\textquotedbl{},
-... ~~\} \},}
+%DIFDELCMD < \texttt{~~~~\textquotedbl{}ott5\textquotedbl{}:~~~~~~~~~~\{
+%DIFDELCMD < \textquotedbl{}}\texttt{\textcolor{orange}{terminal}}\texttt{\textquotedbl{}: ~~~~~~~\{
+%DIFDELCMD < \textquotedbl{}tree1\textquotedbl{}: \textquotedbl{}ott5\textquotedbl{},
+%DIFDELCMD < ... ~~\} \},}
+%DIFDELCMD < 
 
-\texttt{~~~~\textquotedbl{}ott11\textquotedbl{}:~~~~~~~~~\{
-\textquotedbl{}}\texttt{\textcolor{orange}{terminal}}\texttt{\textquotedbl{}: ~~~~~~~\{
-\textquotedbl{}tree1\textquotedbl{}: \textquotedbl{}ott5\textquotedbl{},
-... ~~\} \},}
+%DIFDELCMD < \texttt{~~~~\textquotedbl{}ott11\textquotedbl{}:~~~~~~~~~\{
+%DIFDELCMD < \textquotedbl{}}\texttt{\textcolor{orange}{terminal}}\texttt{\textquotedbl{}: ~~~~~~~\{
+%DIFDELCMD < \textquotedbl{}tree1\textquotedbl{}: \textquotedbl{}ott5\textquotedbl{},
+%DIFDELCMD < ... ~~\} \},}
+%DIFDELCMD < 
 
-\texttt{~~~~\textquotedbl{}ott7\textquotedbl{}:~~~~~~~~~~\{
-\textquotedbl{}}\texttt{\textcolor{orange}{terminal}}\texttt{\textquotedbl{}: ~~~~~~~\{
-\textquotedbl{}tree1\textquotedbl{}: \textquotedbl{}ott7\textquotedbl{},
-... ~~\} \}}
+%DIFDELCMD < \texttt{~~~~\textquotedbl{}ott7\textquotedbl{}:~~~~~~~~~~\{
+%DIFDELCMD < \textquotedbl{}}\texttt{\textcolor{orange}{terminal}}\texttt{\textquotedbl{}: ~~~~~~~\{
+%DIFDELCMD < \textquotedbl{}tree1\textquotedbl{}: \textquotedbl{}ott7\textquotedbl{},
+%DIFDELCMD < ... ~~\} \}}
+%DIFDELCMD < 
 
-\texttt{~~\},}
+%DIFDELCMD < \texttt{~~\},}
+%DIFDELCMD < 
 
-\texttt{~~...}
+%DIFDELCMD < \texttt{~~...}
+%DIFDELCMD < 
 
-\texttt{\} }%
-\end{minipage}}
+%DIFDELCMD < \texttt{\} }%
+%DIFDELCMD < \end{minipage}}
+%DIFDELCMD < 
 
-}\hfill{}
+%DIFDELCMD < }\hfill{}
+%DIFDELCMD < %%%
+\DIFdelendFL \DIFaddbeginFL \includegraphics[width=1.0\textwidth]{Fig13}  
+\DIFaddendFL 
 
 \caption{\label{fig:displayed-annotations}The relationship of edges in summary
-tree $\protect\summaryTree$ (b) to edges in the input tree $T_{1}$
-(a). Only edges of $\protect\summaryTree$ that are present in the
-induced tree $\protect\summaryTree(1)$ are represented by JSON annotations
-(d). Taxon names are here suppressed in favor of OTT IDs, and edges
+tree $\protect\summaryTree$ \DIFaddbeginFL \DIFaddFL{in panel }\DIFaddendFL (b) to edges in the input tree $T_{1}$ \DIFaddbeginFL \DIFaddFL{named ``tree1'' in panel
+}\DIFaddendFL (a). Only edges of $\protect\summaryTree$ that are present in the
+induced tree $\protect\summaryTree(1)$ \DIFaddbeginFL \DIFaddFL{in panel (c) }\DIFaddendFL are represented by JSON annotations
+\DIFaddbeginFL \DIFaddFL{in panel }\DIFaddendFL (d). Taxon names are here suppressed in favor of OTT IDs, and edges
 are referenced via their tipward nodes. Edges in $\protect\summaryTree(1)$
 that correspond to terminal edges of $T_{1}$ are orange; edges of
 $\protect\summaryTree(1)$ that are supported by edges of $T_{1}$
@@ -1167,7 +1253,7 @@ because node $j$ supports the existence of grouping $x$ in the sense
 that collapsing the edge that separates $x$ from its parent would
 cause the summary tree to no longer display node $j$.
  \end{itemize} 
-These three relationships are illustrated in Figure \ref{fig:displayed-annotations}.
+These three relationships are illustrated in \DIFdelbegin \DIFdel{Figure }\DIFdelend \DIFaddbegin \DIFadd{Fig. }\DIFaddend \ref{fig:displayed-annotations}.
 Finally, if $T_{i}$ does not display $x$ from $\mathcal{\mathbb{S}}(i)$,
 but there exists an unresolved node $j$ in $T_{i}$ which could be
 resolved such that the tree would then display $x$, then a reference
@@ -1378,8 +1464,9 @@ increased the pace of synthesis tree releases from the Open Tree of
 Life project.  This is partly because the newly available annotations
 feature has made it possible to identify which input trees are
 responsible for taxa being included or excluded from the summary tree.
-Additionally, the new propinquity software pipeline has \DIFdelbegin \DIFdel{decreased the }\DIFdelend decreased
-the computational time required to construct a supertree from several
+Additionally, the new propinquity software pipeline has decreased
+the \DIFdelbegin \DIFdel{decreased
+the }\DIFdelend computational time required to construct a supertree from several
 hours to about 8 minutes (after some preprocessing steps which only
 have to be performed when the input taxonomy changes).  The amount of
 RAM required during tree construction has also decreased substantially. 
@@ -1387,20 +1474,27 @@ RAM required during tree construction has also decreased substantially.
 \section{Acknowledgements}
 
 Thanks to Emily Jane McTavish, Karen Cranston, Jonathan Rees, Jim Allman, Cody Hinchliff,
-Stephen Smith, and Joseph Brown for discussions and feedback. Thanks
+Stephen Smith, and Joseph Brown for discussions and feedback.
+\DIFdelbegin \DIFdel{Thanks
 to NSF grant 1208393 (DEB), part of the collaborative Open Tree of
 Life awards, the University of Kansas, and the Heidelberg Institute
 for Theoretical Studies for funding.
+}\DIFdelend 
 
 \bibliographystyle{upmplainnat}
 \bibliography{otcetera}
 
+ \DIFdelbegin %DIFDELCMD < \appendix
+%DIFDELCMD < 
 
-\appendix
+%DIFDELCMD < %%%
+\section{\DIFdel{The maximum sum displayed groups' weighted scores criterion}}%DIFAUXCMD
+\addtocounter{section}{-1}%DIFAUXCMD
+%DIFDELCMD < %DIFDELCMD < \label{sec:The-maximum-sum}%%%
+%DIFDELCMD < 
 
-\section{The maximum sum displayed groups' weighted scores criterion}\label{sec:The-maximum-sum}
-
-Let $\mathcal{W}$ is a weighting function that maps any input tree's
+%DIFDELCMD < %%%
+\DIFdel{Let $\mathcal{W}$ is a weighting function that maps any input tree's
 internal node to a non-negative number. If $I(\mathbb{S},i,j)$ is
 an indicator function that is 1 if summary tree $\mathbb{S}$ displays
 the node $V(i,j)$ and 0 otherwise then: $SDGWS(\mathbb{S})=\sum_{i}\sum_{j}I(\mathbb{S},i,j)\mathcal{W}(i,j)$
@@ -1414,14 +1508,26 @@ when the weights for a node are determined by the tree's weight and
 the difference in weighting is so large that displaying one node from
 a highly ranked tree is preferred to displaying all of the nodes in
 the trees with lower rank.
+}%DIFDELCMD < 
 
-\section{Description of the decomposition algorithm of otc-uncontested-decompose}\label{sec:Decompose-algorithm}
+%DIFDELCMD < %%%
+\section{\DIFdel{Description of the decomposition algorithm of otc-uncontested-decompose}}%DIFAUXCMD
+\addtocounter{section}{-1}%DIFAUXCMD
+%DIFDELCMD < %DIFDELCMD < \label{sec:Decompose-algorithm}%%%
+%DIFDELCMD < 
 
-The input is the a ranked list of input trees and comprehensive taxonomy. 
+%DIFDELCMD < %%%
+\DIFdel{The input is the a ranked list of input trees and comprehensive taxonomy. 
+}%DIFDELCMD < 
 
-\subsection{Creation of multigraph of the taxonomy with embedded trees}
+%DIFDELCMD < %%%
+\subsection{\DIFdel{Creation of multigraph of the taxonomy with embedded trees}}
+%DIFAUXCMD
+\addtocounter{subsection}{-1}%DIFAUXCMD
+%DIFDELCMD < 
 
-The tool creates a multigraph by starting with a graph isomorphic
+%DIFDELCMD < %%%
+\DIFdel{The tool creates a multigraph by starting with a graph isomorphic
 to the taxonomic tree. The nodes and edges created in this step will
 be referred to as the ``taxonomic graph.'' Next, we add nodes and
 edges to that graph in a procedure that we refer to as ``embedding''
@@ -1445,15 +1551,23 @@ it is frequently the case that $m(a(e_{ij}))$ is the same node as
 $m(d(e_{ij}))$; in these cases the embedding edge is a loop. This
 situation occurs whenever edge $e_{ij}$ can resolve part of the polytomy
 represented by a taxon. 
+}%DIFDELCMD < 
 
-We treat the taxonomy as the lowest ranked input tree. The next step
+%DIFDELCMD < %%%
+\DIFdel{We treat the taxonomy as the lowest ranked input tree. The next step
 will collapse contested edges in the taxonomic graph. To retain all
 of the information from the taxonomy we embed the taxonomy into the
 taxonomic graph as if it were another input tree
+}%DIFDELCMD < 
 
-\subsection{Detection of uncontested higher taxa}
+%DIFDELCMD < %%%
+\subsection{\DIFdel{Detection of uncontested higher taxa}}
+%DIFAUXCMD
+\addtocounter{subsection}{-1}%DIFAUXCMD
+%DIFDELCMD < 
 
-After every input tree and the taxonomy tree have been embedded into
+%DIFDELCMD < %%%
+\DIFdel{After every input tree and the taxonomy tree have been embedded into
 the taxonomic graph, we perform postorder traversal over the taxonomic
 graph that underlies the multi-graph. For any internal node (each
 of which corresponds to a non-terminal taxon) we determine whether
@@ -1468,8 +1582,10 @@ $i$ contests that taxon. If there is only one parent node, then the all
 of the constituent taxa belonging to this taxon that are present in
 tree $i$ have one parent that is more inclusive; this means that
 the input tree does not contest monophyly of the taxon.
+}%DIFDELCMD < 
 
-If the taxon is uncontested, then it may be the case that some input
+%DIFDELCMD < %%%
+\DIFdel{If the taxon is uncontested, then it may be the case that some input
 trees do not contest the taxon, but contain polytomies that could
 be resolved to display the taxon. The cases can be identified by finding
 multiple exiting embedding edges that have the same taxon $y$ as
@@ -1479,10 +1595,16 @@ connected to $y$ as if it had been an input edge. This operation
 is equivalent to resolving an input tree's polytomy in favor of the
 monophyly of the uncontested taxon. This is the only way in which
 the input trees are modified during the decomposition.
+}%DIFDELCMD < 
 
-\subsection{Collapsing contested taxa from the taxonomic graph}
+%DIFDELCMD < %%%
+\subsection{\DIFdel{Collapsing contested taxa from the taxonomic graph}}
+%DIFAUXCMD
+\addtocounter{subsection}{-1}%DIFAUXCMD
+%DIFDELCMD < 
 
-If a taxonomic node $x$ fails the ``uncontested'' test described
+%DIFDELCMD < %%%
+\DIFdel{If a taxonomic node $x$ fails the ``uncontested'' test described
 in the previous section, then the node corresponding to the taxon
 is removed from the taxonomic graph and the set of edges (and mappings
 between input edges and embedded paths) is updated as if this taxon
@@ -1497,10 +1619,16 @@ grouping that contests taxon $x$ is overruled (in the subproblem
 solution step) by a higher ranked split. In other words, the fact
 that the a taxon is contested during the decomposition is not a guarantee
 that the taxon will not be monophyletic in the final supertree.
+}%DIFDELCMD < 
 
-\subsection{Emitting subproblems}
+%DIFDELCMD < %%%
+\subsection{\DIFdel{Emitting subproblems}}
+%DIFAUXCMD
+\addtocounter{subsection}{-1}%DIFAUXCMD
+%DIFDELCMD < 
 
-Whenever an uncontested taxon is identified, the appropriate slice
+%DIFDELCMD < %%%
+\DIFdel{Whenever an uncontested taxon is identified, the appropriate slice
 of each input trees that intersect with the taxon is written to a
 file. Then the multigraph is simplified by slicing any off the taxon.
 This slicing is accomplished by examing all of the exiting embedding
@@ -1509,4 +1637,4 @@ with the identifier of the contested taxa and all of that node's descendants
 are removed. Thus this input node will act as as if it were a leaf
 mapped to the uncontested taxon. All descendants of the taxonomic
 graph are also pruned off.
-\end{document}
+ }\DIFdelend\end{document}

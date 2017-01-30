@@ -559,10 +559,9 @@ in at least one phylogenetic input.
 \begin{figure}
 \includegraphics[width=1.0\textwidth]{Fig5}
 
-\caption{Exemplified input trees (a-b) and taxonomy tree (c) from Fig. \ref{fig:cleaned-phylo-example}.
-Taxon E in (a) is exemplified by E1. Pruned taxa are E2, F2, and D. The
-taxa E and F are retained as monotypic taxa in the pruned taxonomy
-$\protect\prunedTaxonomy$. The red
+\caption{Exemplified input trees (a-b) and pruned taxonomy tree (c) from Fig. \ref{fig:cleaned-phylo-example}.
+Taxon E in the first input tree is exemplified by E1 in (a). Pruned taxa are E2, F2, and D. The
+taxa E and F are retained as monotypic taxa in the pruned taxonomy. The red
 edge in the pruned taxonomy tree is an uncontested higher taxon in
 the exemplified taxonomy (as explained in section \ref{subsec:Subproblem-decomposition})}
 \label{fig:exemplify-example}
@@ -645,12 +644,10 @@ as a means of improving the summary tree.
 \begin{figure}
 \includegraphics[width=1.0\textwidth]{Fig6}
 
-\caption{Subproblems \emph{ABCD} and \emph{root} generated from the exemplified trees shown in Fig. \ref{fig:exemplify-example}.
+\caption{Subproblems (a) \emph{ABCD} and (b) \emph{root} generated from the exemplified trees shown in Fig. \ref{fig:exemplify-example}.
 A trivial statement from the first tree that a taxon labelled $ABCD$
 is sister to $E$ has been omitted, because trees with only 2 leaves
-do not contain phylogenetic information.
-Similarly, the trivial problems that list E1 and F1 as the only daughters
-of taxa E and F have been omitted.}
+do not contain phylogenetic information.}
 \label{fig:subproblems-example}
 \end{figure}
 \begin{figure}
@@ -710,7 +707,7 @@ version of the BUILD algorithm to the subproblems shown in Fig. \ref{fig:subprob
 \begin{figure}
 \includegraphics[width=1.0\textwidth]{Fig9}  
 
-\caption{Solutions to subproblem \emph{ABCD} and subproblem \emph{root} depicted in Fig. \ref{fig:subproblems-example}.}
+\caption{Solutions to (a) subproblem \emph{ABCD} and (b) subproblem \emph{root} depicted in Fig. \ref{fig:subproblems-example}.}
 \label{fig:subproblem-solutions.}
 \end{figure}
 
@@ -733,10 +730,7 @@ and then merging the nodes that are labeled with the same OTT ID.
 \caption{Grafted solution produced from the subproblems from
 Fig. \ref{fig:subproblem-solutions.} and which is the 
 backbone onto which taxa that are not included in any phylogeny
-will be placed.
-In a real analysis, the tips shown as E and F here
-would be monotypic taxa (with children E1 and F1, respectively)
-from the trivial subproblems that were omitted from from Fig. \ref{fig:subproblems-example}.}
+will be placed.}
 \label{fig:grafted-solution}
 \end{figure}
 
@@ -831,10 +825,10 @@ rotation of the grafted solution tree.
 \includegraphics[width=1.0\textwidth]{Fig13}  
 
 \caption{\label{fig:displayed-annotations}The relationship of edges in summary
-tree $\protect\summaryTree$ (b) to edges in the input tree $T_{1}$
+tree $\protect\summaryTree$ in panel (b) to edges in the input tree $T_{1}$ named ``tree1'' in panel
 (a). Only edges of $\protect\summaryTree$ that are present in the
-induced tree $\protect\summaryTree(1)$ are represented by JSON annotations
-(d). Taxon names are here suppressed in favor of OTT IDs, and edges
+induced tree $\protect\summaryTree(1)$ in panel (c) are represented by JSON annotations
+in panel (d). Taxon names are here suppressed in favor of OTT IDs, and edges
 are referenced via their tipward nodes. Edges in $\protect\summaryTree(1)$
 that correspond to terminal edges of $T_{1}$ are orange; edges of
 $\protect\summaryTree(1)$ that are supported by edges of $T_{1}$
