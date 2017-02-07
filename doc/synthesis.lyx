@@ -177,12 +177,13 @@ Each edge of a standard tree divides the tip taxa
  Such a split may be written
 \begin_inset Formula 
 \[
-\mathcal{I}(e)|\mathcal{E}(e),
+\mathcal{I}(e)|\bullet\mathcal{E}(e),
 \]
 
 \end_inset
 
-with the exclude set always on the right.If no taxa are 
+with the exclude set always on the right.
+ If no taxa are 
 \emph on
 incertae sedis
 \emph default
@@ -292,6 +293,17 @@ This leads to a valid pre-order recursion if
  as a boundary condition.
 \end_layout
 
+\begin_layout Subsubsection
+Alternative formulation
+\end_layout
+
+\begin_layout Standard
+With the above formulation, if an I.S.
+ clade A is more rootward than an I.S.
+ clade B, and then A is placed sister to B, then B could not be placed within
+ A.
+\end_layout
+
 \begin_layout Subsection
 Containers
 \end_layout
@@ -349,6 +361,19 @@ incertae sedis
 \emph default
  taxa in the correct subproblem, and to handle conflict in placement information
  between input trees.
+\end_layout
+
+\begin_layout Itemize
+
+\series bold
+Subproblem descriptions
+\series default
+ must describe regions of the tree that have 
+\emph on
+incertae sedis
+\emph default
+ taxa place within them.
+ 
 \end_layout
 
 \begin_layout Itemize
@@ -2282,12 +2307,10 @@ Would it be theoretically possible to make the subproblem solver able to
 \end_layout
 
 \begin_layout Verbatim
-
 grafted solution (pruned)
 \end_layout
 
 \begin_layout Verbatim
-
 cleaned ott (unpruned)
 \end_layout
 
