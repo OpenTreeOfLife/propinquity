@@ -41,14 +41,14 @@ $(PROPINQUITY_OUT_DIR)/subproblems/subproblem-ids.txt: $(PROPINQUITY_OUT_DIR)/su
 		cp $(PROPINQUITY_OUT_DIR)/subproblems/checksummed-subproblem-ids.txt \
 		   $(PROPINQUITY_OUT_DIR)/subproblems/subproblem-ids.txt
 
-$(PROPINQUITY_OUT_DIR)/subproblem_solutions/solution-ids.txt: $(PROPINQUITY_OUT_DIR)/subproblems/subproblem-ids.txt $(PROPINQUITY_OUT_DIR)/cleaned_ott/incertae_sedis.txt
+$(PROPINQUITY_OUT_DIR)/subproblem_solutions/solution-ids.txt: $(PROPINQUITY_OUT_DIR)/subproblems/subproblem-ids.txt $(PROPINQUITY_OUT_DIR)/exemplified_phylo/incertae_sedis.txt
 	@if ! test -d $(PROPINQUITY_OUT_DIR)/subproblem_solutions ; then mkdir -p $(PROPINQUITY_OUT_DIR)/subproblem_solutions ; fi
 	for n in $$(cat $(PROPINQUITY_OUT_DIR)/subproblems/subproblem-ids.txt) ; do \
 		id=$${n%.tre} ; \
 		otc-solve-subproblem \
 			$(PROPINQUITY_OUT_DIR)/subproblems/$$n \
 			-n$${id} \
-			-I $(PROPINQUITY_OUT_DIR)/cleaned_ott/incertae_sedis.txt \
+			-I $(PROPINQUITY_OUT_DIR)/exemplified_phylo/incertae_sedis.txt \
 			> $(PROPINQUITY_OUT_DIR)/subproblem_solutions/$${n} ; \
 	done ;
 	cp $(PROPINQUITY_OUT_DIR)/subproblems/subproblem-ids.txt \
