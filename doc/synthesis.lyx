@@ -1991,18 +1991,115 @@ Case:
 \end_layout
 
 \begin_layout Subsubsection
-Implementation
+Implementation: finding the node for a name
 \end_layout
 
 \begin_layout Standard
-So, if we know which nodes in the taxonomy are consistent with the solution,
- then we can simply find the MRCA and assign a name to it.
- If we attempt to assign a name to an already-named node, we create a new
- monotypic ancestor that is rootward of all the existing monotypic ancestors,
- and assign the name there.
- This requires that we process the displayed taxonomy nodes in post-order,
- so we add more root-ward monotypic nodes second, so that they end up more
- root-ward on the solution tree.
+To find the node for a name 
+\begin_inset Formula $n$
+\end_inset
+
+, we find the MRCA of the cluster 
+\begin_inset Formula $S_{1}(n)$
+\end_inset
+
+.
+ If the MRCA excludes the entire exclude group 
+\begin_inset Formula $S_{2}(n)$
+\end_inset
+
+ then the name applies to the MRCA; otherwise the taxon does not exist on
+ the tree.
+\end_layout
+
+\begin_layout Subsubsection
+Implementation: handling name clashes
+\end_layout
+
+\begin_layout Standard
+When multiple names 
+\begin_inset Formula $N=\{n_{1},\ldots n_{N}\}$
+\end_inset
+
+ map to the same solution node 
+\begin_inset Formula $x$
+\end_inset
+
+, then these names must satisfy some tree structure on the taxonomy, such
+ that 
+\begin_inset Formula $n_{1}<n_{2}$
+\end_inset
+
+ if 
+\begin_inset Formula $n_{1}$
+\end_inset
+
+ is a descendant of 
+\begin_inset Formula $n_{2}$
+\end_inset
+
+ in the taxonomy.
+ If it is possible to find a name 
+\begin_inset Formula $n_{max}$
+\end_inset
+
+ that is the unique maximal element of 
+\begin_inset Formula $N$
+\end_inset
+
+, then it is permissible to 
+\end_layout
+
+\begin_layout Enumerate
+create a monotypic parent 
+\begin_inset Formula $p(x)$
+\end_inset
+
+ of 
+\begin_inset Formula $x$
+\end_inset
+
+, and assign 
+\begin_inset Formula $n_{max}$
+\end_inset
+
+ to 
+\begin_inset Formula $p(x)$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Enumerate
+continue handling name clashes at 
+\begin_inset Formula $x$
+\end_inset
+
+ with the set of possible names reduced to 
+\begin_inset Formula $N-n_{max}$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+However, its certainly possible that there might not be any such 
+\begin_inset Formula $N_{max}$
+\end_inset
+
+, in which case we could just choose a name for 
+\begin_inset Formula $x$
+\end_inset
+
+ from 
+\begin_inset Formula $N$
+\end_inset
+
+ (perhaps not an 
+\emph on
+incertae sedis
+\emph default
+ name) and then record all the other names as equivalents somewhere.
 \end_layout
 
 \begin_layout Subsection
