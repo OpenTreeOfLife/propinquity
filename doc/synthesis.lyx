@@ -1974,9 +1974,9 @@ Example 2
 \end_layout
 
 \begin_layout Standard
-If ((A1,A2)A,(B1,B2)B*,(C1,C2)C); is the taxonomy with asterisks denoting
+If ((A1,A2)A,(B1,B2)B*,(C1,C2)C*); is the taxonomy with asterisks denoting
  incertae sedis taxa, then the solution ((A1,A2)A,((B1,C1)mrcaB1C1,(B2,C2)mrcaB2
-C2)x); has a node x that could be called B* or C.
+C2)x); has a node x that could be called B* or C*.
 \end_layout
 
 \begin_layout Standard
@@ -1984,10 +1984,9 @@ C2)x); has a node x that could be called B* or C.
 \series bold
 Case:
 \series default
- If a taxon B* is an IS taxon, then its tips could be placed into two different
- children C1 and C2 of another taxon C.
- Assuming that the taxon C is found in solution tree, then the name B* could
- also be applied to the same node.
+ If a taxa B* and C* are IS, then their tips can be intermingled in a new
+ clade x.
+ Both names would then apply.
 \end_layout
 
 \begin_layout Subsubsection
