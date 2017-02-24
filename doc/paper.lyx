@@ -2531,7 +2531,7 @@ reference "fig:cleaned-phylo-example"
 \begin_inset Formula $\prunedTaxonomy$
 \end_inset
 
-, but are not shown in panel c.
+.
  The red edge in the pruned taxonomy tree is an uncontested higher taxon
  in the exemplified taxonomy (as explained in section 
 \begin_inset CommandInset ref

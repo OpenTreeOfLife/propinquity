@@ -227,17 +227,7 @@ in \ref{fig:toyambig}c and \ref{fig:toyambig}d, whereas taxon
 A does not. 
 
 \begin{figure}
-\subfloat[Input tree 1]{\includegraphics[width=0.45\textwidth]{Figures__toy_ambig__abcd}
-
-}\hfill{}\subfloat[Input tree 2]{\includegraphics[width=0.45\textwidth]{Figures__toy_ambig__bcde}
-
-}
-
-\subfloat[Summary tree]{\includegraphics[width=0.45\textwidth]{Figures__toy_ambig__soln1}
-
-}\hfill{}\subfloat[Summary tree]{\includegraphics[width=0.45\textwidth]{Figures__toy_ambig__soln2}
-
-}
+\includegraphics[width=1.0\textwidth]{Fig1}  
 
 \caption{An example demonstrating that our definition of ``supported by''
 does not imply entire composition of a grouping. (a) and (b) show
@@ -286,21 +276,7 @@ of inputs can result in one of three summary trees shown in panels
 d-f. 
 
 \begin{figure}
-\subfloat[Input tree 1]{\includegraphics[scale=0.57]{Figures__toy_pairwise_compat__abc}
-
-}\hfill{}\subfloat[Input tree 2]{\includegraphics[scale=0.57]{Figures__toy_pairwise_compat__acd}
-
-}\hfill{}\subfloat[Input tree 3]{\includegraphics[scale=0.57]{Figures__toy_pairwise_compat__bcd}
-
-}
-
-\subfloat[Summary tree]{\includegraphics[scale=0.57]{Figures__toy_pairwise_compat__s12}
-
-}\hfill{}\subfloat[Summary tree]{\includegraphics[scale=0.57]{Figures__toy_pairwise_compat__s13}
-
-}\hfill{}\subfloat[Summary tree]{\includegraphics[scale=0.57]{Figures__toy_pairwise_compat__s23}
-
-}
+\includegraphics[width=1.0\textwidth]{Fig2}
 
 \caption{An example of 3 input trees shown in (a), (b), and (c) which do not
 conflict in a pairwise manner, but cannot be jointly displayed in
@@ -441,7 +417,7 @@ subdirectory) to make it easier to replicate the operation (because
 the collection of trees and the tree files change due to curation).
 \begin{figure}
 \begin{centering}
-\includegraphics[height=0.70\paperheight]{pipeline-tools.pdf}
+\includegraphics[height=0.70\paperheight]{Fig3.pdf}
 \par\end{centering}
 \caption{Organization of the \emph{propinquity} pipeline. Each colored pentagon
 labels a program (blue for otcetera-based tools and red for python
@@ -574,31 +550,18 @@ down version of the taxonomy that only contains tips that are present
 in at least one phylogenetic input.
 
 \begin{figure}
-\subfloat[Tree 1]{\includegraphics[scale=0.4]{Figures__cleaned_phylo__ex_2@tree1\lyxdot tre}
+\includegraphics[width=1.0\textwidth]{Fig4}
 
-}\hfill{}\subfloat[Tree 2]{\includegraphics[scale=0.4]{Figures__cleaned_phylo__ex_2@tree2\lyxdot tre}
-
-}\hfill{}\subfloat[Taxonomy Tree]{\includegraphics[scale=0.4]{Figures__cleaned_ott__cleaned_ott\lyxdot tre}
-
-}
-
-\caption{Input trees and taxonomy tree}
+\caption{Input trees (a-b) and taxonomy tree (c).}
 \label{fig:cleaned-phylo-example}
 \end{figure}
  
 \begin{figure}
-\subfloat[Tree 1]{\includegraphics[scale=0.4]{Figures__exemplified_phylo__ex_2@tree1\lyxdot tre}
+\includegraphics[width=1.0\textwidth]{Fig5}
 
-}\hfill{}\subfloat[Tree 2]{\includegraphics[scale=0.4]{Figures__exemplified_phylo__ex_2@tree2\lyxdot tre}
-
-}\hfill{}\subfloat[Pruned taxonomy tree $\protect\prunedTaxonomy$]{\includegraphics[scale=0.4]{Figures__exemplified_phylo_taxonomy_uncontested\lyxdot tre}
-
-}
-
-\caption{Exemplified input trees and taxonomy tree from Fig. \ref{fig:cleaned-phylo-example}.
-E in tree1 is exemplified by E1. Pruned taxa are E2, F2, and D. The
-taxa E and F are retained as monotypic taxa in the pruned taxonomy
-$\protect\prunedTaxonomy$, but are not shown in panel c. The red
+\caption{Exemplified input trees (a-b) and pruned taxonomy tree (c) from Fig. \ref{fig:cleaned-phylo-example}.
+Taxon E in the first input tree is exemplified by E1 in (a). Pruned taxa are E2, F2, and D. The
+taxa E and F are retained as monotypic taxa in the pruned taxonomy. The red
 edge in the pruned taxonomy tree is an uncontested higher taxon in
 the exemplified taxonomy (as explained in section \ref{subsec:Subproblem-decomposition})}
 \label{fig:exemplify-example}
@@ -632,7 +595,7 @@ are treated as soft polytomies, and a taxon is not contested merely
 because it is not displayed by an input tree. 
 
 This operation is performed by the \texttt{otc-uncontested-decompose}
-tool in otcetera; see appendix \ref{sec:Decompose-algorithm} for
+tool in otcetera; see appendix B for
 a description of the algorithm. The output is a series of subproblems,
 each of which corresponds to a slice of the taxonomy and corresponding
 slices through each relevant input tree. Each uncontested non-terminal
@@ -679,40 +642,16 @@ Thus the procedure encourages curation of more phylogenetic inputs
 as a means of improving the summary tree. 
 
 \begin{figure}
-  \subfloat[Subproblem \emph{ABCD}]{\includegraphics[width=0.3\textwidth]{Figures__subproblems__14__1\lyxdot tre}%
-    \hfill{}\includegraphics[width=0.3\textwidth]{Figures__subproblems__14__2\lyxdot tre}%
-    \hfill{}\includegraphics[width=0.3\textwidth]{Figures__subproblems__14__3\lyxdot tre}
+\includegraphics[width=1.0\textwidth]{Fig6}
 
-}
-
-  \subfloat[Subproblem \emph{root}]{\includegraphics[width=0.3\textwidth]{Figures__subproblems__17__1\lyxdot tre}%
-    \hfill{}\includegraphics[width=0.3\textwidth]{Figures__subproblems__17__2\lyxdot tre}%
-    \hfill{}\includegraphics[width=0.3\textwidth]{Figures__subproblems__17__3\lyxdot tre}
-
-}
-
-\caption{Subproblems generated from the exemplified trees shown in Fig. \ref{fig:exemplify-example}.
+\caption{Subproblems (a) \emph{ABCD} and (b) \emph{root} generated from the exemplified trees shown in Fig. \ref{fig:exemplify-example}.
 A trivial statement from the first tree that a taxon labelled $ABCD$
 is sister to $E$ has been omitted, because trees with only 2 leaves
-do not contain phylogenetic information.
-Similarly, the trivial problems that list E1 and F1 as the only daughters
-of taxa E and F have been omitted.}
+do not contain phylogenetic information.}
 \label{fig:subproblems-example}
 \end{figure}
 \begin{figure}
-\subfloat[]{\includegraphics[scale=0.57]{Figures__uncontested_worsens_score__ab1c}
-
-}\hfill{}\subfloat[]{\includegraphics[scale=0.57]{Figures__uncontested_worsens_score__acb2}
-
-}\hfill{}\subfloat[]{\includegraphics[scale=0.57]{Figures__uncontested_worsens_score__tax}
-
-}
-
-\hfill{}\subfloat[]{\includegraphics[scale=0.57]{Figures__uncontested_worsens_score__opt}
-
-}\hfill{}\subfloat[]{\includegraphics[scale=0.57]{Figures__uncontested_worsens_score__returned}
-
-}\hfill{}
+\includegraphics[width=1.0\textwidth]{Fig7}
 
 \caption{An example with three input trees: the highest ranked phylogenetic
 input panel (a), the second ranked phylogenetic input (b), and the
@@ -727,7 +666,7 @@ from the pipeline that uses uncontested taxon decomposition.}
 
 When solving sub-problems, we sequentially incorporate splits from
 trees in order of ranking, retaining splits that are compatible with
-the current set of splits (Alg \ref{alg:ConsistentSplitsFromRankedList}).
+the current set of splits (Fig. \ref{alg:ConsistentSplitsFromRankedList}).
 The order of splits from the same tree is not specified by this approach,
 and we incorporate splits using one of the possible post-order traversals
 of the tree. We make use of the BUILD algorithm \citep{AhoSSU1981}
@@ -738,21 +677,10 @@ use the BUILD algorithm to construct a supertree displaying all of
 the splits in the set of compatible splits. Using the BUILD algorithm
 to construct the subproblem summary tree satisfies criterion 3, because
 trees from the BUILD algorithm do not contain unsupported branches.
-\begin{algorithm}
-\begin{algorithmic}
-\Require An ordered list of $M$ splits, $\mathcal{R} = [R_1, R_2, R_3, \ldots, R3, \ldots, R_M]$
-\State $\mathcal{C} = [R_1]$
-\For{each split $i$ in $[2, 3 \ldots M]$}
-   \State $\mathcal{T} \leftarrow \mathcal{C} + R_i$ \Comment{where `+' means concatenating 2 lists}
-   \If{\textsc{BUILD}$(\mathcal{T})$ does not return null}
-      \State $\mathcal{C} \leftarrow \mathcal{T}$
-   \EndIf
-\EndFor{}
-\State\Return $\mathcal{C}$
-\end{algorithmic}
-
-\caption{\label{alg:ConsistentSplitsFromRankedList}ConsistentSplitsFromRankedList}
-\end{algorithm}
+\begin{figure}
+\includegraphics[width=0.9\textwidth]{fig8}
+\caption{\label{alg:ConsistentSplitsFromRankedList}Algorithm \texttt{ConsistentSplitsFromRankedList}}
+\end{figure}
 
 The BUILD algorithm as originally stated by \citet{AhoSSU1981} applies
 to a collection of rooted triplets. Instead of decomposing each input
@@ -777,13 +705,9 @@ shows the solutions that would be obtained by applying our modified
 version of the BUILD algorithm to the subproblems shown in Fig. \ref{fig:subproblems-example}.
 
 \begin{figure}
-\hfill{}\subfloat[Solution to subproblem \emph{ABCD}]{\includegraphics[scale=0.55]{Figures__subproblem_solutions__ott14\lyxdot tre}
+\includegraphics[width=1.0\textwidth]{Fig9}  
 
-}\hfill{}\subfloat[Solution to subproblem \emph{root}]{\includegraphics[scale=0.55]{Figures__subproblem_solutions__ott17\lyxdot tre}
-
-}\hfill{}
-
-\caption{Solutions to the subproblems depicted in Fig. \ref{fig:subproblems-example}}
+\caption{Solutions to (a) subproblem \emph{ABCD} and (b) subproblem \emph{root} depicted in Fig. \ref{fig:subproblems-example}.}
 \label{fig:subproblem-solutions.}
 \end{figure}
 
@@ -801,15 +725,12 @@ and then merging the nodes that are labeled with the same OTT ID.
 
 \begin{figure}
 \begin{centering}
-\includegraphics[scale=0.5]{Figures__grafted_solution__grafted_solution_ottnames\lyxdot tre}
+\includegraphics[scale=0.5]{Fig10.pdf}
 \par\end{centering}
 \caption{Grafted solution produced from the subproblems from
 Fig. \ref{fig:subproblem-solutions.} and which is the 
 backbone onto which taxa that are not included in any phylogeny
-will be placed.
-In a real analysis, the tips shown as E and F here
-would be monotypic taxa (with children E1 and F1, respectively)
-from the trivial subproblems that were omitted from from Fig. \ref{fig:subproblems-example}.}
+will be placed.}
 \label{fig:grafted-solution}
 \end{figure}
 
@@ -829,7 +750,7 @@ However, a taxon may be incompatible with the grafted solution; we
 refer to such taxa as ``broken taxa.'' If a broken taxon contains
 some unsampled children, it is not clear where these unsampled children
 should be attached to the grafted solution. One approach would be
-to mimic the application of Algorithm \ref{alg:ConsistentSplitsFromRankedList}
+to mimic the application of Algorithm $\texttt{ConsistentSplitsFromRankedList}$ (Fig. \ref{alg:ConsistentSplitsFromRankedList})
 to the full (unpruned) taxonomic tree. This would be equivalent to
 collapsing each edge in the taxonomy that attaches a broken taxon
 to its parent. The unsampled children of broken taxa would attach
@@ -859,7 +780,7 @@ in the taxonomic tree.
 \begin{figure}
   
 \begin{centering}
-\includegraphics[scale=0.5]{Figures__labelled_supertree__labelled_supertree_only_taxon_names\lyxdot tre}
+\includegraphics[scale=0.5]{Fig11}
 \par\end{centering}
 \caption{\label{fig:unprune}Unpruned tree with internal taxa. Taxa unsampled in phylogenetic
 statements have been added to the grafted tree shown
@@ -867,32 +788,8 @@ in Fig. \ref{fig:grafted-solution}.}
 \end{figure}
 
 \begin{figure}
-\begin{centering}
-\subfloat[Taxonomy]{\begin{centering}
-\begin{minipage}[c][1\totalheight][t]{0.45\columnwidth}%
-\begin{center}
-\includegraphics[scale=0.38]{example3__cleaned_ott-labels\lyxdot tre}
-\par\end{center}%
-\end{minipage}
-\par\end{centering}
-}\hfill{}\subfloat[Grafted solution]{\begin{centering}
-\begin{minipage}[c][1\totalheight][t]{0.45\columnwidth}%
-\begin{center}
-\includegraphics[scale=0.38]{example3__grafted_solution-labels\lyxdot tre}
-\par\end{center}%
-\end{minipage}
-\par\end{centering}
-}\hfill{}
-\par\end{centering}
-\begin{centering}
-\subfloat[Unpruned tree - broken taxa removed]{\begin{centering}
-\includegraphics[scale=0.38]{example3__unprune-old-labels\lyxdot tre}
-\par\end{centering}
-}\hfill{}\subfloat[Unpruned tree with MRCA-attachment]{\begin{centering}
-\includegraphics[scale=0.38]{example3__unprune-new-labels2\lyxdot tre}
-\par\end{centering}
-}
-\par\end{centering}
+\includegraphics[width=1.0\textwidth]{Fig12}  
+
 \caption{\label{fig:Two-approaches-to-unpruning}Two approaches to unpruning.
 Taxa G and R in the taxonomy (a) are broken because they conflict
 with the grafted solution (b). Removing these broken taxa from the
@@ -925,85 +822,13 @@ rotation of the grafted solution tree.
 \subsubsection{Annotation}\label{sec:Annotation}
 
 \begin{figure}
-\subfloat[Input tree $T_{1}$ named ``tree1'']{%
-\begin{minipage}[c][1\totalheight][t]{0.25\columnwidth}%
-\includegraphics[scale=0.5]{annotation_example__input1\lyxdot tre}%
-\end{minipage}
-
-}\hfill{}\subfloat[Summary Tree $\protect\summaryTree$]{%
-\begin{minipage}[c][1\totalheight][t]{0.35\columnwidth}%
-\includegraphics[scale=0.5]{annotation_example__summary\lyxdot tre}%
-\end{minipage}
-
-}\hfill{}\subfloat[Induced Tree $\protect\summaryTree(1)$]{%
-\begin{minipage}[c][1\totalheight][t]{0.35\columnwidth}%
-\includegraphics[scale=0.5]{annotation_example__induced1_color}%
-\end{minipage}
-
-}
-
-\bigskip{}
-
-\bigskip{}
-
-\hfill{}\subfloat[JSON annotations relating edges of (c) to edges of (a)]{%
-\shadowbox{\begin{minipage}[t]{1.0\columnwidth}%
-\texttt{\{}
-
-\texttt{~~\textquotedbl{}nodes\textquotedbl{}: \{}
-
-\texttt{~~~~\textquotedbl{}mrcaott1ott4\textquotedbl{}: \{ \textquotedbl{}}\texttt{\textcolor{blue}{partial\_path\_of}}\texttt{\textquotedbl{}: \{
-\textquotedbl{}tree1\textquotedbl{}: \textquotedbl{}node15\textquotedbl{},
-... \} \},}
-
-\texttt{~~~~\textquotedbl{}ott10\textquotedbl{}:~~~~~~~~~\{
-\textquotedbl{}}\texttt{\textcolor{blue}{partial\_path\_of}}\texttt{\textquotedbl{}: \{
-\textquotedbl{}tree1\textquotedbl{}: \textquotedbl{}node15\textquotedbl{},
-... \} \},}
-
-\texttt{~~~~\textquotedbl{}mrcaott5ott7\textquotedbl{}: \{ \textquotedbl{}\textcolor{mylime}{supported\_by}\textquotedbl{}:~~~
-\{ \textquotedbl{}tree1\textquotedbl{}: \textquotedbl{}node16\textquotedbl{},
-... \} \},}
-
-\texttt{~~~~\textquotedbl{}ott1\textquotedbl{}:~~~~~~~~~~\{
-\textquotedbl{}}\texttt{\textcolor{orange}{terminal}}\texttt{\textquotedbl{}: ~~~~~~~\{
-\textquotedbl{}tree1\textquotedbl{}: \textquotedbl{}ott1\textquotedbl{},
-... ~~\} \},}
-
-\texttt{~~~~\textquotedbl{}ott2\textquotedbl{}:~~~~~~~~~~\{
-\textquotedbl{}}\texttt{\textcolor{orange}{terminal}}\texttt{\textquotedbl{}: ~~~~~~~\{
-\textquotedbl{}tree1\textquotedbl{}: \textquotedbl{}ott2\textquotedbl{},
-... ~~\} \},}
-
-\texttt{~~~~\textquotedbl{}ott5\textquotedbl{}:~~~~~~~~~~\{
-\textquotedbl{}}\texttt{\textcolor{orange}{terminal}}\texttt{\textquotedbl{}: ~~~~~~~\{
-\textquotedbl{}tree1\textquotedbl{}: \textquotedbl{}ott5\textquotedbl{},
-... ~~\} \},}
-
-\texttt{~~~~\textquotedbl{}ott11\textquotedbl{}:~~~~~~~~~\{
-\textquotedbl{}}\texttt{\textcolor{orange}{terminal}}\texttt{\textquotedbl{}: ~~~~~~~\{
-\textquotedbl{}tree1\textquotedbl{}: \textquotedbl{}ott5\textquotedbl{},
-... ~~\} \},}
-
-\texttt{~~~~\textquotedbl{}ott7\textquotedbl{}:~~~~~~~~~~\{
-\textquotedbl{}}\texttt{\textcolor{orange}{terminal}}\texttt{\textquotedbl{}: ~~~~~~~\{
-\textquotedbl{}tree1\textquotedbl{}: \textquotedbl{}ott7\textquotedbl{},
-... ~~\} \}}
-
-\texttt{~~\},}
-
-\texttt{~~...}
-
-\texttt{\} }%
-\end{minipage}}
-
-}\hfill{}
+\includegraphics[width=1.0\textwidth]{Fig13}  
 
 \caption{\label{fig:displayed-annotations}The relationship of edges in summary
-tree $\protect\summaryTree$ (b) to edges in the input tree $T_{1}$
+tree $\protect\summaryTree$ in panel (b) to edges in the input tree $T_{1}$ named ``tree1'' in panel
 (a). Only edges of $\protect\summaryTree$ that are present in the
-induced tree $\protect\summaryTree(1)$ are represented by JSON annotations
-(d). Taxon names are here suppressed in favor of OTT IDs, and edges
+induced tree $\protect\summaryTree(1)$ in panel (c) are represented by JSON annotations
+in panel (d). Taxon names are here suppressed in favor of OTT IDs, and edges
 are referenced via their tipward nodes. Edges in $\protect\summaryTree(1)$
 that correspond to terminal edges of $T_{1}$ are orange; edges of
 $\protect\summaryTree(1)$ that are supported by edges of $T_{1}$
@@ -1279,126 +1104,9 @@ RAM required during tree construction has also decreased substantially.
 \section{Acknowledgements}
 
 Thanks to Emily Jane McTavish, Karen Cranston, Jonathan Rees, Jim Allman, Cody Hinchliff,
-Stephen Smith, and Joseph Brown for discussions and feedback. Thanks
-to NSF grant 1208393 (DEB), part of the collaborative Open Tree of
-Life awards, the University of Kansas, and the Heidelberg Institute
-for Theoretical Studies for funding.
+Stephen Smith, and Joseph Brown for discussions and feedback.
 
 \bibliographystyle{upmplainnat}
 \bibliography{otcetera}
 
-
-\appendix
-
-\section{The maximum sum displayed groups' weighted scores criterion}\label{sec:The-maximum-sum}
-
-Let $\mathcal{W}$ is a weighting function that maps any input tree's
-internal node to a non-negative number. If $I(\mathbb{S},i,j)$ is
-an indicator function that is 1 if summary tree $\mathbb{S}$ displays
-the node $V(i,j)$ and 0 otherwise then: $SDGWS(\mathbb{S})=\sum_{i}\sum_{j}I(\mathbb{S},i,j)\mathcal{W}(i,j)$
-is the ``sum of displayed groups' weighted scores'' for a tree where
-$i$ indexes all of the input trees and $j$ indexes each non-root
-internal node in tree $i$. Preference for this tree is referred to
-as the maximum sum displayed groups' weighted scores criterion (MSDGWS
-criterion). The summary tree constructed by the propinquity pipeline
-is a greedy heuristic for finding a tree that maximizes this score
-when the weights for a node are determined by the tree's weight and
-the difference in weighting is so large that displaying one node from
-a highly ranked tree is preferred to displaying all of the nodes in
-the trees with lower rank.
-
-\section{Description of the decomposition algorithm of otc-uncontested-decompose}\label{sec:Decompose-algorithm}
-
-The input is the a ranked list of input trees and comprehensive taxonomy. 
-
-\subsection{Creation of multigraph of the taxonomy with embedded trees}
-
-The tool creates a multigraph by starting with a graph isomorphic
-to the taxonomic tree. The nodes and edges created in this step will
-be referred to as the ``taxonomic graph.'' Next, we add nodes and
-edges to that graph in a procedure that we refer to as ``embedding''
-the input trees into the taxonomy. A node is introduced for each node
-in an input tree, and these nodes are mapped the MRCA nodes in the
-taxonomic graph. In other words, for any node $y$ in an input tree
-with a cluster of descendants, $\mathcal{C},$ we find the most tipward
-node $z$ in the taxonomic graph that is an ancestor to all of the
-taxa in $\mathcal{C}$; let $m(y)=z$ refer to this mapping, and $m^{\prime}(z)=y$
-refer to the reverse mapping. Each edge $e_{ij}$ in a source tree
-$i$ connects ancestor to its descendant, $a(e_{ij})\rightarrow d(e_{ij})$.
-The edges are introduced into the graph. We also introduce new edges
-to create a from $m(a(e_{ij}))$ through its descendants to $m(d(e_{ij}))$;
-we denote this path $p(e_{ij})$ and refer to the edges in the path
-as ``embedding edges for tree $i$''. Note, that this is a path
-through the taxonomic nodes, while the edge $e_{ij}$ connects source
-tree nodes. The mapping between $e_{ij}$ and $p(e_{ij})$ is stored,
-and the edges are labelled with the index $i$ so that it is clear
-which tree created them. Because the taxonomic tree is highly unresolved,
-it is frequently the case that $m(a(e_{ij}))$ is the same node as
-$m(d(e_{ij}))$; in these cases the embedding edge is a loop. This
-situation occurs whenever edge $e_{ij}$ can resolve part of the polytomy
-represented by a taxon. 
-
-We treat the taxonomy as the lowest ranked input tree. The next step
-will collapse contested edges in the taxonomic graph. To retain all
-of the information from the taxonomy we embed the taxonomy into the
-taxonomic graph as if it were another input tree
-
-\subsection{Detection of uncontested higher taxa}
-
-After every input tree and the taxonomy tree have been embedded into
-the taxonomic graph, we perform postorder traversal over the taxonomic
-graph that underlies the multi-graph. For any internal node (each
-of which corresponds to a non-terminal taxon) we determine whether
-or not it is contested by examining each input tree. We can determine
-tree $i$ contests the taxon represented by taxonomic node $x$ by
-looking at the parents of all of the ``exiting'' embedding edges
-for tree $i$. These are the set of embedding edges that have $x$
-as a daughter and have a parent node that is not $x$ (ergo a parent
-node that is taxonomically higher than $x$). If there are more than
-one parent nodes in this set of exiting embedding edges, then tree
-$i$ contests that taxon. If there is only one parent node, then the all
-of the constituent taxa belonging to this taxon that are present in
-tree $i$ have one parent that is more inclusive; this means that
-the input tree does not contest monophyly of the taxon.
-
-If the taxon is uncontested, then it may be the case that some input
-trees do not contest the taxon, but contain polytomies that could
-be resolved to display the taxon. The cases can be identified by finding
-multiple exiting embedding edges that have the same taxon $y$ as
-their parent node. In these cases, a pseudo input tree node is created
-and becomes the parent node for these edges; this new node is then
-connected to $y$ as if it had been an input edge. This operation
-is equivalent to resolving an input tree's polytomy in favor of the
-monophyly of the uncontested taxon. This is the only way in which
-the input trees are modified during the decomposition.
-
-\subsection{Collapsing contested taxa from the taxonomic graph}
-
-If a taxonomic node $x$ fails the ``uncontested'' test described
-in the previous section, then the node corresponding to the taxon
-is removed from the taxonomic graph and the set of edges (and mappings
-between input edges and embedded paths) is updated as if this taxon
-had not been present in when the taxonomic graph was created. This
-consists of detecting changing any edge in an embedding path that
-is adjacent to $x$ by replacing the reference to $x$ with a reference
-to its parent $a(x)$. Note that we do not collapse the edge corresponding
-to this taxon in the part of the graph that represents the embedding
-of the taxonomy into the taxonomic graph. Thus, the taxonomy will
-still claim the monophyly of the taxon. This is relevant if the input
-grouping that contests taxon $x$ is overruled (in the subproblem
-solution step) by a higher ranked split. In other words, the fact
-that the a taxon is contested during the decomposition is not a guarantee
-that the taxon will not be monophyletic in the final supertree.
-
-\subsection{Emitting subproblems}
-
-Whenever an uncontested taxon is identified, the appropriate slice
-of each input trees that intersect with the taxon is written to a
-file. Then the multigraph is simplified by slicing any off the taxon.
-This slicing is accomplished by examing all of the exiting embedding
-edges for the taxon. The descendant taxa of each input tree is relabeled
-with the identifier of the contested taxa and all of that node's descendants
-are removed. Thus this input node will act as as if it were a leaf
-mapped to the uncontested taxon. All descendants of the taxonomic
-graph are also pruned off.
 \end{document}
