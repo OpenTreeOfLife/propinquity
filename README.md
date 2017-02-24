@@ -298,3 +298,18 @@ otc-displayed-stats ../cleaned_ott/cleaned_ott.tre draftversion4.tre $(cat nonem
 That script uses `bin/opentree_rebuild_from_latest.sh` to configure the environment
 to run `bin/rebuild_from_latest.sh` without you having
 to modify your shell's environment.
+
+To run the monophyly tests that are a part of the germinator repo and
+create the output documentation with links to those tests, you need
+to have 2 environmental variables in your env when you build the tree.
+
+  * `MONOPHYLY_TEST_CSV_FILE` should be the absolute path to the `monophyly.csv` on your local machine.
+  * `MONOPHYLY_TEST_SOURCE_NAME` is the URL of file on github (this is 
+  just used in making links in the documentation generation)
+
+For example:
+
+    MONOPHYLY_TEST_CSV_FILE=/home/user/germinator/taxa/monophyly.csv
+    MONOPHYLY_TEST_SOURCE_NAME=https://github.com/OpenTreeOfLife/germinator/blob/master/taxa/monophyly.csv
+
+
