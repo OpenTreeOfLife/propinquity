@@ -20,6 +20,10 @@ function run_example_test {
 	export PROPINQUITY_OUT_DIR="test-output/e${exnum}-${rankingfileprefix}"
 	export OTT_DIR="examples/${exnum}/taxonomy"
 	./build-from-newicks.sh "examples/${exnum}/${rankingfileprefix}-phylo-rankings.txt" || exit
+	make || exit
+	# make ${PROPINQUITY_OUT_DIR}/annotated_supertree/annotations.json || exit
+	# make extra || exit
+	# make ${PROPINQUITY_OUT_DIR}/assessments/summary.json || exit
 	make html || exit
 	make clean || exit
 	rm -f "$PROPINQUITY_OUT_DIR/config"
