@@ -1,4 +1,3 @@
-[taxonomy]
 cleaning_flags = environmental,viral,barren,not_otu,hidden,was_container,inconsistent,hybrid,merged
 
 [synthesis]

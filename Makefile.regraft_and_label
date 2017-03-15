@@ -38,6 +38,7 @@ $(PROPINQUITY_OUT_DIR)/labelled_supertree/labelled_supertree.tre: $(PROPINQUITY_
 	otc-unprune-solution-and-name-unnamed-nodes \
 		$(PROPINQUITY_OUT_DIR)/grafted_solution/grafted_solution.tre \
 		$(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaned_ott.tre \
+		-i$(PROPINQUITY_OUT_DIR)/exemplified_phylo/incertae_sedis.txt \
 		-j$(PROPINQUITY_OUT_DIR)/labelled_supertree/broken_taxa.json \
 		-s$(PROPINQUITY_OUT_DIR)/labelled_supertree/input_output_stats.json \
 		> $(PROPINQUITY_OUT_DIR)/labelled_supertree/labelled_supertree.tre
