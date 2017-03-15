@@ -7,25 +7,42 @@ import simplejson as json
 import argparse
 import glob,os,re,csv
 import requests
-from peyotl import ott
+import peyotl.ott as ott
 
 def broken_taxa_diffs(bt1,bt2,verbose):
     compare_lists("Broken taxa",bt1,bt2,verbose)
 
 # writes details of the broken taxa to a file that can be input by
 # report_on_broken_taxa.py
-def newly_broken_taxa_report(bt1,bt2):
+def newly_broken_taxa_report(run1,run2):
+    # load local copy of OTT
+    taxonomy = ott.OTT()
+    id2names = taxonomy.ott_id_to_names
+    id2ranks = taxonomy.ott_id_to_ranks
     # print details of names in 2 but not in 1 (the 'newly broken names')
+    bt1=set(run1)
+    bt2=set(run2)
     diff = bt2.difference(bt1)
     broken_taxa_filename = 'broken_taxa_report.csv'
     print "printing details of {x} broken taxa to {f}".format(
         x=len(diff),
         f=broken_taxa_filename
         )
+    print "using OTT version {v}".format(v=taxonomy.version)
     with open(broken_taxa_filename, 'w') as f:
         for ottID in diff:
-            (name,rank)=get_taxon_details(ottID)
-            f.write("{n}_{i}\n".format(n=name,i=ottID))
+            # strip off the 'ott' part
+            pattern = re.compile(r'ott')
+            int_id = int(re.sub(pattern,'',ottID))
+            name = "no name"
+            rank = "no rank"
+            if int_id in id2names:
+                name = id2names[int_id]
+                if (isinstance(name,tuple)):
+                    name = name[0]
+                if int_id in id2ranks:
+                    rank = id2ranks[int_id]
+            f.write("{i},{n},{r}\n".format(i=int_id,n=name,r=rank))
     f.close()
 
 # generic function to compare two lists: number of items in each,
@@ -364,7 +381,7 @@ if __name__ == "__main__":
     print "\n# Comparing broken taxa"
     broken_taxa_diffs(run1.broken_taxa,run2.broken_taxa,args.verbose)
     if args.print_broken_taxa:
-        newly_broken_taxa_report(bt1,bt2)
+        newly_broken_taxa_report(run1.broken_taxa,run2.broken_taxa)
 
     print "\n# Synthetic tree summary"
     #synthesis_tree_diffs(args.run1,args.run2)
