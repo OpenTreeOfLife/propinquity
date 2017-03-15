@@ -324,7 +324,7 @@ class runStatistics(object):
 
 if __name__ == "__main__":
     # get command line arguments (the two directories to compare)
-    parser = argparse.ArgumentParser(description='set up database tables')
+    parser = argparse.ArgumentParser(description='compare synthesis outputs')
     parser.add_argument('run1',
         help='path to the first (older) output directory'
         )
