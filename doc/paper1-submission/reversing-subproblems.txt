@@ -1,0 +1,40 @@
+# 5406 subproblems?
+
+mkdir subproblems2
+for i in $(cat subproblems/subproblem-ids.txt) ; do
+    echo $i
+    ~/Devel/OpenTree/propinquity/doc/paper1-submission/reverse-subproblem.py subproblems/$i > subproblems2/$i
+done
+
+mkdir subproblem_solutions2
+for i in $(cat subproblems/subproblem-ids.txt) ; do
+    id=${i%.tre}
+    otc-solve-subproblem subproblems2/$i -n${id} > subproblem_solutions2/$i
+done
+
+mkdir grafted_solution2
+otc-graft-solutions subproblem_solutions2/* > grafted_solution2/grafted_solution.tre
+
+mkdir labelled_supertree2
+otc-unprune-solution-and-name-unnamed-nodes grafted_solution2/grafted_solution.tre cleaned_ott/cleaned_ott.tre > labelled_supertree2/labelled_supertree.tre
+ ---
+ 
+
+mkdir subproblems
+for i in $(cat subproblems/subproblem-ids.txt) ; do
+    echo $i
+    ~/Devel/OpenTree/propinquity/doc/paper1-submission/reverse-subproblem.py subproblems/$i > subproblems/$i
+done
+
+mkdir subproblem_solutions
+for i in $(cat subproblems/subproblem-ids.txt) ; do
+    id=${i%.tre}
+    otc-solve-subproblem subproblems/$i -n${id} > subproblem_solutions/$i
+done
+
+mkdir grafted_solution
+otc-graft-solutions subproblem_solutions/*.tre > grafted_solution/grafted_solution.tre
+
+mkdir labelled_supertree
+otc-unprune-solution-and-name-unnamed-nodes grafted_solution/grafted_solution.tre cleaned_ott/cleaned_ott.tre > labelled_supertree/labelled_supertree.tre
+ ---

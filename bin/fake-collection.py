@@ -6,7 +6,7 @@ import re
 
 def get_decisions():
     decisions = []
-    for x in sys.argv[1:]:
+    for x in sys.stdin:
         name = os.path.basename(x)
         study_tree = re.compile(r'([^_]+_[0-9]+)@([^@]+)\.tre')
         m = study_tree.match(name)

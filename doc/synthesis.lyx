@@ -177,12 +177,13 @@ Each edge of a standard tree divides the tip taxa
  Such a split may be written
 \begin_inset Formula 
 \[
-\mathcal{I}(e)|\mathcal{E}(e),
+\mathcal{I}(e)|\bullet\mathcal{E}(e),
 \]
 
 \end_inset
 
-with the exclude set always on the right.If no taxa are 
+with the exclude set always on the right.
+ If no taxa are 
 \emph on
 incertae sedis
 \emph default
@@ -292,6 +293,17 @@ This leads to a valid pre-order recursion if
  as a boundary condition.
 \end_layout
 
+\begin_layout Subsubsection
+Alternative formulation
+\end_layout
+
+\begin_layout Standard
+With the above formulation, if an I.S.
+ clade A is more rootward than an I.S.
+ clade B, and then A is placed sister to B, then B could not be placed within
+ A.
+\end_layout
+
 \begin_layout Subsection
 Containers
 \end_layout
@@ -349,6 +361,19 @@ incertae sedis
 \emph default
  taxa in the correct subproblem, and to handle conflict in placement information
  between input trees.
+\end_layout
+
+\begin_layout Itemize
+
+\series bold
+Subproblem descriptions
+\series default
+ must describe regions of the tree that have 
+\emph on
+incertae sedis
+\emph default
+ taxa place within them.
+ 
 \end_layout
 
 \begin_layout Itemize
@@ -522,7 +547,7 @@ std::set
 \emph default
 .
 \begin_inset Note Note
-status open
+status collapsed
 
 \begin_layout Subsubsection
 Should the solution tree 
@@ -1775,58 +1800,64 @@ Naming
 \begin_layout Standard
 After solving a supertree (sub) problem, we need to assign taxon names to
  the supertree nodes based on the taxonomy tree in the problem.
- Each taxonomy node 
+ Each taxon name 
 \begin_inset Formula $n$
 \end_inset
 
- is the tipward vertex of an edge in the taxonomy tree, and thus corresponds
- to a split 
-\emph on
-include|exclude
-\emph default
-.
+ corresponds to a split 
+\begin_inset Formula $S(n)=S(n)_{1}|S(n)_{2}$
+\end_inset
+
+ on the corresponding branch of the taxonomy tree.
  Without 
 \emph on
 incertae sedis
 \emph default
-, the split information reduces to the set of tip nodes in the 
+, such splits are always of the form 
+\begin_inset Formula $S(n)_{1}|\mathcal{L}-S(n)_{1}$
+\end_inset
+
+, but with 
 \emph on
-include
+incertae sedis
 \emph default
- group.
- Thus, we may simply search the tree for a node 
-\begin_inset Formula $m$
+ taxa 
+\begin_inset Formula $S_{2}(n)$
 \end_inset
 
- that has the same include group as our taxonomy node 
-\begin_inset Formula $n$
+ may be smaller than 
+\begin_inset Formula $\mathcal{L}-S(n)_{1}$
 \end_inset
 
- and then draw a correspondence between the two nodes by assigning the taxon
- name for 
-\begin_inset Formula $n$
-\end_inset
-
- in the taxonomy to 
-\begin_inset Formula $m$
-\end_inset
-
- in the supertree.
+.
 \end_layout
 
 \begin_layout Standard
-In the 
+Without 
+\emph on
+incertae sedis
+\emph default
+, each name applies to at most one node, and each node can take at most
+ one name, with the exception of monotypic taxa.
+ Thus, we may simply search the solution tree for a node that has the same
+ cluster 
+\begin_inset Formula $S(n)_{1}$
+\end_inset
+
+ and apply the name 
+\begin_inset Formula $n$
+\end_inset
+
+ to that node.
+\end_layout
+
+\begin_layout Standard
+However, in the 
 \emph on
 incertae sedis 
 \emph default
-framework, this is complicated by the fact that the exclude group is not
- just 
-\begin_inset Formula $\mathcal{L}-include$
-\end_inset
-
-, but may be smaller.
- This raises the question of whether one name could apply to multiple nodes,
- or whether multiple names could apply to one node.
+framework we must raise the question of whether one name could apply to
+ multiple nodes, or whether multiple names could apply to one node.
  
 \end_layout
 
@@ -1835,77 +1866,22 @@ Multiple nodes that fit one name
 \end_layout
 
 \begin_layout Standard
-A node 
-\begin_inset Formula $m$
+Suppose the taxonomy is (((A1,A2)A,B)AB,C,D*) and the solution tree is (((A1,A2)
+x,D*)y,B)AB,C).
+ In this case the name 
+\begin_inset Formula $A$
 \end_inset
 
- is consistent with a split 
-\begin_inset Formula $A_{1}|A_{2}$
-\end_inset
-
- for a taxon name if the node 
-\begin_inset Formula $m$
-\end_inset
-
- is the tip-ward vertex of a branch with split 
-\begin_inset Formula $B_{1}|B_{2}$
-\end_inset
-
- and 
-\begin_inset Formula $A_{1}\subseteq B_{1}$
-\end_inset
-
- and 
-\begin_inset Formula $A_{2}\subseteq B_{2}$
-\end_inset
-
-.
- So, suppose that node 
-\begin_inset Formula $m$
-\end_inset
-
- in the supertree is consistent with split 
-\begin_inset Formula $A_{1}|A_{2}$
-\end_inset
-
- for node 
-\begin_inset Formula $n$
-\end_inset
-
- in the taxonomy tree.
- Now suppose that in the supertree, 
-\begin_inset Formula $m$
-\end_inset
-
- has only one other sibling, which is an 
-\emph on
-incertae sedis
-\emph default
- taxon placed here from a more root-ward position in the taxonomy.
- Since the sibling is incertae sedis, it won't be in the exclude group 
-\begin_inset Formula $A_{2}$
-\end_inset
-
-, and therefore the split 
-\begin_inset Formula $A_{1}|A_{2}$
-\end_inset
-
- will apply to the parent of 
-\begin_inset Formula $n$
-\end_inset
-
- as well.
- Thus, it is possible to find a series of connected nodes that satisfy the
- same taxonomy split, if the include groups of the nodes differ only in
- their inclusion of 
-\emph on
-incertae sedis
-\emph default
- taxa.
+ leads to the split S(A) = A1 A2 | B C root.
+ This name can apply to both the node x and the node y.
 \end_layout
 
 \begin_layout Standard
-In this case, we find the most tipward node and attach the name to this
+
+\series bold
+Solution:
+\series default
+ In this case, we find the most tipward node and attach the name to this
  node.
 \end_layout
 
@@ -1913,85 +1889,31 @@ In this case, we find the most tipward node and attach the name to this
 Multiple names fit a single node
 \end_layout
 
-\begin_layout Standard
-Suppose that 
-\begin_inset Formula $n_{2}$
-\end_inset
-
- is the child of 
-\begin_inset Formula $n_{1}$
-\end_inset
-
-, and the only other child 
-\begin_inset Formula $n_{3}$
-\end_inset
-
- of 
-\begin_inset Formula $n_{1}$
-\end_inset
-
- is incertae sedis.
- Also suppose that there is a supertree node 
-\begin_inset Formula $m$
-\end_inset
-
- that contains the children of 
-\begin_inset Formula $n_{2}$
-\end_inset
-
- and that 
-\begin_inset Formula $n_{3}$
-\end_inset
-
- is placed deeply inside 
-\begin_inset Formula $m$
-\end_inset
-
-.
- This can happen because 
-\begin_inset Formula $n_{2}$
-\end_inset
-
- does not exclude 
-\begin_inset Formula $n_{3}$
-\end_inset
-
-, since 
-\begin_inset Formula $n_{3}$
-\end_inset
-
- is 
-\emph on
-incertae sedis
-\emph default
-.
- In this case, the names 
-\begin_inset Formula $n_{1}$
-\end_inset
-
- and 
-\begin_inset Formula $n_{2}$
-\end_inset
-
- will 
-\emph on
-both
-\emph default
- apply to 
-\begin_inset Formula $m$
-\end_inset
-
-.
- 
+\begin_layout Paragraph
+Example 1
 \end_layout
 
 \begin_layout Standard
-In general, if a taxon contains 2 non-IS taxa, then it cannot be identical
- with any of its children in the synthesis tree.
+Suppose the taxonomy is (((B1,B2)B,C*)A,Y) and the input tree is (((B1,C),B2)x,Y
+) then the names A and B both to the node x.
+ In this case the names A and B are ordered.
 \end_layout
 
 \begin_layout Standard
-In general, if a taxon contains 1 non-IS taxon and 
+
+\series bold
+Case 1:
+\series default
+ If a taxon contains 2 non-IS taxa, then it cannot be identical with any
+ of its children in the synthesis tree.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+Case 2:
+\series default
+ If a taxon contains 1 non-IS taxon and 
 \begin_inset Formula $\ge1$
 \end_inset
 
@@ -2000,13 +1922,21 @@ In general, if a taxon contains 1 non-IS taxon and
 \end_layout
 
 \begin_layout Standard
-If a node contains 0 non-IS taxa and 1 IS taxon, then the IS taxa behaves
+
+\series bold
+Case 3:
+\series default
+ If a node contains 0 non-IS taxa and 1 IS taxon, then the IS taxa behaves
  no differently than a non-IS taxa, since is has no siblings it could be
  placed into.
 \end_layout
 
 \begin_layout Standard
-If a node contains 0 non-IS taxa and 
+
+\series bold
+Case 4:
+\series default
+ If a node contains 0 non-IS taxa and 
 \begin_inset Formula $\ge2$
 \end_inset
 
@@ -2019,7 +1949,11 @@ could
 \end_layout
 
 \begin_layout Standard
-When we assign multiple names to the same node, then we expand the node
+
+\series bold
+Solution:
+\series default
+ When we assign multiple names to the same node, then we expand the node
  with multiple names to have monotypic parents, and assign the series of
  names to the monotypic parents.
  Another way of saying this is that when a node has 
@@ -2033,19 +1967,138 @@ When we assign multiple names to the same node, then we expand the node
  taxa then the node could become monotypic by placement of the IS taxa.
 \end_layout
 
-\begin_layout Subsubsection
-Implementation
+\begin_layout Standard
+
+\series bold
+Example 2
 \end_layout
 
 \begin_layout Standard
-So, if we know which nodes in the taxonomy are consistent with the solution,
- then we can simply find the MRCA and assign a name to it.
- If we attempt to assign a name to an already-named node, we create a new
- monotypic ancestor that is rootward of all the existing monotypic ancestors,
- and assign the name there.
- This requires that we process the displayed taxonomy nodes in post-order,
- so we add more root-ward monotypic nodes second, so that they end up more
- root-ward on the solution tree.
+If ((A1,A2)A,(B1,B2)B*,(C1,C2)C*); is the taxonomy with asterisks denoting
+ incertae sedis taxa, then the solution ((A1,A2)A,((B1,C1)mrcaB1C1,(B2,C2)mrcaB2
+C2)x); has a node x that could be called B* or C*.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+Case:
+\series default
+ If a taxa B* and C* are IS, then their tips can be intermingled in a new
+ clade x.
+ Both names would then apply.
+\end_layout
+
+\begin_layout Subsubsection
+Implementation: finding the node for a name
+\end_layout
+
+\begin_layout Standard
+To find the node for a name 
+\begin_inset Formula $n$
+\end_inset
+
+, we find the MRCA of the cluster 
+\begin_inset Formula $S_{1}(n)$
+\end_inset
+
+.
+ If the MRCA excludes the entire exclude group 
+\begin_inset Formula $S_{2}(n)$
+\end_inset
+
+ then the name applies to the MRCA; otherwise the taxon does not exist on
+ the tree.
+\end_layout
+
+\begin_layout Subsubsection
+Implementation: handling name clashes
+\end_layout
+
+\begin_layout Standard
+When multiple names 
+\begin_inset Formula $N=\{n_{1},\ldots n_{N}\}$
+\end_inset
+
+ map to the same solution node 
+\begin_inset Formula $x$
+\end_inset
+
+, then these names must satisfy some tree structure on the taxonomy, such
+ that 
+\begin_inset Formula $n_{1}<n_{2}$
+\end_inset
+
+ if 
+\begin_inset Formula $n_{1}$
+\end_inset
+
+ is a descendant of 
+\begin_inset Formula $n_{2}$
+\end_inset
+
+ in the taxonomy.
+ If it is possible to find a name 
+\begin_inset Formula $n_{max}$
+\end_inset
+
+ that is the unique maximal element of 
+\begin_inset Formula $N$
+\end_inset
+
+, then it is permissible to 
+\end_layout
+
+\begin_layout Enumerate
+create a monotypic parent 
+\begin_inset Formula $p(x)$
+\end_inset
+
+ of 
+\begin_inset Formula $x$
+\end_inset
+
+, and assign 
+\begin_inset Formula $n_{max}$
+\end_inset
+
+ to 
+\begin_inset Formula $p(x)$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Enumerate
+continue handling name clashes at 
+\begin_inset Formula $x$
+\end_inset
+
+ with the set of possible names reduced to 
+\begin_inset Formula $N-n_{max}$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+However, its certainly possible that there might not be any such 
+\begin_inset Formula $N_{max}$
+\end_inset
+
+, in which case we could just choose a name for 
+\begin_inset Formula $x$
+\end_inset
+
+ from 
+\begin_inset Formula $N$
+\end_inset
+
+ (perhaps not an 
+\emph on
+incertae sedis
+\emph default
+ name) and then record all the other names as equivalents somewhere.
 \end_layout
 
 \begin_layout Subsection

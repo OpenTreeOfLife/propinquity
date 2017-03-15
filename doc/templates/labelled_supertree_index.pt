@@ -33,7 +33,7 @@
     <li>the <a href="./labelled_supertree_out_degree_distribution.txt">./labelled_supertree_out_degree_distribution.txt</a> shows the out-degree frequency distribution
     for the nodes in the labelled supertree</li>
     <li>the <a href="./labelled_supertree_ottnames_without_monotypic.tre" download>./labelled_supertree_ottnames_without_monotypic.tre</a> (if the file exists) is a version of labelled_supertree_ottnames.tre without any taxa that have only one child.</li>
-    <li>the <a href="./labelled_supertree_simplified_ottnames.tre" download>./labelled_supertree_simplified_ottnames_without_monotypic.tre</a> (if the file exists) is a version of labelled_supertree_ottnames.tre with names simplified to remove characters that cause problems for some clients (using otc-munge-names). The log for this step will be at <a href="simplified_ottnames.log">simplified_ottnames.log</a></li>
+    <li>the <a href="./labelled_supertree_simplified_ottnames.tre" download>./labelled_supertree_simplified_ottnames.tre</a> (if the file exists) is a version of labelled_supertree_ottnames.tre with names simplified to remove characters that cause problems for some clients (using otc-munge-names). The log for this step will be at <a href="simplified_ottnames.log">simplified_ottnames.log</a></li>
     <li>the <a href="./labelled_supertree_simplified_ottnames_without_monotypic.tre" download>./labelled_supertree_simplified_ottnames_without_monotypic.tre</a> (if the file exists) is a version of labelled_supertree_ottnames_without_monotypic.tre with names simplified to remove characters that cause problems for some clients (using otc-munge-names). The log for this step will be at <a href="simplified_ottnames_without_monotypic.log">simplified_ottnames_without_monotypic.log</a></li>
 </ul>
 
@@ -43,11 +43,12 @@
         taxa from the Open Tree Taxonomy that are not monophyletic in the synthetic
         tree.</p>
         <table>
-            <tr><th>"broken" taxon</th><th>MRCA</th><th># attachment points</th></tr>
+            <tr><th>"broken" taxon</th><th>MRCA</th><th># attachment points</th><th>$ intruders</th></tr>
             <tr tal:repeat="id2dict non_monophyletic_taxa.non_monophyletic_taxa.items()">
                 <td>${id2dict[0]}</td>
                 <td>${id2dict[1]["mrca"]}</td>
                 <td>${len(id2dict[1]["attachment_points"])}</td>
+                <td>${len(id2dict[1]["intruding_taxa"])}</td>
             </tr>
         </table>
     </div>

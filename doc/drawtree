@@ -59,11 +59,41 @@ if(("--help" %in% args) || error) {
 
 require(ape)
 require(phytools)
+compute.brlen2 = function (phy, method = "Grafen", power = 1, ...) 
+{
+    if (!inherits(phy, "phylo")) 
+        stop("object \"phy\" is not of class \"phylo\"")
+    Ntip <- length(phy$tip.label)
+    Nnode <- phy$Nnode
+    Nedge <- dim(phy$edge)[1]
+    if (is.numeric(method)) {
+        phy$edge.length <- rep(method, length.out = Nedge)
+        return(phy)
+    }
+    if (is.function(method)) {
+        phy$edge.length <- method(Nedge, ...)
+        return(phy)
+    }
+    if (is.character(method)) {
+        tr <- reorder(phy, "postorder")
+        xx = rep(1.0, Ntip + Nnode)
+        for(e in 1:Nedge)
+        {
+            from = tr$edge[e,1]
+            to = tr$edge[e,2]
+            xx[from] = xx[from] + xx[to]
+        }
+        m <- Ntip + Nnode
+        phy$edge.length <- (xx[phy$edge[, 1]]/m)^power - (xx[phy$edge[, 2]]/m)^power
+        return(phy)
+    }
+}
+environment(compute.brlen2) = environment(compute.brlen)
 
 plot.singletons = function (tree) 
 {
     n <- length(tree$tip.label)
-    if (is.null(tree$edge.length)) tree<-compute.brlen(tree)
+    if (is.null(tree$edge.length)) tree<-compute.brlen2(tree)
     if (is.null(names(tree$edge.length))) 
         names(tree$edge.length) <- rep(1, length(tree$edge.length))
     colors <- setNames(palette()[1:length(unique(names(tree$edge.length)))], 
@@ -81,6 +111,7 @@ plot.singletons = function (tree)
         y[nn[i]] <- mean(range(yy))
     }
     X <- nodeHeights(cw)
+
     plot.new()
 
     # increase text size, line width
@@ -96,37 +127,42 @@ plot.singletons = function (tree)
     plot.window(xlim = xlim, ylim = c(1, max(y)+sw/alp))
 #    axis(1, at = c(0, max(X)), labels = FALSE)
 #    axis(2, at = 1:max(y), labels = FALSE)
-    for (i in 1:nrow(X)) lines(X[i, ], rep(y[cw$edge[i, 2]], 
-        2), lwd = 2, lend = 2, col = colors[i])
+    for (i in 1:nrow(X))
+        lines(X[i, ], rep(y[cw$edge[i, 2]], 2), lwd = 2, lend = 2, col = colors[i])
     for (i in 1:tree$Nnode + n) {
         xx <- X[which(cw$edge[, 1] == i), 1]
         yy <- y[cw$edge[which(cw$edge[, 1] == i), 2]]
         if (length(xx) > 1) 
-            lines(xx, yy, lwd = 2, lend = 2, col = colors[which(cw$edge[, 
-                1] == i)])
+            lines(xx, yy, lwd = 2, lend = 2, col = colors[which(cw$edge[, 1] == i)])
     }
-    for (i in 1:nrow(X)) points(X[i, 2], y[cw$edge[i, 2]],
-                                pch = 21, bg = "gray")
-    for (i in 1:n) text(X[which(cw$edge[, 2] == i), 2], y[i], 
-        tree$tip.label[i], pos = 4, offset = 0.4)
+    for (i in 1:nrow(X))
+    	points(X[i, 2], y[cw$edge[i, 2]], pch = 21, bg = "gray")
+    for (i in 1:n) {
+        x = X[which(cw$edge[, 2] == i), 2]
+#        print(tree$tip.label[i])
+#        print(x)
+#        print(y[i])
+        text(x, y[i], tree$tip.label[i], pos = 4, offset = 0.4)
+    }
     if (! is.null(tree$node.label))
     {
         m <- length(tree$node.label)
         for (i in 1:m)
         {
-#        print(tree$node.label[i])
-#        print(n+i)
+#            print(tree$node.label[i])
+#            print(n+i)
             x = X[which(cw$edge[, 2] == n+i), 2]
             if (length(x) == 0)
             {
                 x = 0.0
                 points(x, y[n+i], pch=21,bg="gray")
             }
-#        print(x)
-#        print(y[n+i])
+#            print(x)
+#            print(y[n+i])
             text(x, y[n+i], tree$node.label[i], pos = 4, offset = 0.4)
         }
     }
+#    print(X)
 }
 
 environment(plot.singletons) = environment(plotTree.singletons)
@@ -138,9 +174,9 @@ if (! is.null(tree$node.label))
 {
     for(i in 1:length(tree$node.label))
     {
-	print(tree$node.label[i])
+#	print(tree$node.label[i])
 	tree$node.label[i] = gsub("'","",tree$node.label[i])
-	print(tree$node.label[i])
+#	print(tree$node.label[i])
 	if (substr(tree$node.label[i],1,5) == "_node")
 	{
             tree$node.label[i] = ""
@@ -155,7 +191,7 @@ if (!("format" %in% names(argsL)))
     argsL$format = "PDF"
 
 format = tolower(argsL$format)
-    
+
 if (!("output" %in% names(argsL)))
    argsL$output = paste0(basename(argsL$input), "." , format)
 
