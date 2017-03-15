@@ -20,6 +20,7 @@ except ImportError:
     import ConfigParser as configparser
 from peyotl import read_as_json
 from peyotl.utility import propinquity_fn_to_study_tree
+import peyotl.ott as ott
 import subprocess
 import peyotl
 import codecs
@@ -274,6 +275,30 @@ def node_label2obj(nl):
         el['node_id'] = node_id
     return el
 
+# add OTT metadata to the monophyletic taxa blob
+def add_taxonomy_metadata(non_monophyletic_taxa):
+    broken_taxa = non_monophyletic_taxa['non_monophyletic_taxa']
+    taxonomy = ott.OTT()
+    id2names = taxonomy.ott_id_to_names
+    id2ranks = taxonomy.ott_id_to_ranks
+
+    for oid in broken_taxa:
+        pattern = re.compile(r'ott')
+        int_id = int(re.sub(pattern,'',oid))
+        name = "no name"
+        rank = "no rank"
+        if int_id in id2names:
+            name = id2names[int_id]
+            if (isinstance(name,tuple)):
+                name = name[0]
+            if int_id in id2ranks:
+                rank = id2ranks[int_id]
+        print(oid,name,rank)
+        broken_taxa[oid]['name'] = name
+        broken_taxa[oid]['rank'] = rank
+    non_monophyletic_taxa['non_monophyletic_taxa']=broken_taxa
+    return non_monophyletic_taxa
+
 class DocGen(object):
     def __init__(self, propinquity_dir, supertree_output_dir, config_filepath):
         self.top_output_dir = supertree_output_dir
@@ -320,6 +345,7 @@ class DocGen(object):
         blob.non_monophyletic_taxa = read_as_json(os.path.join(d, 'broken_taxa.json'))
         if blob.non_monophyletic_taxa['non_monophyletic_taxa'] is None:
             blob.non_monophyletic_taxa['non_monophyletic_taxa'] = {}
+        blob.non_monophyletic_taxa = add_taxonomy_metadata(blob.non_monophyletic_taxa)
         return blob
     def read_subproblem_solutions(self):
         d = os.path.join(self.top_output_dir, 'subproblem_solutions')
