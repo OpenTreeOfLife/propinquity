@@ -43,9 +43,11 @@
         taxa from the Open Tree Taxonomy that are not monophyletic in the synthetic
         tree.</p>
         <table>
-            <tr><th>"broken" taxon</th><th>MRCA</th><th># attachment points</th><th># intruders</th></tr>
+            <tr><th>taxon ID</th><th>name</th><th>rank</th><th>MRCA</th><th># attachment points</th><th># intruders</th></tr>
             <tr tal:repeat="id2dict non_monophyletic_taxa.non_monophyletic_taxa.items()">
                 <td>${id2dict[0]}</td>
+                <td>${id2dict[1]["name"]}</td>
+                <td>${id2dict[1]["rank"]}</td>
                 <td>${id2dict[1]["mrca"]}</td>
                 <td>${len(id2dict[1]["attachment_points"])}</td>
                 <td>${len(id2dict[1].get("intruding_taxa",[]))}</td>
