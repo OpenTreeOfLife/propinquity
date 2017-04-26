@@ -51,7 +51,7 @@ echo 'cleaning the inputs...'
 echo -n 'inputcleaning ' >> "${PROPINQUITY_OUT_DIR}/logs/timestamps" ; date >> "${PROPINQUITY_OUT_DIR}/logs/timestamps"
 rm -f ${PROPINQUITY_OUT_DIR}/logs/log-of-input-cleaning.txt
 rm -f ${PROPINQUITY_OUT_DIR}/logs/log-of-input-cleaning-err.txt
-if ! make ${PROPINQUITY_OUT_DIR}/exemplified_phylo/taxonomy.tre \
+if ! make ${PROPINQUITY_OUT_DIR}/exemplified_phylo/regraft_cleaned_ott.tre \
     2>${PROPINQUITY_OUT_DIR}/logs/log-of-input-cleaning-err.txt \
     > ${PROPINQUITY_OUT_DIR}/logs/log-of-input-cleaning.txt
 then
@@ -119,7 +119,7 @@ if ! make check 2>${PROPINQUITY_OUT_DIR}/logs/log-of-make-check-err.txt \
     > ${PROPINQUITY_OUT_DIR}/logs/log-of-make-check.txt
 then
     cat ${PROPINQUITY_OUT_DIR}/logs/log-of-make-check-err.txt
-    echo "Failed assessments step"
+    echo "Failed make check step"
     exit 1
 fi 
 

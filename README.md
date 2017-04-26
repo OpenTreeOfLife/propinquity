@@ -263,12 +263,12 @@ In these cases this sketch just shows the most interesting tool.
 
 ```sh
 cd exemplified_phylo
-otc-displayed-stats ../cleaned_ott/cleaned_ott.tre ../labelled_supertree/labelled_supertree.tre $(cat nonempty_trees.txt)
+otc-displayed-stats ../exemplified_phylo/regraft_cleaned_ott.tre ../labelled_supertree/labelled_supertree.tre $(cat nonempty_trees.txt)
 ```
 
 ```sh
 cd exemplified_phylo
-otc-displayed-stats ../cleaned_ott/cleaned_ott.tre draftversion4.tre $(cat nonempty_trees.txt)
+otc-displayed-stats ../exemplified_phylo/regraft_cleaned_ott.tre draftversion4.tre $(cat nonempty_trees.txt)
 ```
 
 ## How the open tree of life synthetic tree is built
