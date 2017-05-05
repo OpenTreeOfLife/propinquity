@@ -1,6 +1,6 @@
 # exemplified_phylo
-Produced by `otc-nonterminals-to-exemplars`
-Reads the cleaned taxonomy (`cleaned_ott/cleaned_ott.tre`) and
+Most prodcucts here are produced by `otc-nonterminals-to-exemplars`.
+That tool eads the cleaned taxonomy (`cleaned_ott/cleaned_ott.tre`) and
 cleaned phylogenetic inputs (`cleaned_phylo/*.tre`).
 For tips of phylogenies that are mapped to higher taxa, 
     this tool picks terminal taxa with which to exemplify those clades.
@@ -33,6 +33,25 @@ The choice of which taxa are used to exemplify a higher taxon is made
     of the incoming newick - so clients should NOT rely on the
     same exemplar being chosen in every run in which semantically
     identical inputs are given).
+
+
+
+After the exemplification step, the `regraft_cleaned_ott.tre` is created
+  from the exemplified taxonomy and the additional set of flags in the
+  `additional_regrafting_flags` config setting.
+This action is performed by `otc-regraft-taxonomy-generator`.
+That tool retains taxa mentioned in the exmplified taxonomy, but prunes
+  more rigorously than the pruning used to create the `cleaned_ott`
+  version of the taxonomy.
+
+Note that there is a wart: if a higher taxon is used in an input tree, but 
+  no study refers to any of its descendants, one of the descendants is
+  selected as the exemplar for that clade.
+That used to have no effect on the final tree, but now it causes that 
+  descendant to survive this second level of pruning.
+So that arbitrary decision could affect the final tree. 
+It would only do so if the arbitrarily chosen taxon is flagged in a way that
+  would cause it to be pruned if it weren't the exemplar.
 
 Requires that otcetera tools be on your PATH.
 
