@@ -1,6 +1,6 @@
 # propinquity
 
-Propinquity is a make-based pipeline for constructing a synthetic tree of life.  See https://peerj.com/preprints/2538/ for a description and comparison of its performance to the previous tool used to build the Open Tree of Life's summary tree.
+Propinquity is a make-based pipeline for constructing a synthetic tree of life.  See https://peerj.com/articles/3058/ for a description and comparison of its performance to the previous tool used to build the Open Tree of Life's summary tree.
 
 It takes as input a collection of phylogenetic trees from the Open Tree of Life
 datastore and a local copy of the Open Tree of Life Taxonomy. See the [collections documentation](https://github.com/OpenTreeOfLife/opentree/wiki/Working-with-tree-collections) for input on putting trees into collections.
@@ -263,12 +263,12 @@ In these cases this sketch just shows the most interesting tool.
 
 ```sh
 cd exemplified_phylo
-otc-displayed-stats ../cleaned_ott/cleaned_ott.tre ../labelled_supertree/labelled_supertree.tre $(cat nonempty_trees.txt)
+otc-displayed-stats ../exemplified_phylo/regraft_cleaned_ott.tre ../labelled_supertree/labelled_supertree.tre $(cat nonempty_trees.txt)
 ```
 
 ```sh
 cd exemplified_phylo
-otc-displayed-stats ../cleaned_ott/cleaned_ott.tre draftversion4.tre $(cat nonempty_trees.txt)
+otc-displayed-stats ../exemplified_phylo/regraft_cleaned_ott.tre draftversion4.tre $(cat nonempty_trees.txt)
 ```
 
 ## How the open tree of life synthetic tree is built

@@ -4,7 +4,7 @@
 # which input trees break which taxa
 
 # input file can be created with:
-# grep -E -o  "[)]['A-Za-z][^,)(]+ott[0-9]+" cleaned_ott/cleaned_ott.tre  | sed -E 's/.*ott//'
+# grep -E -o  "[)]['A-Za-z][^,)(]+ott[0-9]+" exemplified_phylo/regraft_cleaned_ott.tre  | sed -E 's/.*ott//'
 
 from cStringIO import StringIO
 import codecs

@@ -78,6 +78,15 @@ $(PROPINQUITY_OUT_DIR)/exemplified_phylo/nonempty_trees.txt : $(PROPINQUITY_OUT_
 
 $(PROPINQUITY_OUT_DIR)/exemplified_phylo/taxonomy.tre: $(PROPINQUITY_OUT_DIR)/exemplified_phylo/nonempty_trees.txt
 
+$(PROPINQUITY_OUT_DIR)/exemplified_phylo/regraft_cleaned_ott.tre: $(PROPINQUITY_OUT_DIR)/exemplified_phylo/taxonomy.tre $(CONFIG_FILENAME)
+	otc-regraft-taxonomy-generator \
+	  --in-tree=$(PROPINQUITY_OUT_DIR)/exemplified_phylo/taxonomy.tre \
+	  --config=$(CONFIG_FILENAME) \
+	  $(OTT_DIR) \
+	  --json=$(PROPINQUITY_OUT_DIR)/exemplified_phylo/pruned_for_regraft_cleaned_ott.json \
+	  >$(PROPINQUITY_OUT_DIR)/exemplified_phylo/regraft_cleaned_ott.tre
+
+
 $(PROPINQUITY_OUT_DIR)/exemplified_phylo/pruned_taxonomy_degree_distribution.txt : $(PROPINQUITY_OUT_DIR)/exemplified_phylo/taxonomy.tre
 	@if ! test -d $(PROPINQUITY_OUT_DIR)/exemplified_phylo ; then mkdir -p $(PROPINQUITY_OUT_DIR)/exemplified_phylo ; fi
 	otc-degree-distribution \
@@ -90,3 +99,4 @@ $(PROPINQUITY_OUT_DIR)/exemplified_phylo/incertae_sedis.txt: $(CONFIG_FILENAME) 
 		--any-flag=incertae_sedis,major_rank_conflict,unplaced,unclassified \
 		--format="%I" \
 		> $(PROPINQUITY_OUT_DIR)/exemplified_phylo/incertae_sedis.txt
+

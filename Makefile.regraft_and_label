@@ -25,19 +25,19 @@ FULL_TREE_ARTIFACTS= $(FULL_SUPERTREE_ARTIFACTS) \
 # Full supertree without labels. This is not used. It is pretty deprecated, but the 
 #	rule remains, in case someone wants a small version of the tree (fewer labels and short tip labels)
 $(PROPINQUITY_OUT_DIR)/full_supertree/full_supertree.tre: $(PROPINQUITY_OUT_DIR)/grafted_solution/grafted_solution.tre \
-														  $(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaned_ott.tre
+														  $(PROPINQUITY_OUT_DIR)/exemplified_phylo/regraft_cleaned_ott.tre
 	@if ! test -d $(PROPINQUITY_OUT_DIR)/full_supertree ; then mkdir -p $(PROPINQUITY_OUT_DIR)/full_supertree ; fi
 	otc-unprune-solution \
 		$(PROPINQUITY_OUT_DIR)/grafted_solution/grafted_solution.tre \
-		$(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaned_ott.tre \
+		$(PROPINQUITY_OUT_DIR)/exemplified_phylo/regraft_cleaned_ott.tre \
 		> $(PROPINQUITY_OUT_DIR)/full_supertree/full_supertree.tre
 
 $(PROPINQUITY_OUT_DIR)/labelled_supertree/labelled_supertree.tre: $(PROPINQUITY_OUT_DIR)/grafted_solution/grafted_solution.tre \
-																  $(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaned_ott.tre
+																  $(PROPINQUITY_OUT_DIR)/exemplified_phylo/regraft_cleaned_ott.tre
 	@if ! test -d $(PROPINQUITY_OUT_DIR)/labelled_supertree ; then mkdir -p $(PROPINQUITY_OUT_DIR)/labelled_supertree ; fi
 	otc-unprune-solution-and-name-unnamed-nodes \
 		$(PROPINQUITY_OUT_DIR)/grafted_solution/grafted_solution.tre \
-		$(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaned_ott.tre \
+		$(PROPINQUITY_OUT_DIR)/exemplified_phylo/regraft_cleaned_ott.tre \
 		-i$(PROPINQUITY_OUT_DIR)/exemplified_phylo/incertae_sedis.txt \
 		-j$(PROPINQUITY_OUT_DIR)/labelled_supertree/broken_taxa.json \
 		-s$(PROPINQUITY_OUT_DIR)/labelled_supertree/input_output_stats.json \
