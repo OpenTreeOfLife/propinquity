@@ -68,7 +68,7 @@ in contested taxa there are multiple.</p>
         <a href="https://tree.opentreeoflife.org/curator/study/view/${tree_bundle['study_id']}/?tab=trees&tree=${tree_bundle['tree_id']}" target="_blank">tree "${tree_bundle['tree_id']}" of study "${tree_bundle['study_id']}"</a>
             <ul>
                 <li tal:repeat="node_inf tree_bundle.conflicting_nodes">
-                Parent node ID = ${node_inf['parent'].get('node_id', node_inf['parent']['label'])}
+                  Parent node ID = <a href="https://tree.opentreeoflife.org/curator/study/view/${tree_bundle['study_id']}/?tab=trees&tree=${tree_bundle['tree_id']}&node=${node_inf['parent'].get('node_id', node_inf['parent']['label'])}">${node_inf['parent'].get('node_id', node_inf['parent']['label'])}</a>
                 </li>
             </ul>
         </li>
