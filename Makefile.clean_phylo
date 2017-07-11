@@ -95,7 +95,7 @@ $(PROPINQUITY_OUT_DIR)/exemplified_phylo/pruned_taxonomy_degree_distribution.txt
 		> $(PROPINQUITY_OUT_DIR)/exemplified_phylo/pruned_taxonomy_degree_distribution.txt
 
 $(PROPINQUITY_OUT_DIR)/exemplified_phylo/incertae_sedis.txt: $(CONFIG_FILENAME) $(PROPINQUITY_OUT_DIR)/exemplified_phylo/taxonomy.tre
-	otc-taxonomy-parser --config=$(CONFIG_FILENAME) \
+	otc-taxonomy-parser $(OTT_DIR) --config=$(CONFIG_FILENAME) \
 	  	--in-tree=$(PROPINQUITY_OUT_DIR)/exemplified_phylo/taxonomy.tre \
 		--any-flag=incertae_sedis,major_rank_conflict,unplaced,unclassified \
 		--format="%I" \
