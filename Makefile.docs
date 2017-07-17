@@ -69,13 +69,14 @@ $(PROPINQUITY_OUT_DIR)/assessments/taxonomy_degree_distribution.txt: $(PROPINQUI
 	@if ! test -d $(PROPINQUITY_OUT_DIR)/assessments ; then mkdir -p $(PROPINQUITY_OUT_DIR)/assessments ; fi
 	otc-degree-distribution $(PROPINQUITY_OUT_DIR)/exemplified_phylo/regraft_cleaned_ott.tre > $(PROPINQUITY_OUT_DIR)/assessments/taxonomy_degree_distribution.txt
 
-$(PROPINQUITY_OUT_DIR)/assessments/lost_taxa.txt: $(PROPINQUITY_OUT_DIR)/labelled_supertree/labelled_supertree.tre
+$(PROPINQUITY_OUT_DIR)/assessments/lost_taxa.txt: $(PROPINQUITY_OUT_DIR)/labelled_supertree/labelled_supertree.tre \
+						  $(PROPINQUITY_OUT_DIR)/exemplified_phylo/regraft_cleaned_ott.tre
 	@if ! test -d $(PROPINQUITY_OUT_DIR)/assessments ; then mkdir -p $(PROPINQUITY_OUT_DIR)/assessments ; fi
-	otc-taxonomy-parser \
-	  $$(./bin/config_checker.py opentree.ott $(CONFIG_FILENAME) ) \
-	  --report-lost-taxa \
+	otc-tree-tool \
 	  $(PROPINQUITY_OUT_DIR)/labelled_supertree/labelled_supertree.tre \
-	  -c $(CONFIG_FILENAME) > $(PROPINQUITY_OUT_DIR)/assessments/.lost_taxa.txt \
+	  --lost-taxa-vs=$(PROPINQUITY_OUT_DIR)/exemplified_phylo/regraft_cleaned_ott.tre \
+	  --taxonomy=$(OTT_DIR) \
+	  > $(PROPINQUITY_OUT_DIR)/assessments/.lost_taxa.txt \
 	  || rm $(PROPINQUITY_OUT_DIR)/assessments/.lost_taxa.txt
 	mv $(PROPINQUITY_OUT_DIR)/assessments/.lost_taxa.txt $(PROPINQUITY_OUT_DIR)/assessments/lost_taxa.txt
 
