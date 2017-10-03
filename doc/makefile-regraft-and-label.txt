@@ -1,4 +1,5 @@
-"cleaned_ott/cleaned_ott.tre" -> "otc-unprune-solution-and-name-unnamed-nodes"
+"exemplified_phylo/regraft_cleaned_ott.tre" -> "otc-unprune-solution-and-name-unnamed-nodes"
+"exemplified_phylo/incertae_sedis.txt" -> "otc-unprune-solution-and-name-unnamed-nodes"
 "grafted_solution/grafted_solution.tre" -> "otc-unprune-solution-and-name-unnamed-nodes"
 "otc-unprune-solution-and-name-unnamed-nodes" [style=filled, color="#EEBBDD"]
 "otc-unprune-solution-and-name-unnamed-nodes" -> "labelled_supertree/labelled_supertree.tre"

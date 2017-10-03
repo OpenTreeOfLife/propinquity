@@ -27,6 +27,7 @@ config -> "config[opentree]ott" ;
 "$PEYOTL_ROOT/.../suppress_by_flag.py" -> "cleaned_ott/cleaned_ott_1.json" ;
 
 "cleaned_ott/cleaned_ott_with_hiddenbarren.tre" -> "otc-relabel-tree" ;
+"<OTT>" -> "otc-relabel-tree"
 "otc-relabel-tree" [style=filled, color="#EEBBDD"] ;
 "otc-relabel-tree" -> "cleaned_ott/cleaned_ott.tre" ;
 "otc-relabel-tree" -> "cleaned_ott/cleaned_ott_pruned_nonflagged.json" ;
@@ -35,3 +36,9 @@ config -> "config[opentree]ott" ;
 "cleaned_ott/cleaned_ott_pruned_nonflagged.json" -> "combine_ott_cleaning_logs.py" ;
 "combine_ott_cleaning_logs.py" [style=filled, color="#EEBBDD"] ;
 "combine_ott_cleaning_logs.py" -> "cleaned_ott/cleaned_ott.json" ;
+
+otc_taxonomy_parser_is [label="otc-taxonomy-parser -config=$(CONFIG_FILENAME)\n--any-flag incertae_sedis,major_rank_conflict,unplaced,unclassified",color="#EEBBDD"]
+
+config -> otc_taxonomy_parser_is
+"<OTT>" -> otc_taxonomy_parser_is
+otc_taxonomy_parser_is -> "cleaned_ott/incertae_sedis.txt"

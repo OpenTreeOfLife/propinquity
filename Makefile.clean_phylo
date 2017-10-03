@@ -37,7 +37,7 @@ $(PROPINQUITY_OUT_DIR)/cleaned_phylo/needs_updating.txt: $(PROPINQUITY_OUT_DIR)/
 		bin/convert-space-to-newline $(PROPINQUITY_OUT_DIR)/cleaned_phylo/x > $(PROPINQUITY_OUT_DIR)/cleaned_phylo/needs_updating.txt ;\
 		rm -f $(PROPINQUITY_OUT_DIR)/cleaned_phylo/x ;\
 	else \
-		./bin/write-needs-updating $(PROPINQUITY_OUT_DIR)/cleaned_phylo $$(sed -e 's:\(.*\):phylo_snapshot/\1.json:' < $(PROPINQUITY_OUT_DIR)/phylo_input/study_tree_pairs.txt) > $(PROPINQUITY_OUT_DIR)/cleaned_phylo/needs_updating.txt ;\
+		./bin/write-needs-updating $(PROPINQUITY_OUT_DIR)/cleaned_phylo $$(sed -e 's:\(.*\):$(PROPINQUITY_OUT_DIR)/phylo_snapshot/\1.json:' < $(PROPINQUITY_OUT_DIR)/phylo_input/study_tree_pairs.txt) > $(PROPINQUITY_OUT_DIR)/cleaned_phylo/needs_updating.txt ;\
 	fi
 	cp $(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaning_flags.txt $(PROPINQUITY_OUT_DIR)/cleaned_phylo/cleaning_flags.txt
 	cp $(PROPINQUITY_OUT_DIR)/cleaned_ott/root_ott_id.txt $(PROPINQUITY_OUT_DIR)/cleaned_phylo/root_ott_id.txt
@@ -95,7 +95,7 @@ $(PROPINQUITY_OUT_DIR)/exemplified_phylo/pruned_taxonomy_degree_distribution.txt
 		> $(PROPINQUITY_OUT_DIR)/exemplified_phylo/pruned_taxonomy_degree_distribution.txt
 
 $(PROPINQUITY_OUT_DIR)/exemplified_phylo/incertae_sedis.txt: $(CONFIG_FILENAME) $(PROPINQUITY_OUT_DIR)/exemplified_phylo/taxonomy.tre
-	otc-taxonomy-parser --config=$(CONFIG_FILENAME) \
+	otc-taxonomy-parser $(OTT_DIR) --config=$(CONFIG_FILENAME) \
 	  	--in-tree=$(PROPINQUITY_OUT_DIR)/exemplified_phylo/taxonomy.tre \
 		--any-flag=incertae_sedis,major_rank_conflict,unplaced,unclassified \
 		--format="%I" \

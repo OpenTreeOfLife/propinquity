@@ -60,4 +60,4 @@ $(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaned_ott_pruned_nonflagged.json: $(PROPINQ
 	echo "cleaned_ott/cleaned_ott_pruned_nonflagged.json created as a side effect."
 
 $(PROPINQUITY_OUT_DIR)/cleaned_ott/incertae_sedis.txt: $(CONFIG_FILENAME)
-	otc-taxonomy-parser --config=$(CONFIG_FILENAME) --any-flag incertae_sedis,major_rank_conflict,unplaced,unclassified --format="%I" > $(PROPINQUITY_OUT_DIR)/cleaned_ott/incertae_sedis.txt
+	otc-taxonomy-parser $(OTT_DIR) --config=$(CONFIG_FILENAME) --any-flag incertae_sedis,major_rank_conflict,unplaced,unclassified --format="%I" > $(PROPINQUITY_OUT_DIR)/cleaned_ott/incertae_sedis.txt

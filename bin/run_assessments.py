@@ -77,7 +77,7 @@ if __name__ == '__main__':
     # Check that otc-taxonomy-parser and otc-unprune-solution-and-name-unnamed-nodes
     #   agree on the number of taxa that were lost
     #
-    if True:
+    if False:
         ltb = {'result': 'Skipped test - have not updated tests to deal with 2 layers of taxon filtering', 'data': []}
         btb = dict(ltb)
         ub = dict(ltb)
