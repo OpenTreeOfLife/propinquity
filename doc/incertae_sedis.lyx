@@ -1,0 +1,2311 @@
+#LyX 2.2 created this file. For more info see http://www.lyx.org/
+\lyxformat 508
+\begin_document
+\begin_header
+\save_transient_properties true
+\origin unavailable
+\textclass article
+\begin_preamble
+\sloppy
+%\setlength{\parskip}{6pt}
+\end_preamble
+\use_default_options true
+\maintain_unincluded_children false
+\language english
+\language_package default
+\inputencoding auto
+\fontencoding global
+\font_roman "default" "default"
+\font_sans "default" "default"
+\font_typewriter "default" "default"
+\font_math "auto" "auto"
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100 100
+\font_tt_scale 100 100
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\paperfontsize default
+\spacing single
+\use_hyperref false
+\papersize default
+\use_geometry true
+\use_package amsmath 1
+\use_package amssymb 1
+\use_package cancel 1
+\use_package esint 1
+\use_package mathdots 1
+\use_package mathtools 1
+\use_package mhchem 1
+\use_package stackrel 1
+\use_package stmaryrd 1
+\use_package undertilde 1
+\cite_engine basic
+\cite_engine_type default
+\biblio_style plain
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\justification true
+\use_refstyle 1
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\leftmargin 2cm
+\topmargin 2cm
+\rightmargin 2cm
+\bottommargin 2cm
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation skip
+\defskip 6pt
+\quotes_language english
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Standard
+\begin_inset FormulaMacro
+\newcommand{\taxonomy}{\mbox{\mathbb{T}}}
+{\mbox{\mathbb{T}}}
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset FormulaMacro
+\newcommand{\prunedTaxonomy}{\taxonomy_{P}}
+{\taxonomy_{P}}
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset FormulaMacro
+\newcommand{\phyloinputs}{\mathcal{T}}
+{\mathcal{T}}
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset FormulaMacro
+\newcommand{\expandedPhylo}{\phyloinputs_{E}}
+{\phyloinputs_{E}}
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset FormulaMacro
+\newcommand{\summaryTree}{\mathbb{S}}
+{\mathbb{S}}
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset FormulaMacro
+\newcommand{\prunedSummary}{\summaryTree_{P}}
+{\summaryTree_{P}}
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset FormulaMacro
+\newcommand{\collections}{\mathcal{C}}
+{\mathcal{C}}
+\end_inset
+
+
+\end_layout
+
+\begin_layout Title
+
+\family typewriter
+Handling 
+\emph on
+incertae sedis
+\emph default
+ taxa in propinquity
+\end_layout
+
+\begin_layout Section
+Interpretation of 
+\emph on
+incertae sedis
+\emph default
+ taxa
+\end_layout
+
+\begin_layout Subsection
+Splits
+\end_layout
+
+\begin_layout Standard
+Each edge of a standard tree divides the tip taxa 
+\begin_inset Formula $\mathcal{L}$
+\end_inset
+
+ into two groups: the include set 
+\begin_inset Formula $\mathcal{I}(e)$
+\end_inset
+
+ which does not contain the root, and the exclude set 
+\begin_inset Formula $\mathcal{E}(e)$
+\end_inset
+
+ which does contain the root.
+ Such a split may be written
+\begin_inset Formula 
+\[
+\mathcal{I}(e)|\bullet\mathcal{E}(e),
+\]
+
+\end_inset
+
+with the exclude set always on the right.
+ If no taxa are 
+\emph on
+incertae sedis
+\emph default
+, then the exclude set for a node is just the total tip set minus the include
+ set for the node:
+\begin_inset Formula 
+\begin{align*}
+\mathcal{E}(n) & =\mathcal{L}-\mathcal{I}(n).
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+For a node 
+\begin_inset Formula $n$
+\end_inset
+
+ on the tipward side of an edge 
+\begin_inset Formula $e$
+\end_inset
+
+, we may also write 
+\begin_inset Formula $\mathcal{I}(n)$
+\end_inset
+
+ for 
+\begin_inset Formula $\mathcal{I}(e)$
+\end_inset
+
+, and 
+\begin_inset Formula $\mathcal{E}(n)$
+\end_inset
+
+ for 
+\begin_inset Formula $\mathcal{E}(e)$
+\end_inset
+
+.
+ We consider the exclude set of the root node to be empty, and the include
+ set of the root node to contain all tip taxa:
+\begin_inset Formula 
+\begin{align*}
+\mathcal{E}(root) & =\{\}\\
+\mathcal{I}(root) & =\mathcal{L}.
+\end{align*}
+
+\end_inset
+
+In this case the root node stands for an edge that connects the root to
+ the root's parent.
+\end_layout
+
+\begin_layout Subsection
+Reduced exclude sets for 
+\emph on
+incertae sedis
+\emph default
+ taxa
+\end_layout
+
+\begin_layout Standard
+A taxon that is marked 
+\emph on
+incertae sedis
+\emph default
+ is not excluded from its sibling subtrees.
+ This changes the splits induced by each edge only by shrinking their exclude
+ sets.
+ The exclude set for a node is is the union of the exclude set of the parent
+ node and the include sets of non-
+\emph on
+incertae sedis
+\emph default
+ siblings.
+ If we use the terminology that the include and exclude sets for a node
+ 
+\begin_inset Formula $n$
+\end_inset
+
+ are 
+\begin_inset Formula $\mathcal{I}(n)$
+\end_inset
+
+ and 
+\begin_inset Formula $\mathcal{E}(n)$
+\end_inset
+
+, then we have 
+\begin_inset Formula 
+\begin{align}
+\mathcal{E}(n) & =\mathcal{E}(parent(n))\cup\left[\mathcal{I}(m)\big|m\in siblings(n),m\text{ not \emph{incertae} \emph{sedis}}\right],\label{eq:exclude-set-formula}
+\end{align}
+
+\end_inset
+
+This leads to a valid pre-order recursion if 
+\begin_inset Formula $\mathcal{E}(root)$
+\end_inset
+
+ is set to 
+\begin_inset Formula $\{\}$
+\end_inset
+
+ as a boundary condition.
+\end_layout
+
+\begin_layout Subsubsection
+Alternative formulation
+\end_layout
+
+\begin_layout Standard
+With the above formulation, if an I.S.
+ clade A is more rootward than an I.S.
+ clade B, and then A is placed sister to B, then B could not be placed within
+ A.
+\end_layout
+
+\begin_layout Subsection
+Containers
+\end_layout
+
+\begin_layout Standard
+Some taxonomies have nodes with names like 
+\begin_inset Quotes eld
+\end_inset
+
+Incertae sedis (Bacteria)
+\begin_inset Quotes erd
+\end_inset
+
+.
+ Such nodes are called containers.
+ They indicate that each child node is an 
+\emph on
+incertae sedis
+\emph default
+ child of the container node's parent.
+ The OTT retains container nodes with the 
+\emph on
+was_container
+\emph default
+ flag, but seems to have already moved all of the container's children to
+ the container's parent.
+\end_layout
+
+\begin_layout Section
+Handling 
+\emph on
+incertae sedis
+\emph default
+ taxa
+\end_layout
+
+\begin_layout Standard
+In order to handle 
+\emph on
+incertae sedis
+\emph default
+ taxa we must modify some of the stages (and maybe concepts) of the propinquity
+ pipeline.
+ 
+\end_layout
+
+\begin_layout Itemize
+
+\series bold
+Subproblem decomposition
+\series default
+ must be modified to place 
+\emph on
+incertae sedis
+\emph default
+ taxa in the correct subproblem, and to handle conflict in placement information
+ between input trees.
+\end_layout
+
+\begin_layout Itemize
+
+\series bold
+Subproblem descriptions
+\series default
+ must describe regions of the tree that have 
+\emph on
+incertae sedis
+\emph default
+ taxa place within them.
+ 
+\end_layout
+
+\begin_layout Itemize
+The 
+\series bold
+subproblem solver
+\series default
+ has been modified to read 
+\emph on
+incertae sedis
+\emph default
+ information, solve problems which include that information, and name OTT
+ nodes that have 
+\emph on
+incertae sedis
+\emph default
+ taxa newly placed within them.
+\end_layout
+
+\begin_layout Itemize
+Q: does 
+\series bold
+unpruning
+\series default
+ need to be modified, either in theory, or in terms of the code we currently
+ have?
+\end_layout
+
+\begin_layout Standard
+We will also generate another product, the 
+\emph on
+placed taxonomy
+\emph default
+.
+ The placed taxonomy will probably not have any 
+\emph on
+incertae sedis
+\emph default
+ taxa.
+ Subproblem decomposition will place 
+\emph on
+incertae sedis
+\emph default
+ taxa up to sub-problem resolution, but will not resolve conflicting placements
+ within subproblems.
+ Conflicting placements withing subproblems will be resolved by the subproblem
+ solver.
+\end_layout
+
+\begin_layout Subsection
+Subproblem solution
+\end_layout
+
+\begin_layout Standard
+Subproblem solution does not need to be modified very much, since the BUILD
+ algorithm already natively supports building trees from partial splits.
+ Thus, we need to modify the subproblem solver to create the partial splits
+ from the incertae sedis information.
+\end_layout
+
+\begin_layout Subsubsection
+Reading incertae sedis information
+\end_layout
+
+\begin_layout Standard
+Currently, we read the 
+\emph on
+incertae sedis
+\emph default
+ information as a list of OTT ids for 
+\emph on
+incertae sedis
+\emph default
+ taxa.
+ This does not require adding further annotations to the node names.
+ Only taxonomy nodes can be 
+\emph on
+incertae sedis
+\emph default
+ at the moment, and only the taxonomy tree for the subproblem contains OTT
+ ids for internal nodes.
+ Therefore we handle 
+\emph on
+incertae sedis
+\emph default
+ information by constructing modified split sets for the lowest-ranked tree
+ when the list of 
+\emph on
+incertae sedis
+\emph default
+ nodes is not empty.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+BDR: When multiple I.S.
+ taxa have been moved to the root node of a subproblem, they may be I.S.
+ over the entire subproblem, and some may be I.S.
+ over others in an asymmetric manner.
+ Therefore, we might need to specify additional information about the original
+ attachment location of the I.S.
+ taxa, such as their depth.
+ This only affects problems that have been decomposed.
+\end_layout
+
+\begin_layout Subsubsection
+Exclude sets modified by 
+\emph on
+incertae sedis
+\emph default
+ marks
+\end_layout
+
+\begin_layout Standard
+Equation (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:exclude-set-formula"
+
+\end_inset
+
+) leads to the algorithm to compute the exclude set for all nodes in a tree.
+\end_layout
+
+\begin_layout Enumerate
+Set the exclude set of the root node to be empty
+\end_layout
+
+\begin_layout Enumerate
+For each 
+\emph on
+node
+\emph default
+ (except the root) in preorder
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+combine the 
+\emph on
+exclude
+\emph default
+ set of the parent node with the 
+\emph on
+include
+\emph default
+ set of non-
+\emph on
+incertae-sedis
+\emph default
+ siblings.
+\end_layout
+
+\begin_layout Itemize
+store this set in a hash, with key 
+\emph on
+node
+\end_layout
+
+\end_deeper
+\begin_layout Standard
+This is currently implemented in 
+\emph on
+otc-solve-subproblem
+\emph default
+.
+ We store the sets as 
+\emph on
+std::set
+\emph default
+.
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Subsubsection
+Should the solution tree 
+\emph on
+also
+\emph default
+ have incertae sedis taxa?
+\end_layout
+
+\begin_layout Plain Layout
+It would be nice if the solution tree could have 
+\emph on
+incertae sedis
+\emph default
+ taxa.
+ Specifically, it would be nice to be able to reproduce the input in the
+ case where the input consists only of a taxonomy (subproblem) with 
+\emph on
+incertae sedis
+\emph default
+ taxa.
+\end_layout
+
+\begin_layout Plain Layout
+In general, we should be able to assign splits from the subproblem trees
+ to edges in the solution tree, although this assignment will not be unique.
+ Labeling solution edges with splits in this way will identify cases where
+ the split associated with an edge is a partial split, and we can float
+ sibling subtrees across the edge.
+ When a node can float all the way to the tips of all of its siblings
+\begin_inset Foot
+status collapsed
+
+\begin_layout Plain Layout
+Or, all of its non-
+\emph on
+incertae sedis
+\emph default
+ siblings, if we disallow floating across 
+\emph on
+incertae sedis
+\emph default
+ branches
+\end_layout
+
+\end_inset
+
+, we could label such a node 
+\emph on
+incertae sedis
+\emph default
+ in the solution.
+ Such a node may not have an OTT name.
+\end_layout
+
+\begin_layout Plain Layout
+When the problems are 
+\emph on
+sub
+\emph default
+problems, an issue arises about whether a node can float to the tips of
+ its sibling subtrees after these subtrees are extended by grafting.
+ 
+\series bold
+BDR: Would this always be possible if the node was originally an 
+\emph on
+incertae sedis
+\emph default
+ taxonomy node?
+\end_layout
+
+\begin_layout Plain Layout
+Hmm...
+ I was initially thinking that an incertae sedis taxon could get further
+ placed but remain incertae sedis.
+ For example, suppose we have a taxon that is incertae sedis within Vertebrata.
+ Could an input tree place this taxon within Mammals, but not say where?
+ I guess this could happen if the input tree had Theria and Prototheria
+ as tip children.
+ In that case, then the input tree could include a polytomy (which would
+ place the taxon in Mammals), or could place the taxon on (say) the Theria
+ edge, which would exclude it from Prototheria.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Decomposing into subproblems
+\end_layout
+
+\begin_layout Standard
+Subproblem decomposition currently involves finding taxonomy edges that
+ are consistent with every input tree, inserting these edges into each input
+ tree, and dividing each input tree along that edge to create two subproblems.
+ If the taxon set of the input tree is entirely in the include set or entirely
+ in the exclude set of the taxonomy edge, then the input tree will not be
+ split, but will end up in one subproblem in its entirely.
+ It will then not contribute to the other subproblem.
+\end_layout
+
+\begin_layout Subsubsection
+Uncontested edges in an 
+\emph on
+incertae sedis
+\emph default
+ world
+\end_layout
+
+\begin_layout Standard
+Decomposition is based on the claims that
+\end_layout
+
+\begin_layout Enumerate
+non-contested taxonomy edges will certainly be included in the final tree.
+\end_layout
+
+\begin_layout Enumerate
+non-contested taxonomy edges can be inserted into each input tree, dividing
+ it into two parts (one of which may be empty).
+ We can then solve each of these parts separately and join them via the
+ non-contested taxonomy edge.
+\end_layout
+
+\begin_layout Standard
+The first claim is a heuristic assumption that is usually true.
+ We may thus enforce this condition without (we hope) producing a tree that
+ is very different from the tree we would get if we did not perform subproblem
+ decomposition.
+ 
+\end_layout
+
+\begin_layout Standard
+The second claim is true without 
+\emph on
+incertae sedis
+\emph default
+ taxa, but becomes untrue when we allow 
+\emph on
+incertae sedis
+\emph default
+ taxa, because taxonomy edges do not partition 
+\emph on
+incertae sedis
+\emph default
+ taxa.
+ Thus they act as partitions up to, but not beyond, the issue of placement.
+ 
+\end_layout
+
+\begin_layout Standard
+In order to use taxonomy edges to partition subproblems in the 
+\emph on
+incertae sedis
+\emph default
+ world, we must 
+\emph on
+extend
+\emph default
+ such taxonomy edges to partition all taxa by specifying which side of the
+ edge each 
+\emph on
+incertae sedis
+\emph default
+ taxon is placed on.
+ Furthermore, the collection of extended edges must be mutually consistent
+ in order for them to be used jointly to define subproblems.
+ Thus, in order to perform a partition in the 
+\emph on
+incertae sedis
+\emph default
+ world, we need a set of 
+\emph on
+extended 
+\emph default
+edges that are 
+\end_layout
+
+\begin_layout Enumerate
+uncontested (in their extended form)
+\end_layout
+
+\begin_layout Enumerate
+mutually consistent (in their extended form).
+\end_layout
+
+\begin_layout Standard
+While the original (unextended) collection of uncontested edges must be
+ mutually compatible, it is possible for an extended edge to contradict
+ another uncontested edge that groups two taxa 
+\begin_inset Formula $A$
+\end_inset
+
+ and 
+\begin_inset Formula $B$
+\end_inset
+
+ if the extended edge is extended to place 
+\begin_inset Formula $A$
+\end_inset
+
+ and 
+\begin_inset Formula $B$
+\end_inset
+
+ on different sides of the edge.
+\end_layout
+
+\begin_layout Subsubsection
+Simple approach
+\end_layout
+
+\begin_layout Standard
+One approach would be to extend each taxonomy edge to be compatible with
+ all input trees.
+ Edges that cannot be compatibly extended are discarded, since the input
+ trees must either conflict with the edge, or conflict in placement of taxa
+ on each side of the edge.
+ All extended edges that survive this thinning procedure would be checked
+ for pairwise compatibility with all other extended edges, discarding any
+ edge that is incompatible with another extended edge.
+ The remaining edges may be few, but should be mutually consistent, and
+ could be used to divide the taxonomy into subproblems.
+\end_layout
+
+\begin_layout Subsubsection
+Extending uncontested edges to place 
+\emph on
+incertae sedis
+\emph default
+ taxa
+\end_layout
+
+\begin_layout Standard
+One approach would be to extend edges to place 
+\emph on
+incertae sedis 
+\emph default
+tips if all input trees agree on which side of the edge each tip should
+ go on.
+ If they do 
+\emph on
+not
+\emph default
+ agree, we would mark the edge as contested instead of extending it.
+ By refusing to decompose along edges where different input trees disagree
+ about placement, we would be punting the solution to conflicting placement
+ to the subproblem solver instead of trying to solve it in the decomposer.
+ This approach would probably work well if 
+\emph on
+incertae sedis
+\emph default
+ taxa can be placed independently.
+ 
+\end_layout
+
+\begin_layout Standard
+This becomes more complicated when we consider that 
+\emph on
+incertae sedis
+\emph default
+ taxa may not be tip taxa.
+ For example, we might have an 
+\emph on
+incertae sedis
+\emph default
+ clade 
+\begin_inset Formula $(A,B)$
+\end_inset
+
+ where 
+\begin_inset Formula $A$
+\end_inset
+
+ is placed on one side of an uncontested edge and 
+\begin_inset Formula $B$
+\end_inset
+
+ is placed on the other side of the edge.
+ If these placements occur in a single tree, then that tree will conflict
+ with the edge 
+\begin_inset Formula $(A,B)$
+\end_inset
+
+.
+ However, if these placements occur in 
+\emph on
+different
+\emph default
+ trees, then the above procedure would extend the uncontested edge to conflict
+ with the 
+\begin_inset Formula $(A,B)$
+\end_inset
+
+ edge.
+ In that case, the taxonomy is ranked last, and we could simply mark the
+ 
+\begin_inset Formula $(A,B)$
+\end_inset
+
+ edge as contested.
+ When collapsing an edge to an 
+\emph on
+incertae sedis
+\emph default
+ taxon, we can preserve the correct information about taxon floating by
+ marking all the children of the removed 
+\emph on
+incertae sedis
+\emph default
+ node as 
+\emph on
+incertae sedis
+\emph default
+, except that this makes the children if 
+\emph on
+incertae sedis
+\emph default
+ taxa able to float into each other.
+ Thus, contesting 
+\emph on
+incertae sedis
+\emph default
+ taxa makes this much more complicated...
+\end_layout
+
+\begin_layout Standard
+Now, if the 
+\begin_inset Formula $(A,B)$
+\end_inset
+
+ grouping occurs in an input tree, then I think we will simply mark the
+ edge that is extended to have 
+\begin_inset Formula $A$
+\end_inset
+
+ and 
+\begin_inset Formula $B$
+\end_inset
+
+ on different sides as contested.
+ That would be best.
+ Huh.
+ This might actually work.
+\end_layout
+
+\begin_layout Subsubsection
+Example A
+\end_layout
+
+\begin_layout Standard
+OK, so suppose we have
+\end_layout
+
+\begin_layout Itemize
+cd|e, ac|d, bd|c, ab|cde
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+OK, so in this case ab|cde conflicts with a lot of edges.
+ In synth, it would just be not included.
+ In analysis for contesting, it seems like ac|d and bd|c should be contested.
+\end_layout
+
+\end_deeper
+\begin_layout Itemize
+cd|e, ac|d, ab|cde, bd|c
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+OK, so in this case, it seems like bd|c contests ac|d and ab|cde
+\end_layout
+
+\end_deeper
+\begin_layout Itemize
+cd|e, ab|cde, ac|d, bd|c
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+bd|c conflicts with abc|de
+\end_layout
+
+\end_deeper
+\begin_layout Standard
+These cases seem complicated, but in fact in all cases the edge 
+\begin_inset Formula $cd|e$
+\end_inset
+
+ is not really contested.
+ It is just the 
+\emph on
+other
+\emph default
+ edges.
+ And, in fact, we seem justified in concluding 
+\begin_inset Formula $abcd|e$
+\end_inset
+
+ in all cases.
+ This is an extension of 
+\begin_inset Formula $cd|e$
+\end_inset
+
+ to place 
+\begin_inset Formula $a$
+\end_inset
+
+ and 
+\begin_inset Formula $b$
+\end_inset
+
+ tipward of it.
+\end_layout
+
+\begin_layout Subsubsection
+Example B
+\end_layout
+
+\begin_layout Itemize
+Uncontested edge wx|y
+\end_layout
+
+\begin_layout Itemize
+IS taxon vz|wxy
+\end_layout
+
+\begin_layout Itemize
+tree 1 says vw|x
+\end_layout
+
+\begin_layout Itemize
+tree 2 says xy|z
+\end_layout
+
+\begin_layout Itemize
+optionally, tree 3 says vz|wxy
+\end_layout
+
+\begin_layout Standard
+In this case we want to conclude that the edge 
+\begin_inset Formula $wx|y$
+\end_inset
+
+ is contested by conflicting placement information.
+ And I think we want to conclude that the IS taxon is also contested by
+ placement information that would tend to break up the clade.
+\end_layout
+
+\begin_layout Subsubsection
+Example C - Nested 
+\emph on
+incertae sedis
+\emph default
+ taxa
+\end_layout
+
+\begin_layout Standard
+We could have a clade that is 
+\emph on
+incertae sedis
+\emph default
+.
+ One of its descendant nodes could also be marked 
+\emph on
+incertae sedis
+\emph default
+.
+\end_layout
+
+\begin_layout Subsubsection
+What to do
+\end_layout
+
+\begin_layout Standard
+When 
+\emph on
+incertae sedis
+\emph default
+ taxa are involved, we must place 
+\emph on
+incertae sedis
+\emph default
+ taxa into subproblems in such a way that the subproblem solver can perform
+ the placement inside the subproblem.
+ However, we must also handle conflicting placements of 
+\emph on
+incertae sedis
+\emph default
+ taxa by different input trees.
+\end_layout
+
+\begin_layout Standard
+I think we can solve this in a logically coherent way by recognizing that
+ any taxonomy edges leading to conflicting placement of an 
+\emph on
+incertae sedis
+\emph default
+ taxon must end up in the same subproblem (i.e.
+ they must be collapsed).
+ Thus, if one input tree places the 
+\emph on
+incertae sedis
+\emph default
+ taxon 
+\begin_inset Formula $X$
+\end_inset
+
+ in 
+\begin_inset Formula $((X)B)A$
+\end_inset
+
+ and another input phylogeny places 
+\emph on
+incertae sedis
+\emph default
+ taxon 
+\begin_inset Formula $X$
+\end_inset
+
+ in 
+\begin_inset Formula $((X)C)A$
+\end_inset
+
+ then we must mark the edges 
+\begin_inset Formula $B$
+\end_inset
+
+ and 
+\begin_inset Formula $C$
+\end_inset
+
+ as contested edges, even if these edges would 
+\emph on
+not
+\emph default
+ be contested were taxon 
+\begin_inset Formula $X$
+\end_inset
+
+ to be removed.
+ This results in a new way to contest edges that involves the interaction
+ of two input trees, and not just the interaction of each input tree with
+ the taxonomy.
+\end_layout
+
+\begin_layout Standard
+The result of such a decomposition procedure would be that the subproblem
+ solver will handle any conflicting placement information.
+\end_layout
+
+\begin_layout Subsubsection
+Example 1
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Figures/placement1/tax.tre.svg
+	scale 50
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Taxonomy 
+\begin_inset Formula $\taxonomy$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Figures/placement1/input1.tre.svg
+	scale 50
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+\begin_inset Formula $\tau_{1}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Figures/placement1/input2.tre.svg
+	scale 50
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+\begin_inset Formula $\tau_{2}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:placement-example1"
+
+\end_inset
+
+Example.
+ An incertae sedis clade (ott6,ott7) is placed in different subtrees by
+ input trees 
+\begin_inset Formula $\tau_{1}$
+\end_inset
+
+ and 
+\begin_inset Formula $\tau_{2}$
+\end_inset
+
+.
+ In 
+\begin_inset Formula $\tau_{1}$
+\end_inset
+
+, two nodes that correspond to the taxonomy their ingroup extended to include
+ (ott6,ott7), and the branches leading to these nodes have been colored
+ blue.
+ The dashed blue edge leads to a node that is a newly-introduced degree-2
+ node which does not correspond to any taxonomy node.
+ In 
+\begin_inset Formula $\tau_{2}$
+\end_inset
+
+, only one node that corresponds to a taxonomy node needs to have its ingroup
+ extended.
+ The placement of (ott6,ott7) into ott8 toward ott1 by 
+\begin_inset Formula $\tau_{1}$
+\end_inset
+
+ conflicts with the placement of (ott6,ott7) into ott9 toward ott3 by 
+\begin_inset Formula $\tau_{2},$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+ In Figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:placement-example1"
+
+\end_inset
+
+, we can establish correspondences between branches in 
+\begin_inset Formula $\taxonomy|\tau_{1}$
+\end_inset
+
+ and 
+\begin_inset Formula $\tau_{1}$
+\end_inset
+
+ as follows:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{align*}
+\text{ott12: }1\,2\,3\,4\,\boldsymbol{6\,7}\,|\,5 & \sim1\,2\,3\,4\,\boldsymbol{6\,7}\,|\,5\\
+\text{ott11: }1\,2\,3\,\boldsymbol{6\,7}\,|\,4\,5 & \sim1\,2\,3\,\boldsymbol{6\,7}\,|\,4\,5\\
+\text{ott9: }1\,2\,3\,|\,4\,5 & \sim1\,2\,3\,\boldsymbol{6\,7}\,|\,4\,5\\
+\text{ott8: }1\,2\,|\,3\,4\,5 & \sim1\,2\,\boldsymbol{6\,7}\,|\,3\,4\,5\\
+? & \sim1\,\boldsymbol{6\,7\,}|\,2\,3\,4\,5
+\end{align*}
+
+\end_inset
+
+This mapping is based on the idea that, after conflicting branches are removed
+ from 
+\begin_inset Formula $\taxonomy|\tau$
+\end_inset
+
+, then its remaining splits and the splits of 
+\begin_inset Formula $\tau$
+\end_inset
+
+ will be jointly compatible.
+ Some of the splits of 
+\begin_inset Formula $\taxonomy|\tau$
+\end_inset
+
+ can be extended using 
+\begin_inset Formula $Z$
+\end_inset
+
+-closure (?).
+\end_layout
+
+\begin_layout Standard
+This is not completely clear though.
+ 
+\begin_inset Formula $\tau$
+\end_inset
+
+ contains only full splits, whereas splits from 
+\begin_inset Formula $\taxonomy|\tau$
+\end_inset
+
+ can be partial.
+ 
+\end_layout
+
+\begin_layout Subsubsection
+Example 2
+\end_layout
+
+\begin_layout Standard
+Question: Suppose that 
+\begin_inset Formula $\tau_{1}$
+\end_inset
+
+ contests the 
+\emph on
+incertae sedis
+\emph default
+ clade (ott6,ott7)ott9.
+ What then?
+\begin_inset Newline newline
+\end_inset
+
+Answer: Any taxa with ott6 or ott7 placed into them should not be broken
+ if they would have allowed ott9.
+\end_layout
+
+\begin_layout Standard
+Question: Suppose that 
+\begin_inset Formula $\tau_{1}$
+\end_inset
+
+ contests the 
+\emph on
+incertae sedis
+\emph default
+ clade (ott6,ott7)ott9 and attaches ott6 and ott7 separately to the ott3
+ terminal edge?
+\begin_inset Newline newline
+\end_inset
+
+Answer: In this case the breaking of ott9 and the separate placement of
+ ott6 and ott7 together constitute the 
+\begin_inset Quotes eld
+\end_inset
+
+placement
+\begin_inset Quotes erd
+\end_inset
+
+ of ott9.
+ Thus, we need to be able to represent the conflict/annotation of the taxonomy
+ tree and the input tree 
+\begin_inset Formula $\tau_{1}$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Subsubsection
+Interactions between input trees and 
+\emph on
+incertae sedis
+\emph default
+ taxa
+\end_layout
+
+\begin_layout Standard
+
+\emph on
+Incertae sedis
+\emph default
+ nodes are features of the taxonomy.
+ Each input tree can relate to an 
+\emph on
+incertae sedis
+\emph default
+ taxon 
+\begin_inset Formula $(A,B,C)D$
+\end_inset
+
+ in a number of ways
+\end_layout
+
+\begin_layout Itemize
+it could place a descendant taxon of 
+\begin_inset Formula $D$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+descendants of incertae sedis taxa may be placed on branches, as well as
+ nodes.
+ That is the taxa will probably be places on new degree-2 nodes that bisect
+ branches, instead of being places on nodes.
+\end_layout
+
+\begin_layout Itemize
+it could place children of the branch in multiple places, thus conflicting
+ with the branch.
+ If the 
+\emph on
+incertae sedis
+\emph default
+ taxon 
+\begin_inset Formula $(A,B,C)$
+\end_inset
+
+ is broken, then 
+\begin_inset Formula $A$
+\end_inset
+
+, 
+\begin_inset Formula $B$
+\end_inset
+
+ and 
+\begin_inset Formula $C$
+\end_inset
+
+ become 
+\emph on
+incertae sedis
+\emph default
+ clades in their own right, that may attach separately.
+ This is because none of 
+\begin_inset Formula $A$
+\end_inset
+
+, 
+\begin_inset Formula $B$
+\end_inset
+
+, or 
+\begin_inset Formula $C$
+\end_inset
+
+ is in the exclude set of the siblings of 
+\begin_inset Formula $D$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Itemize
+it could resolve 
+\begin_inset Formula $A$
+\end_inset
+
+, 
+\begin_inset Formula $B$
+\end_inset
+
+, 
+\begin_inset Formula $C$
+\end_inset
+
+, or 
+\begin_inset Formula $D$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Itemize
+it could place some descendant taxa of 
+\begin_inset Formula $D$
+\end_inset
+
+ in a 
+\emph on
+different place
+\emph default
+ than another input tree.
+\end_layout
+
+\begin_layout Standard
+An conflict analysis between the taxonomy 
+\begin_inset Formula $\taxonomy$
+\end_inset
+
+ and an input tree 
+\begin_inset Formula $\tau$
+\end_inset
+
+ should yield, for the induced tree 
+\begin_inset Formula $\taxonomy|\tau$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+which branches correspond between 
+\begin_inset Formula $\taxonomy|\tau\longleftrightarrow\tau$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Itemize
+which branches of 
+\begin_inset Formula $\taxonomy|\tau$
+\end_inset
+
+ the input tree 
+\begin_inset Formula $\tau$
+\end_inset
+
+ conflicts with.
+\end_layout
+
+\begin_layout Subsubsection
+Possible issue 1:
+\end_layout
+
+\begin_layout Standard
+If two siblings are 
+\emph on
+incertae sedis
+\emph default
+, then they could each be subgroups of the other.
+ This means that the groups don't form a proper multi-connected tree, which
+ could be problematic.
+ We could therefore make 
+\emph on
+incertae sedis
+\emph default
+ groups impenetrable to other 
+\emph on
+incertae sedis
+\emph default
+ siblings.
+\end_layout
+
+\begin_layout Subsubsection
+Possible issue 2:
+\end_layout
+
+\begin_layout Standard
+If the decomposer places IS taxa to subproblem resolution, then their new
+ placement no longer specifies exactly which taxa they float over, right?
+ Suppose 
+\begin_inset Formula $X$
+\end_inset
+
+ floats over 
+\begin_inset Formula $(A,B)$
+\end_inset
+
+, and 
+\begin_inset Formula $A$
+\end_inset
+
+ floats over 
+\begin_inset Formula $B$
+\end_inset
+
+.
+ Then if 
+\begin_inset Formula $X$
+\end_inset
+
+ and 
+\begin_inset Formula $A$
+\end_inset
+
+ are placed within 
+\begin_inset Formula $B$
+\end_inset
+
+ within subproblem 
+\begin_inset Formula $ottid$
+\end_inset
+
+, then the fact that 
+\begin_inset Formula $X$
+\end_inset
+
+ floats over 
+\begin_inset Formula $A$
+\end_inset
+
+ but not 
+\emph on
+vice versa
+\emph default
+ will be lost.
+\end_layout
+
+\begin_layout Subsubsection
+Possible approach
+\end_layout
+
+\begin_layout Standard
+One approach would be to modify the taxonomy to place
+\emph on
+ incertae sedis 
+\emph default
+taxa when scanning input phylogenies.
+ A series of input phylogenies containing taxon 
+\begin_inset Formula $X$
+\end_inset
+
+ might not disagree, but might each place the taxon 
+\begin_inset Formula $X$
+\end_inset
+
+ successively more tipward.
+ However, when reading an input phylogeny that conflicts with the placement
+ of 
+\begin_inset Formula $X$
+\end_inset
+
+ resulting from previously processed input phylogenies, we would end up
+ marking the branches connecting the two attachment points as conflicting
+ with the most recently processed input phylogeny.
+ These branches would then not be used to separate subproblems from each
+ other, and would thus end up in the same subproblem.
+ 
+\emph on
+This is not proved - expand and check
+\emph default
+.
+\end_layout
+
+\begin_layout Standard
+If this does work, then it is hopeful that this would decrease the number
+ of subproblems too much.
+ It seems like it might be OK, since we already contest edges result from
+ alternative placement of non-
+\emph on
+incertae sedis
+\emph default
+ taxa.
+\end_layout
+
+\begin_layout Subsection
+Annotations
+\end_layout
+
+\begin_layout Standard
+After we allow 
+\emph on
+incertae
+\emph default
+ sedis taxa in the taxonomy, the relationships of edges in the taxonomy
+ to edges in each input tree become more interesting.
+ Without 
+\emph on
+incertae sedis
+\emph default
+ taxa, taxonomy splits always divide the full leaf set, and so we can say
+ that taxonomy split 
+\begin_inset Formula $A$
+\end_inset
+
+ displays an input split 
+\begin_inset Formula $B$
+\end_inset
+
+ if 
+\begin_inset Formula $B_{1}\subseteq A_{1}$
+\end_inset
+
+ and 
+\begin_inset Formula $B_{2}\subseteq A_{2}$
+\end_inset
+
+.
+ Thus, a taxonomy split always has more information than an input split
+ 
+\begin_inset Formula $B$
+\end_inset
+
+ that it displays.
+ However, with 
+\emph on
+incertae sedis
+\emph default
+ taxa in the taxonomy, it is possible that the input split 
+\begin_inset Formula $B$
+\end_inset
+
+ 
+\begin_inset Quotes eld
+\end_inset
+
+aligns
+\begin_inset Quotes erd
+\end_inset
+
+ to a taxonomy split 
+\begin_inset Formula $A$
+\end_inset
+
+ and 
+\emph on
+also
+\emph default
+ performs a placement.
+ In this case the input split 
+\begin_inset Formula $B$
+\end_inset
+
+ has more information than the taxonomy split 
+\begin_inset Formula $A$
+\end_inset
+
+ that it aligns to.
+ 
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+BDR: Question: when comparing the taxonomy to an input tree, how do we deal
+ with conflict & alignment?
+\end_layout
+
+\begin_layout Itemize
+If we remove all taxonomy splits that are not pairwise compatible with each
+ input tree edge, are all taxonomy edges jointly compatible with all input
+ tree edges?
+\end_layout
+
+\begin_deeper
+\begin_layout Enumerate
+It is possible for two taxonomy edges to be implied by the same input tree
+ edge.
+\end_layout
+
+\begin_layout Enumerate
+It is possible for two input tree edges to imply the same taxonomy edge.
+\end_layout
+
+\begin_layout Enumerate
+Each input tree edge is full rank on the induced tree.
+\end_layout
+
+\begin_layout Enumerate
+Now, each taxonomy edge is either equivalent an input tree edge, or on one
+ side of it, since they are compatible.
+\end_layout
+
+\begin_layout Enumerate
+This imposes a directed flow on the input tree for each taxonomy edge, so
+ that it moves to a node or a connected group of edges, all of which imply
+ it.
+\end_layout
+
+\end_deeper
+\begin_layout Itemize
+We annotate the synthesis tree, not the taxonomy tree.
+\end_layout
+
+\begin_layout Itemize
+Adding incertae sedis info would complicate performing conflict analysis
+ against the taxonomy.
+\end_layout
+
+\begin_layout Subsection
+Naming 
+\end_layout
+
+\begin_layout Standard
+After solving a supertree (sub) problem, we need to assign taxon names to
+ the supertree nodes based on the taxonomy tree in the problem.
+ Each taxon name 
+\begin_inset Formula $n$
+\end_inset
+
+ corresponds to a split 
+\begin_inset Formula $S(n)=S(n)_{1}|S(n)_{2}$
+\end_inset
+
+ on the corresponding branch of the taxonomy tree.
+ Without 
+\emph on
+incertae sedis
+\emph default
+, such splits are always of the form 
+\begin_inset Formula $S(n)_{1}|\mathcal{L}-S(n)_{1}$
+\end_inset
+
+, but with 
+\emph on
+incertae sedis
+\emph default
+ taxa 
+\begin_inset Formula $S_{2}(n)$
+\end_inset
+
+ may be smaller than 
+\begin_inset Formula $\mathcal{L}-S(n)_{1}$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+Without 
+\emph on
+incertae sedis
+\emph default
+, each name applies to at most one node, and each node can take at most
+ one name, with the exception of monotypic taxa.
+ Thus, we may simply search the solution tree for a node that has the same
+ cluster 
+\begin_inset Formula $S(n)_{1}$
+\end_inset
+
+ and apply the name 
+\begin_inset Formula $n$
+\end_inset
+
+ to that node.
+\end_layout
+
+\begin_layout Standard
+However, in the 
+\emph on
+incertae sedis 
+\emph default
+framework we must raise the question of whether one name could apply to
+ multiple nodes, or whether multiple names could apply to one node.
+ 
+\end_layout
+
+\begin_layout Subsubsection
+Multiple nodes that fit one name
+\end_layout
+
+\begin_layout Standard
+Suppose the taxonomy is (((A1,A2)A,B)AB,C,D*) and the solution tree is (((A1,A2)
+x,D*)y,B)AB,C).
+ In this case the name 
+\begin_inset Formula $A$
+\end_inset
+
+ leads to the split S(A) = A1 A2 | B C root.
+ This name can apply to both the node x and the node y.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+Solution:
+\series default
+ In this case, we find the most tipward node and attach the name to this
+ node.
+\end_layout
+
+\begin_layout Subsubsection
+Multiple names fit a single node
+\end_layout
+
+\begin_layout Paragraph
+Example 1
+\end_layout
+
+\begin_layout Standard
+Suppose the taxonomy is (((B1,B2)B,C*)A,Y) and the input tree is (((B1,C),B2)x,Y
+) then the names A and B both to the node x.
+ In this case the names A and B are ordered.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+Case 1:
+\series default
+ If a taxon contains 2 non-IS taxa, then it cannot be identical with any
+ of its children in the synthesis tree.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+Case 2:
+\series default
+ If a taxon contains 1 non-IS taxon and 
+\begin_inset Formula $\ge1$
+\end_inset
+
+ IS taxa, then the taxon could be identical with is non-IS child in the
+ synthesis tree, if the IS taxa are placed within the child.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+Case 3:
+\series default
+ If a node contains 0 non-IS taxa and 1 IS taxon, then the IS taxa behaves
+ no differently than a non-IS taxa, since is has no siblings it could be
+ placed into.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+Case 4:
+\series default
+ If a node contains 0 non-IS taxa and 
+\begin_inset Formula $\ge2$
+\end_inset
+
+ IS taxa, then then taxon 
+\emph on
+could
+\emph default
+ be identical with a non-IS child in the synthesis tree, if all but one
+ IS children are placed with in one of the IS children.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+Solution:
+\series default
+ When we assign multiple names to the same node, then we expand the node
+ with multiple names to have monotypic parents, and assign the series of
+ names to the monotypic parents.
+ Another way of saying this is that when a node has 
+\begin_inset Formula $\le1$
+\end_inset
+
+ non-IS taxon and 
+\begin_inset Formula $\ge2$
+\end_inset
+
+ taxa then the node could become monotypic by placement of the IS taxa.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+Example 2
+\end_layout
+
+\begin_layout Standard
+If ((A1,A2)A,(B1,B2)B*,(C1,C2)C*); is the taxonomy with asterisks denoting
+ incertae sedis taxa, then the solution ((A1,A2)A,((B1,C1)mrcaB1C1,(B2,C2)mrcaB2
+C2)x); has a node x that could be called B* or C*.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+Case:
+\series default
+ If a taxa B* and C* are IS, then their tips can be intermingled in a new
+ clade x.
+ Both names would then apply.
+\end_layout
+
+\begin_layout Subsubsection
+Implementation: finding the node for a name
+\end_layout
+
+\begin_layout Standard
+To find the node for a name 
+\begin_inset Formula $n$
+\end_inset
+
+, we find the MRCA of the cluster 
+\begin_inset Formula $S_{1}(n)$
+\end_inset
+
+.
+ If the MRCA excludes the entire exclude group 
+\begin_inset Formula $S_{2}(n)$
+\end_inset
+
+ then the name applies to the MRCA; otherwise the taxon does not exist on
+ the tree.
+\end_layout
+
+\begin_layout Subsubsection
+Implementation: handling name clashes
+\end_layout
+
+\begin_layout Standard
+When multiple names 
+\begin_inset Formula $N=\{n_{1},\ldots n_{N}\}$
+\end_inset
+
+ map to the same solution node 
+\begin_inset Formula $x$
+\end_inset
+
+, then these names must satisfy some tree structure on the taxonomy, such
+ that 
+\begin_inset Formula $n_{1}<n_{2}$
+\end_inset
+
+ if 
+\begin_inset Formula $n_{1}$
+\end_inset
+
+ is a descendant of 
+\begin_inset Formula $n_{2}$
+\end_inset
+
+ in the taxonomy.
+ If it is possible to find a name 
+\begin_inset Formula $n_{max}$
+\end_inset
+
+ that is the unique maximal element of 
+\begin_inset Formula $N$
+\end_inset
+
+, then it is permissible to 
+\end_layout
+
+\begin_layout Enumerate
+create a monotypic parent 
+\begin_inset Formula $p(x)$
+\end_inset
+
+ of 
+\begin_inset Formula $x$
+\end_inset
+
+, and assign 
+\begin_inset Formula $n_{max}$
+\end_inset
+
+ to 
+\begin_inset Formula $p(x)$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Enumerate
+continue handling name clashes at 
+\begin_inset Formula $x$
+\end_inset
+
+ with the set of possible names reduced to 
+\begin_inset Formula $N-n_{max}$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+However, its certainly possible that there might not be any such 
+\begin_inset Formula $N_{max}$
+\end_inset
+
+, in which case we could just choose a name for 
+\begin_inset Formula $x$
+\end_inset
+
+ from 
+\begin_inset Formula $N$
+\end_inset
+
+ (perhaps not an 
+\emph on
+incertae sedis
+\emph default
+ name) and then record all the other names as equivalents somewhere.
+\end_layout
+
+\begin_layout Subsection
+Unpruning
+\end_layout
+
+\begin_layout Standard
+Currently the unpruner might require that the OTT ids are named in the grafted
+ solution before unpruning starts.
+\end_layout
+
+\begin_layout Standard
+The unpruner should record when unpruned nodes are 
+\emph on
+incertae sedis
+\emph default
+.
+ In combination with the 
+\end_layout
+
+\begin_layout Subsection
+Labelled supertree
+\end_layout
+
+\begin_layout Standard
+
+\emph on
+Question:
+\emph default
+ Does the synthesis tree contain any 
+\emph on
+incertae sedis
+\emph default
+ groups?
+\begin_inset Newline newline
+\end_inset
+
+
+\emph on
+Answer:
+\emph default
+ The grafted supertree will not contain any 
+\emph on
+incertae sedis
+\emph default
+ groups.
+ However, when we attach pruned nodes to a parent in the grafted supertree,
+ we could mark such nodes 
+\emph on
+incertae sedis
+\emph default
+ if we want.
+\end_layout
+
+\begin_layout Subsection
+Annotation
+\end_layout
+
+\begin_layout Standard
+The synthesis tree itself does not currently have 
+\emph on
+incertae sedis 
+\emph default
+groups.
+ Furthermore, the primary goal is to avoid excluding 
+\emph on
+incertae sedis
+\emph default
+ taxa, whereas displaying 
+\emph on
+incertae sedis 
+\emph default
+status for solution nodes in the tree viewer is a secondary goal.
+ Therefore, solution nodes can be regarded (for the moment) as always implying
+ full splits.
+\end_layout
+
+\begin_layout Standard
+Actually we do not need to change annotation as long as we are not running
+ conflict analysis on the synthesis tree.
+ Basically naming the nodes 
+\emph on
+is
+\emph default
+ a (almost) run of conflict analysis on the synthesis tree.
+\end_layout
+
+\begin_layout Standard
+However, we would like to be able to do this.
+\end_layout
+
+\begin_layout Subsubsection
+Conflict algorithm
+\end_layout
+
+\begin_layout Enumerate
+Get induced trees on intersection of leaf sets
+\end_layout
+
+\begin_layout Enumerate
+Compute depth
+\end_layout
+
+\begin_layout Enumerate
+Compute number of tips at or below each node (nd->n_tips)
+\end_layout
+
+\begin_layout Enumerate
+for each input tree node -> 
+\begin_inset Formula $nd$
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Enumerate
+skip the root
+\end_layout
+
+\begin_layout Enumerate
+skip monotypic
+\end_layout
+
+\begin_layout Enumerate
+if its a tip then find corresponding (
+\begin_inset Quotes eld
+\end_inset
+
+terminal
+\begin_inset Quotes erd
+\end_inset
+
+) edges in synth tree and continue
+\end_layout
+
+\begin_layout Enumerate
+leaves1 <- get the list of leaves in the include group of 
+\begin_inset Formula $nd$
+\end_inset
+
+ (in input)
+\end_layout
+
+\begin_layout Enumerate
+L2 <- find the total number of tips
+\end_layout
+
+\begin_layout Enumerate
+leaves2 <- get list of corresponding leaves (in synth)
+\end_layout
+
+\begin_layout Enumerate
+nodes <- find all nodes between leaves2 and the MRCA (in synth)
+\end_layout
+
+\begin_layout Enumerate
+MRCA <- mrca of leaves2 (in synth)
+\end_layout
+
+\begin_layout Enumerate
+Compute number of tips in the include set (nd->include_tips) below each
+ node in 
+\begin_inset Formula $nodes$
+\end_inset
+
+ (in synth)
+\end_layout
+
+\begin_layout Enumerate
+if n_include_tips(MRCA) == n_tips(MRCA) then the MRCA displays 
+\begin_inset Formula $nd$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Enumerate
+if n_include_tips(MRCA) < n_tips(MRCA) then
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+foreach node in nodes
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+if (n_include_tipes(nd) < n_tips(nd) and n_include_tips(nd) < l2)
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+this is a conflict!
+\end_layout
+
+\end_deeper
+\end_deeper
+\begin_layout Itemize
+if there are no conflicts, then this is a resolved_by.
+\end_layout
+
+\end_deeper
+\end_deeper
+\end_body
+\end_document
