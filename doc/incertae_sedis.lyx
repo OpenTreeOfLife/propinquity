@@ -153,6 +153,14 @@ incertae sedis
 \end_layout
 
 \begin_layout Section
+Introduction
+\end_layout
+
+\begin_layout Subsection
+Incertae sedis taxa can result from taxonomy merging
+\end_layout
+
+\begin_layout Section
 Interpretation of 
 \emph on
 incertae sedis
@@ -252,19 +260,50 @@ incertae sedis
 \end_layout
 
 \begin_layout Standard
-A taxon that is marked 
+Marking a taxon as 
 \emph on
 incertae sedis
 \emph default
- is not excluded from its sibling subtrees.
- This changes the splits induced by each edge only by shrinking their exclude
- sets.
- The exclude set for a node is is the union of the exclude set of the parent
- node and the include sets of non-
+ changes the meaning if its sibling subtrees.
+ Since the 
 \emph on
 incertae sedis
 \emph default
- siblings.
+ taxon can be placed inside its sibling subtrees, the exclude sets of the
+ sibling subtrees should not include the 
+\emph on
+incertae sedis 
+\emph default
+taxon.
+ Although exclude sets of sibling taxa are shrunk, the include sets of the
+ sibling taxa are unaffected.
+\end_layout
+
+\begin_layout Standard
+An 
+\emph on
+incertae sedis
+\emph default
+ taxon can be moved into any of the descendants of its siblings.
+ Therefore, the exclude 
+\begin_inset Formula $\mathcal{E}(n)$
+\end_inset
+
+ set for a node 
+\begin_inset Formula $n$
+\end_inset
+
+ contains the children of all the ancestors of 
+\begin_inset Formula $n$
+\end_inset
+
+, unless those children are incertae sedis.
+ We can compute exclude sets recursively by writing the exclude set of a
+ node 
+\begin_inset Formula $n$
+\end_inset
+
+ in terms of the exclude set of its parent.
  If we use the terminology that the include and exclude sets for a node
  
 \begin_inset Formula $n$
@@ -286,11 +325,8 @@ incertae sedis
 
 \end_inset
 
-This leads to a valid pre-order recursion if 
-\begin_inset Formula $\mathcal{E}(root)$
-\end_inset
-
- is set to 
+This leads to a pre-order recursion that terminates if the exclude set for
+ the root note is set to 
 \begin_inset Formula $\{\}$
 \end_inset
 
@@ -306,6 +342,42 @@ With the above formulation, if an I.S.
  clade A is more rootward than an I.S.
  clade B, and then A is placed sister to B, then B could not be placed within
  A.
+ Thus, an alternative formulation of 
+\begin_inset Formula $\mathcal{E}(n)$
+\end_inset
+
+ could include 
+\begin_inset Formula $\mathcal{I}^{\prime}(m)$
+\end_inset
+
+ where excludes tip taxa that are incertae_sedis_inherited within 
+\begin_inset Formula $m$
+\end_inset
+
+.
+\begin_inset Formula 
+\begin{align*}
+I^{\prime}(m) & =\begin{cases}
+m & \text{if }m\text{ is a leaf}\\
+\left[I^{\prime}(c)\big|c\in children(m),c\text{ not \emph{incertae sedis}}\right] & \text{otherwise.}
+\end{cases}\\
+\end{align*}
+
+\end_inset
+
+This would not rule out placing B as sister to 
+\begin_inset Formula $A$
+\end_inset
+
+ and then placing 
+\begin_inset Formula $A$
+\end_inset
+
+ within 
+\begin_inset Formula $B$
+\end_inset
+
+.
 \end_layout
 
 \begin_layout Subsection
@@ -349,82 +421,145 @@ In order to handle
 \emph on
 incertae sedis
 \emph default
- taxa we must modify some of the stages (and maybe concepts) of the propinquity
+ taxa within propinquity, we must modify some of the stages of the propinquity
  pipeline.
- 
+ Subproblem decomposition must place 
+\emph on
+incertae sedis
+\emph default
+ taxa in the correct subproblem.
+ Subproblem files must indicate which taxa are incertae sedis.
+ The subproblem solver must read this information, account for 
+\emph on
+incertae sedis
+\emph default
+ taxa when solving subproblems, and correctly name taxa that have been modified
+ by having 
+\emph on
+incertae sedis
+\emph default
+ taxa place inside them.
+ Finally, the unpruner must be aware of 
+\emph on
+incertae sedis
+\emph default
+ taxa (how?).
 \end_layout
 
-\begin_layout Itemize
-
-\series bold
+\begin_layout Subsection
 Subproblem decomposition
-\series default
- must be modified to place 
-\emph on
-incertae sedis
-\emph default
- taxa in the correct subproblem, and to handle conflict in placement information
- between input trees.
-\end_layout
-
-\begin_layout Itemize
-
-\series bold
-Subproblem descriptions
-\series default
- must describe regions of the tree that have 
-\emph on
-incertae sedis
-\emph default
- taxa place within them.
- 
-\end_layout
-
-\begin_layout Itemize
-The 
-\series bold
-subproblem solver
-\series default
- has been modified to read 
-\emph on
-incertae sedis
-\emph default
- information, solve problems which include that information, and name OTT
- nodes that have 
-\emph on
-incertae sedis
-\emph default
- taxa newly placed within them.
-\end_layout
-
-\begin_layout Itemize
-Q: does 
-\series bold
-unpruning
-\series default
- need to be modified, either in theory, or in terms of the code we currently
- have?
 \end_layout
 
 \begin_layout Standard
-We will also generate another product, the 
-\emph on
-placed taxonomy
-\emph default
+Our general approach to sub-problem decomposition is to mark a taxon 
+\begin_inset Formula $B$
+\end_inset
+
+ as contested if input trees differ in whether 
+\begin_inset Formula $A$
+\end_inset
+
+ should be placed within 
+\begin_inset Formula $B$
+\end_inset
+
 .
- The placed taxonomy will probably not have any 
+ By considering taxon 
+\begin_inset Formula $B$
+\end_inset
+
+ contested, we avoid deciding between competing input trees at the stage
+ of sub-problem decomposition.
+ Instead we, post-pone this decision to the sub-problem solver.
+ This results in larger sub-problems.
+ Thus an 
 \emph on
 incertae sedis
 \emph default
- taxa.
- Subproblem decomposition will place 
+ aware approach to uncontested taxon decomposition might move an 
 \emph on
 incertae sedis
 \emph default
- taxa up to sub-problem resolution, but will not resolve conflicting placements
- within subproblems.
- Conflicting placements withing subproblems will be resolved by the subproblem
- solver.
+ taxon 
+\begin_inset Formula $A$
+\end_inset
+
+ into one of its sister taxa 
+\begin_inset Formula $B$
+\end_inset
+
+ if necessary to be consistent with an input tree.
+ If no lower-ranked input trees contest 
+\begin_inset Formula $B$
+\end_inset
+
+ then 
+\begin_inset Formula $B$
+\end_inset
+
+ can be considered uncontested, resulting in smaller sub-problems.
+ However, if a later input tree attempts to place 
+\begin_inset Formula $A$
+\end_inset
+
+ in a contradictory fashion, then 
+\begin_inset Formula $B$
+\end_inset
+
+ will (probably) be contested, and the resolution of conflict will be performed
+ by the subproblem solver
+\end_layout
+
+\begin_layout Subsubsection
+Really simple approach
+\end_layout
+
+\begin_layout Standard
+While this approach would result in more sub-problems of smaller size, we
+ note that a non-IS aware sub-problem decomposer achieves nearly the same
+ result except for creating larger sub-problems.
+ If an input tree 
+\begin_inset Formula $\tau$
+\end_inset
+
+ places an 
+\emph on
+incertae sedis
+\emph default
+ taxon 
+\begin_inset Formula $A$
+\end_inset
+
+ within a taxon 
+\begin_inset Formula $B$
+\end_inset
+
+, then the the non-IS-aware decomposer will consider 
+\begin_inset Formula $\tau$
+\end_inset
+
+ as contesting 
+\begin_inset Formula $B$
+\end_inset
+
+.
+ Thus, whenever 
+\begin_inset Formula $A$
+\end_inset
+
+ is places within 
+\begin_inset Formula $B$
+\end_inset
+
+, both taxa will end up in the same subproblem.
+ Likewise, if two different trees place 
+\begin_inset Formula $A$
+\end_inset
+
+ down two separate paths of taxa, both paths of taxa will end up in the
+ same subproblem.
+ This approach has not yet created sub-problems that are too large to be
+ solved for our sub-problem solver.
 \end_layout
 
 \begin_layout Subsection
@@ -432,10 +567,30 @@ Subproblem solution
 \end_layout
 
 \begin_layout Standard
-Subproblem solution does not need to be modified very much, since the BUILD
- algorithm already natively supports building trees from partial splits.
- Thus, we need to modify the subproblem solver to create the partial splits
- from the incertae sedis information.
+Our sub-problem solver naturally handles 
+\emph on
+incertae sedis
+\emph default
+ taxa.
+ This is because we define the semantics of 
+\emph on
+incertae sedis
+\emph default
+ taxa in terms of partial splits, and our solver natively supports building
+ trees from partial splits through its use of the BUILD algorithm.
+ Handling 
+\emph on
+incertae sedis
+\emph default
+ taxa thus requires reading in incertae sedis information and computing
+ partial splits for incertae sedis taxa before solving a sub-problem.
+ After solving a sub-problem, we must apply taxon names from the taxonomy
+ tree to the sub-problem solution tree.
+ The solution tree is considered to a fixed tree and not to have any 
+\emph on
+incertae sedis
+\emph default
+ nodes, or any other forms of uncertainty.
 \end_layout
 
 \begin_layout Subsubsection
@@ -469,19 +624,6 @@ incertae sedis
 incertae sedis
 \emph default
  nodes is not empty.
-\end_layout
-
-\begin_layout Standard
-
-\series bold
-BDR: When multiple I.S.
- taxa have been moved to the root node of a subproblem, they may be I.S.
- over the entire subproblem, and some may be I.S.
- over others in an asymmetric manner.
- Therefore, we might need to specify additional information about the original
- attachment location of the I.S.
- taxa, such as their depth.
- This only affects problems that have been decomposed.
 \end_layout
 
 \begin_layout Subsubsection
@@ -641,263 +783,27 @@ Hmm...
 
 \end_layout
 
+\begin_layout Subsubsection
+Naming taxa on the solution tree
+\end_layout
+
+\begin_layout Subsubsection
+Caveats
+\end_layout
+
+\begin_layout Standard
+When multiple I.S.
+ taxa have been moved to the root node of a subproblem, they may be I.S.
+ over the entire subproblem, and some may be I.S.
+ over others in an asymmetric manner.
+ Therefore, we might need to specify additional information about the original
+ attachment location of the I.S.
+ taxa, such as their depth.
+ This only affects problems that have been decomposed.
+\end_layout
+
 \begin_layout Subsection
 Decomposing into subproblems
-\end_layout
-
-\begin_layout Standard
-Subproblem decomposition currently involves finding taxonomy edges that
- are consistent with every input tree, inserting these edges into each input
- tree, and dividing each input tree along that edge to create two subproblems.
- If the taxon set of the input tree is entirely in the include set or entirely
- in the exclude set of the taxonomy edge, then the input tree will not be
- split, but will end up in one subproblem in its entirely.
- It will then not contribute to the other subproblem.
-\end_layout
-
-\begin_layout Subsubsection
-Uncontested edges in an 
-\emph on
-incertae sedis
-\emph default
- world
-\end_layout
-
-\begin_layout Standard
-Decomposition is based on the claims that
-\end_layout
-
-\begin_layout Enumerate
-non-contested taxonomy edges will certainly be included in the final tree.
-\end_layout
-
-\begin_layout Enumerate
-non-contested taxonomy edges can be inserted into each input tree, dividing
- it into two parts (one of which may be empty).
- We can then solve each of these parts separately and join them via the
- non-contested taxonomy edge.
-\end_layout
-
-\begin_layout Standard
-The first claim is a heuristic assumption that is usually true.
- We may thus enforce this condition without (we hope) producing a tree that
- is very different from the tree we would get if we did not perform subproblem
- decomposition.
- 
-\end_layout
-
-\begin_layout Standard
-The second claim is true without 
-\emph on
-incertae sedis
-\emph default
- taxa, but becomes untrue when we allow 
-\emph on
-incertae sedis
-\emph default
- taxa, because taxonomy edges do not partition 
-\emph on
-incertae sedis
-\emph default
- taxa.
- Thus they act as partitions up to, but not beyond, the issue of placement.
- 
-\end_layout
-
-\begin_layout Standard
-In order to use taxonomy edges to partition subproblems in the 
-\emph on
-incertae sedis
-\emph default
- world, we must 
-\emph on
-extend
-\emph default
- such taxonomy edges to partition all taxa by specifying which side of the
- edge each 
-\emph on
-incertae sedis
-\emph default
- taxon is placed on.
- Furthermore, the collection of extended edges must be mutually consistent
- in order for them to be used jointly to define subproblems.
- Thus, in order to perform a partition in the 
-\emph on
-incertae sedis
-\emph default
- world, we need a set of 
-\emph on
-extended 
-\emph default
-edges that are 
-\end_layout
-
-\begin_layout Enumerate
-uncontested (in their extended form)
-\end_layout
-
-\begin_layout Enumerate
-mutually consistent (in their extended form).
-\end_layout
-
-\begin_layout Standard
-While the original (unextended) collection of uncontested edges must be
- mutually compatible, it is possible for an extended edge to contradict
- another uncontested edge that groups two taxa 
-\begin_inset Formula $A$
-\end_inset
-
- and 
-\begin_inset Formula $B$
-\end_inset
-
- if the extended edge is extended to place 
-\begin_inset Formula $A$
-\end_inset
-
- and 
-\begin_inset Formula $B$
-\end_inset
-
- on different sides of the edge.
-\end_layout
-
-\begin_layout Subsubsection
-Simple approach
-\end_layout
-
-\begin_layout Standard
-One approach would be to extend each taxonomy edge to be compatible with
- all input trees.
- Edges that cannot be compatibly extended are discarded, since the input
- trees must either conflict with the edge, or conflict in placement of taxa
- on each side of the edge.
- All extended edges that survive this thinning procedure would be checked
- for pairwise compatibility with all other extended edges, discarding any
- edge that is incompatible with another extended edge.
- The remaining edges may be few, but should be mutually consistent, and
- could be used to divide the taxonomy into subproblems.
-\end_layout
-
-\begin_layout Subsubsection
-Extending uncontested edges to place 
-\emph on
-incertae sedis
-\emph default
- taxa
-\end_layout
-
-\begin_layout Standard
-One approach would be to extend edges to place 
-\emph on
-incertae sedis 
-\emph default
-tips if all input trees agree on which side of the edge each tip should
- go on.
- If they do 
-\emph on
-not
-\emph default
- agree, we would mark the edge as contested instead of extending it.
- By refusing to decompose along edges where different input trees disagree
- about placement, we would be punting the solution to conflicting placement
- to the subproblem solver instead of trying to solve it in the decomposer.
- This approach would probably work well if 
-\emph on
-incertae sedis
-\emph default
- taxa can be placed independently.
- 
-\end_layout
-
-\begin_layout Standard
-This becomes more complicated when we consider that 
-\emph on
-incertae sedis
-\emph default
- taxa may not be tip taxa.
- For example, we might have an 
-\emph on
-incertae sedis
-\emph default
- clade 
-\begin_inset Formula $(A,B)$
-\end_inset
-
- where 
-\begin_inset Formula $A$
-\end_inset
-
- is placed on one side of an uncontested edge and 
-\begin_inset Formula $B$
-\end_inset
-
- is placed on the other side of the edge.
- If these placements occur in a single tree, then that tree will conflict
- with the edge 
-\begin_inset Formula $(A,B)$
-\end_inset
-
-.
- However, if these placements occur in 
-\emph on
-different
-\emph default
- trees, then the above procedure would extend the uncontested edge to conflict
- with the 
-\begin_inset Formula $(A,B)$
-\end_inset
-
- edge.
- In that case, the taxonomy is ranked last, and we could simply mark the
- 
-\begin_inset Formula $(A,B)$
-\end_inset
-
- edge as contested.
- When collapsing an edge to an 
-\emph on
-incertae sedis
-\emph default
- taxon, we can preserve the correct information about taxon floating by
- marking all the children of the removed 
-\emph on
-incertae sedis
-\emph default
- node as 
-\emph on
-incertae sedis
-\emph default
-, except that this makes the children if 
-\emph on
-incertae sedis
-\emph default
- taxa able to float into each other.
- Thus, contesting 
-\emph on
-incertae sedis
-\emph default
- taxa makes this much more complicated...
-\end_layout
-
-\begin_layout Standard
-Now, if the 
-\begin_inset Formula $(A,B)$
-\end_inset
-
- grouping occurs in an input tree, then I think we will simply mark the
- edge that is extended to have 
-\begin_inset Formula $A$
-\end_inset
-
- and 
-\begin_inset Formula $B$
-\end_inset
-
- on different sides as contested.
- That would be best.
- Huh.
- This might actually work.
 \end_layout
 
 \begin_layout Subsubsection
@@ -1664,7 +1570,7 @@ This is not proved - expand and check
 
 \begin_layout Standard
 If this does work, then it is hopeful that this would decrease the number
- of subproblems too much.
+ of sub-problems too much.
  It seems like it might be OK, since we already contest edges result from
  alternative placement of non-
 \emph on
