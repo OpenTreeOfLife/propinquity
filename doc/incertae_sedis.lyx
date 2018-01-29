@@ -2093,11 +2093,12 @@ Actually we do not need to change annotation as long as we are not running
 \emph on
 is
 \emph default
- a (almost) run of conflict analysis on the synthesis tree.
+ a (almost) run of conflict analysis on the taxonomy tree.
 \end_layout
 
 \begin_layout Standard
-However, we would like to be able to do this.
+However, we would like to be able to run conflict analysis for input trees
+ against the synth tree and the taxonomy tree.
 \end_layout
 
 \begin_layout Subsubsection
@@ -2109,7 +2110,7 @@ Get induced trees on intersection of leaf sets
 \end_layout
 
 \begin_layout Enumerate
-Compute depth
+Compute depth for each node (nd->depth)
 \end_layout
 
 \begin_layout Enumerate
@@ -2154,11 +2155,11 @@ leaves1 <- get the list of leaves in the include group of
 \end_layout
 
 \begin_layout Enumerate
-L2 <- find the total number of tips
+L2 <- find the total number of tips (L2 = sum [nd->n_tips| nd <- leaves1])
 \end_layout
 
 \begin_layout Enumerate
-leaves2 <- get list of corresponding leaves (in synth)
+leaves2 <- get list of corresponding synth leaf nodes (in synth)
 \end_layout
 
 \begin_layout Enumerate
@@ -2166,7 +2167,8 @@ nodes <- find all nodes between leaves2 and the MRCA (in synth)
 \end_layout
 
 \begin_layout Enumerate
-MRCA <- mrca of leaves2 (in synth)
+MRCA <- mrca of leaves2 (in synth.
+ this uses the nd->depth annotation)
 \end_layout
 
 \begin_layout Enumerate
