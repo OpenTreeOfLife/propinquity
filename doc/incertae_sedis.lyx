@@ -3000,5 +3000,57 @@ incertae sedis
  on the taxonomy.
 \end_layout
 
+\begin_layout Standard
+Secondly, I think we need to distinguish 
+\emph on
+incertae sedis
+\emph default
+ taxa that are 
+\begin_inset Quotes eld
+\end_inset
+
+unplaced
+\begin_inset Quotes erd
+\end_inset
+
+ from 
+\emph on
+incertae sedis
+\emph default
+ taxa that do not occur in any input tree.
+ I think that if 
+\begin_inset Formula $A$
+\end_inset
+
+ contains child 
+\begin_inset Formula $A_{1}$
+\end_inset
+
+ that is an input tree, and the taxon 
+\begin_inset Formula $A$
+\end_inset
+
+ is not broken, then 
+\begin_inset Formula $A$
+\end_inset
+
+ will be placed, and thus any other children 
+\begin_inset Formula $A_{2},A_{3},\ldots,A_{n}$
+\end_inset
+
+ will also be placed, since they will be added as children of the (placed)
+ node 
+\begin_inset Formula $A$
+\end_inset
+
+ by the unpruner.
+ This could be considered when deciding which nodes to suppress in the tree
+ viewer.
+\end_layout
+
+\begin_layout Standard
+
+\end_layout
+
 \end_body
 \end_document
