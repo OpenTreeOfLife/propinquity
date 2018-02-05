@@ -160,6 +160,52 @@ Introduction
 Incertae sedis taxa can result from taxonomy merging
 \end_layout
 
+\begin_layout Standard
+There is a section in the taxonomy paper about how incertae sedis taxa can
+ result, not only from being marked 
+\emph on
+incertae sedis
+\emph default
+, but also because sometimes when we add a taxon from taxonomy 
+\begin_inset Formula $T_{2}$
+\end_inset
+
+ to taxonomy 
+\begin_inset Formula $T_{1}$
+\end_inset
+
+, there is not only one unique place to put it.
+ Jonathan said that his code marks the taxon incertae sedis in such cases.
+\end_layout
+
+\begin_layout Subsection
+Container nodes
+\end_layout
+
+\begin_layout Standard
+Some taxonomies have nodes with names like 
+\begin_inset Quotes eld
+\end_inset
+
+Incertae sedis (Bacteria)
+\begin_inset Quotes erd
+\end_inset
+
+.
+ Such nodes are called containers.
+ They indicate that each child node is an 
+\emph on
+incertae sedis
+\emph default
+ child of the container node's parent.
+ The OTT retains container nodes with the 
+\emph on
+was_container
+\emph default
+ flag, but seems to have already moved all of the container's children to
+ the container's parent.
+\end_layout
+
 \begin_layout Section
 Interpretation of 
 \emph on
@@ -380,34 +426,6 @@ This would not rule out placing B as sister to
 .
 \end_layout
 
-\begin_layout Subsection
-Containers
-\end_layout
-
-\begin_layout Standard
-Some taxonomies have nodes with names like 
-\begin_inset Quotes eld
-\end_inset
-
-Incertae sedis (Bacteria)
-\begin_inset Quotes erd
-\end_inset
-
-.
- Such nodes are called containers.
- They indicate that each child node is an 
-\emph on
-incertae sedis
-\emph default
- child of the container node's parent.
- The OTT retains container nodes with the 
-\emph on
-was_container
-\emph default
- flag, but seems to have already moved all of the container's children to
- the container's parent.
-\end_layout
-
 \begin_layout Section
 Handling 
 \emph on
@@ -563,318 +581,7 @@ incertae sedis
 \end_layout
 
 \begin_layout Subsection
-Subproblem solution
-\end_layout
-
-\begin_layout Standard
-Our sub-problem solver naturally handles 
-\emph on
-incertae sedis
-\emph default
- taxa.
- This is because we define the semantics of 
-\emph on
-incertae sedis
-\emph default
- taxa in terms of partial splits, and our solver natively supports building
- trees from partial splits through its use of the BUILD algorithm.
- Handling 
-\emph on
-incertae sedis
-\emph default
- taxa thus requires reading in incertae sedis information and computing
- partial splits for incertae sedis taxa before solving a sub-problem.
- After solving a sub-problem, we must apply taxon names from the taxonomy
- tree to the sub-problem solution tree.
- The solution tree is considered to a fixed tree and not to have any 
-\emph on
-incertae sedis
-\emph default
- nodes, or any other forms of uncertainty.
-\end_layout
-
-\begin_layout Subsubsection
-Reading incertae sedis information
-\end_layout
-
-\begin_layout Standard
-Currently, we read the 
-\emph on
-incertae sedis
-\emph default
- information as a list of OTT ids for 
-\emph on
-incertae sedis
-\emph default
- taxa.
- This does not require adding further annotations to the node names.
- Only taxonomy nodes can be 
-\emph on
-incertae sedis
-\emph default
- at the moment, and only the taxonomy tree for the subproblem contains OTT
- ids for internal nodes.
- Therefore we handle 
-\emph on
-incertae sedis
-\emph default
- information by constructing modified split sets for the lowest-ranked tree
- when the list of 
-\emph on
-incertae sedis
-\emph default
- nodes is not empty.
-\end_layout
-
-\begin_layout Subsubsection
-Exclude sets modified by 
-\emph on
-incertae sedis
-\emph default
- marks
-\end_layout
-
-\begin_layout Standard
-Equation (
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "eq:exclude-set-formula"
-
-\end_inset
-
-) leads to the algorithm to compute the exclude set for all nodes in a tree.
-\end_layout
-
-\begin_layout Enumerate
-Set the exclude set of the root node to be empty
-\end_layout
-
-\begin_layout Enumerate
-For each 
-\emph on
-node
-\emph default
- (except the root) in preorder
-\end_layout
-
-\begin_deeper
-\begin_layout Itemize
-combine the 
-\emph on
-exclude
-\emph default
- set of the parent node with the 
-\emph on
-include
-\emph default
- set of non-
-\emph on
-incertae-sedis
-\emph default
- siblings.
-\end_layout
-
-\begin_layout Itemize
-store this set in a hash, with key 
-\emph on
-node
-\end_layout
-
-\end_deeper
-\begin_layout Standard
-This is currently implemented in 
-\emph on
-otc-solve-subproblem
-\emph default
-.
- We store the sets as 
-\emph on
-std::set
-\emph default
-.
-\begin_inset Note Note
-status collapsed
-
-\begin_layout Subsubsection
-Should the solution tree 
-\emph on
-also
-\emph default
- have incertae sedis taxa?
-\end_layout
-
-\begin_layout Plain Layout
-It would be nice if the solution tree could have 
-\emph on
-incertae sedis
-\emph default
- taxa.
- Specifically, it would be nice to be able to reproduce the input in the
- case where the input consists only of a taxonomy (subproblem) with 
-\emph on
-incertae sedis
-\emph default
- taxa.
-\end_layout
-
-\begin_layout Plain Layout
-In general, we should be able to assign splits from the subproblem trees
- to edges in the solution tree, although this assignment will not be unique.
- Labeling solution edges with splits in this way will identify cases where
- the split associated with an edge is a partial split, and we can float
- sibling subtrees across the edge.
- When a node can float all the way to the tips of all of its siblings
-\begin_inset Foot
-status collapsed
-
-\begin_layout Plain Layout
-Or, all of its non-
-\emph on
-incertae sedis
-\emph default
- siblings, if we disallow floating across 
-\emph on
-incertae sedis
-\emph default
- branches
-\end_layout
-
-\end_inset
-
-, we could label such a node 
-\emph on
-incertae sedis
-\emph default
- in the solution.
- Such a node may not have an OTT name.
-\end_layout
-
-\begin_layout Plain Layout
-When the problems are 
-\emph on
-sub
-\emph default
-problems, an issue arises about whether a node can float to the tips of
- its sibling subtrees after these subtrees are extended by grafting.
- 
-\series bold
-BDR: Would this always be possible if the node was originally an 
-\emph on
-incertae sedis
-\emph default
- taxonomy node?
-\end_layout
-
-\begin_layout Plain Layout
-Hmm...
- I was initially thinking that an incertae sedis taxon could get further
- placed but remain incertae sedis.
- For example, suppose we have a taxon that is incertae sedis within Vertebrata.
- Could an input tree place this taxon within Mammals, but not say where?
- I guess this could happen if the input tree had Theria and Prototheria
- as tip children.
- In that case, then the input tree could include a polytomy (which would
- place the taxon in Mammals), or could place the taxon on (say) the Theria
- edge, which would exclude it from Prototheria.
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Subsubsection
-Naming taxa on the solution tree
-\end_layout
-
-\begin_layout Subsubsection
-Caveats
-\end_layout
-
-\begin_layout Standard
-When multiple I.S.
- taxa have been moved to the root node of a subproblem, they may be I.S.
- over the entire subproblem, and some may be I.S.
- over others in an asymmetric manner.
- Therefore, we might need to specify additional information about the original
- attachment location of the I.S.
- taxa, such as their depth.
- This only affects problems that have been decomposed.
-\end_layout
-
-\begin_layout Subsection
 Decomposing into subproblems
-\end_layout
-
-\begin_layout Subsubsection
-Example A
-\end_layout
-
-\begin_layout Standard
-OK, so suppose we have
-\end_layout
-
-\begin_layout Itemize
-cd|e, ac|d, bd|c, ab|cde
-\end_layout
-
-\begin_deeper
-\begin_layout Itemize
-OK, so in this case ab|cde conflicts with a lot of edges.
- In synth, it would just be not included.
- In analysis for contesting, it seems like ac|d and bd|c should be contested.
-\end_layout
-
-\end_deeper
-\begin_layout Itemize
-cd|e, ac|d, ab|cde, bd|c
-\end_layout
-
-\begin_deeper
-\begin_layout Itemize
-OK, so in this case, it seems like bd|c contests ac|d and ab|cde
-\end_layout
-
-\end_deeper
-\begin_layout Itemize
-cd|e, ab|cde, ac|d, bd|c
-\end_layout
-
-\begin_deeper
-\begin_layout Itemize
-bd|c conflicts with abc|de
-\end_layout
-
-\end_deeper
-\begin_layout Standard
-These cases seem complicated, but in fact in all cases the edge 
-\begin_inset Formula $cd|e$
-\end_inset
-
- is not really contested.
- It is just the 
-\emph on
-other
-\emph default
- edges.
- And, in fact, we seem justified in concluding 
-\begin_inset Formula $abcd|e$
-\end_inset
-
- in all cases.
- This is an extension of 
-\begin_inset Formula $cd|e$
-\end_inset
-
- to place 
-\begin_inset Formula $a$
-\end_inset
-
- and 
-\begin_inset Formula $b$
-\end_inset
-
- tipward of it.
 \end_layout
 
 \begin_layout Subsubsection
@@ -1580,6 +1287,251 @@ incertae sedis
 \end_layout
 
 \begin_layout Subsection
+Subproblem solution
+\end_layout
+
+\begin_layout Standard
+Our sub-problem solver naturally handles 
+\emph on
+incertae sedis
+\emph default
+ taxa.
+ This is because we define the semantics of 
+\emph on
+incertae sedis
+\emph default
+ taxa in terms of partial splits, and our solver natively supports building
+ trees from partial splits through its use of the BUILD algorithm.
+ Handling 
+\emph on
+incertae sedis
+\emph default
+ taxa thus requires reading in incertae sedis information and computing
+ partial splits for incertae sedis taxa before solving a sub-problem.
+ After solving a sub-problem, we must apply taxon names from the taxonomy
+ tree to the sub-problem solution tree.
+ The solution tree is considered to a fixed tree and not to have any 
+\emph on
+incertae sedis
+\emph default
+ nodes, or any other forms of uncertainty.
+\end_layout
+
+\begin_layout Subsubsection
+Reading incertae sedis information
+\end_layout
+
+\begin_layout Standard
+Currently, we read the 
+\emph on
+incertae sedis
+\emph default
+ information as a list of OTT ids for 
+\emph on
+incertae sedis
+\emph default
+ taxa.
+ This does not require adding further annotations to the node names.
+ Only taxonomy nodes can be 
+\emph on
+incertae sedis
+\emph default
+ at the moment, and only the taxonomy tree for the subproblem contains OTT
+ ids for internal nodes.
+ Therefore we handle 
+\emph on
+incertae sedis
+\emph default
+ information by constructing modified split sets for the lowest-ranked tree
+ when the list of 
+\emph on
+incertae sedis
+\emph default
+ nodes is not empty.
+\end_layout
+
+\begin_layout Subsubsection
+Exclude sets modified by 
+\emph on
+incertae sedis
+\emph default
+ marks
+\end_layout
+
+\begin_layout Standard
+Equation (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:exclude-set-formula"
+
+\end_inset
+
+) leads to the algorithm to compute the exclude set for all nodes in a tree.
+\end_layout
+
+\begin_layout Enumerate
+Set the exclude set of the root node to be empty
+\end_layout
+
+\begin_layout Enumerate
+For each 
+\emph on
+node
+\emph default
+ (except the root) in preorder
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+combine the 
+\emph on
+exclude
+\emph default
+ set of the parent node with the 
+\emph on
+include
+\emph default
+ set of non-
+\emph on
+incertae-sedis
+\emph default
+ siblings.
+\end_layout
+
+\begin_layout Itemize
+store this set in a hash, with key 
+\emph on
+node
+\end_layout
+
+\end_deeper
+\begin_layout Standard
+This is currently implemented in 
+\emph on
+otc-solve-subproblem
+\emph default
+.
+ We store the sets as 
+\emph on
+std::set
+\emph default
+.
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Subsubsection
+Should the solution tree 
+\emph on
+also
+\emph default
+ have incertae sedis taxa?
+\end_layout
+
+\begin_layout Plain Layout
+It would be nice if the solution tree could have 
+\emph on
+incertae sedis
+\emph default
+ taxa.
+ Specifically, it would be nice to be able to reproduce the input in the
+ case where the input consists only of a taxonomy (subproblem) with 
+\emph on
+incertae sedis
+\emph default
+ taxa.
+\end_layout
+
+\begin_layout Plain Layout
+In general, we should be able to assign splits from the subproblem trees
+ to edges in the solution tree, although this assignment will not be unique.
+ Labeling solution edges with splits in this way will identify cases where
+ the split associated with an edge is a partial split, and we can float
+ sibling subtrees across the edge.
+ When a node can float all the way to the tips of all of its siblings
+\begin_inset Foot
+status collapsed
+
+\begin_layout Plain Layout
+Or, all of its non-
+\emph on
+incertae sedis
+\emph default
+ siblings, if we disallow floating across 
+\emph on
+incertae sedis
+\emph default
+ branches
+\end_layout
+
+\end_inset
+
+, we could label such a node 
+\emph on
+incertae sedis
+\emph default
+ in the solution.
+ Such a node may not have an OTT name.
+\end_layout
+
+\begin_layout Plain Layout
+When the problems are 
+\emph on
+sub
+\emph default
+problems, an issue arises about whether a node can float to the tips of
+ its sibling subtrees after these subtrees are extended by grafting.
+ 
+\series bold
+BDR: Would this always be possible if the node was originally an 
+\emph on
+incertae sedis
+\emph default
+ taxonomy node?
+\end_layout
+
+\begin_layout Plain Layout
+Hmm...
+ I was initially thinking that an incertae sedis taxon could get further
+ placed but remain incertae sedis.
+ For example, suppose we have a taxon that is incertae sedis within Vertebrata.
+ Could an input tree place this taxon within Mammals, but not say where?
+ I guess this could happen if the input tree had Theria and Prototheria
+ as tip children.
+ In that case, then the input tree could include a polytomy (which would
+ place the taxon in Mammals), or could place the taxon on (say) the Theria
+ edge, which would exclude it from Prototheria.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection
+Naming taxa on the solution tree
+\end_layout
+
+\begin_layout Standard
+I currently place all taxonomy names on the solution tree.
+ What is the method?
+\end_layout
+
+\begin_layout Subsubsection
+Caveats
+\end_layout
+
+\begin_layout Standard
+When multiple I.S.
+ taxa have been moved to the root node of a subproblem, they may be I.S.
+ over the entire subproblem, and some may be I.S.
+ over others in an asymmetric manner.
+ Therefore, we might need to specify additional information about the original
+ attachment location of the I.S.
+ taxa, such as their depth.
+ This only affects problems that have been decomposed.
+\end_layout
+
+\begin_layout Subsection
 Annotations
 \end_layout
 
@@ -2101,8 +2053,27 @@ However, we would like to be able to run conflict analysis for input trees
  against the synth tree and the taxonomy tree.
 \end_layout
 
+\begin_layout Subsection
+Conflict service
+\end_layout
+
+\begin_layout Standard
+The current conflict algorithm is pretty fast, but it works by classifying
+ tips into either (i) the include group or (ii) the exclude group.
+ I suspect that if we want to handle incertae sedies, we'd need a third
+ category (iii) for 
+\begin_inset Quotes eld
+\end_inset
+
+neither include group nor exclude group
+\begin_inset Quotes erd
+\end_inset
+
+.
+\end_layout
+
 \begin_layout Subsubsection
-Conflict algorithm
+Current conflict algorithm
 \end_layout
 
 \begin_layout Enumerate
@@ -2215,5 +2186,17 @@ if there are no conflicts, then this is a resolved_by.
 
 \end_deeper
 \end_deeper
+\begin_layout Section
+Discussion
+\end_layout
+
+\begin_layout Standard
+One thing we could do (perhaps) that we are not currently doing, is to have
+ nodes marked as incertae sedis on the synth tree.
+ This would be easy enough if such nodes are not affected in any way by
+ the input trees.
+ Not sure 
+\end_layout
+
 \end_body
 \end_document
