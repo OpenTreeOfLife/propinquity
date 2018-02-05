@@ -1290,8 +1290,7 @@ cleaned taxonomy
 \emph on
 incertae sedis
 \emph default
- taxa in input trees are no longer pruned, while also removing  tons of
- 
+ taxa in input trees are no longer pruned, while also removing tons of 
 \emph on
 incertae sedis
 \emph default
@@ -1349,7 +1348,7 @@ Additionally, it should also be possible filter unplaced taxa in the tree
 \end_layout
 
 \begin_layout Subsection
-Subproblem decomposition
+Sub-problem decomposition
 \end_layout
 
 \begin_layout Standard
@@ -2199,7 +2198,8 @@ reference "eq:exclude-set-formula"
 
 \end_inset
 
-) leads to the algorithm to compute the exclude set for all nodes in a tree.
+) leads to the following algorithm to compute the exclude set for all nodes
+ in a tree.
 \end_layout
 
 \begin_layout Enumerate
@@ -2239,7 +2239,7 @@ node
 
 \end_deeper
 \begin_layout Standard
-This is currently implemented in 
+This algorithm is currently implemented in 
 \emph on
 otc-solve-subproblem
 \emph default
@@ -2455,7 +2455,9 @@ incertae sedis
 \begin_layout Standard
 
 \series bold
-BDR: 
+BDR:
+\emph on
+ 
 \series default
 we might get this behavior in a nice an automatic way if we create a single
  fake leaf for each monotypic taxonomy node that holds the node's leaf label.
@@ -2485,6 +2487,80 @@ BDR:
 \emph on
 currently we don't actually move taxa to get them into a subproblem.
  So, is this even an issue?
+\end_layout
+
+\begin_layout Subsection
+Unpruning
+\end_layout
+
+\begin_layout Standard
+Currently the unpruner 
+\emph on
+does not
+\emph default
+ require that the OTT ids are named in the grafted solution before unpruning
+ starts.
+ According to Mark's document, he wasn't sure if such names were generated
+ for nodes that had an IS taxon placed inside of them, so otc-unprune-solution-a
+nd-name-unnamed nodes throws away all the names and generates them itself.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+BDR
+\series default
+: 
+\emph on
+Mark's paragraph about how the un-pruner works should go here.
+ 
+\end_layout
+
+\begin_layout Standard
+The unpruner should record when unpruned nodes are 
+\emph on
+incertae sedis
+\emph default
+.
+ Such nodes are unaffected by phylogenies, and so 
+\emph on
+incertae sedis
+\emph default
+ annotations for them make good sense.
+\end_layout
+
+\begin_layout Subsection
+Labelled supertree
+\end_layout
+
+\begin_layout Standard
+
+\emph on
+Question:
+\emph default
+ Does the synthesis tree contain any 
+\emph on
+incertae sedis
+\emph default
+ groups?
+\begin_inset Newline newline
+\end_inset
+
+
+\emph on
+Answer:
+\emph default
+ The grafted supertree will not contain any 
+\emph on
+incertae sedis
+\emph default
+ groups.
+ However, when we attach pruned nodes to a parent in the grafted supertree,
+ we could mark such nodes 
+\emph on
+incertae sedis
+\emph default
+ if we want.
 \end_layout
 
 \begin_layout Subsection
@@ -2612,80 +2688,6 @@ Adding incertae sedis info would complicate performing conflict analysis
 \end_layout
 
 \begin_layout Subsection
-Unpruning
-\end_layout
-
-\begin_layout Standard
-Currently the unpruner 
-\emph on
-does not
-\emph default
- require that the OTT ids are named in the grafted solution before unpruning
- starts.
- According to Mark's document, he wasn't sure if such names were generated
- for nodes that had an IS taxon placed inside of them, so otc-unprune-solution-a
-nd-name-unnamed nodes throws away all the names and generates them itself.
-\end_layout
-
-\begin_layout Standard
-
-\series bold
-BDR
-\series default
-: 
-\emph on
-Mark's paragraph about how the un-pruner works should go here.
- 
-\end_layout
-
-\begin_layout Standard
-The unpruner should record when unpruned nodes are 
-\emph on
-incertae sedis
-\emph default
-.
- Such nodes are unaffected by phylogenies, and so 
-\emph on
-incertae sedis
-\emph default
- annotations for them make good sense.
-\end_layout
-
-\begin_layout Subsection
-Labelled supertree
-\end_layout
-
-\begin_layout Standard
-
-\emph on
-Question:
-\emph default
- Does the synthesis tree contain any 
-\emph on
-incertae sedis
-\emph default
- groups?
-\begin_inset Newline newline
-\end_inset
-
-
-\emph on
-Answer:
-\emph default
- The grafted supertree will not contain any 
-\emph on
-incertae sedis
-\emph default
- groups.
- However, when we attach pruned nodes to a parent in the grafted supertree,
- we could mark such nodes 
-\emph on
-incertae sedis
-\emph default
- if we want.
-\end_layout
-
-\begin_layout Subsection
 Annotation
 \end_layout
 
@@ -2733,6 +2735,28 @@ Conflict service
 \end_layout
 
 \begin_layout Standard
+The current conflict service considers a group 
+\begin_inset Formula $A$
+\end_inset
+
+ to conflict with the taxonomy if it has an incertae sedis group 
+\begin_inset Formula $B$
+\end_inset
+
+ placed within it.
+ This doesn't affect the annotations, since taxon names are added by the
+ unpruner.
+ But it could make perfectly fine input trees incorrectly look like they
+ are the cause of broken taxa, if they contain IS taxa.
+ Thus, it would be nice to have a modified conflict algorithm.
+ 
+\end_layout
+
+\begin_layout Subsubsection
+Current conflict algorithm
+\end_layout
+
+\begin_layout Standard
 The current conflict algorithm is pretty fast, but it works by classifying
  tips into either (i) the include group or (ii) the exclude group.
  I suspect that if we want to handle incertae sedies, we'd need a third
@@ -2745,10 +2769,6 @@ neither include group nor exclude group
 \end_inset
 
 .
-\end_layout
-
-\begin_layout Subsubsection
-Current conflict algorithm
 \end_layout
 
 \begin_layout Enumerate
@@ -2861,6 +2881,105 @@ if there are no conflicts, then this is a resolved_by.
 
 \end_deeper
 \end_deeper
+\begin_layout Subsubsection
+Modified conflict algorithm?
+\end_layout
+
+\begin_layout Standard
+This probably is outside the scope of the paper, but if we could come up
+ with a modified conflict algorithm, that would be nice/useful, and probably
+ novel.
+ It would also probably be slower...
+\end_layout
+
+\begin_layout Section
+Results
+\end_layout
+
+\begin_layout Standard
+Should we do this? We could say: 
+\end_layout
+
+\begin_layout Itemize
+we placed 
+\begin_inset Formula $x$
+\end_inset
+
+ incertae sedis taxa.
+\end_layout
+
+\begin_layout Itemize
+we avoiding breaking 
+\begin_inset Formula $y$
+\end_inset
+
+ taxa that had IS taxa placed inside them.
+\end_layout
+
+\begin_layout Itemize
+we allowed 
+\begin_inset Formula $z_{1}$
+\end_inset
+
+ new taxa into the synthesis tree that were incertae sedis.
+\end_layout
+
+\begin_layout Itemize
+we allowed 
+\begin_inset Formula $z_{2}$
+\end_inset
+
+ new taxa into the synthesis tree that are marked as extinct.
+\end_layout
+
+\begin_layout Itemize
+some nodes have as many as 
+\begin_inset Formula $w$
+\end_inset
+
+
+\emph on
+ incertae sedis
+\emph default
+ children, making them unbrowseable when incertae sedis children are not
+ excluded.
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $v_{1}$
+\end_inset
+
+ input trees w were previously excluded 
+\emph on
+entirely
+\emph default
+ because they are nested within in an incertae sedis taxon.
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $v_{2}$
+\end_inset
+
+ input trees w were previously excluded 
+\emph on
+partially
+\emph default
+ because they are nested within in an incertae sedis taxon.
+\end_layout
+
+\begin_layout Standard
+Currently the numbers 
+\begin_inset Formula $z_{1}$
+\end_inset
+
+ and 
+\begin_inset Formula $z_{2}$
+\end_inset
+
+.
+ 
+\end_layout
+
 \begin_layout Section
 Discussion
 \end_layout
@@ -2870,7 +2989,15 @@ One thing we could do (perhaps) that we are not currently doing, is to have
  nodes marked as incertae sedis on the synth tree.
  This would be easy enough if such nodes are not affected in any way by
  the input trees.
- Not sure 
+ Thus, when unpruning nodes we could mark any nodes 
+\emph on
+incertae sedis
+\emph default
+ if they were marked 
+\emph on
+incertae sedis
+\emph default
+ on the taxonomy.
 \end_layout
 
 \end_body
