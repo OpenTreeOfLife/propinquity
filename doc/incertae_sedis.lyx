@@ -157,23 +157,23 @@ Introduction
 \end_layout
 
 \begin_layout Standard
-Incertae sedis taxa within a taxonomy are taxa that we don't quite know
- where they go.
- If they are a child of 
-\begin_inset Formula $P$
-\end_inset
-
-, then they must be of lower rank than 
-\begin_inset Formula $P$
-\end_inset
-
-, but may be placed within any of their sibling taxa.
+Incertae sedis taxa within a taxonomy are taxa that might attach anywhere
+ within one of their siblings.
+ These arise in practice when we know that something is, say within 
+\emph on
+Fungi
+\emph default
+, but we don't know where it goes.
  We describe an extension of our previous synthesis procedure that is able
- to place incertae sedis taxa into sister taxa without considering those
- sister taxa to be broken.
- The sister taxa are then updated to contain the placed taxon.
+ to place 
+\emph on
+incertae sedis
+\emph default
+ taxa into sister taxa without considering those sister taxa to be broken.
  The ability to place taxa without breaking their containing taxa enables
  us to include thousands of new taxa that were previously filtered.
+ It also enables us to use phylogenetic trees to update the taxonomy by
+ extending taxa to include incertae sedis taxa places within them.
  This makes substantial progress towards our goal of complete representation
  of taxa.
  It also enable us to include extinct taxa, since many of these taxa are
@@ -185,8 +185,8 @@ Incertae sedis taxa can result from taxonomy merging
 \end_layout
 
 \begin_layout Standard
-Not all incertae sedis taxa are directly labelled as incertae sedis by taxonomis
-ts.
+Not all incertae sedis taxa are directly labeled as incertae sedis by taxonomist
+s.
  Incertae sedis taxa can also result from automatic merging of taxonomies
  to create the OpenTree taxonomy.
  There is a section in the taxonomy paper about how incertae sedis taxa
@@ -239,8 +239,65 @@ Formalism
 \end_layout
 
 \begin_layout Standard
-The taxonomy tree is extended to contain incertae sedis taxa.
- Input phylogenies do not have incertae sedis taxa.
+We consider a ranked collection 
+\begin_inset Formula $T_{1},\ldots,T_{n}$
+\end_inset
+
+ of input trees and a single taxonomy tree 
+\begin_inset Formula $R$
+\end_inset
+
+.
+ We have a set of labels 
+\begin_inset Formula $\mathcal{L}$
+\end_inset
+
+ that correspond to taxon names.
+ Therefore taxonomy node has a label, and every label correspond to a unique
+ taxonomy node.
+\end_layout
+
+\begin_layout Standard
+In contrast, input phylogenies only have labels on their leaf nodes, and
+ the set of labels 
+\begin_inset Formula $\mathcal{L}(i)$
+\end_inset
+
+ on input tree 
+\begin_inset Formula $T_{i}$
+\end_inset
+
+ need not include all leaf labels, and in practice always contains only
+ a relatively small part of 
+\begin_inset Formula $\mathcal{L}$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+We extend this framework by adding a set 
+\begin_inset Formula $\mathcal{I}\subseteq\mathcal{L}$
+\end_inset
+
+ of labels that have the 
+\emph on
+incertae sedis 
+\emph default
+property.
+ The taxonomy consists of the labels 
+\begin_inset Formula $\mathcal{L}$
+\end_inset
+
+, the taxonomy tree 
+\begin_inset Formula $R$
+\end_inset
+
+, and the incertae sedis property 
+\begin_inset Formula $\mathcal{I}$
+\end_inset
+
+ of taxon names.
 \end_layout
 
 \begin_layout Section
@@ -641,6 +698,92 @@ Conflict with incertae sedis taxa
 \end_layout
 
 \begin_layout Standard
+The addition of incertae sedis taxa allows new types of conflict between
+ input trees.
+ For example, different input trees might place an incertae sedis tax in
+ conflicting locations.
+ This is illustrated in Figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:placement-example1"
+
+\end_inset
+
+, where the IS taxon (ott7,ott6)ott10 is placed as sister to ott1 by phylogeny
+ 
+\begin_inset Formula $\tau_{1}$
+\end_inset
+
+ and as sister ott3 by phylogeny 
+\begin_inset Formula $\tau_{2}$
+\end_inset
+
+.
+ 
+\end_layout
+
+\begin_layout Standard
+When this happens, the placement of the IS taxon is not influenced by its
+ being marked IS on the taxonomy.
+ 
+\end_layout
+
+\begin_layout Subsubsection
+Example B
+\end_layout
+
+\begin_layout Itemize
+Uncontested edge wx|y
+\end_layout
+
+\begin_layout Itemize
+IS taxon vz|wxy
+\end_layout
+
+\begin_layout Itemize
+tree 1 says vw|x
+\end_layout
+
+\begin_layout Itemize
+tree 2 says xy|z
+\end_layout
+
+\begin_layout Itemize
+optionally, tree 3 says vz|wxy
+\end_layout
+
+\begin_layout Standard
+In this case we want to conclude that the edge 
+\begin_inset Formula $wx|y$
+\end_inset
+
+ is contested by conflicting placement information.
+ And I think we want to conclude that the IS taxon is also contested by
+ placement information that would tend to break up the clade.
+\end_layout
+
+\begin_layout Subsubsection
+Example C - Nested 
+\emph on
+incertae sedis
+\emph default
+ taxa
+\end_layout
+
+\begin_layout Standard
+We could have a clade that is 
+\emph on
+incertae sedis
+\emph default
+.
+ One of its descendant nodes could also be marked 
+\emph on
+incertae sedis
+\emph default
+.
+\end_layout
+
+\begin_layout Standard
 \begin_inset Note Note
 status open
 
@@ -822,61 +965,6 @@ incertae sedis
 
 \begin_layout Subsection
 Decomposing into subproblems
-\end_layout
-
-\begin_layout Subsubsection
-Example B
-\end_layout
-
-\begin_layout Itemize
-Uncontested edge wx|y
-\end_layout
-
-\begin_layout Itemize
-IS taxon vz|wxy
-\end_layout
-
-\begin_layout Itemize
-tree 1 says vw|x
-\end_layout
-
-\begin_layout Itemize
-tree 2 says xy|z
-\end_layout
-
-\begin_layout Itemize
-optionally, tree 3 says vz|wxy
-\end_layout
-
-\begin_layout Standard
-In this case we want to conclude that the edge 
-\begin_inset Formula $wx|y$
-\end_inset
-
- is contested by conflicting placement information.
- And I think we want to conclude that the IS taxon is also contested by
- placement information that would tend to break up the clade.
-\end_layout
-
-\begin_layout Subsubsection
-Example C - Nested 
-\emph on
-incertae sedis
-\emph default
- taxa
-\end_layout
-
-\begin_layout Standard
-We could have a clade that is 
-\emph on
-incertae sedis
-\emph default
-.
- One of its descendant nodes could also be marked 
-\emph on
-incertae sedis
-\emph default
-.
 \end_layout
 
 \begin_layout Subsubsection
