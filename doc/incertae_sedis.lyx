@@ -152,6 +152,12 @@ incertae sedis
  taxa in propinquity
 \end_layout
 
+\begin_layout Standard
+See document 
+\emph on
+otcera/master/doc/handling-incertae-sedis.pdf
+\end_layout
+
 \begin_layout Section
 Introduction
 \end_layout
@@ -3046,10 +3052,6 @@ incertae sedis
  by the unpruner.
  This could be considered when deciding which nodes to suppress in the tree
  viewer.
-\end_layout
-
-\begin_layout Standard
-
 \end_layout
 
 \end_body
