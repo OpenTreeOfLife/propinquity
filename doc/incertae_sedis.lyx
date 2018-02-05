@@ -697,6 +697,10 @@ incertae sedis
 Conflict with incertae sedis taxa
 \end_layout
 
+\begin_layout Subsubsection
+Conflicting placement among input trees
+\end_layout
+
 \begin_layout Standard
 The addition of incertae sedis taxa allows new types of conflict between
  input trees.
@@ -725,31 +729,73 @@ reference "fig:placement-example1"
 \begin_layout Standard
 When this happens, the placement of the IS taxon is not influenced by its
  being marked IS on the taxonomy.
+ Thus, in Example 1, the higher ranked tree 
+\begin_inset Formula $\tau_{1}$
+\end_inset
+
+ will be reflected in the synthesis tree, ott10 will be placed as sister
+ to ott1.
+ In contrast, the conflicting placement in 
+\begin_inset Formula $\tau_{2}$
+\end_inset
+
+ will not be reflected in the synth tree.
  
+\end_layout
+
+\begin_layout Standard
+All this would occur in the previous version of propinquity.
+ Where the updated version differs that (a) the names ott9 and ott8 are
+ retained instead of being dropped.
+ (b) as a result of not breaking ott8 and ott9, we do not move ott3 and
+ ott2 up to ott11.
+ [BDR: Extend more figures!]
 \end_layout
 
 \begin_layout Subsubsection
 Example B
 \end_layout
 
-\begin_layout Itemize
-Uncontested edge wx|y
+\begin_layout Standard
+However, incertae sedis taxa are not always tip nodes, but may themselves
+ contain other taxa.
+ In such cases, it is possible for input trees to conflict with the incertae
+ sedis taxon itself.
+ For example, consider the following example
 \end_layout
 
 \begin_layout Itemize
-IS taxon vz|wxy
+Taxonomy tree ((w,x),y),(v,z)VZ,a)
 \end_layout
 
 \begin_layout Itemize
-tree 1 says vw|x
+VZ is incertae sedis
 \end_layout
 
 \begin_layout Itemize
-tree 2 says xy|z
+\begin_inset Formula $T_{1}=((v,w),x)$
+\end_inset
+
+
 \end_layout
 
 \begin_layout Itemize
-optionally, tree 3 says vz|wxy
+\begin_inset Formula $T_{2}=(x,y),z)$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+In this case, tree 
+\begin_inset Formula $T_{1}$
+\end_inset
+
+ places 
+\begin_inset Formula $v$
+\end_inset
+
+ 
 \end_layout
 
 \begin_layout Standard
