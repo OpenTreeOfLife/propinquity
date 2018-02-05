@@ -156,13 +156,41 @@ incertae sedis
 Introduction
 \end_layout
 
+\begin_layout Standard
+Incertae sedis taxa within a taxonomy are taxa that we don't quite know
+ where they go.
+ If they are a child of 
+\begin_inset Formula $P$
+\end_inset
+
+, then they must be of lower rank than 
+\begin_inset Formula $P$
+\end_inset
+
+, but may be placed within any of their sibling taxa.
+ We describe an extension of our previous synthesis procedure that is able
+ to place incertae sedis taxa into sister taxa without considering those
+ sister taxa to be broken.
+ The sister taxa are then updated to contain the placed taxon.
+ The ability to place taxa without breaking their containing taxa enables
+ us to include thousands of new taxa that were previously filtered.
+ This makes substantial progress towards our goal of complete representation
+ of taxa.
+ It also enable us to include extinct taxa, since many of these taxa are
+ incertae sedis.
+\end_layout
+
 \begin_layout Subsection
 Incertae sedis taxa can result from taxonomy merging
 \end_layout
 
 \begin_layout Standard
-There is a section in the taxonomy paper about how incertae sedis taxa can
- result, not only from being marked 
+Not all incertae sedis taxa are directly labelled as incertae sedis by taxonomis
+ts.
+ Incertae sedis taxa can also result from automatic merging of taxonomies
+ to create the OpenTree taxonomy.
+ There is a section in the taxonomy paper about how incertae sedis taxa
+ can result, not only from being marked 
 \emph on
 incertae sedis
 \emph default
@@ -206,8 +234,23 @@ was_container
  the container's parent.
 \end_layout
 
+\begin_layout Subsection
+Formalism
+\end_layout
+
+\begin_layout Standard
+The taxonomy tree is extended to contain incertae sedis taxa.
+ Input phylogenies do not have incertae sedis taxa.
+\end_layout
+
 \begin_layout Section
-Interpretation of 
+\begin_inset CommandInset label
+LatexCommand label
+name "sec:Semantics-of-incertae"
+
+\end_inset
+
+Semantics of 
 \emph on
 incertae sedis
 \emph default
@@ -406,7 +449,7 @@ With the above formulation, if an I.S.
 I^{\prime}(m) & =\begin{cases}
 m & \text{if }m\text{ is a leaf}\\
 \left[I^{\prime}(c)\big|c\in children(m),c\text{ not \emph{incertae sedis}}\right] & \text{otherwise.}
-\end{cases}\\
+\end{cases}
 \end{align*}
 
 \end_inset
@@ -427,11 +470,202 @@ This would not rule out placing B as sister to
 \end_layout
 
 \begin_layout Section
+Synthesis and conflict resolution with incertae sedis taxa
+\end_layout
+
+\begin_layout Subsection
+Placement causes broken taxa
+\end_layout
+
+\begin_layout Standard
+Synthesis with incertae sedis taxa can result in incertae sedis taxa being
+ 
+\emph on
+placed
+\emph default
+.
+ We say that an incertae sedis taxon 
+\begin_inset Formula $A$
+\end_inset
+
+ is 
+\emph on
+placed
+\emph default
+ within a sister taxon 
+\begin_inset Formula $B$
+\end_inset
+
+ in the synthesis tree if 
+\begin_inset Formula $B$
+\end_inset
+
+ is an ancestor of 
+\begin_inset Formula $A$
+\end_inset
+
+ in the synthesis tree.
+ We note that the propinquity pipeline has always been able to place taxa
+ within other taxa in theory.
+ However, without special consideration given to 
+\emph on
+naming
+\emph default
+, placing a taxon 
+\begin_inset Formula $A$
+\end_inset
+
+ within a taxon 
+\begin_inset Formula $B$
+\end_inset
+
+ would result in conflict with taxon 
+\begin_inset Formula $B$
+\end_inset
+
+ in the taxonomy.
+ In such cases, we say that taxon 
+\begin_inset Formula $B$
+\end_inset
+
+ is a broken taxon.
+ As a result, we have filtered incertae sedis taxon from the taxonomy before
+ performing synthesis, in order to avoid breaking a large number of taxa
+ when incertae sedis taxa are placed within them.
+ 
+\end_layout
+
+\begin_layout Standard
+Broken taxa have two main effects, both of which are negative.
+ First, the name 
+\begin_inset Formula $B$
+\end_inset
+
+ of the broken taxon is removed from the synthesis tree.
+ Second, conflicting edge for taxon 
+\begin_inset Formula $B$
+\end_inset
+
+ is not included in the synthesis tree.
+ This means that any children of 
+\begin_inset Formula $B$
+\end_inset
+
+ that are taxonomy-only will not be placed with the children of 
+\begin_inset Formula $B$
+\end_inset
+
+ that happen to be included in input phylogenies.
+ Instead they move towards the root and attach at the first higher-rank
+ taxon that is an ancestor of 
+\begin_inset Formula $B$
+\end_inset
+
+ but is not broken.
+\end_layout
+
+\begin_layout Subsection
+Correctly handling placement
+\end_layout
+
+\begin_layout Standard
+Thus, we seek a synthesis method that can correctly place a taxon 
+\begin_inset Formula $A$
+\end_inset
+
+ within a sister taxon 
+\begin_inset Formula $B$
+\end_inset
+
+ by attaching it as a child to a descendent 
+\begin_inset Formula $C$
+\end_inset
+
+ of 
+\begin_inset Formula $B$
+\end_inset
+
+ without breaking 
+\begin_inset Formula $C$
+\end_inset
+
+, 
+\begin_inset Formula $B$
+\end_inset
+
+ or any taxon in between them.
+ We change the semantics of names to imply, not the exclusion of all non-include
+d taxa, but only some non-included taxa, as described in section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:Semantics-of-incertae"
+
+\end_inset
+
+.
+ As a result of this change in semantics, placing an IS taxon 
+\begin_inset Formula $A$
+\end_inset
+
+ within a sister taxon 
+\begin_inset Formula $B$
+\end_inset
+
+ no longer results in conflict with 
+\begin_inset Formula $B$
+\end_inset
+
+.
+ This allows us to retain the split for 
+\begin_inset Formula $B$
+\end_inset
+
+ within the synthesis tree, so that taxonomy-only children of 
+\begin_inset Formula $B$
+\end_inset
+
+ are correctly grouped with their siblings that are referenced by the input
+ trees.
+ We may then retain the name for the no-longer-broken taxon.
+ Finally, we are then able to stop filtering 
+\emph on
+incertae sedis
+\emph default
+ taxa, so that they appear in the synthesis tree.
+ Thus, the synthesis tree is able to represent substantially more species,
+ without suffering the loss of taxa and the loss of structure.
+\end_layout
+
+\begin_layout Subsection
+Conflict with incertae sedis taxa
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+So...
+ how do we think about conflict with incertae sedis taxa.
+ Can we say that conflict about incertae sedis taxa is only about the taxonomy,
+ and not about input trees?
+\end_layout
+
+\begin_layout Plain Layout
+Types of conflict: conflict about placement
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
 Handling 
 \emph on
 incertae sedis
 \emph default
- taxa
+ taxa in the propinquity pipeline
 \end_layout
 
 \begin_layout Standard
@@ -457,11 +691,17 @@ incertae sedis
 incertae sedis
 \emph default
  taxa place inside them.
- Finally, the unpruner must be aware of 
+ The unpruner must be aware of 
 \emph on
 incertae sedis
 \emph default
- taxa (how?).
+ taxa.
+ Annotations of the tree must be aware of 
+\emph on
+incertae sedis
+\emph default
+ taxa so that it does not consider taxa broken when they have an incertae
+ sedis taxon placed inside them.
 \end_layout
 
 \begin_layout Subsection
