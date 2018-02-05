@@ -157,23 +157,53 @@ Introduction
 \end_layout
 
 \begin_layout Standard
-Incertae sedis taxa within a taxonomy are taxa that might attach anywhere
- within one of their siblings.
- These arise in practice when we know that something is, say within 
+
+\emph on
+Incertae sedis
+\emph default
+ taxa are taxa within a taxonomy that might attach anywhere within one of
+ their siblings.
+ Such taxa arise in practice when we know that something is, say, within
+ 
 \emph on
 Fungi
 \emph default
 , but we don't know where it goes.
- We describe an extension of our previous synthesis procedure that is able
- to place 
+ Such a taxon would then be attached as a child of 
+\emph on
+Fungi
+\emph default
+ but labeled as 
+\emph on
+incertae sedis
+\emph default
+, which is a Latin phrase meaning 
+\begin_inset Quotes eld
+\end_inset
+
+uncertain seat
+\begin_inset Quotes erd
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+We describe an extension of our previous supertree synthesis procedure that
+ can use phylogeny information to place 
 \emph on
 incertae sedis
 \emph default
  taxa into sister taxa without considering those sister taxa to be broken.
- The ability to place taxa without breaking their containing taxa enables
- us to include thousands of new taxa that were previously filtered.
+ The ability to place taxa within the taxonomy without breaking their containing
+ taxa enables us to include thousands of new taxa that were previously filtered
+ out to avoid broken taxa.
  It also enables us to use phylogenetic trees to update the taxonomy by
- extending taxa to include incertae sedis taxa places within them.
+ extending taxa to include 
+\emph on
+incertae sedis
+\emph default
+ taxa placed within them.
  This makes substantial progress towards our goal of complete representation
  of taxa.
  It also enable us to include extinct taxa, since many of these taxa are
@@ -185,11 +215,24 @@ Incertae sedis taxa can result from taxonomy merging
 \end_layout
 
 \begin_layout Standard
-Not all incertae sedis taxa are directly labeled as incertae sedis by taxonomist
-s.
- Incertae sedis taxa can also result from automatic merging of taxonomies
- to create the OpenTree taxonomy.
- There is a section in the taxonomy paper about how incertae sedis taxa
+Not all 
+\emph on
+incertae sedis
+\emph default
+ taxa in our taxonomy are directly labeled 
+\emph on
+incertae sedis
+\emph default
+ by taxonomists.
+ 
+\emph on
+Incertae sedis
+\emph default
+ taxa can also result from automatic merging of taxonomies to create the
+ OpenTree taxonomy.
+ 
+\series bold
+[[There is a section in the taxonomy paper about how incertae sedis taxa
  can result, not only from being marked 
 \emph on
 incertae sedis
@@ -203,7 +246,7 @@ incertae sedis
 \end_inset
 
 , there is not only one unique place to put it.
- Jonathan said that his code marks the taxon incertae sedis in such cases.
+ Jonathan said that his code marks the taxon incertae sedis in such cases.]]
 \end_layout
 
 \begin_layout Subsection
@@ -240,11 +283,11 @@ Formalism
 
 \begin_layout Standard
 We consider a ranked collection 
-\begin_inset Formula $T_{1},\ldots,T_{n}$
+\begin_inset Formula $\phyloinputs=\left\{ T_{1},\ldots,T_{n}\right\} $
 \end_inset
 
  of input trees and a single taxonomy tree 
-\begin_inset Formula $R$
+\begin_inset Formula $\taxonomy$
 \end_inset
 
 .
@@ -258,8 +301,8 @@ We consider a ranked collection
 \end_layout
 
 \begin_layout Standard
-In contrast, input phylogenies only have labels on their leaf nodes, and
- the set of labels 
+In contrast, input phylogenies only have labels on their leaf nodes.
+ Furthermore, and the set of labels 
 \begin_inset Formula $\mathcal{L}(i)$
 \end_inset
 
@@ -290,10 +333,14 @@ property.
 \end_inset
 
 , the taxonomy tree 
-\begin_inset Formula $R$
+\begin_inset Formula $\taxonomy$
 \end_inset
 
-, and the incertae sedis property 
+, and the 
+\emph on
+incertae sedis
+\emph default
+ property 
 \begin_inset Formula $\mathcal{I}$
 \end_inset
 
@@ -312,6 +359,14 @@ Semantics of
 incertae sedis
 \emph default
  taxa
+\end_layout
+
+\begin_layout Standard
+Incertae sedis taxa affect the synthesis procedure in two ways: they affect
+ what it means for a taxonomy edge to conflict with the synthesis tree,
+ and they affect what it means to place a taxon name on a particular node
+ in the synthesis tree.
+ We examine these effects in turn.
 \end_layout
 
 \begin_layout Subsection
@@ -397,7 +452,7 @@ In this case the root node stands for an edge that connects the root to
  the root's parent.
 \end_layout
 
-\begin_layout Subsection
+\begin_layout Subsubsection
 Reduced exclude sets for 
 \emph on
 incertae sedis
@@ -524,6 +579,222 @@ This would not rule out placing B as sister to
 \end_inset
 
 .
+\end_layout
+
+\begin_layout Subsection
+Naming 
+\end_layout
+
+\begin_layout Standard
+After solving a supertree (sub) problem, we need to assign taxon names to
+ the supertree nodes based on the taxonomy tree in the problem.
+ Each taxon name 
+\begin_inset Formula $n$
+\end_inset
+
+ corresponds to a split 
+\begin_inset Formula $S(n)=S(n)_{1}|S(n)_{2}$
+\end_inset
+
+ on the corresponding branch of the taxonomy tree.
+ Without 
+\emph on
+incertae sedis
+\emph default
+, such splits are always of the form 
+\begin_inset Formula $S(n)_{1}|\mathcal{L}-S(n)_{1}$
+\end_inset
+
+, but with 
+\emph on
+incertae sedis
+\emph default
+ taxa 
+\begin_inset Formula $S_{2}(n)$
+\end_inset
+
+ may be smaller than 
+\begin_inset Formula $\mathcal{L}-S(n)_{1}$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+Without 
+\emph on
+incertae sedis
+\emph default
+, each name applies to at most one node, and each node can take at most
+ one name, with the exception of monotypic taxa.
+ Thus, we may simply search the solution tree for a node that has the same
+ cluster 
+\begin_inset Formula $S(n)_{1}$
+\end_inset
+
+ and apply the name 
+\begin_inset Formula $n$
+\end_inset
+
+ to that node.
+\end_layout
+
+\begin_layout Standard
+However, in the 
+\emph on
+incertae sedis 
+\emph default
+framework we must raise the question of whether one name could apply to
+ multiple nodes, or whether multiple names could apply to one node.
+ 
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+BDR:
+\series default
+ 
+\emph on
+It is well known that monotypic taxa are indistinguishable if you consider
+ only splits on leaf labels, but are distinguishable if you consider splits
+ on all node labels.
+ It seems that some (all?) of the problems with assigning multiple names
+ to the same nodes actually comes from the fact that moving IS taxa can
+ leave the parent as a degree-2 node.
+ The fact that propinquity handles monotypic taxa indicates that we actually
+ implicitly consider all taxa to have labels.
+ It is possible that a trivial extension to the sub-problem solved could
+ thus handle monotypic taxa and issues with mapping 2 names to one node
+ with incertae sedis taxa.
+\end_layout
+
+\begin_layout Subsubsection
+Multiple nodes that fit one name
+\end_layout
+
+\begin_layout Standard
+Suppose the taxonomy is (((A1,A2)A,B)AB,C,D*) and the solution tree is (((A1,A2)
+x,D*)y,B)AB,C).
+ In this case the name 
+\begin_inset Formula $A$
+\end_inset
+
+ leads to the split S(A) = A1 A2 | B C root.
+ This name can apply to both the node x and the node y.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+Solution:
+\series default
+ In this case, we find the most tipward node and attach the name to this
+ node.
+\end_layout
+
+\begin_layout Subsubsection
+Multiple names fit a single node
+\end_layout
+
+\begin_layout Paragraph
+Example 1
+\end_layout
+
+\begin_layout Standard
+Suppose the taxonomy is (((B1,B2)B,C*)A,Y) and the input tree is (((B1,C),B2)x,Y
+) then the names A and B both to the node x.
+ In this case the names A and B are ordered.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+Case 1:
+\series default
+ If a taxon contains 2 non-IS taxa, then it cannot be identical with any
+ of its children in the synthesis tree.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+Case 2:
+\series default
+ If a taxon contains 1 non-IS taxon and 
+\begin_inset Formula $\ge1$
+\end_inset
+
+ IS taxa, then the taxon could be identical with is non-IS child in the
+ synthesis tree, if the IS taxa are placed within the child.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+Case 3:
+\series default
+ If a node contains 0 non-IS taxa and 1 IS taxon, then the IS taxa behaves
+ no differently than a non-IS taxa, since is has no siblings it could be
+ placed into.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+Case 4:
+\series default
+ If a node contains 0 non-IS taxa and 
+\begin_inset Formula $\ge2$
+\end_inset
+
+ IS taxa, then then taxon 
+\emph on
+could
+\emph default
+ be identical with a non-IS child in the synthesis tree, if all but one
+ IS children are placed with in one of the IS children.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+Solution:
+\series default
+ When we assign multiple names to the same node, then we expand the node
+ with multiple names to have monotypic parents, and assign the series of
+ names to the monotypic parents.
+ Another way of saying this is that when a node has 
+\begin_inset Formula $\le1$
+\end_inset
+
+ non-IS taxon and 
+\begin_inset Formula $\ge2$
+\end_inset
+
+ taxa then the node could become monotypic by placement of the IS taxa.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+Example 2
+\end_layout
+
+\begin_layout Standard
+If ((A1,A2)A,(B1,B2)B*,(C1,C2)C*); is the taxonomy with asterisks denoting
+ incertae sedis taxa, then the solution ((A1,A2)A,((B1,C1)mrcaB1C1,(B2,C2)mrcaB2
+C2)x); has a node x that could be called B* or C*.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+Case:
+\series default
+ If a taxa B* and C* are IS, then their tips can be intermingled in a new
+ clade x.
+ Both names would then apply.
 \end_layout
 
 \begin_layout Section
@@ -702,10 +973,13 @@ Conflicting placement among input trees
 \end_layout
 
 \begin_layout Standard
-The addition of incertae sedis taxa allows new types of conflict between
- input trees.
- For example, different input trees might place an incertae sedis tax in
- conflicting locations.
+The addition of 
+\emph on
+incertae sedis
+\emph default
+ taxa allows new types of conflict between input trees.
+ For example, different input trees might place an incertae sedis taxon
+ in conflicting locations.
  This is illustrated in Figure 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -765,47 +1039,151 @@ However, incertae sedis taxa are not always tip nodes, but may themselves
 \end_layout
 
 \begin_layout Itemize
-Taxonomy tree ((w,x),y),(v,z)VZ,a)
-\end_layout
-
-\begin_layout Itemize
-VZ is incertae sedis
-\end_layout
-
-\begin_layout Itemize
-\begin_inset Formula $T_{1}=((v,w),x)$
+\begin_inset Formula $T_{1}=((w_{1},w_{2},z_{1}),y_{1})$
 \end_inset
 
 
 \end_layout
 
 \begin_layout Itemize
-\begin_inset Formula $T_{2}=(x,y),z)$
+\begin_inset Formula $T_{2}=((y_{1},y_{2},z_{2}),w_{1})$
 \end_inset
 
 
 \end_layout
 
+\begin_layout Itemize
+Taxonomy tree 
+\begin_inset Formula $((w_{1},w_{2})w,(y_{1},y_{2})y,(z_{1},z_{2},z_{3})z)$
+\end_inset
+
+ with 
+\begin_inset Formula $z$
+\end_inset
+
+ marked 
+\emph on
+incertae sedis
+\emph default
+.
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+splits 
+\begin_inset Formula $w_{1}w_{2}|\bullet y_{1}y_{2}$
+\end_inset
+
+, 
+\begin_inset Formula $y_{1}y_{2}|\bullet w_{1}w_{2}$
+\end_inset
+
+ and 
+\begin_inset Formula $z_{1}z_{2}|\bullet w_{1}w_{2}y_{1}y_{2}$
+\end_inset
+
+
+\end_layout
+
+\end_deeper
 \begin_layout Standard
 In this case, tree 
 \begin_inset Formula $T_{1}$
 \end_inset
 
  places 
-\begin_inset Formula $v$
+\begin_inset Formula $z_{1}$
 \end_inset
 
+ within 
+\begin_inset Formula $w$
+\end_inset
+
+, while 
+\begin_inset Formula $T_{2}$
+\end_inset
+
+ places 
+\begin_inset Formula $z_{2}$
+\end_inset
+
+ within 
+\begin_inset Formula $y$
+\end_inset
+
+.
+ Since different members of 
+\begin_inset Formula $z$
+\end_inset
+
+ are placed, neither placement for 
+\begin_inset Formula $z$
+\end_inset
+
+ is rejected.
+ Instead the taxon 
+\begin_inset Formula $z$
+\end_inset
+
+ is broken, the name 
+\begin_inset Formula $z$
+\end_inset
+
+ disappears, and 
+\begin_inset Formula $z_{3}$
+\end_inset
+
+ floats to the top level.
  
 \end_layout
 
 \begin_layout Standard
-In this case we want to conclude that the edge 
-\begin_inset Formula $wx|y$
+Furthermore, since taxon 
+\begin_inset Formula $z$
 \end_inset
 
- is contested by conflicting placement information.
- And I think we want to conclude that the IS taxon is also contested by
- placement information that would tend to break up the clade.
+ is a broken 
+\emph on
+incertae sedis 
+\emph default
+taxon, all of its children are effectively incertae sedis independently.
+ Therefore, the names 
+\begin_inset Formula $w$
+\end_inset
+
+ and 
+\begin_inset Formula $y$
+\end_inset
+
+ are not lost, since the taxa placed within them are 
+\emph on
+incertae sedis
+\emph default
+ names.
+ Note that 
+\begin_inset Formula $z_{3}$
+\end_inset
+
+ maybe therefore be placed in a third location, since it is also 
+\emph on
+incertae sedis
+\emph default
+.
+\end_layout
+
+\begin_layout Standard
+The situation here would be different if the monophyly of 
+\begin_inset Formula $z$
+\end_inset
+
+ was supported by an input phylogeny.
+\end_layout
+
+\begin_layout Standard
+
+\emph on
+Note that the synthesis of all input trees before the taxonomy is unaffected
+ by incertae sedis information.
 \end_layout
 
 \begin_layout Subsubsection
@@ -817,36 +1195,15 @@ incertae sedis
 \end_layout
 
 \begin_layout Standard
-We could have a clade that is 
+In addition to incertae sedis taxa containing other taxa, it is also possible
+ for incertae sedis taxa to contain nested 
 \emph on
 incertae sedis
 \emph default
-.
- One of its descendant nodes could also be marked 
-\emph on
-incertae sedis
-\emph default
-.
-\end_layout
-
-\begin_layout Standard
-\begin_inset Note Note
-status open
-
-\begin_layout Plain Layout
-So...
- how do we think about conflict with incertae sedis taxa.
- Can we say that conflict about incertae sedis taxa is only about the taxonomy,
- and not about input trees?
-\end_layout
-
-\begin_layout Plain Layout
-Types of conflict: conflict about placement
-\end_layout
-
-\end_inset
-
-
+ taxa.
+ 
+\series bold
+What issues might this raise?
 \end_layout
 
 \begin_layout Section
@@ -891,6 +1248,104 @@ incertae sedis
 \emph default
  taxa so that it does not consider taxa broken when they have an incertae
  sedis taxon placed inside them.
+\end_layout
+
+\begin_layout Subsection
+Exemplifying taxa
+\end_layout
+
+\begin_layout Standard
+One current problem important taxa like Fungi of Mammalia tend to have a
+ very large number of incertae sedis children, making browsing in the tree
+ viewer difficult.
+ This can happen when, for example, fossils or other hard-to-place taxa
+ get classified only to the level of these important nodes and no further.
+ This leads to a situation where well-known taxa serve as a dumping ground
+ for unplaced taxa.
+\end_layout
+
+\begin_layout Standard
+Our current approach to this problem is to perform a second round of pruning,
+ or 
+\begin_inset Quotes eld
+\end_inset
+
+cleaning
+\begin_inset Quotes erd
+\end_inset
+
+, during the exemplification step.
+ Incertae sedis taxa are pruned at this stage if they do not occur in any
+ input trees.
+ We thus generate a second 
+\begin_inset Quotes eld
+\end_inset
+
+cleaned taxonomy
+\begin_inset Quotes erd
+\end_inset
+
+ that has undergone this further round of cleaning.
+ This approach improves on the previous approach in that 
+\emph on
+incertae sedis
+\emph default
+ taxa in input trees are no longer pruned, while also removing  tons of
+ 
+\emph on
+incertae sedis
+\emph default
+ taxa from nodes like 
+\begin_inset Quotes eld
+\end_inset
+
+Fungi
+\begin_inset Quotes erd
+\end_inset
+
+, where a lot of unplaced fossils with few observable characters have been
+ dumped.
+ 
+\end_layout
+
+\begin_layout Standard
+However, this approach has the negative effect of pruning some incertae
+ sedis taxa that need not be pruned.
+ For example, suppose 
+\emph on
+incertae sedis
+\emph default
+ taxon 
+\begin_inset Formula $A$
+\end_inset
+
+ contains 5 children, of which only 1 child 
+\begin_inset Formula $A_{1}$
+\end_inset
+
+ occurs in an input tree.
+ If the taxon 
+\begin_inset Formula $A$
+\end_inset
+
+ is not broken, then it should be possible to attach the other 4 members
+ of 
+\begin_inset Formula $A$
+\end_inset
+
+ next to 
+\begin_inset Formula $A_{1}$
+\end_inset
+
+, without cluttering up the synthesis tree.
+ Such taxa have been successfully placed even though they are not in any
+ input tree.
+ This can only be discovered after synthesis is complete, though.
+\end_layout
+
+\begin_layout Standard
+Additionally, it should also be possible filter unplaced taxa in the tree
+ viewer instead of in the synthesis pipeline.
 \end_layout
 
 \begin_layout Subsection
@@ -1680,8 +2135,12 @@ incertae sedis
 \emph on
 incertae sedis
 \emph default
- taxa thus requires reading in incertae sedis information and computing
- partial splits for incertae sedis taxa before solving a sub-problem.
+ taxa thus requires loading incertae sedis information and computing partial
+ splits for 
+\emph on
+incertae sedis
+\emph default
+ taxa before solving a sub-problem.
  After solving a sub-problem, we must apply taxon names from the taxonomy
  tree to the sub-problem solution tree.
  The solution tree is considered to a fixed tree and not to have any 
@@ -1882,12 +2341,124 @@ Hmm...
 \end_layout
 
 \begin_layout Subsubsection
-Naming taxa on the solution tree
+Implementation: finding the node for a name
 \end_layout
 
 \begin_layout Standard
-I currently place all taxonomy names on the solution tree.
- What is the method?
+To find the node for a name 
+\begin_inset Formula $n$
+\end_inset
+
+, we find the MRCA of the cluster 
+\begin_inset Formula $S_{1}(n)$
+\end_inset
+
+.
+ If the MRCA excludes the entire exclude group 
+\begin_inset Formula $S_{2}(n)$
+\end_inset
+
+ then the name applies to the MRCA; otherwise the taxon does not exist on
+ the tree.
+\end_layout
+
+\begin_layout Subsubsection
+Implementation: handling name clashes
+\end_layout
+
+\begin_layout Standard
+When multiple names 
+\begin_inset Formula $N=\{n_{1},\ldots n_{N}\}$
+\end_inset
+
+ map to the same solution node 
+\begin_inset Formula $x$
+\end_inset
+
+, then these names must satisfy some tree structure on the taxonomy, such
+ that 
+\begin_inset Formula $n_{1}<n_{2}$
+\end_inset
+
+ if 
+\begin_inset Formula $n_{1}$
+\end_inset
+
+ is a descendant of 
+\begin_inset Formula $n_{2}$
+\end_inset
+
+ in the taxonomy.
+ If it is possible to find a name 
+\begin_inset Formula $n_{max}$
+\end_inset
+
+ that is the unique maximal element of 
+\begin_inset Formula $N$
+\end_inset
+
+, then it is permissible to 
+\end_layout
+
+\begin_layout Enumerate
+create a monotypic parent 
+\begin_inset Formula $p(x)$
+\end_inset
+
+ of 
+\begin_inset Formula $x$
+\end_inset
+
+, and assign 
+\begin_inset Formula $n_{max}$
+\end_inset
+
+ to 
+\begin_inset Formula $p(x)$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Enumerate
+continue handling name clashes at 
+\begin_inset Formula $x$
+\end_inset
+
+ with the set of possible names reduced to 
+\begin_inset Formula $N-n_{max}$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+However, its certainly possible that there might not be any such 
+\begin_inset Formula $N_{max}$
+\end_inset
+
+, in which case we could just choose a name for 
+\begin_inset Formula $x$
+\end_inset
+
+ from 
+\begin_inset Formula $N$
+\end_inset
+
+ (perhaps not an 
+\emph on
+incertae sedis
+\emph default
+ name) and then record all the other names as equivalents somewhere.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+BDR: 
+\series default
+we might get this behavior in a nice an automatic way if we create a single
+ fake leaf for each monotypic taxonomy node that holds the node's leaf label.
 \end_layout
 
 \begin_layout Subsubsection
@@ -1903,6 +2474,17 @@ When multiple I.S.
  attachment location of the I.S.
  taxa, such as their depth.
  This only affects problems that have been decomposed.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+BDR:
+\series default
+ 
+\emph on
+currently we don't actually move taxa to get them into a subproblem.
+ So, is this even an issue?
 \end_layout
 
 \begin_layout Subsection
@@ -2030,320 +2612,30 @@ Adding incertae sedis info would complicate performing conflict analysis
 \end_layout
 
 \begin_layout Subsection
-Naming 
-\end_layout
-
-\begin_layout Standard
-After solving a supertree (sub) problem, we need to assign taxon names to
- the supertree nodes based on the taxonomy tree in the problem.
- Each taxon name 
-\begin_inset Formula $n$
-\end_inset
-
- corresponds to a split 
-\begin_inset Formula $S(n)=S(n)_{1}|S(n)_{2}$
-\end_inset
-
- on the corresponding branch of the taxonomy tree.
- Without 
-\emph on
-incertae sedis
-\emph default
-, such splits are always of the form 
-\begin_inset Formula $S(n)_{1}|\mathcal{L}-S(n)_{1}$
-\end_inset
-
-, but with 
-\emph on
-incertae sedis
-\emph default
- taxa 
-\begin_inset Formula $S_{2}(n)$
-\end_inset
-
- may be smaller than 
-\begin_inset Formula $\mathcal{L}-S(n)_{1}$
-\end_inset
-
-.
-\end_layout
-
-\begin_layout Standard
-Without 
-\emph on
-incertae sedis
-\emph default
-, each name applies to at most one node, and each node can take at most
- one name, with the exception of monotypic taxa.
- Thus, we may simply search the solution tree for a node that has the same
- cluster 
-\begin_inset Formula $S(n)_{1}$
-\end_inset
-
- and apply the name 
-\begin_inset Formula $n$
-\end_inset
-
- to that node.
-\end_layout
-
-\begin_layout Standard
-However, in the 
-\emph on
-incertae sedis 
-\emph default
-framework we must raise the question of whether one name could apply to
- multiple nodes, or whether multiple names could apply to one node.
- 
-\end_layout
-
-\begin_layout Subsubsection
-Multiple nodes that fit one name
-\end_layout
-
-\begin_layout Standard
-Suppose the taxonomy is (((A1,A2)A,B)AB,C,D*) and the solution tree is (((A1,A2)
-x,D*)y,B)AB,C).
- In this case the name 
-\begin_inset Formula $A$
-\end_inset
-
- leads to the split S(A) = A1 A2 | B C root.
- This name can apply to both the node x and the node y.
-\end_layout
-
-\begin_layout Standard
-
-\series bold
-Solution:
-\series default
- In this case, we find the most tipward node and attach the name to this
- node.
-\end_layout
-
-\begin_layout Subsubsection
-Multiple names fit a single node
-\end_layout
-
-\begin_layout Paragraph
-Example 1
-\end_layout
-
-\begin_layout Standard
-Suppose the taxonomy is (((B1,B2)B,C*)A,Y) and the input tree is (((B1,C),B2)x,Y
-) then the names A and B both to the node x.
- In this case the names A and B are ordered.
-\end_layout
-
-\begin_layout Standard
-
-\series bold
-Case 1:
-\series default
- If a taxon contains 2 non-IS taxa, then it cannot be identical with any
- of its children in the synthesis tree.
-\end_layout
-
-\begin_layout Standard
-
-\series bold
-Case 2:
-\series default
- If a taxon contains 1 non-IS taxon and 
-\begin_inset Formula $\ge1$
-\end_inset
-
- IS taxa, then the taxon could be identical with is non-IS child in the
- synthesis tree, if the IS taxa are placed within the child.
-\end_layout
-
-\begin_layout Standard
-
-\series bold
-Case 3:
-\series default
- If a node contains 0 non-IS taxa and 1 IS taxon, then the IS taxa behaves
- no differently than a non-IS taxa, since is has no siblings it could be
- placed into.
-\end_layout
-
-\begin_layout Standard
-
-\series bold
-Case 4:
-\series default
- If a node contains 0 non-IS taxa and 
-\begin_inset Formula $\ge2$
-\end_inset
-
- IS taxa, then then taxon 
-\emph on
-could
-\emph default
- be identical with a non-IS child in the synthesis tree, if all but one
- IS children are placed with in one of the IS children.
-\end_layout
-
-\begin_layout Standard
-
-\series bold
-Solution:
-\series default
- When we assign multiple names to the same node, then we expand the node
- with multiple names to have monotypic parents, and assign the series of
- names to the monotypic parents.
- Another way of saying this is that when a node has 
-\begin_inset Formula $\le1$
-\end_inset
-
- non-IS taxon and 
-\begin_inset Formula $\ge2$
-\end_inset
-
- taxa then the node could become monotypic by placement of the IS taxa.
-\end_layout
-
-\begin_layout Standard
-
-\series bold
-Example 2
-\end_layout
-
-\begin_layout Standard
-If ((A1,A2)A,(B1,B2)B*,(C1,C2)C*); is the taxonomy with asterisks denoting
- incertae sedis taxa, then the solution ((A1,A2)A,((B1,C1)mrcaB1C1,(B2,C2)mrcaB2
-C2)x); has a node x that could be called B* or C*.
-\end_layout
-
-\begin_layout Standard
-
-\series bold
-Case:
-\series default
- If a taxa B* and C* are IS, then their tips can be intermingled in a new
- clade x.
- Both names would then apply.
-\end_layout
-
-\begin_layout Subsubsection
-Implementation: finding the node for a name
-\end_layout
-
-\begin_layout Standard
-To find the node for a name 
-\begin_inset Formula $n$
-\end_inset
-
-, we find the MRCA of the cluster 
-\begin_inset Formula $S_{1}(n)$
-\end_inset
-
-.
- If the MRCA excludes the entire exclude group 
-\begin_inset Formula $S_{2}(n)$
-\end_inset
-
- then the name applies to the MRCA; otherwise the taxon does not exist on
- the tree.
-\end_layout
-
-\begin_layout Subsubsection
-Implementation: handling name clashes
-\end_layout
-
-\begin_layout Standard
-When multiple names 
-\begin_inset Formula $N=\{n_{1},\ldots n_{N}\}$
-\end_inset
-
- map to the same solution node 
-\begin_inset Formula $x$
-\end_inset
-
-, then these names must satisfy some tree structure on the taxonomy, such
- that 
-\begin_inset Formula $n_{1}<n_{2}$
-\end_inset
-
- if 
-\begin_inset Formula $n_{1}$
-\end_inset
-
- is a descendant of 
-\begin_inset Formula $n_{2}$
-\end_inset
-
- in the taxonomy.
- If it is possible to find a name 
-\begin_inset Formula $n_{max}$
-\end_inset
-
- that is the unique maximal element of 
-\begin_inset Formula $N$
-\end_inset
-
-, then it is permissible to 
-\end_layout
-
-\begin_layout Enumerate
-create a monotypic parent 
-\begin_inset Formula $p(x)$
-\end_inset
-
- of 
-\begin_inset Formula $x$
-\end_inset
-
-, and assign 
-\begin_inset Formula $n_{max}$
-\end_inset
-
- to 
-\begin_inset Formula $p(x)$
-\end_inset
-
-
-\end_layout
-
-\begin_layout Enumerate
-continue handling name clashes at 
-\begin_inset Formula $x$
-\end_inset
-
- with the set of possible names reduced to 
-\begin_inset Formula $N-n_{max}$
-\end_inset
-
-.
-\end_layout
-
-\begin_layout Standard
-However, its certainly possible that there might not be any such 
-\begin_inset Formula $N_{max}$
-\end_inset
-
-, in which case we could just choose a name for 
-\begin_inset Formula $x$
-\end_inset
-
- from 
-\begin_inset Formula $N$
-\end_inset
-
- (perhaps not an 
-\emph on
-incertae sedis
-\emph default
- name) and then record all the other names as equivalents somewhere.
-\end_layout
-
-\begin_layout Subsection
 Unpruning
 \end_layout
 
 \begin_layout Standard
-Currently the unpruner might require that the OTT ids are named in the grafted
- solution before unpruning starts.
+Currently the unpruner 
+\emph on
+does not
+\emph default
+ require that the OTT ids are named in the grafted solution before unpruning
+ starts.
+ According to Mark's document, he wasn't sure if such names were generated
+ for nodes that had an IS taxon placed inside of them, so otc-unprune-solution-a
+nd-name-unnamed nodes throws away all the names and generates them itself.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+BDR
+\series default
+: 
+\emph on
+Mark's paragraph about how the un-pruner works should go here.
+ 
 \end_layout
 
 \begin_layout Standard
@@ -2352,7 +2644,11 @@ The unpruner should record when unpruned nodes are
 incertae sedis
 \emph default
 .
- In combination with the 
+ Such nodes are unaffected by phylogenies, and so 
+\emph on
+incertae sedis
+\emph default
+ annotations for them make good sense.
 \end_layout
 
 \begin_layout Subsection
@@ -2399,7 +2695,12 @@ The synthesis tree itself does not currently have
 incertae sedis 
 \emph default
 groups.
- Furthermore, the primary goal is to avoid excluding 
+ It should though, for those nodes that were incertae sedis in the synthesis
+ tree and have not been placed anywhere.
+\end_layout
+
+\begin_layout Standard
+Furthermore, the primary goal is to avoid excluding 
 \emph on
 incertae sedis
 \emph default
