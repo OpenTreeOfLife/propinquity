@@ -152,29 +152,19 @@ incertae sedis
  taxa in propinquity
 \end_layout
 
-\begin_layout Standard
-See document 
-\emph on
-otcera/master/doc/handling-incertae-sedis.pdf
-\end_layout
-
 \begin_layout Section
 Introduction
 \end_layout
 
 \begin_layout Standard
-
+The phrase “
 \emph on
-Incertae sedis
+incertae sedis
 \emph default
- taxa are taxa within a taxonomy that might attach anywhere within one of
- their siblings.
- Such taxa arise in practice when we know that something is, say, within
- 
-\emph on
-Fungi
-\emph default
-, but we don't know where it goes.
+” is used in classifications to indicate that a group is of uncertain taxonomic
+ placement.
+ Such groups arise in practice when they are classified within a parent
+ group, such as Fungi, but the precise location within the group is uncertain.
  Such a taxon would then be attached as a child of 
 \emph on
 Fungi
@@ -217,11 +207,147 @@ incertae sedis
 \end_layout
 
 \begin_layout Subsection
-Incertae sedis taxa can result from taxonomy merging
+Some examples in OTT
+\begin_inset Foot
+status collapsed
+
+\begin_layout Plain Layout
+This paragraph pulled from intro to otcetera/doc/handling-incertae-sedis.pdf
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
-Not all 
+The problem is becoming more acute because NCBI is putting a larger number
+ of taxa into groups that are marked as “unclassified.” For example, when
+ OTT 2.9 was created NCBI’s clasification of the bird family Sylvidae included
+ a group five genera that were placed within “
+\begin_inset CommandInset href
+LatexCommand href
+name "unclassified Sylviidae"
+target "http://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?mode=Undef&id=36270&lvl=3&lin=f&keep=1&srchmode=1&unlock"
+
+\end_inset
+
+.” This includes the genus Regulus.
+ Thus in OTT 2.9 Regulus (ott ID = 3599326) is placed inside the family Silvidae
+ (OTT ID = 259942).
+ The “unclassified Sylviidae” does not appear in OTT; instead Regulus is
+ flagged as “unclassified,sibling higher” and all of the species within
+ Regulus are flagged as “unclassified inherited.”
+\end_layout
+
+\begin_layout Standard
+The taxonomy (as of version 2.9) also contains 685 cases of taxa that are
+ flagged as both “unclassified inherited” and “unclassified”
+\begin_inset Foot
+status collapsed
+
+\begin_layout Plain Layout
+based on 
+\family typewriter
+grep unclass.*unclassified
+\backslash
+_inherited taxonomy.tsv
+\end_layout
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+We would like to stop suppressing (pruning) incertae sedis taxa, so that
+ groups such as Regulus can appear appear in the synthetic tree.
+\end_layout
+
+\begin_layout Subsection
+Incertae sedis taxa in taxonomies
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+Flags.
+
+\series default
+ The Open Tree’s reference taxonomy is produced by a tool called smasher
+ that notices hints that a taxon is incertae sedis and labels that taxon
+ with one of five flags
+\begin_inset Foot
+status collapsed
+
+\begin_layout Plain Layout
+see 
+\begin_inset Flex URL
+status collapsed
+
+\begin_layout Plain Layout
+
+https://github.com/OpenTreeOfLife/reference-taxonomy/wiki/Taxon-flags
+\end_layout
+
+\end_inset
+
+.This document is not concerned with the flagging system 
+\emph on
+per se
+\emph default
+, so “
+\emph on
+incertae sedis
+\emph default
+” will be used here to refer to all of the flags that denote taxa with uncertain
+ placement.
+\end_layout
+
+\end_inset
+
+.
+ 1 While a taxonomist may intend to use incertae sedis to indicate a limited
+ number of possible positions for a taxon to go in the taxonomy, we do not
+ retain any such details.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+Container nodes.
+
+\series default
+ Some taxonomies have nodes with names like 
+\begin_inset Quotes eld
+\end_inset
+
+Incertae sedis (Bacteria)
+\begin_inset Quotes erd
+\end_inset
+
+.
+ Such nodes are called containers.
+ They indicate that each child node is an 
+\emph on
+incertae sedis
+\emph default
+ child of the container node's parent.
+ The OTT retains container nodes with the 
+\emph on
+was_container
+\emph default
+ flag, but seems to have already moved all of the container's children to
+ the container's parent.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+Taxonomy merging.
+
+\series default
+ Not all 
 \emph on
 incertae sedis
 \emph default
@@ -253,34 +379,6 @@ incertae sedis
 
 , there is not only one unique place to put it.
  Jonathan said that his code marks the taxon incertae sedis in such cases.]]
-\end_layout
-
-\begin_layout Subsection
-Container nodes
-\end_layout
-
-\begin_layout Standard
-Some taxonomies have nodes with names like 
-\begin_inset Quotes eld
-\end_inset
-
-Incertae sedis (Bacteria)
-\begin_inset Quotes erd
-\end_inset
-
-.
- Such nodes are called containers.
- They indicate that each child node is an 
-\emph on
-incertae sedis
-\emph default
- child of the container node's parent.
- The OTT retains container nodes with the 
-\emph on
-was_container
-\emph default
- flag, but seems to have already moved all of the container's children to
- the container's parent.
 \end_layout
 
 \begin_layout Subsection
@@ -2516,10 +2614,9 @@ nd-name-unnamed nodes throws away all the names and generates them itself.
 \series bold
 BDR
 \series default
-: 
-\emph on
-Mark's paragraph about how the un-pruner works should go here.
- 
+: See document 
+\family typewriter
+otcetera/doc/unprune-solution-and-name-unnamed-nodes.pdf
 \end_layout
 
 \begin_layout Standard
