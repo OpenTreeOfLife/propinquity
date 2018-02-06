@@ -45,8 +45,8 @@
 \use_package stackrel 1
 \use_package stmaryrd 1
 \use_package undertilde 1
-\cite_engine basic
-\cite_engine_type default
+\cite_engine natbib
+\cite_engine_type authoryear
 \biblio_style plain
 \use_bibtopic false
 \use_indices false
@@ -161,19 +161,7 @@ The phrase “
 \emph on
 incertae sedis
 \emph default
-” is used in classifications to indicate that a group is of uncertain taxonomic
- placement.
- Such groups arise in practice when they are classified within a parent
- group, such as Fungi, but the precise location within the group is uncertain.
- Such a taxon would then be attached as a child of 
-\emph on
-Fungi
-\emph default
- but labeled as 
-\emph on
-incertae sedis
-\emph default
-, which is a Latin phrase meaning 
+”, which is a Latin phrase meaning 
 \begin_inset Quotes eld
 \end_inset
 
@@ -181,29 +169,38 @@ uncertain seat
 \begin_inset Quotes erd
 \end_inset
 
+, is used in classifications to indicate that a group is of uncertain taxonomic
+ placement.
+ Such groups arise in practice when they are classified within a parent
+ group, such as Fungi, but the precise location within the parent group
+ is uncertain.
+ Such a taxon would then be attached as a child of the parent group, but
+ labeled as 
+\emph on
+incertae sedis
+\emph default
+
+\begin_inset Quotes erd
+\end_inset
+
 .
+ 
 \end_layout
 
 \begin_layout Standard
-We describe an extension of our previous supertree synthesis procedure that
- can use phylogeny information to place 
+Currently 
 \emph on
 incertae sedis
 \emph default
- taxa into sister taxa without considering those sister taxa to be broken.
- The ability to place taxa within the taxonomy without breaking their containing
- taxa enables us to include thousands of new taxa that were previously filtered
- out to avoid broken taxa.
- It also enables us to use phylogenetic trees to update the taxonomy by
- extending taxa to include 
-\emph on
-incertae sedis
-\emph default
- taxa placed within them.
- This makes substantial progress towards our goal of complete representation
- of taxa.
- It also enable us to include extinct taxa, since many of these taxa are
- incertae sedis.
+ taxa and their descendants are excluded from the OpenTree synthetic tree.
+ This is problematic, because the OpenTree project seeks to build a comprehensiv
+e tree covering all of life.
+ However, including unplaced taxa within the current synthesis framework
+ would be equally problematic, since placement of taxa within groups is
+ currently considered to be a conflict with those groups.
+ This conflict causes both a loss of the taxon name for the conflicting
+ taxon, and a loss of structure in the synthesis tree.
+ 
 \end_layout
 
 \begin_layout Subsection
@@ -265,6 +262,46 @@ We would like to stop suppressing (pruning) incertae sedis taxa, so that
 \end_layout
 
 \begin_layout Subsection
+Handling incertae sedis taxa
+\end_layout
+
+\begin_layout Standard
+To solve this problem, we describe an extension of our previous supertree
+ synthesis procedure that can use phylogeny information to place 
+\emph on
+incertae sedis
+\emph default
+ taxa into containing taxa without considering the containing taxa to be
+ broken.
+ This extension requires that we first describe an extended semantics for
+ taxa in the presences of 
+\emph on
+incertae sedis
+\emph default
+, which is not a trivial problem.
+ We describe both an updated semantics for conflict with taxonomy edges,
+ and an updated semantics for assigning taxonomy names to nodes in the synthetic
+ tree.
+ 
+\end_layout
+
+\begin_layout Standard
+The ability to place taxa within the taxonomy without breaking their containing
+ taxa enables us to include thousands of new taxa that were previously filtered
+ out to avoid broken taxa.
+ It also enables us to use phylogenetic trees to update the taxonomy by
+ extending taxa to include 
+\emph on
+incertae sedis
+\emph default
+ taxa placed within them.
+ This makes substantial progress towards our goal of complete representation
+ of taxa.
+ It also enables us to include extinct taxa, since many of these taxa are
+ incertae sedis.
+\end_layout
+
+\begin_layout Subsection
 Incertae sedis taxa in taxonomies
 \end_layout
 
@@ -307,7 +344,7 @@ incertae sedis
 \end_inset
 
 .
- 1 While a taxonomist may intend to use incertae sedis to indicate a limited
+ While a taxonomist may intend to use incertae sedis to indicate a limited
  number of possible positions for a taxon to go in the taxonomy, we do not
  retain any such details.
 \end_layout
@@ -362,23 +399,100 @@ Incertae sedis
 \emph default
  taxa can also result from automatic merging of taxonomies to create the
  OpenTree taxonomy.
- 
-\series bold
-[[There is a section in the taxonomy paper about how incertae sedis taxa
- can result, not only from being marked 
+ For example, in Figure 3 of 
+\begin_inset CommandInset citation
+LatexCommand citet
+key "rees2017automated"
+
+\end_inset
+
+, cases #4 and #6 illustrate examples where merging of two taxonomies leads
+ to a taxonomy with a taxon of uncertain placement.
+ The reason is primarily that if taxonomy 
+\begin_inset Formula $\taxonomy_{1}$
+\end_inset
+
+ contains more levels of hierarchy than taxonomy 
+\begin_inset Formula $\taxonomy_{2}$
+\end_inset
+
+, then we must add internal nodes to 
+\begin_inset Formula $\taxonomy_{2}$
+\end_inset
+
+ to align it to 
+\begin_inset Formula $\taxonomy_{1}$
+\end_inset
+
+.
+ However, if taxonomy 
+\begin_inset Formula $\taxonomy_{2}$
+\end_inset
+
+ contains more leaves than 
+\begin_inset Formula $\taxonomy_{1}$
+\end_inset
+
+, then it is unclear if these extra leaves should be nested inside the additiona
+l internal nodes, or not.
+ Thus, the extra leaves are marked 
 \emph on
 incertae sedis
 \emph default
-, but also because sometimes when we add a taxon from taxonomy 
-\begin_inset Formula $T_{2}$
+.
+\end_layout
+
+\begin_layout Standard
+For example, if 
+\begin_inset Formula $\taxonomy_{1}=((a,b)x,(c,d)y)z$
 \end_inset
 
- to taxonomy 
-\begin_inset Formula $T_{1}$
+ and 
+\begin_inset Formula $\taxonomy_{2}=(a,b,c,d,e)z$
 \end_inset
 
-, there is not only one unique place to put it.
- Jonathan said that his code marks the taxon incertae sedis in such cases.]]
+ then 
+\begin_inset Formula $a$
+\end_inset
+
+ and 
+\begin_inset Formula $b$
+\end_inset
+
+ in 
+\begin_inset Formula $\taxonomy_{2}$
+\end_inset
+
+ should be nested within 
+\begin_inset Formula $x$
+\end_inset
+
+, but we do not know if 
+\begin_inset Formula $e$
+\end_inset
+
+ should be nested within 
+\begin_inset Formula $x$
+\end_inset
+
+ or not.
+ Thus we obtain 
+\begin_inset Formula $((a,b)x,(c,d)y,?e)z$
+\end_inset
+
+, where 
+\begin_inset Formula $?$
+\end_inset
+
+ indicates that taxon 
+\begin_inset Formula $e$
+\end_inset
+
+ is marked 
+\emph on
+incertae sedis
+\emph default
+.
 \end_layout
 
 \begin_layout Subsection
@@ -470,7 +584,7 @@ Incertae sedis taxa affect the synthesis procedure in two ways: they affect
  what it means for a taxonomy edge to conflict with the synthesis tree,
  and they affect what it means to place a taxon name on a particular node
  in the synthesis tree.
- We examine these effects in turn.
+ We examine each of these effects in turn.
 \end_layout
 
 \begin_layout Subsection
@@ -569,7 +683,7 @@ Marking a taxon as
 \emph on
 incertae sedis
 \emph default
- changes the meaning if its sibling subtrees.
+ changes the meaning of its sibling taxa.
  Since the 
 \emph on
 incertae sedis
@@ -643,34 +757,89 @@ Alternative formulation
 \end_layout
 
 \begin_layout Standard
-With the above formulation, if an I.S.
- clade A is more rootward than an I.S.
- clade B, and then A is placed sister to B, then B could not be placed within
- A.
- Thus, an alternative formulation of 
-\begin_inset Formula $\mathcal{E}(n)$
+Consider an I.S.
+ clade 
+\begin_inset Formula $A$
 \end_inset
 
- could include 
-\begin_inset Formula $\mathcal{I}^{\prime}(m)$
+ that is more rootward than an I.S.
+ clade 
+\begin_inset Formula $B$
 \end_inset
 
- where excludes tip taxa that are incertae_sedis_inherited within 
+.
+ With the above formulation, we could not place 
+\begin_inset Formula $A$
+\end_inset
+
+ as sister to 
+\begin_inset Formula $B$
+\end_inset
+
+ and then place 
+\begin_inset Formula $B$
+\end_inset
+
+ within 
+\begin_inset Formula $A$
+\end_inset
+
+, because 
+\begin_inset Formula $A$
+\end_inset
+
+ excludes 
+\begin_inset Formula $B$
+\end_inset
+
+.
+ To solve this problem, we could modify formula (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:exclude-set-formula"
+
+\end_inset
+
+) above to avoid excluding 
+\family typewriter
+incertae_sedis_inherited
+\family default
+ tips of a sister taxon 
 \begin_inset Formula $m$
 \end_inset
 
 .
+ Thus, we could modify formula (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:exclude-set-formula"
+
+\end_inset
+
+) to refer to 
+\begin_inset Formula $\mathcal{I}^{\prime}(m)$
+\end_inset
+
+ instead of 
+\begin_inset Formula $\mathcal{I}(m)$
+\end_inset
+
+, where 
 \begin_inset Formula 
 \begin{align*}
-I^{\prime}(m) & =\begin{cases}
+\mathcal{I}^{\prime}(m) & =\begin{cases}
 m & \text{if }m\text{ is a leaf}\\
-\left[I^{\prime}(c)\big|c\in children(m),c\text{ not \emph{incertae sedis}}\right] & \text{otherwise.}
+\left[\mathcal{I}^{\prime}(c)\big|c\in children(m),c\text{ not \emph{incertae sedis}}\right] & \text{otherwise.}
 \end{cases}
 \end{align*}
 
 \end_inset
 
-This would not rule out placing B as sister to 
+This would not rule out placing 
+\begin_inset Formula $B$
+\end_inset
+
+ as sister to 
 \begin_inset Formula $A$
 \end_inset
 
@@ -901,6 +1070,40 @@ Case:
  Both names would then apply.
 \end_layout
 
+\begin_layout Standard
+
+\series bold
+Solution:
+\series default
+ ??
+\end_layout
+
+\begin_layout Standard
+In summary, a taxon with split 
+\begin_inset Formula $A_{1}|\bullet B_{1}$
+\end_inset
+
+ attaches to the most tipward node 
+\begin_inset Formula $n$
+\end_inset
+
+ where 
+\begin_inset Formula $A_{1}\subseteq S_{1}(n)$
+\end_inset
+
+ and 
+\begin_inset Formula $B_{1}\subseteq S_{2}(n)$
+\end_inset
+
+.
+ If multiple names end up on the same node, we try to resolve the problem
+ by creating a monotypic node for a name that is more rootward than all
+ other names at that node.
+ If this fails to resolve the problem, we arbitrarily choose one of the
+ names.
+ 
+\end_layout
+
 \begin_layout Section
 Synthesis and conflict resolution with incertae sedis taxa
 \end_layout
@@ -910,35 +1113,13 @@ Placement causes broken taxa
 \end_layout
 
 \begin_layout Standard
-Synthesis with incertae sedis taxa can result in incertae sedis taxa being
- 
+Synthesis with 
 \emph on
-placed
+incertae sedis
 \emph default
-.
- We say that an incertae sedis taxon 
-\begin_inset Formula $A$
-\end_inset
-
- is 
-\emph on
-placed
-\emph default
- within a sister taxon 
-\begin_inset Formula $B$
-\end_inset
-
- in the synthesis tree if 
-\begin_inset Formula $B$
-\end_inset
-
- is an ancestor of 
-\begin_inset Formula $A$
-\end_inset
-
- in the synthesis tree.
- We note that the propinquity pipeline has always been able to place taxa
- within other taxa in theory.
+ taxa has the potential to resolve uncertain taxon placements using information
+ from phylogenies.
+ The propinquity pipeline has always been able to do this kind of resolution.
  However, without special consideration given to 
 \emph on
 naming
@@ -951,30 +1132,37 @@ naming
 \begin_inset Formula $B$
 \end_inset
 
- would result in conflict with taxon 
+ results in conflict with taxon 
 \begin_inset Formula $B$
 \end_inset
 
  in the taxonomy.
- In such cases, we say that taxon 
-\begin_inset Formula $B$
-\end_inset
-
- is a broken taxon.
- As a result, we have filtered incertae sedis taxon from the taxonomy before
- performing synthesis, in order to avoid breaking a large number of taxa
- when incertae sedis taxa are placed within them.
- 
+ In order to avoid a situation where input phylogenies conflict with a large
+ number of taxa when 
+\emph on
+incertae sedis
+\emph default
+ taxa are placed within them, we have filtered 
+\emph on
+incertae sedis
+\emph default
+ taxa from the taxonomy when constructing all prior synthesis trees.
 \end_layout
 
 \begin_layout Standard
-Broken taxa have two main effects, both of which are negative.
+When the synthesis tree conflicts with a taxonomy node, we way that the
+ taxon 
+\begin_inset Formula $B$
+\end_inset
+
+ at that node is a broken taxon.
+ Broken taxa have two main effects, both of which are negative.
  First, the name 
 \begin_inset Formula $B$
 \end_inset
 
  of the broken taxon is removed from the synthesis tree.
- Second, conflicting edge for taxon 
+ Second, the conflicting edge for taxon 
 \begin_inset Formula $B$
 \end_inset
 
@@ -987,9 +1175,10 @@ Broken taxa have two main effects, both of which are negative.
 \begin_inset Formula $B$
 \end_inset
 
- that happen to be included in input phylogenies.
- Instead they move towards the root and attach at the first higher-rank
- taxon that is an ancestor of 
+ that are mentioned in input phylogenies.
+ Instead the taxonomy-only children of a broken taxon move towards the root
+ of the synthesis tree and attach at the first higher-ranked taxon that
+ is an ancestor of 
 \begin_inset Formula $B$
 \end_inset
 
@@ -1001,31 +1190,8 @@ Correctly handling placement
 \end_layout
 
 \begin_layout Standard
-Thus, we seek a synthesis method that can correctly place a taxon 
-\begin_inset Formula $A$
-\end_inset
-
- within a sister taxon 
-\begin_inset Formula $B$
-\end_inset
-
- by attaching it as a child to a descendent 
-\begin_inset Formula $C$
-\end_inset
-
- of 
-\begin_inset Formula $B$
-\end_inset
-
- without breaking 
-\begin_inset Formula $C$
-\end_inset
-
-, 
-\begin_inset Formula $B$
-\end_inset
-
- or any taxon in between them.
+Thus, we seek a synthesis method that can correctly place taxa within containing
+ taxa without breaking the containing taxa.
  We change the semantics of names to imply, not the exclusion of all non-include
 d taxa, but only some non-included taxa, as described in section 
 \begin_inset CommandInset ref
@@ -1250,7 +1416,8 @@ Furthermore, since taxon
 \emph on
 incertae sedis 
 \emph default
-taxon, all of its children are effectively incertae sedis independently.
+taxon, all of its children are effectively incertae sedis independently,
+ with the difference that they cannot be placed within each other.
  Therefore, the names 
 \begin_inset Formula $w$
 \end_inset
@@ -1310,6 +1477,137 @@ incertae sedis
 What issues might this raise?
 \end_layout
 
+\begin_layout Subsection
+Placement
+\end_layout
+
+\begin_layout Standard
+Placement of incertae sedis taxa by input trees is unfortunately not quite
+ as simple as finding a single location where an I.S.
+ taxon should attach.
+ For example, when an incertae sedis taxon is broken, its children need
+ to be 
+\begin_inset Quotes eld
+\end_inset
+
+placed
+\begin_inset Quotes erd
+\end_inset
+
+ separately.
+\end_layout
+
+\begin_layout Standard
+Each input tree can relate to an 
+\emph on
+incertae sedis
+\emph default
+ taxon 
+\begin_inset Formula $(A,B,C)D$
+\end_inset
+
+ in a number of ways
+\end_layout
+
+\begin_layout Itemize
+it could resolve 
+\begin_inset Formula $A$
+\end_inset
+
+, 
+\begin_inset Formula $B$
+\end_inset
+
+, 
+\begin_inset Formula $C$
+\end_inset
+
+, or 
+\begin_inset Formula $D$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Itemize
+it could place 
+\begin_inset Formula $D$
+\end_inset
+
+ on a degree-2 (=out-degree-1) node that bisects a branch
+\end_layout
+
+\begin_layout Itemize
+it could place a descendant taxon of 
+\begin_inset Formula $D$
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Itemize
+it could place a descendant taxon of 
+\begin_inset Formula $D$
+\end_inset
+
+ in a 
+\emph on
+different place
+\emph default
+ than another input tree.
+\end_layout
+
+\begin_layout Itemize
+it could place children of 
+\begin_inset Formula $D$
+\end_inset
+
+ in multiple places, thus conflicting with the branch.
+ If the 
+\emph on
+incertae sedis
+\emph default
+ taxon 
+\begin_inset Formula $(A,B,C)$
+\end_inset
+
+ is broken, then 
+\begin_inset Formula $A$
+\end_inset
+
+, 
+\begin_inset Formula $B$
+\end_inset
+
+ and 
+\begin_inset Formula $C$
+\end_inset
+
+ become 
+\emph on
+incertae sedis
+\emph default
+ clades in their own right, that may attach separately, except that they
+ .
+ This is because none of 
+\begin_inset Formula $A$
+\end_inset
+
+, 
+\begin_inset Formula $B$
+\end_inset
+
+, or 
+\begin_inset Formula $C$
+\end_inset
+
+ is in the exclude set of the siblings of 
+\begin_inset Formula $D$
+\end_inset
+
+.
+\end_layout
+
 \begin_layout Section
 Handling 
 \emph on
@@ -1359,11 +1657,11 @@ Exemplifying taxa
 \end_layout
 
 \begin_layout Standard
-One current problem important taxa like Fungi of Mammalia tend to have a
- very large number of incertae sedis children, making browsing in the tree
- viewer difficult.
+One current problem is that well-known taxa like Fungi or Mammalia tend
+ to have a very large number of incertae sedis children, making browsing
+ in the tree viewer difficult.
  This can happen when, for example, fossils or other hard-to-place taxa
- get classified only to the level of these important nodes and no further.
+ get classified only to the level of these well-known nodes and no further.
  This leads to a situation where well-known taxa serve as a dumping ground
  for unplaced taxa.
 \end_layout
@@ -1394,11 +1692,12 @@ cleaned taxonomy
 \emph on
 incertae sedis
 \emph default
- taxa in input trees are no longer pruned, while also removing tons of 
+ taxa in input trees are no longer pruned.
+ This approach also removes tons of 
 \emph on
 incertae sedis
 \emph default
- taxa from nodes like 
+ children from nodes like 
 \begin_inset Quotes eld
 \end_inset
 
@@ -1447,8 +1746,8 @@ incertae sedis
 \end_layout
 
 \begin_layout Standard
-Additionally, it should also be possible filter unplaced taxa in the tree
- viewer instead of in the synthesis pipeline.
+Additionally, it should also be possible to filter unplaced taxa in the
+ tree viewer instead of in the synthesis pipeline.
 \end_layout
 
 \begin_layout Subsection
@@ -1456,151 +1755,38 @@ Sub-problem decomposition
 \end_layout
 
 \begin_layout Standard
-Our general approach to sub-problem decomposition is to mark a taxon 
-\begin_inset Formula $B$
-\end_inset
-
- as contested if input trees differ in whether 
-\begin_inset Formula $A$
-\end_inset
-
- should be placed within 
-\begin_inset Formula $B$
-\end_inset
-
-.
- By considering taxon 
-\begin_inset Formula $B$
-\end_inset
-
- contested, we avoid deciding between competing input trees at the stage
- of sub-problem decomposition.
- Instead we, post-pone this decision to the sub-problem solver.
- This results in larger sub-problems.
- Thus an 
+The presence of 
+\emph on
+incertae sedis 
+\emph default
+taxa poses a problem to sub-problem decomposition, since taxonomy edges
+ no longer completely separate subproblems.
+ Instead, 
 \emph on
 incertae sedis
 \emph default
- aware approach to uncontested taxon decomposition might move an 
-\emph on
-incertae sedis
-\emph default
- taxon 
-\begin_inset Formula $A$
-\end_inset
-
- into one of its sister taxa 
-\begin_inset Formula $B$
-\end_inset
-
- if necessary to be consistent with an input tree.
- If no lower-ranked input trees contest 
-\begin_inset Formula $B$
-\end_inset
-
- then 
-\begin_inset Formula $B$
-\end_inset
-
- can be considered uncontested, resulting in smaller sub-problems.
- However, if a later input tree attempts to place 
-\begin_inset Formula $A$
-\end_inset
-
- in a contradictory fashion, then 
-\begin_inset Formula $B$
-\end_inset
-
- will (probably) be contested, and the resolution of conflict will be performed
- by the subproblem solver
-\end_layout
-
-\begin_layout Subsubsection
-Really simple approach
-\end_layout
-
-\begin_layout Standard
-While this approach would result in more sub-problems of smaller size, we
- note that a non-IS aware sub-problem decomposer achieves nearly the same
- result except for creating larger sub-problems.
- If an input tree 
-\begin_inset Formula $\tau$
-\end_inset
-
- places an 
-\emph on
-incertae sedis
-\emph default
- taxon 
-\begin_inset Formula $A$
-\end_inset
-
- within a taxon 
-\begin_inset Formula $B$
-\end_inset
-
-, then the the non-IS-aware decomposer will consider 
-\begin_inset Formula $\tau$
-\end_inset
-
- as contesting 
-\begin_inset Formula $B$
-\end_inset
-
-.
- Thus, whenever 
-\begin_inset Formula $A$
-\end_inset
-
- is places within 
-\begin_inset Formula $B$
-\end_inset
-
-, both taxa will end up in the same subproblem.
- Likewise, if two different trees place 
-\begin_inset Formula $A$
-\end_inset
-
- down two separate paths of taxa, both paths of taxa will end up in the
- same subproblem.
- This approach has not yet created sub-problems that are too large to be
- solved for our sub-problem solver.
-\end_layout
-
-\begin_layout Subsection
-Decomposing into subproblems
-\end_layout
-
-\begin_layout Subsubsection
-What to do
-\end_layout
-
-\begin_layout Standard
-When 
-\emph on
-incertae sedis
-\emph default
- taxa are involved, we must place 
+ taxa may attach on either side of a taxonomy edge.
+ We seek to place 
 \emph on
 incertae sedis
 \emph default
  taxa into subproblems in such a way that the subproblem solver can perform
  the placement inside the subproblem.
- However, we must also handle conflicting placements of 
+ This approach postpones handling of conflict in 
+\emph on
+incertae sedis
+\emph default
+ taxa to the subproblem solver, where the problem is well formulated in
+ terms of splits.
+ However, it does have the effect of creating larger subproblems.
+\end_layout
+
+\begin_layout Standard
+We must also handle conflicting placements of 
 \emph on
 incertae sedis
 \emph default
  taxa by different input trees.
-\end_layout
-
-\begin_layout Standard
-I think we can solve this in a logically coherent way by recognizing that
- any taxonomy edges leading to conflicting placement of an 
-\emph on
-incertae sedis
-\emph default
- taxon must end up in the same subproblem (i.e.
- they must be collapsed).
  Thus, if one input tree places the 
 \emph on
 incertae sedis
@@ -1613,11 +1799,7 @@ incertae sedis
 \begin_inset Formula $((X)B)A$
 \end_inset
 
- and another input phylogeny places 
-\emph on
-incertae sedis
-\emph default
- taxon 
+ and another places 
 \begin_inset Formula $X$
 \end_inset
 
@@ -1625,7 +1807,7 @@ incertae sedis
 \begin_inset Formula $((X)C)A$
 \end_inset
 
- then we must mark the edges 
+ then we must mark both edges 
 \begin_inset Formula $B$
 \end_inset
 
@@ -1648,12 +1830,58 @@ not
 \end_layout
 
 \begin_layout Standard
-The result of such a decomposition procedure would be that the subproblem
- solver will handle any conflicting placement information.
-\end_layout
+We choose to solve these problems by merging any subproblems that an 
+\emph on
+incertae sedis
+\emph default
+ taxon might be placed in.
+ The simplest way to achieve this is simply to regard any taxon that has
+ an 
+\emph on
+incertae sedis 
+\emph default
+taxon placed within it as contested.
+ This results in marking both 
+\begin_inset Formula $B$
+\end_inset
 
-\begin_layout Subsubsection
-Example 1
+ and 
+\begin_inset Formula $C$
+\end_inset
+
+ as contested edges in the example above.
+ In fact, this is the current behaviour of the non-
+\emph on
+incertae-sedis
+\emph default
+ aware subproblem decomposer.
+ One downside of this approach is that, if we have 
+\begin_inset Formula $((X)B)A)$
+\end_inset
+
+ in one input tree, and 
+\begin_inset Formula $X$
+\end_inset
+
+ is mentioned nowhere else, then by marking 
+\begin_inset Formula $B$
+\end_inset
+
+ as contested, we are merging subproblems unnecessarily.
+ We could instead placed 
+\begin_inset Formula $X$
+\end_inset
+
+ in 
+\begin_inset Formula $B$
+\end_inset
+
+ and avoid contesting the edge 
+\begin_inset Formula $B$
+\end_inset
+
+.
+ However, this approach is more complex and does not seem necessary in practice.
 \end_layout
 
 \begin_layout Standard
@@ -1819,403 +2047,23 @@ Example.
 
 \end_inset
 
- In Figure 
+ For example, in Figure 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "fig:placement-example1"
 
 \end_inset
 
-, we can establish correspondences between branches in 
-\begin_inset Formula $\taxonomy|\tau_{1}$
-\end_inset
-
- and 
+, input tree 
 \begin_inset Formula $\tau_{1}$
 \end_inset
 
- as follows:
-\end_layout
-
-\begin_layout Standard
-\begin_inset Formula 
-\begin{align*}
-\text{ott12: }1\,2\,3\,4\,\boldsymbol{6\,7}\,|\,5 & \sim1\,2\,3\,4\,\boldsymbol{6\,7}\,|\,5\\
-\text{ott11: }1\,2\,3\,\boldsymbol{6\,7}\,|\,4\,5 & \sim1\,2\,3\,\boldsymbol{6\,7}\,|\,4\,5\\
-\text{ott9: }1\,2\,3\,|\,4\,5 & \sim1\,2\,3\,\boldsymbol{6\,7}\,|\,4\,5\\
-\text{ott8: }1\,2\,|\,3\,4\,5 & \sim1\,2\,\boldsymbol{6\,7}\,|\,3\,4\,5\\
-? & \sim1\,\boldsymbol{6\,7\,}|\,2\,3\,4\,5
-\end{align*}
-
+ contests ott9 and input tree 
+\begin_inset Formula $\tau_{2}$
 \end_inset
 
-This mapping is based on the idea that, after conflicting branches are removed
- from 
-\begin_inset Formula $\taxonomy|\tau$
-\end_inset
-
-, then its remaining splits and the splits of 
-\begin_inset Formula $\tau$
-\end_inset
-
- will be jointly compatible.
- Some of the splits of 
-\begin_inset Formula $\taxonomy|\tau$
-\end_inset
-
- can be extended using 
-\begin_inset Formula $Z$
-\end_inset
-
--closure (?).
-\end_layout
-
-\begin_layout Standard
-This is not completely clear though.
- 
-\begin_inset Formula $\tau$
-\end_inset
-
- contains only full splits, whereas splits from 
-\begin_inset Formula $\taxonomy|\tau$
-\end_inset
-
- can be partial.
- 
-\end_layout
-
-\begin_layout Subsubsection
-Example 2
-\end_layout
-
-\begin_layout Standard
-Question: Suppose that 
-\begin_inset Formula $\tau_{1}$
-\end_inset
-
- contests the 
-\emph on
-incertae sedis
-\emph default
- clade (ott6,ott7)ott9.
- What then?
-\begin_inset Newline newline
-\end_inset
-
-Answer: Any taxa with ott6 or ott7 placed into them should not be broken
- if they would have allowed ott9.
-\end_layout
-
-\begin_layout Standard
-Question: Suppose that 
-\begin_inset Formula $\tau_{1}$
-\end_inset
-
- contests the 
-\emph on
-incertae sedis
-\emph default
- clade (ott6,ott7)ott9 and attaches ott6 and ott7 separately to the ott3
- terminal edge?
-\begin_inset Newline newline
-\end_inset
-
-Answer: In this case the breaking of ott9 and the separate placement of
- ott6 and ott7 together constitute the 
-\begin_inset Quotes eld
-\end_inset
-
-placement
-\begin_inset Quotes erd
-\end_inset
-
- of ott9.
- Thus, we need to be able to represent the conflict/annotation of the taxonomy
- tree and the input tree 
-\begin_inset Formula $\tau_{1}$
-\end_inset
-
-.
-\end_layout
-
-\begin_layout Subsubsection
-Interactions between input trees and 
-\emph on
-incertae sedis
-\emph default
- taxa
-\end_layout
-
-\begin_layout Standard
-
-\emph on
-Incertae sedis
-\emph default
- nodes are features of the taxonomy.
- Each input tree can relate to an 
-\emph on
-incertae sedis
-\emph default
- taxon 
-\begin_inset Formula $(A,B,C)D$
-\end_inset
-
- in a number of ways
-\end_layout
-
-\begin_layout Itemize
-it could place a descendant taxon of 
-\begin_inset Formula $D$
-\end_inset
-
-
-\end_layout
-
-\begin_layout Itemize
-descendants of incertae sedis taxa may be placed on branches, as well as
- nodes.
- That is the taxa will probably be places on new degree-2 nodes that bisect
- branches, instead of being places on nodes.
-\end_layout
-
-\begin_layout Itemize
-it could place children of the branch in multiple places, thus conflicting
- with the branch.
- If the 
-\emph on
-incertae sedis
-\emph default
- taxon 
-\begin_inset Formula $(A,B,C)$
-\end_inset
-
- is broken, then 
-\begin_inset Formula $A$
-\end_inset
-
-, 
-\begin_inset Formula $B$
-\end_inset
-
- and 
-\begin_inset Formula $C$
-\end_inset
-
- become 
-\emph on
-incertae sedis
-\emph default
- clades in their own right, that may attach separately.
- This is because none of 
-\begin_inset Formula $A$
-\end_inset
-
-, 
-\begin_inset Formula $B$
-\end_inset
-
-, or 
-\begin_inset Formula $C$
-\end_inset
-
- is in the exclude set of the siblings of 
-\begin_inset Formula $D$
-\end_inset
-
-.
-\end_layout
-
-\begin_layout Itemize
-it could resolve 
-\begin_inset Formula $A$
-\end_inset
-
-, 
-\begin_inset Formula $B$
-\end_inset
-
-, 
-\begin_inset Formula $C$
-\end_inset
-
-, or 
-\begin_inset Formula $D$
-\end_inset
-
-.
-\end_layout
-
-\begin_layout Itemize
-it could place some descendant taxa of 
-\begin_inset Formula $D$
-\end_inset
-
- in a 
-\emph on
-different place
-\emph default
- than another input tree.
-\end_layout
-
-\begin_layout Standard
-An conflict analysis between the taxonomy 
-\begin_inset Formula $\taxonomy$
-\end_inset
-
- and an input tree 
-\begin_inset Formula $\tau$
-\end_inset
-
- should yield, for the induced tree 
-\begin_inset Formula $\taxonomy|\tau$
-\end_inset
-
-
-\end_layout
-
-\begin_layout Itemize
-which branches correspond between 
-\begin_inset Formula $\taxonomy|\tau\longleftrightarrow\tau$
-\end_inset
-
-.
-\end_layout
-
-\begin_layout Itemize
-which branches of 
-\begin_inset Formula $\taxonomy|\tau$
-\end_inset
-
- the input tree 
-\begin_inset Formula $\tau$
-\end_inset
-
- conflicts with.
-\end_layout
-
-\begin_layout Subsubsection
-Possible issue 1:
-\end_layout
-
-\begin_layout Standard
-If two siblings are 
-\emph on
-incertae sedis
-\emph default
-, then they could each be subgroups of the other.
- This means that the groups don't form a proper multi-connected tree, which
- could be problematic.
- We could therefore make 
-\emph on
-incertae sedis
-\emph default
- groups impenetrable to other 
-\emph on
-incertae sedis
-\emph default
- siblings.
-\end_layout
-
-\begin_layout Subsubsection
-Possible issue 2:
-\end_layout
-
-\begin_layout Standard
-If the decomposer places IS taxa to subproblem resolution, then their new
- placement no longer specifies exactly which taxa they float over, right?
- Suppose 
-\begin_inset Formula $X$
-\end_inset
-
- floats over 
-\begin_inset Formula $(A,B)$
-\end_inset
-
-, and 
-\begin_inset Formula $A$
-\end_inset
-
- floats over 
-\begin_inset Formula $B$
-\end_inset
-
-.
- Then if 
-\begin_inset Formula $X$
-\end_inset
-
- and 
-\begin_inset Formula $A$
-\end_inset
-
- are placed within 
-\begin_inset Formula $B$
-\end_inset
-
- within subproblem 
-\begin_inset Formula $ottid$
-\end_inset
-
-, then the fact that 
-\begin_inset Formula $X$
-\end_inset
-
- floats over 
-\begin_inset Formula $A$
-\end_inset
-
- but not 
-\emph on
-vice versa
-\emph default
- will be lost.
-\end_layout
-
-\begin_layout Subsubsection
-Possible approach
-\end_layout
-
-\begin_layout Standard
-One approach would be to modify the taxonomy to place
-\emph on
- incertae sedis 
-\emph default
-taxa when scanning input phylogenies.
- A series of input phylogenies containing taxon 
-\begin_inset Formula $X$
-\end_inset
-
- might not disagree, but might each place the taxon 
-\begin_inset Formula $X$
-\end_inset
-
- successively more tipward.
- However, when reading an input phylogeny that conflicts with the placement
- of 
-\begin_inset Formula $X$
-\end_inset
-
- resulting from previously processed input phylogenies, we would end up
- marking the branches connecting the two attachment points as conflicting
- with the most recently processed input phylogeny.
- These branches would then not be used to separate subproblems from each
- other, and would thus end up in the same subproblem.
- 
-\emph on
-This is not proved - expand and check
-\emph default
-.
-\end_layout
-
-\begin_layout Standard
-If this does work, then it is hopeful that this would decrease the number
- of sub-problems too much.
- It seems like it might be OK, since we already contest edges result from
- alternative placement of non-
-\emph on
-incertae sedis
-\emph default
- taxa.
+ contests ott9 and ott8.
+ Thus ott1, ott2, ott3, ott6, and ott7 end up in the same sub-problem.
 \end_layout
 
 \begin_layout Subsection
@@ -2594,6 +2442,40 @@ currently we don't actually move taxa to get them into a subproblem.
 \end_layout
 
 \begin_layout Subsection
+Grafted supertree
+\end_layout
+
+\begin_layout Standard
+
+\emph on
+Question:
+\emph default
+ Does the synthesis tree contain any 
+\emph on
+incertae sedis
+\emph default
+ groups?
+\begin_inset Newline newline
+\end_inset
+
+
+\emph on
+Answer:
+\emph default
+ The grafted supertree will not contain any 
+\emph on
+incertae sedis
+\emph default
+ groups.
+ However, when we attach pruned nodes to a parent in the grafted supertree,
+ we could mark such nodes 
+\emph on
+incertae sedis
+\emph default
+ if we want.
+\end_layout
+
+\begin_layout Subsection
 Unpruning
 \end_layout
 
@@ -2633,204 +2515,56 @@ incertae sedis
 \end_layout
 
 \begin_layout Subsection
-Labelled supertree
-\end_layout
-
-\begin_layout Standard
-
-\emph on
-Question:
-\emph default
- Does the synthesis tree contain any 
-\emph on
-incertae sedis
-\emph default
- groups?
-\begin_inset Newline newline
-\end_inset
-
-
-\emph on
-Answer:
-\emph default
- The grafted supertree will not contain any 
-\emph on
-incertae sedis
-\emph default
- groups.
- However, when we attach pruned nodes to a parent in the grafted supertree,
- we could mark such nodes 
-\emph on
-incertae sedis
-\emph default
- if we want.
-\end_layout
-
-\begin_layout Subsection
-Annotations
-\end_layout
-
-\begin_layout Standard
-After we allow 
-\emph on
-incertae
-\emph default
- sedis taxa in the taxonomy, the relationships of edges in the taxonomy
- to edges in each input tree become more interesting.
- Without 
-\emph on
-incertae sedis
-\emph default
- taxa, taxonomy splits always divide the full leaf set, and so we can say
- that taxonomy split 
-\begin_inset Formula $A$
-\end_inset
-
- displays an input split 
-\begin_inset Formula $B$
-\end_inset
-
- if 
-\begin_inset Formula $B_{1}\subseteq A_{1}$
-\end_inset
-
- and 
-\begin_inset Formula $B_{2}\subseteq A_{2}$
-\end_inset
-
-.
- Thus, a taxonomy split always has more information than an input split
- 
-\begin_inset Formula $B$
-\end_inset
-
- that it displays.
- However, with 
-\emph on
-incertae sedis
-\emph default
- taxa in the taxonomy, it is possible that the input split 
-\begin_inset Formula $B$
-\end_inset
-
- 
-\begin_inset Quotes eld
-\end_inset
-
-aligns
-\begin_inset Quotes erd
-\end_inset
-
- to a taxonomy split 
-\begin_inset Formula $A$
-\end_inset
-
- and 
-\emph on
-also
-\emph default
- performs a placement.
- In this case the input split 
-\begin_inset Formula $B$
-\end_inset
-
- has more information than the taxonomy split 
-\begin_inset Formula $A$
-\end_inset
-
- that it aligns to.
- 
-\end_layout
-
-\begin_layout Standard
-
-\series bold
-BDR: Question: when comparing the taxonomy to an input tree, how do we deal
- with conflict & alignment?
-\end_layout
-
-\begin_layout Itemize
-If we remove all taxonomy splits that are not pairwise compatible with each
- input tree edge, are all taxonomy edges jointly compatible with all input
- tree edges?
-\end_layout
-
-\begin_deeper
-\begin_layout Enumerate
-It is possible for two taxonomy edges to be implied by the same input tree
- edge.
-\end_layout
-
-\begin_layout Enumerate
-It is possible for two input tree edges to imply the same taxonomy edge.
-\end_layout
-
-\begin_layout Enumerate
-Each input tree edge is full rank on the induced tree.
-\end_layout
-
-\begin_layout Enumerate
-Now, each taxonomy edge is either equivalent an input tree edge, or on one
- side of it, since they are compatible.
-\end_layout
-
-\begin_layout Enumerate
-This imposes a directed flow on the input tree for each taxonomy edge, so
- that it moves to a node or a connected group of edges, all of which imply
- it.
-\end_layout
-
-\end_deeper
-\begin_layout Itemize
-We annotate the synthesis tree, not the taxonomy tree.
-\end_layout
-
-\begin_layout Itemize
-Adding incertae sedis info would complicate performing conflict analysis
- against the taxonomy.
-\end_layout
-
-\begin_layout Subsection
 Annotation
 \end_layout
 
 \begin_layout Standard
-The synthesis tree itself does not currently have 
-\emph on
-incertae sedis 
-\emph default
-groups.
- It should though, for those nodes that were incertae sedis in the synthesis
- tree and have not been placed anywhere.
-\end_layout
-
-\begin_layout Standard
-Furthermore, the primary goal is to avoid excluding 
+Annotation primarily involves running a conflict analysis between the synthesis
+ tree and each input tree.
+ Since neither tree has any 
 \emph on
 incertae sedis
 \emph default
- taxa, whereas displaying 
+ taxa, the conflict algorithm does not need to change.
+ Furthermore, if we allow 
 \emph on
-incertae sedis 
+incertae sedis
 \emph default
-status for solution nodes in the tree viewer is a secondary goal.
- Therefore, solution nodes can be regarded (for the moment) as always implying
- full splits.
-\end_layout
-
-\begin_layout Standard
-Actually we do not need to change annotation as long as we are not running
- conflict analysis on the synthesis tree.
- Basically naming the nodes 
+ taxa that are taxonomy-only to be annotated as 
+\emph on
+incertae sedis
+\emph default
+ on the synth tree, then such groups will not affect conflict with the input
+ trees.
+ We would also like to allow running a conflict analysis between the synthesis
+ tree and the taxonomy tree.
+ However, naming the nodes 
 \emph on
 is
 \emph default
- a (almost) run of conflict analysis on the taxonomy tree.
+ a (almost) run of conflict analysis on the taxonomy tree, and this has
+ already been done in a prior step.
+ So, the current annotation procedure actually works as-is.
 \end_layout
 
 \begin_layout Standard
-However, we would like to be able to run conflict analysis for input trees
- against the synth tree and the taxonomy tree.
+It would be nice to allow running conflict against the cleaned taxonomy,
+ though.
+ One way to do this would be to generated a 
+\begin_inset Quotes eld
+\end_inset
+
+placed taxonomy
+\begin_inset Quotes erd
+\end_inset
+
+, with groups extended to include 
+\emph on
+incertae sedis
+\emph default
+ taxa that have been placed within them.
+ This would not require any updating to the conflict-analysis code in the
+ annotation step.
 \end_layout
 
 \begin_layout Subsection
@@ -2842,7 +2576,11 @@ The current conflict service considers a group
 \begin_inset Formula $A$
 \end_inset
 
- to conflict with the taxonomy if it has an incertae sedis group 
+ to conflict with the taxonomy if group 
+\begin_inset Formula $A$
+\end_inset
+
+ has an incertae sedis group 
 \begin_inset Formula $B$
 \end_inset
 
@@ -2862,6 +2600,10 @@ Current conflict algorithm
 \begin_layout Standard
 The current conflict algorithm is pretty fast, but it works by classifying
  tips into either (i) the include group or (ii) the exclude group.
+ To avoid counting the exclude group for every split, we instead count the
+ total number of children for each node, and assume that any children not
+ in the include set are in the exclude set.
+ This is no longer true when we have incertae sedis taxa.
  I suspect that if we want to handle incertae sedies, we'd need a third
  category (iii) for 
 \begin_inset Quotes eld
@@ -3149,6 +2891,17 @@ incertae sedis
  by the unpruner.
  This could be considered when deciding which nodes to suppress in the tree
  viewer.
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset bibtex
+LatexCommand bibtex
+bibfiles "otcetera"
+options "upmplainnat"
+
+\end_inset
+
+
 \end_layout
 
 \end_body
