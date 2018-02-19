@@ -3,3 +3,6 @@ makefile-dependencies.dot
 makefile-specify-inputs.dot
 makefile-clean-ott.dot
 *.png
+*.out
+*.log
+incertae_sedis_latex.pdf
