@@ -1,0 +1,815 @@
+%% LyX 2.2.3 created this file.  For more info, see http://www.lyx.org/.
+%% Do not edit unless you really know what you are doing.
+\documentclass[english]{article}
+\usepackage[T1]{fontenc}
+\usepackage[latin9]{inputenc}
+\usepackage{geometry}
+\geometry{verbose,tmargin=2cm,bmargin=2cm,lmargin=2cm,rmargin=2cm}
+\setlength{\parskip}{6pt}
+\setlength{\parindent}{0pt}
+\usepackage{babel}
+\usepackage{url}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage[authoryear]{natbib}
+\usepackage[unicode=true]
+ {hyperref}
+
+\makeatletter
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% LyX specific LaTeX commands.
+%% Special footnote code from the package 'stblftnt.sty'
+%% Author: Robin Fairbairns -- Last revised Dec 13 1996
+\let\SF@@footnote\footnote
+\def\footnote{\ifx\protect\@typeset@protect
+    \expandafter\SF@@footnote
+  \else
+    \expandafter\SF@gobble@opt
+  \fi
+}
+\expandafter\def\csname SF@gobble@opt \endcsname{\@ifnextchar[%]
+  \SF@gobble@twobracket
+  \@gobble
+}
+\edef\SF@gobble@opt{\noexpand\protect
+  \expandafter\noexpand\csname SF@gobble@opt \endcsname}
+\def\SF@gobble@twobracket[#1]#2{}
+%% A simple dot to overcome graphicx limitations
+\newcommand{\lyxdot}{.}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% User specified LaTeX commands.
+\sloppy
+%\setlength{\parskip}{6pt}
+
+\@ifundefined{showcaptionsetup}{}{%
+ \PassOptionsToPackage{caption=false}{subfig}}
+\usepackage{subfig}
+\makeatother
+
+\begin{document}
+\global\long\def\taxonomy{\mbox{\ensuremath{\mathbb{T}}}}
+
+\global\long\def\prunedTaxonomy{\taxonomy_{P}}
+
+\global\long\def\phyloinputs{\mathcal{T}}
+
+\global\long\def\expandedPhylo{\phyloinputs_{E}}
+
+\global\long\def\summaryTree{\mathbb{S}}
+
+\global\long\def\prunedSummary{\summaryTree_{P}}
+
+\global\long\def\collections{\mathcal{C}}
+
+\title{\texttt{Handling }\texttt{\emph{incertae sedis}}\texttt{ taxa in
+propinquity}}
+\maketitle
+
+\section{Introduction}
+
+The phrase \textquotedblleft \emph{incertae sedis}\textquotedblright ,
+which is a Latin phrase meaning ``uncertain seat'', is used in classifications
+to indicate that a group is of uncertain taxonomic placement. Such
+groups arise in practice when they are classified within a parent
+group, such as Fungi, but the precise location within the parent group
+is uncertain. Such a taxon would then be attached as a child of the
+parent group, but labeled as \emph{incertae sedis}''. 
+
+Currently \emph{incertae sedis} taxa and their descendants are excluded
+from the OpenTree synthetic tree. This is problematic, because the
+OpenTree project seeks to build a comprehensive tree covering all
+of life. However, including unplaced taxa within the current synthesis
+framework would be equally problematic, since placement of taxa within
+groups is currently considered to be a conflict with those groups.
+This conflict causes both a loss of the taxon name for the conflicting
+taxon, and a loss of structure in the synthesis tree. 
+
+\subsection{Some examples in OTT\protect\footnote{This paragraph pulled from intro to otcetera/doc/handling-incertae-sedis.pdf}}
+
+The problem is becoming more acute because NCBI is putting a larger
+number of taxa into groups that are marked as \textquotedblleft unclassified.\textquotedblright{}
+For example, when OTT 2.9 was created NCBI\textquoteright s clasification
+of the bird family Sylvidae included a group five genera that were
+placed within \textquotedblleft \href{http://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?mode=Undef&id=36270&lvl=3&lin=f&keep=1&srchmode=1&unlock}{unclassified Sylviidae}.\textquotedblright{}
+This includes the genus Regulus. Thus in OTT 2.9 Regulus (ott ID =
+3599326) is placed inside the family Silvidae (OTT ID = 259942). The
+\textquotedblleft unclassified Sylviidae\textquotedblright{} does
+not appear in OTT; instead Regulus is flagged as \textquotedblleft unclassified,sibling
+higher\textquotedblright{} and all of the species within Regulus are
+flagged as \textquotedblleft unclassified inherited.\textquotedblright{}
+
+The taxonomy (as of version 2.9) also contains 685 cases of taxa that
+are flagged as both \textquotedblleft unclassified inherited\textquotedblright{}
+and \textquotedblleft unclassified\textquotedblright \footnote{based on \texttt{grep unclass.{*}unclassified\textbackslash{}\_inherited
+taxonomy.tsv}}.
+
+We would like to stop suppressing (pruning) incertae sedis taxa, so
+that groups such as Regulus can appear appear in the synthetic tree.
+
+\subsection{Handling incertae sedis taxa}
+
+To solve this problem, we describe an extension of our previous supertree
+synthesis procedure that can use phylogeny information to place \emph{incertae
+sedis} taxa into containing taxa without considering the containing
+taxa to be broken. This extension requires that we first describe
+an extended semantics for taxa in the presences of \emph{incertae
+sedis}, which is not a trivial problem. We describe both an updated
+semantics for conflict with taxonomy edges, and an updated semantics
+for assigning taxonomy names to nodes in the synthetic tree. 
+
+The ability to place taxa within the taxonomy without breaking their
+containing taxa enables us to include thousands of new taxa that were
+previously filtered out to avoid broken taxa. It also enables us to
+use phylogenetic trees to update the taxonomy by extending taxa to
+include \emph{incertae sedis} taxa placed within them. This makes
+substantial progress towards our goal of complete representation of
+taxa. It also enables us to include extinct taxa, since many of these
+taxa are incertae sedis.
+
+\subsection{Incertae sedis taxa in taxonomies}
+
+\textbf{Flags.} The Open Tree\textquoteright s reference taxonomy
+is produced by a tool called smasher that notices hints that a taxon
+is incertae sedis and labels that taxon with one of five flags\footnote{see \url{https://github.com/OpenTreeOfLife/reference-taxonomy/wiki/Taxon-flags}.This
+document is not concerned with the flagging system \emph{per se},
+so \textquotedblleft \emph{incertae sedis}\textquotedblright{} will
+be used here to refer to all of the flags that denote taxa with uncertain
+placement.}. While a taxonomist may intend to use incertae sedis to indicate
+a limited number of possible positions for a taxon to go in the taxonomy,
+we do not retain any such details.
+
+\textbf{Container nodes.} Some taxonomies have nodes with names like
+``Incertae sedis (Bacteria)''. Such nodes are called containers.
+They indicate that each child node is an \emph{incertae sedis} child
+of the container node's parent. The OTT retains container nodes with
+the \emph{was\_container} flag, but seems to have already moved all
+of the container's children to the container's parent.
+
+\textbf{Taxonomy merging.} Not all \emph{incertae sedis} taxa in our
+taxonomy are directly labeled \emph{incertae sedis} by taxonomists.
+\emph{Incertae sedis} taxa can also result from automatic merging
+of taxonomies to create the OpenTree taxonomy. For example, in Figure
+3 of \citet{rees2017automated}, cases \#4 and \#6 illustrate examples
+where merging of two taxonomies leads to a taxonomy with a taxon of
+uncertain placement. The reason is primarily that if taxonomy $\taxonomy_{1}$
+contains more levels of hierarchy than taxonomy $\taxonomy_{2}$,
+then we must add internal nodes to $\taxonomy_{2}$ to align it to
+$\taxonomy_{1}$. However, if taxonomy $\taxonomy_{2}$ contains more
+leaves than $\taxonomy_{1}$, then it is unclear if these extra leaves
+should be nested inside the additional internal nodes, or not. Thus,
+the extra leaves are marked \emph{incertae sedis}.
+
+For example, if $\taxonomy_{1}=((a,b)x,(c,d)y)z$ and $\taxonomy_{2}=(a,b,c,d,e)z$
+then $a$ and $b$ in $\taxonomy_{2}$ should be nested within $x$,
+but we do not know if $e$ should be nested within $x$ or not. Thus
+we obtain $((a,b)x,(c,d)y,?e)z$, where $?$ indicates that taxon
+$e$ is marked \emph{incertae sedis}.
+
+\subsection{Formalism}
+
+We consider a ranked collection $\phyloinputs=\left\{ T_{1},\ldots,T_{n}\right\} $
+of input trees and a single taxonomy tree $\taxonomy$. We have a
+set of labels $\mathcal{L}$ that correspond to taxon names. Therefore
+taxonomy node has a label, and every label correspond to a unique
+taxonomy node.
+
+In contrast, input phylogenies only have labels on their leaf nodes.
+Furthermore, and the set of labels $\mathcal{L}(i)$ on input tree
+$T_{i}$ need not include all leaf labels, and in practice always
+contains only a relatively small part of $\mathcal{L}$.
+
+We extend this framework by adding a set $\mathcal{I}\subseteq\mathcal{L}$
+of labels that have the \emph{incertae sedis }property. The taxonomy
+consists of the labels $\mathcal{L}$, the taxonomy tree $\taxonomy$,
+and the \emph{incertae sedis} property $\mathcal{I}$ of taxon names.
+
+\section{\label{sec:Semantics-of-incertae}Semantics of \emph{incertae sedis}
+taxa}
+
+Incertae sedis taxa affect the synthesis procedure in two ways: they
+affect what it means for a taxonomy edge to conflict with the synthesis
+tree, and they affect what it means to place a taxon name on a particular
+node in the synthesis tree. We examine each of these effects in turn.
+
+\subsection{Splits}
+
+Each edge of a standard tree divides the tip taxa $\mathcal{L}$ into
+two groups: the include set $\mathcal{I}(e)$ which does not contain
+the root, and the exclude set $\mathcal{E}(e)$ which does contain
+the root. Such a split may be written
+\[
+\mathcal{I}(e)|\bullet\mathcal{E}(e),
+\]
+with the exclude set always on the right. If no taxa are \emph{incertae
+sedis}, then the exclude set for a node is just the total tip set
+minus the include set for the node:
+\begin{align*}
+\mathcal{E}(n) & =\mathcal{L}-\mathcal{I}(n).
+\end{align*}
+
+For a node $n$ on the tipward side of an edge $e$, we may also write
+$\mathcal{I}(n)$ for $\mathcal{I}(e)$, and $\mathcal{E}(n)$ for
+$\mathcal{E}(e)$. We consider the exclude set of the root node to
+be empty, and the include set of the root node to contain all tip
+taxa:
+\begin{align*}
+\mathcal{E}(root) & =\{\}\\
+\mathcal{I}(root) & =\mathcal{L}.
+\end{align*}
+In this case the root node stands for an edge that connects the root
+to the root's parent.
+
+\subsubsection{Reduced exclude sets for \emph{incertae sedis} taxa}
+
+Marking a taxon as \emph{incertae sedis} changes the meaning of its
+sibling taxa. Since the \emph{incertae sedis} taxon can be placed
+inside its sibling subtrees, the exclude sets of the sibling subtrees
+should not include the \emph{incertae sedis }taxon. Although exclude
+sets of sibling taxa are shrunk, the include sets of the sibling taxa
+are unaffected.
+
+An \emph{incertae sedis} taxon can be moved into any of the descendants
+of its siblings. Therefore, the exclude $\mathcal{E}(n)$ set for
+a node $n$ contains the children of all the ancestors of $n$, unless
+those children are incertae sedis. We can compute exclude sets recursively
+by writing the exclude set of a node $n$ in terms of the exclude
+set of its parent. If we use the terminology that the include and
+exclude sets for a node $n$ are $\mathcal{I}(n)$ and $\mathcal{E}(n)$,
+then we have 
+\begin{align}
+\mathcal{E}(n) & =\mathcal{E}(parent(n))\cup\left[\mathcal{I}(m)\big|m\in siblings(n),m\text{ not \emph{incertae} \emph{sedis}}\right],\label{eq:exclude-set-formula}
+\end{align}
+This leads to a pre-order recursion that terminates if the exclude
+set for the root note is set to $\{\}$ as a boundary condition.
+
+\subsubsection{Alternative formulation}
+
+Consider an I.S. clade $A$ that is more rootward than an I.S. clade
+$B$. With the above formulation, we could not place $A$ as sister
+to $B$ and then place $B$ within $A$, because $A$ excludes $B$.
+To solve this problem, we could modify formula (\ref{eq:exclude-set-formula})
+above to avoid excluding \texttt{incertae\_sedis\_inherited} tips
+of a sister taxon $m$. Thus, we could modify formula (\ref{eq:exclude-set-formula})
+to refer to $\mathcal{I}^{\prime}(m)$ instead of $\mathcal{I}(m)$,
+where 
+\begin{align*}
+\mathcal{I}^{\prime}(m) & =\begin{cases}
+m & \text{if }m\text{ is a leaf}\\
+\left[\mathcal{I}^{\prime}(c)\big|c\in children(m),c\text{ not \emph{incertae sedis}}\right] & \text{otherwise.}
+\end{cases}
+\end{align*}
+This would not rule out placing $B$ as sister to $A$ and then placing
+$A$ within $B$.
+
+\subsection{Naming }
+
+After solving a supertree (sub) problem, we need to assign taxon names
+to the supertree nodes based on the taxonomy tree in the problem.
+Each taxon name $n$ corresponds to a split $S(n)=S(n)_{1}|S(n)_{2}$
+on the corresponding branch of the taxonomy tree. Without \emph{incertae
+sedis}, such splits are always of the form $S(n)_{1}|\mathcal{L}-S(n)_{1}$,
+but with \emph{incertae sedis} taxa $S_{2}(n)$ may be smaller than
+$\mathcal{L}-S(n)_{1}$.
+
+Without \emph{incertae sedis}, each name applies to at most one node,
+and each node can take at most one name, with the exception of monotypic
+taxa. Thus, we may simply search the solution tree for a node that
+has the same cluster $S(n)_{1}$ and apply the name $n$ to that node.
+
+However, in the \emph{incertae sedis }framework we must raise the
+question of whether one name could apply to multiple nodes, or whether
+multiple names could apply to one node. 
+
+\textbf{BDR:} \emph{It is well known that monotypic taxa are indistinguishable
+if you consider only splits on leaf labels, but are distinguishable
+if you consider splits on all node labels. It seems that some (all?)
+of the problems with assigning multiple names to the same nodes actually
+comes from the fact that moving IS taxa can leave the parent as a
+degree-2 node. The fact that propinquity handles monotypic taxa indicates
+that we actually implicitly consider all taxa to have labels. It is
+possible that a trivial extension to the sub-problem solved could
+thus handle monotypic taxa and issues with mapping 2 names to one
+node with incertae sedis taxa.}
+
+\subsubsection{Multiple nodes that fit one name}
+
+Suppose the taxonomy is (((A1,A2)A,B)AB,C,D{*}) and the solution tree
+is (((A1,A2)x,D{*})y,B)AB,C). In this case the name $A$ leads to
+the split S(A) = A1 A2 | B C root. This name can apply to both the
+node x and the node y.
+
+\textbf{Solution:} In this case, we find the most tipward node and
+attach the name to this node.
+
+\subsubsection{Multiple names fit a single node}
+
+\paragraph{Example 1}
+
+Suppose the taxonomy is (((B1,B2)B,C{*})A,Y) and the input tree is
+(((B1,C),B2)x,Y) then the names A and B both to the node x. In this
+case the names A and B are ordered.
+
+\textbf{Case 1:} If a taxon contains 2 non-IS taxa, then it cannot
+be identical with any of its children in the synthesis tree.
+
+\textbf{Case 2:} If a taxon contains 1 non-IS taxon and $\ge1$ IS
+taxa, then the taxon could be identical with is non-IS child in the
+synthesis tree, if the IS taxa are placed within the child.
+
+\textbf{Case 3:} If a node contains 0 non-IS taxa and 1 IS taxon,
+then the IS taxa behaves no differently than a non-IS taxa, since
+is has no siblings it could be placed into.
+
+\textbf{Case 4:} If a node contains 0 non-IS taxa and $\ge2$ IS taxa,
+then then taxon \emph{could} be identical with a non-IS child in the
+synthesis tree, if all but one IS children are placed with in one
+of the IS children.
+
+\textbf{Solution:} When we assign multiple names to the same node,
+then we expand the node with multiple names to have monotypic parents,
+and assign the series of names to the monotypic parents. Another way
+of saying this is that when a node has $\le1$ non-IS taxon and $\ge2$
+taxa then the node could become monotypic by placement of the IS taxa.
+
+\textbf{Example 2}
+
+If ((A1,A2)A,(B1,B2)B{*},(C1,C2)C{*}); is the taxonomy with asterisks
+denoting incertae sedis taxa, then the solution ((A1,A2)A,((B1,C1)mrcaB1C1,(B2,C2)mrcaB2C2)x);
+has a node x that could be called B{*} or C{*}.
+
+\textbf{Case:} If a taxa B{*} and C{*} are IS, then their tips can
+be intermingled in a new clade x. Both names would then apply.
+
+\textbf{Solution:} ??
+
+In summary, a taxon with split $A_{1}|\bullet B_{1}$ attaches to
+the most tipward node $n$ where $A_{1}\subseteq S_{1}(n)$ and $B_{1}\subseteq S_{2}(n)$.
+If multiple names end up on the same node, we try to resolve the problem
+by creating a monotypic node for a name that is more rootward than
+all other names at that node. If this fails to resolve the problem,
+we arbitrarily choose one of the names. 
+
+\section{Synthesis and conflict resolution with incertae sedis taxa}
+
+\subsection{Placement causes broken taxa}
+
+Synthesis with \emph{incertae sedis} taxa has the potential to resolve
+uncertain taxon placements using information from phylogenies. The
+propinquity pipeline has always been able to do this kind of resolution.
+However, without special consideration given to \emph{naming}, placing
+a taxon $A$ within a taxon $B$ results in conflict with taxon $B$
+in the taxonomy. In order to avoid a situation where input phylogenies
+conflict with a large number of taxa when \emph{incertae sedis} taxa
+are placed within them, we have filtered \emph{incertae sedis} taxa
+from the taxonomy when constructing all prior synthesis trees.
+
+When the synthesis tree conflicts with a taxonomy node, we way that
+the taxon $B$ at that node is a broken taxon. Broken taxa have two
+main effects, both of which are negative. First, the name $B$ of
+the broken taxon is removed from the synthesis tree. Second, the conflicting
+edge for taxon $B$ is not included in the synthesis tree. This means
+that any children of $B$ that are taxonomy-only will not be placed
+with the children of $B$ that are mentioned in input phylogenies.
+Instead the taxonomy-only children of a broken taxon move towards
+the root of the synthesis tree and attach at the first higher-ranked
+taxon that is an ancestor of $B$ but is not broken.
+
+\subsection{Correctly handling placement}
+
+Thus, we seek a synthesis method that can correctly place taxa within
+containing taxa without breaking the containing taxa. We change the
+semantics of names to imply, not the exclusion of all non-included
+taxa, but only some non-included taxa, as described in section \ref{sec:Semantics-of-incertae}.
+As a result of this change in semantics, placing an IS taxon $A$
+within a sister taxon $B$ no longer results in conflict with $B$.
+This allows us to retain the split for $B$ within the synthesis tree,
+so that taxonomy-only children of $B$ are correctly grouped with
+their siblings that are referenced by the input trees. We may then
+retain the name for the no-longer-broken taxon. Finally, we are then
+able to stop filtering \emph{incertae sedis} taxa, so that they appear
+in the synthesis tree. Thus, the synthesis tree is able to represent
+substantially more species, without suffering the loss of taxa and
+the loss of structure.
+
+\subsection{Conflict with incertae sedis taxa}
+
+\subsubsection{Conflicting placement among input trees}
+
+The addition of \emph{incertae sedis} taxa allows new types of conflict
+between input trees. For example, different input trees might place
+an incertae sedis taxon in conflicting locations. This is illustrated
+in Figure \ref{fig:placement-example1}, where the IS taxon (ott7,ott6)ott10
+is placed as sister to ott1 by phylogeny $\tau_{1}$ and as sister
+ott3 by phylogeny $\tau_{2}$. 
+
+When this happens, the placement of the IS taxon is not influenced
+by its being marked IS on the taxonomy. Thus, in Example 1, the higher
+ranked tree $\tau_{1}$ will be reflected in the synthesis tree, ott10
+will be placed as sister to ott1. In contrast, the conflicting placement
+in $\tau_{2}$ will not be reflected in the synth tree. 
+
+All this would occur in the previous version of propinquity. Where
+the updated version differs that (a) the names ott9 and ott8 are retained
+instead of being dropped. (b) as a result of not breaking ott8 and
+ott9, we do not move ott3 and ott2 up to ott11. {[}BDR: Extend more
+figures!{]}
+
+\subsubsection{Example B}
+
+However, incertae sedis taxa are not always tip nodes, but may themselves
+contain other taxa. In such cases, it is possible for input trees
+to conflict with the incertae sedis taxon itself. For example, consider
+the following example
+\begin{itemize}
+\item $T_{1}=((w_{1},w_{2},z_{1}),y_{1})$
+\item $T_{2}=((y_{1},y_{2},z_{2}),w_{1})$
+\item Taxonomy tree $((w_{1},w_{2})w,(y_{1},y_{2})y,(z_{1},z_{2},z_{3})z)$
+with $z$ marked \emph{incertae sedis}.
+\begin{itemize}
+\item splits $w_{1}w_{2}|\bullet y_{1}y_{2}$, $y_{1}y_{2}|\bullet w_{1}w_{2}$
+and $z_{1}z_{2}|\bullet w_{1}w_{2}y_{1}y_{2}$
+\end{itemize}
+\end{itemize}
+In this case, tree $T_{1}$ places $z_{1}$ within $w$, while $T_{2}$
+places $z_{2}$ within $y$. Since different members of $z$ are placed,
+neither placement for $z$ is rejected. Instead the taxon $z$ is
+broken, the name $z$ disappears, and $z_{3}$ floats to the top level. 
+
+Furthermore, since taxon $z$ is a broken \emph{incertae sedis }taxon,
+all of its children are effectively incertae sedis independently,
+with the difference that they cannot be placed within each other.
+Therefore, the names $w$ and $y$ are not lost, since the taxa placed
+within them are \emph{incertae sedis} names. Note that $z_{3}$ maybe
+therefore be placed in a third location, since it is also \emph{incertae
+sedis}.
+
+The situation here would be different if the monophyly of $z$ was
+supported by an input phylogeny.
+
+\emph{Note that the synthesis of all input trees before the taxonomy
+is unaffected by incertae sedis information.}
+
+\subsubsection{Example C - Nested \emph{incertae sedis} taxa}
+
+In addition to incertae sedis taxa containing other taxa, it is also
+possible for incertae sedis taxa to contain nested \emph{incertae
+sedis} taxa. \textbf{What issues might this raise?}
+
+\subsection{Placement}
+
+Placement of incertae sedis taxa by input trees is unfortunately not
+quite as simple as finding a single location where an I.S. taxon should
+attach. For example, when an incertae sedis taxon is broken, its children
+need to be ``placed'' separately.
+
+Each input tree can relate to an \emph{incertae sedis} taxon $(A,B,C)D$
+in a number of ways
+\begin{itemize}
+\item it could resolve $A$, $B$, $C$, or $D$.
+\item it could place $D$ on a degree-2 (=out-degree-1) node that bisects
+a branch
+\item it could place a descendant taxon of $D$ 
+\item it could place a descendant taxon of $D$ in a \emph{different place}
+than another input tree.
+\item it could place children of $D$ in multiple places, thus conflicting
+with the branch. If the \emph{incertae sedis} taxon $(A,B,C)$ is
+broken, then $A$, $B$ and $C$ become \emph{incertae sedis} clades
+in their own right, that may attach separately, except that they .
+This is because none of $A$, $B$, or $C$ is in the exclude set
+of the siblings of $D$.
+\end{itemize}
+
+\section{Handling \emph{incertae sedis} taxa in the propinquity pipeline}
+
+In order to handle \emph{incertae sedis} taxa within propinquity,
+we must modify some of the stages of the propinquity pipeline. Subproblem
+decomposition must place \emph{incertae sedis} taxa in the correct
+subproblem. Subproblem files must indicate which taxa are incertae
+sedis. The subproblem solver must read this information, account for
+\emph{incertae sedis} taxa when solving subproblems, and correctly
+name taxa that have been modified by having \emph{incertae sedis}
+taxa place inside them. The unpruner must be aware of \emph{incertae
+sedis} taxa. Annotations of the tree must be aware of \emph{incertae
+sedis} taxa so that it does not consider taxa broken when they have
+an incertae sedis taxon placed inside them.
+
+\subsection{Exemplifying taxa}
+
+One current problem is that well-known taxa like Fungi or Mammalia
+tend to have a very large number of incertae sedis children, making
+browsing in the tree viewer difficult. This can happen when, for example,
+fossils or other hard-to-place taxa get classified only to the level
+of these well-known nodes and no further. This leads to a situation
+where well-known taxa serve as a dumping ground for unplaced taxa.
+
+Our current approach to this problem is to perform a second round
+of pruning, or ``cleaning'', during the exemplification step. Incertae
+sedis taxa are pruned at this stage if they do not occur in any input
+trees. We thus generate a second ``cleaned taxonomy'' that has undergone
+this further round of cleaning. This approach improves on the previous
+approach in that \emph{incertae sedis} taxa in input trees are no
+longer pruned. This approach also removes tons of \emph{incertae sedis}
+children from nodes like ``Fungi'', where a lot of unplaced fossils
+with few observable characters have been dumped. 
+
+However, this approach has the negative effect of pruning some incertae
+sedis taxa that need not be pruned. For example, suppose \emph{incertae
+sedis} taxon $A$ contains 5 children, of which only 1 child $A_{1}$
+occurs in an input tree. If the taxon $A$ is not broken, then it
+should be possible to attach the other 4 members of $A$ next to $A_{1}$,
+without cluttering up the synthesis tree. Such taxa have been successfully
+placed even though they are not in any input tree. This can only be
+discovered after synthesis is complete, though.
+
+Additionally, it should also be possible to filter unplaced taxa in
+the tree viewer instead of in the synthesis pipeline.
+
+\subsection{Sub-problem decomposition}
+
+The presence of \emph{incertae sedis }taxa poses a problem to sub-problem
+decomposition, since taxonomy edges no longer completely separate
+subproblems. Instead, \emph{incertae sedis} taxa may attach on either
+side of a taxonomy edge. We seek to place \emph{incertae sedis} taxa
+into subproblems in such a way that the subproblem solver can perform
+the placement inside the subproblem. This approach postpones handling
+of conflict in \emph{incertae sedis} taxa to the subproblem solver,
+where the problem is well formulated in terms of splits. However,
+it does have the effect of creating larger subproblems.
+
+We must also handle conflicting placements of \emph{incertae sedis}
+taxa by different input trees. Thus, if one input tree places the
+\emph{incertae sedis} taxon $X$ in $((X)B)A$ and another places
+$X$ in $((X)C)A$ then we must mark both edges $B$ and $C$ as contested
+edges, even if these edges would \emph{not} be contested were taxon
+$X$ to be removed. This results in a new way to contest edges that
+involves the interaction of two input trees, and not just the interaction
+of each input tree with the taxonomy.
+
+We choose to solve these problems by merging any subproblems that
+an \emph{incertae sedis} taxon might be placed in. The simplest way
+to achieve this is simply to regard any taxon that has an \emph{incertae
+sedis }taxon placed within it as contested. This results in marking
+both $B$ and $C$ as contested edges in the example above. In fact,
+this is the current behaviour of the non-\emph{incertae-sedis} aware
+subproblem decomposer. One downside of this approach is that, if we
+have $((X)B)A)$ in one input tree, and $X$ is mentioned nowhere
+else, then by marking $B$ as contested, we are merging subproblems
+unnecessarily. We could instead placed $X$ in $B$ and avoid contesting
+the edge $B$. However, this approach is more complex and does not
+seem necessary in practice.
+
+\begin{figure}
+\subfloat[Taxonomy $\protect\taxonomy$]{\includegraphics[scale=0.5]{Figures/placement1/tax\lyxdot tre}
+
+}\subfloat[$\tau_{1}$]{\includegraphics[scale=0.5]{Figures/placement1/input1\lyxdot tre}
+
+}\subfloat[$\tau_{2}$]{\includegraphics[scale=0.5]{Figures/placement1/input2\lyxdot tre}
+
+}
+
+\caption{\label{fig:placement-example1}Example. An incertae sedis clade (ott6,ott7)
+is placed in different subtrees by input trees $\tau_{1}$ and $\tau_{2}$.
+In $\tau_{1}$, two nodes that correspond to the taxonomy their ingroup
+extended to include (ott6,ott7), and the branches leading to these
+nodes have been colored blue. The dashed blue edge leads to a node
+that is a newly-introduced degree-2 node which does not correspond
+to any taxonomy node. In $\tau_{2}$, only one node that corresponds
+to a taxonomy node needs to have its ingroup extended. The placement
+of (ott6,ott7) into ott8 toward ott1 by $\tau_{1}$ conflicts with
+the placement of (ott6,ott7) into ott9 toward ott3 by $\tau_{2},$}
+\end{figure}
+ For example, in Figure \ref{fig:placement-example1}, input tree
+$\tau_{1}$ contests ott9 and input tree $\tau_{2}$ contests ott9
+and ott8. Thus ott1, ott2, ott3, ott6, and ott7 end up in the same
+sub-problem.
+
+\subsection{Subproblem solution}
+
+Our sub-problem solver naturally handles \emph{incertae sedis} taxa.
+This is because we define the semantics of \emph{incertae sedis} taxa
+in terms of partial splits, and our solver natively supports building
+trees from partial splits through its use of the BUILD algorithm.
+Handling \emph{incertae sedis} taxa thus requires loading incertae
+sedis information and computing partial splits for \emph{incertae
+sedis} taxa before solving a sub-problem. After solving a sub-problem,
+we must apply taxon names from the taxonomy tree to the sub-problem
+solution tree. The solution tree is considered to a fixed tree and
+not to have any \emph{incertae sedis} nodes, or any other forms of
+uncertainty.
+
+\subsubsection{Reading incertae sedis information}
+
+Currently, we read the \emph{incertae sedis} information as a list
+of OTT ids for \emph{incertae sedis} taxa. This does not require adding
+further annotations to the node names. Only taxonomy nodes can be
+\emph{incertae sedis} at the moment, and only the taxonomy tree for
+the subproblem contains OTT ids for internal nodes. Therefore we handle
+\emph{incertae sedis} information by constructing modified split sets
+for the lowest-ranked tree when the list of \emph{incertae sedis}
+nodes is not empty.
+
+\subsubsection{Exclude sets modified by \emph{incertae sedis} marks}
+
+Equation (\ref{eq:exclude-set-formula}) leads to the following algorithm
+to compute the exclude set for all nodes in a tree.
+\begin{enumerate}
+\item Set the exclude set of the root node to be empty
+\item For each \emph{node} (except the root) in preorder
+\begin{itemize}
+\item combine the \emph{exclude} set of the parent node with the \emph{include}
+set of non-\emph{incertae-sedis} siblings.
+\item store this set in a hash, with key \emph{node}
+\end{itemize}
+\end{enumerate}
+This algorithm is currently implemented in \emph{otc-solve-subproblem}.
+We store the sets as \emph{std::set}.
+
+\subsubsection{Implementation: finding the node for a name}
+
+To find the node for a name $n$, we find the MRCA of the cluster
+$S_{1}(n)$. If the MRCA excludes the entire exclude group $S_{2}(n)$
+then the name applies to the MRCA; otherwise the taxon does not exist
+on the tree.
+
+\subsubsection{Implementation: handling name clashes}
+
+When multiple names $N=\{n_{1},\ldots n_{N}\}$ map to the same solution
+node $x$, then these names must satisfy some tree structure on the
+taxonomy, such that $n_{1}<n_{2}$ if $n_{1}$ is a descendant of
+$n_{2}$ in the taxonomy. If it is possible to find a name $n_{max}$
+that is the unique maximal element of $N$, then it is permissible
+to 
+\begin{enumerate}
+\item create a monotypic parent $p(x)$ of $x$, and assign $n_{max}$ to
+$p(x)$
+\item continue handling name clashes at $x$ with the set of possible names
+reduced to $N-n_{max}$.
+\end{enumerate}
+However, its certainly possible that there might not be any such $N_{max}$,
+in which case we could just choose a name for $x$ from $N$ (perhaps
+not an \emph{incertae sedis} name) and then record all the other names
+as equivalents somewhere.
+
+\textbf{BDR:}\textbf{\emph{ }}\emph{we might get this behavior in
+a nice an automatic way if we create a single fake leaf for each monotypic
+taxonomy node that holds the node's leaf label.}
+
+\subsubsection{Caveats}
+
+When multiple I.S. taxa have been moved to the root node of a subproblem,
+they may be I.S. over the entire subproblem, and some may be I.S.
+over others in an asymmetric manner. Therefore, we might need to specify
+additional information about the original attachment location of the
+I.S. taxa, such as their depth. This only affects problems that have
+been decomposed.
+
+\textbf{BDR:} \emph{currently we don't actually move taxa to get them
+into a subproblem. So, is this even an issue?}
+
+\subsection{Grafted supertree}
+
+\emph{Question:} Does the synthesis tree contain any \emph{incertae
+sedis} groups?\\
+\emph{Answer:} The grafted supertree will not contain any \emph{incertae
+sedis} groups. However, when we attach pruned nodes to a parent in
+the grafted supertree, we could mark such nodes \emph{incertae sedis}
+if we want.
+
+\subsection{Unpruning}
+
+Currently the unpruner \emph{does not} require that the OTT ids are
+named in the grafted solution before unpruning starts. According to
+Mark's document, he wasn't sure if such names were generated for nodes
+that had an IS taxon placed inside of them, so otc-unprune-solution-and-name-unnamed
+nodes throws away all the names and generates them itself.
+
+\textbf{BDR}: See document \texttt{otcetera/doc/unprune-solution-and-name-unnamed-nodes.pdf}
+
+The unpruner should record when unpruned nodes are \emph{incertae
+sedis}. Such nodes are unaffected by phylogenies, and so \emph{incertae
+sedis} annotations for them make good sense.
+
+\subsection{Annotation}
+
+Annotation primarily involves running a conflict analysis between
+the synthesis tree and each input tree. Since neither tree has any
+\emph{incertae sedis} taxa, the conflict algorithm does not need to
+change. Furthermore, if we allow \emph{incertae sedis} taxa that are
+taxonomy-only to be annotated as \emph{incertae sedis} on the synth
+tree, then such groups will not affect conflict with the input trees.
+We would also like to allow running a conflict analysis between the
+synthesis tree and the taxonomy tree. However, naming the nodes \emph{is}
+a (almost) run of conflict analysis on the taxonomy tree, and this
+has already been done in a prior step. So, the current annotation
+procedure actually works as-is.
+
+It would be nice to allow running conflict against the cleaned taxonomy,
+though. One way to do this would be to generated a ``placed taxonomy'',
+with groups extended to include \emph{incertae sedis} taxa that have
+been placed within them. This would not require any updating to the
+conflict-analysis code in the annotation step.
+
+\subsection{Conflict service}
+
+The current conflict service considers a group $A$ to conflict with
+the taxonomy if group $A$ has an incertae sedis group $B$ placed
+within it. This doesn't affect the annotations, since taxon names
+are added by the unpruner. But it could make perfectly fine input
+trees incorrectly look like they are the cause of broken taxa, if
+they contain IS taxa. Thus, it would be nice to have a modified conflict
+algorithm. 
+
+\subsubsection{Current conflict algorithm}
+
+The current conflict algorithm is pretty fast, but it works by classifying
+tips into either (i) the include group or (ii) the exclude group.
+To avoid counting the exclude group for every split, we instead count
+the total number of children for each node, and assume that any children
+not in the include set are in the exclude set. This is no longer true
+when we have incertae sedis taxa. I suspect that if we want to handle
+incertae sedies, we'd need a third category (iii) for ``neither include
+group nor exclude group''.
+\begin{enumerate}
+\item Get induced trees on intersection of leaf sets
+\item Compute depth for each node (nd->depth)
+\item Compute number of tips at or below each node (nd->n\_tips)
+\item for each input tree node -> $nd$
+\begin{enumerate}
+\item skip the root
+\item skip monotypic
+\item if its a tip then find corresponding (``terminal'') edges in synth
+tree and continue
+\item leaves1 <- get the list of leaves in the include group of $nd$ (in
+input)
+\item L2 <- find the total number of tips (L2 = sum {[}nd->n\_tips| nd <-
+leaves1{]})
+\item leaves2 <- get list of corresponding synth leaf nodes (in synth)
+\item nodes <- find all nodes between leaves2 and the MRCA (in synth)
+\item MRCA <- mrca of leaves2 (in synth. this uses the nd->depth annotation)
+\item Compute number of tips in the include set (nd->include\_tips) below
+each node in $nodes$ (in synth)
+\item if n\_include\_tips(MRCA) == n\_tips(MRCA) then the MRCA displays
+$nd$
+\item if n\_include\_tips(MRCA) < n\_tips(MRCA) then
+\begin{itemize}
+\item foreach node in nodes
+\begin{itemize}
+\item if (n\_include\_tipes(nd) < n\_tips(nd) and n\_include\_tips(nd) <
+l2)
+\begin{itemize}
+\item this is a conflict!
+\end{itemize}
+\end{itemize}
+\item if there are no conflicts, then this is a resolved\_by.
+\end{itemize}
+\end{enumerate}
+\end{enumerate}
+
+\subsubsection{Modified conflict algorithm?}
+
+This probably is outside the scope of the paper, but if we could come
+up with a modified conflict algorithm, that would be nice/useful,
+and probably novel. It would also probably be slower...
+
+\section{Results}
+
+Should we do this? We could say: 
+\begin{itemize}
+\item we placed $x$ incertae sedis taxa.
+\item we avoiding breaking $y$ taxa that had IS taxa placed inside them.
+\item we allowed $z_{1}$ new taxa into the synthesis tree that were incertae
+sedis.
+\item we allowed $z_{2}$ new taxa into the synthesis tree that are marked
+as extinct.
+\item some nodes have as many as $w$\emph{ incertae sedis} children, making
+them unbrowseable when incertae sedis children are not excluded.
+\item $v_{1}$ input trees w were previously excluded \emph{entirely} because
+they are nested within in an incertae sedis taxon.
+\item $v_{2}$ input trees w were previously excluded \emph{partially} because
+they are nested within in an incertae sedis taxon.
+\end{itemize}
+Currently the numbers $z_{1}$ and $z_{2}$. 
+
+\section{Discussion}
+
+One thing we could do (perhaps) that we are not currently doing, is
+to have nodes marked as incertae sedis on the synth tree. This would
+be easy enough if such nodes are not affected in any way by the input
+trees. Thus, when unpruning nodes we could mark any nodes \emph{incertae
+sedis} if they were marked \emph{incertae sedis} on the taxonomy.
+
+Secondly, I think we need to distinguish \emph{incertae sedis} taxa
+that are ``unplaced'' from \emph{incertae sedis} taxa that do not
+occur in any input tree. I think that if $A$ contains child $A_{1}$
+that is an input tree, and the taxon $A$ is not broken, then $A$
+will be placed, and thus any other children $A_{2},A_{3},\ldots,A_{n}$
+will also be placed, since they will be added as children of the (placed)
+node $A$ by the unpruner. This could be considered when deciding
+which nodes to suppress in the tree viewer.
+
+\bibliographystyle{upmplainnat}
+\bibliography{otcetera}
+
+\end{document}
