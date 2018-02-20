@@ -1482,6 +1482,151 @@ Placement
 \end_layout
 
 \begin_layout Standard
+After a synthesis tree is constructed, we attach taxon names for to the
+ synthesis tree for each non-conflicting taxon.
+ These names attach at the MRCA of the include group.
+ Then, for each taxon 
+\begin_inset Formula $A$
+\end_inset
+
+ on the synth tree, we associate with the first taxon 
+\begin_inset Formula $B$
+\end_inset
+
+ found in a rootward walk on the synthesis tree.
+ If 
+\begin_inset Formula $A$
+\end_inset
+
+ is not a descendant of 
+\begin_inset Formula $B$
+\end_inset
+
+ on the taxonomy, then we say that 
+\begin_inset Formula $A$
+\end_inset
+
+ is 
+\emph on
+placed
+\emph default
+ within 
+\begin_inset Formula $B$
+\end_inset
+
+ by the synthesis tree.
+ While this may occur if 
+\begin_inset Formula $A$
+\end_inset
+
+ is 
+\emph on
+incertae sedis
+\emph default
+, more complex scenarios are possible.
+ We note that if method does not handle 
+\emph on
+incertae sedis
+\emph default
+ taxa, then this scenario could not occur because any taxa 
+\begin_inset Formula $B$
+\end_inset
+
+ that 
+\begin_inset Formula $A$
+\end_inset
+
+ is placed within would be considered incompatible with the synthesis tree
+ and so their names would not be applied.
+\end_layout
+
+\begin_layout Standard
+In order to fully describe a placement of 
+\begin_inset Formula $A$
+\end_inset
+
+ within 
+\begin_inset Formula $B$
+\end_inset
+
+ we consider the sequence of taxa encountered on a walk from 
+\begin_inset Formula $A$
+\end_inset
+
+ or 
+\begin_inset Formula $B$
+\end_inset
+
+ up to their MRCA 
+\begin_inset Formula $M$
+\end_inset
+
+ on the taxonomy tree.
+ Let us denote the sequence of taxa encountered from 
+\begin_inset Formula $A$
+\end_inset
+
+ as 
+\begin_inset Formula $A_{1},\ldots,A_{n},M$
+\end_inset
+
+ where 
+\begin_inset Formula $A_{1}=A$
+\end_inset
+
+.
+ Let 
+\begin_inset Formula $B_{1},\ldots,B_{m},M$
+\end_inset
+
+ be the sequence of taxa encountered from 
+\begin_inset Formula $B$
+\end_inset
+
+ where 
+\begin_inset Formula $B_{1}=B$
+\end_inset
+
+.
+ Then 
+\begin_inset Formula $A_{n}$
+\end_inset
+
+ must be 
+\emph on
+incertae sedis
+\emph default
+, and 
+\begin_inset Formula $A_{2},\ldots,A_{n}$
+\end_inset
+
+ must be incompatible with the synthesis tree (i.e.
+ broken taxa).
+ We then have that 
+\begin_inset Formula $A$
+\end_inset
+
+ is placed successively within 
+\begin_inset Formula $B_{m},B_{m-1},\ldots,B_{2},B_{1}$
+\end_inset
+
+, and 
+\begin_inset Formula $m$
+\end_inset
+
+ is the depth of the placement of 
+\begin_inset Formula $A$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+One question is whether this approach is able to handle nested incertae
+ sedis taxa.
+\end_layout
+
+\begin_layout Standard
 Placement of incertae sedis taxa by input trees is unfortunately not quite
  as simple as finding a single location where an I.S.
  taxon should attach.
@@ -2794,7 +2939,7 @@ some nodes have as many as
 \begin_inset Formula $v_{1}$
 \end_inset
 
- input trees w were previously excluded 
+ input trees were previously excluded 
 \emph on
 entirely
 \emph default
@@ -2805,7 +2950,7 @@ entirely
 \begin_inset Formula $v_{2}$
 \end_inset
 
- input trees w were previously excluded 
+ input trees were previously excluded 
 \emph on
 partially
 \emph default
