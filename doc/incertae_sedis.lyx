@@ -2886,24 +2886,95 @@ This probably is outside the scope of the paper, but if we could come up
 Results
 \end_layout
 
+\begin_layout LyX-Code
+\begin_inset Note Comment
+status open
+
+\begin_layout LyX-Code
+?ott6145835 [6145835] <- ott698424 [698424] placed under ott4942423 [4942423]
+ <- ott698424 [698424]
+\end_layout
+
+\begin_layout LyX-Code
+?ott6145873 [6145873] <- ott698424 [698424] placed under ott4942423 [4942423]
+ <- ott698424 [698424] 
+\end_layout
+
+\begin_layout LyX-Code
+?ott18090 [18090] <- ott672501 [672501] placed under ott275501 [275501]
+ <- ott672501 [672501]
+\end_layout
+
+\begin_layout LyX-Code
+?ott190269 [190269] <- ott672501 [672501] placed under ott275501 [275501]
+ <- ott672501 [672501] 
+\end_layout
+
+\begin_layout LyX-Code
+?ott349638 [349638] <- ott672501 [672501] placed under ott275501 [275501]
+ <- ott672501 [672501] 
+\end_layout
+
+\begin_layout LyX-Code
+?ott1009313 [1009313] <- ott672501 [672501] placed under ott275501 [275501]
+ <- ott672501 [672501] 
+\end_layout
+
+\begin_layout LyX-Code
+?ott564110 [564110] <- ott939130 [939130] placed under ott757344 [757344]
+ <- ott939130 [939130] 
+\end_layout
+
+\begin_layout LyX-Code
+?ott679485 [679485] <- ott1074933 [1074933] placed under ott534796 [534796]
+ <- ott1074933 [1074933] 
+\end_layout
+
+\begin_layout LyX-Code
+?ott729184 [729184] <- ott1074933 [1074933] placed under ott534796 [534796]
+ <- ott1074933 [1074933] 
+\end_layout
+
+\begin_layout LyX-Code
+?ott5144555 [5144555] <- ott23373 [23373] placed under ott447802 [447802]
+ <- ott23373 [23373]
+\end_layout
+
+\begin_layout LyX-Code
+?ott441413 [441413] <- ott1014022 [1014022] placed under ott571842 [571842]
+ <- ott997381 [997381] <- ott1014022 [1014022] 
+\end_layout
+
+\begin_layout LyX-Code
+?ott31033 [31033] <- ott627035 [627035] placed under ott6019314 [6019314]
+ <- ott627035 [627035] 
+\end_layout
+
+\begin_layout LyX-Code
+?ott4018918 [4018918] <- ott5248084 [5248084] placed under ott167767 [167767]
+ <- ott5248084 [5248084] 
+\end_layout
+
+\begin_layout LyX-Code
+?ott4792759 [4792759] <- ott5248084 [5248084] placed under ott167767 [167767]
+ <- ott5248084 [5248084] 
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
 \begin_layout Standard
 Should we do this? We could say: 
 \end_layout
 
 \begin_layout Itemize
-we placed 
-\begin_inset Formula $x$
-\end_inset
-
- incertae sedis taxa.
+we placed 14 incertae sedis taxa.
 \end_layout
 
 \begin_layout Itemize
-we avoiding breaking 
-\begin_inset Formula $y$
-\end_inset
-
- taxa that had IS taxa placed inside them.
+we avoiding breaking 8 taxa that had IS taxa placed inside them.
 \end_layout
 
 \begin_layout Itemize
