@@ -145,11 +145,10 @@
 \begin_layout Title
 
 \family typewriter
-Handling 
 \emph on
-incertae sedis
+Incertae sedis
 \emph default
- taxa in propinquity
+ taxa in supertree construction
 \end_layout
 
 \begin_layout Section
@@ -188,100 +187,19 @@ incertae sedis
 \end_layout
 
 \begin_layout Standard
-Currently 
+The OpenTree project seeks to build a comprehensive supertree tree covering
+ all of life.
+ The approach is to combine information in published phylogenies with a
+ comprehensive taxonomy that supplies taxon names.
+ We describe an extension to our supertree method so that we can resolve
+ taxonomic uncertainty by using published phylogenies to place 
 \emph on
 incertae sedis
 \emph default
- taxa and their descendants are excluded from the OpenTree synthetic tree.
- This is problematic, because the OpenTree project seeks to build a comprehensiv
-e tree covering all of life.
- However, including unplaced taxa within the current synthesis framework
- would be equally problematic, since placement of taxa within groups is
- currently considered to be a conflict with those groups.
- This conflict causes both a loss of the taxon name for the conflicting
- taxon, and a loss of structure in the synthesis tree.
- 
-\end_layout
-
-\begin_layout Subsection
-Some examples in OTT
-\begin_inset Foot
-status collapsed
-
-\begin_layout Plain Layout
-This paragraph pulled from intro to otcetera/doc/handling-incertae-sedis.pdf
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-The problem is becoming more acute because NCBI is putting a larger number
- of taxa into groups that are marked as “unclassified.” For example, when
- OTT 2.9 was created NCBI’s clasification of the bird family Sylvidae included
- a group five genera that were placed within “
-\begin_inset CommandInset href
-LatexCommand href
-name "unclassified Sylviidae"
-target "http://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?mode=Undef&id=36270&lvl=3&lin=f&keep=1&srchmode=1&unlock"
-
-\end_inset
-
-.” This includes the genus Regulus.
- Thus in OTT 2.9 Regulus (ott ID = 3599326) is placed inside the family Silvidae
- (OTT ID = 259942).
- The “unclassified Sylviidae” does not appear in OTT; instead Regulus is
- flagged as “unclassified,sibling higher” and all of the species within
- Regulus are flagged as “unclassified inherited.”
-\end_layout
-
-\begin_layout Standard
-The taxonomy (as of version 2.9) also contains 685 cases of taxa that are
- flagged as both “unclassified inherited” and “unclassified”
-\begin_inset Foot
-status collapsed
-
-\begin_layout Plain Layout
-based on 
-\family typewriter
-grep unclass.*unclassified
-\backslash
-_inherited taxonomy.tsv
-\end_layout
-
-\end_inset
-
-.
-\end_layout
-
-\begin_layout Standard
-We would like to stop suppressing (pruning) incertae sedis taxa, so that
- groups such as Regulus can appear appear in the synthetic tree.
-\end_layout
-
-\begin_layout Subsection
-Handling incertae sedis taxa
-\end_layout
-
-\begin_layout Standard
-To solve this problem, we describe an extension of our previous supertree
- synthesis procedure that can use phylogeny information to place 
-\emph on
-incertae sedis
-\emph default
- taxa into containing taxa without considering the containing taxa to be
- broken.
- This extension requires that we first describe an extended semantics for
- taxa in the presences of 
-\emph on
-incertae sedis
-\emph default
-, which is not a trivial problem.
- We describe both an updated semantics for conflict with taxonomy edges,
- and an updated semantics for assigning taxonomy names to nodes in the synthetic
- tree.
+ taxa.
+ We describe an updated semantics for conflict between phylogeny edges and
+ taxonomy edges and an updated semantics for assigning taxonomy names to
+ nodes in the synthetic tree.
  
 \end_layout
 
@@ -301,90 +219,18 @@ incertae sedis
  incertae sedis.
 \end_layout
 
-\begin_layout Subsection
-Incertae sedis taxa in taxonomies
+\begin_layout Standard
+
+\emph on
+TODO: add cases
+\end_layout
+
+\begin_layout Paragraph
+Taxonomy merging
 \end_layout
 
 \begin_layout Standard
-
-\series bold
-Flags.
-
-\series default
- The Open Tree’s reference taxonomy is produced by a tool called smasher
- that notices hints that a taxon is incertae sedis and labels that taxon
- with one of five flags
-\begin_inset Foot
-status collapsed
-
-\begin_layout Plain Layout
-see 
-\begin_inset Flex URL
-status collapsed
-
-\begin_layout Plain Layout
-
-https://github.com/OpenTreeOfLife/reference-taxonomy/wiki/Taxon-flags
-\end_layout
-
-\end_inset
-
-.This document is not concerned with the flagging system 
-\emph on
-per se
-\emph default
-, so “
-\emph on
-incertae sedis
-\emph default
-” will be used here to refer to all of the flags that denote taxa with uncertain
- placement.
-\end_layout
-
-\end_inset
-
-.
- While a taxonomist may intend to use incertae sedis to indicate a limited
- number of possible positions for a taxon to go in the taxonomy, we do not
- retain any such details.
-\end_layout
-
-\begin_layout Standard
-
-\series bold
-Container nodes.
-
-\series default
- Some taxonomies have nodes with names like 
-\begin_inset Quotes eld
-\end_inset
-
-Incertae sedis (Bacteria)
-\begin_inset Quotes erd
-\end_inset
-
-.
- Such nodes are called containers.
- They indicate that each child node is an 
-\emph on
-incertae sedis
-\emph default
- child of the container node's parent.
- The OTT retains container nodes with the 
-\emph on
-was_container
-\emph default
- flag, but seems to have already moved all of the container's children to
- the container's parent.
-\end_layout
-
-\begin_layout Standard
-
-\series bold
-Taxonomy merging.
-
-\series default
- Not all 
+Not all 
 \emph on
 incertae sedis
 \emph default
@@ -495,12 +341,13 @@ incertae sedis
 .
 \end_layout
 
-\begin_layout Subsection
+\begin_layout Paragraph
 Formalism
 \end_layout
 
 \begin_layout Standard
-We consider a ranked collection 
+Formalism.
+ We consider a ranked collection 
 \begin_inset Formula $\phyloinputs=\left\{ T_{1},\ldots,T_{n}\right\} $
 \end_inset
 
@@ -566,6 +413,145 @@ incertae sedis
 \end_layout
 
 \begin_layout Section
+Details & Methods
+\end_layout
+
+\begin_layout Subsection
+Some examples in OTT
+\begin_inset Foot
+status collapsed
+
+\begin_layout Plain Layout
+This paragraph pulled from intro to otcetera/doc/handling-incertae-sedis.pdf
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The problem is becoming more acute because NCBI is putting a larger number
+ of taxa into groups that are marked as “unclassified.” For example, when
+ OTT 2.9 was created NCBI’s clasification of the bird family Sylvidae included
+ a group five genera that were placed within “
+\begin_inset CommandInset href
+LatexCommand href
+name "unclassified Sylviidae"
+target "http://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?mode=Undef&id=36270&lvl=3&lin=f&keep=1&srchmode=1&unlock"
+
+\end_inset
+
+.” This includes the genus Regulus.
+ Thus in OTT 2.9 Regulus (ott ID = 3599326) is placed inside the family Silvidae
+ (OTT ID = 259942).
+ The “unclassified Sylviidae” does not appear in OTT; instead Regulus is
+ flagged as “unclassified,sibling higher” and all of the species within
+ Regulus are flagged as “unclassified inherited.”
+\end_layout
+
+\begin_layout Standard
+The taxonomy (as of version 2.9) also contains 685 cases of taxa that are
+ flagged as both “unclassified inherited” and “unclassified”
+\begin_inset Foot
+status collapsed
+
+\begin_layout Plain Layout
+based on 
+\family typewriter
+grep unclass.*unclassified
+\backslash
+_inherited taxonomy.tsv
+\end_layout
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+We would like to stop suppressing (pruning) incertae sedis taxa, so that
+ groups such as Regulus can appear appear in the synthetic tree.
+\end_layout
+
+\begin_layout Subsection
+Taxonomy details
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+Flags.
+
+\series default
+ The Open Tree’s reference taxonomy is produced by a tool called smasher
+ that notices hints that a taxon is incertae sedis and labels that taxon
+ with one of five flags
+\begin_inset Foot
+status collapsed
+
+\begin_layout Plain Layout
+see 
+\begin_inset Flex URL
+status collapsed
+
+\begin_layout Plain Layout
+
+https://github.com/OpenTreeOfLife/reference-taxonomy/wiki/Taxon-flags
+\end_layout
+
+\end_inset
+
+.This document is not concerned with the flagging system 
+\emph on
+per se
+\emph default
+, so “
+\emph on
+incertae sedis
+\emph default
+” will be used here to refer to all of the flags that denote taxa with uncertain
+ placement.
+\end_layout
+
+\end_inset
+
+.
+ While a taxonomist may intend to use incertae sedis to indicate a limited
+ number of possible positions for a taxon to go in the taxonomy, we do not
+ retain any such details.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+Container nodes.
+
+\series default
+ Some taxonomies have nodes with names like 
+\begin_inset Quotes eld
+\end_inset
+
+Incertae sedis (Bacteria)
+\begin_inset Quotes erd
+\end_inset
+
+.
+ Such nodes are called containers.
+ They indicate that each child node is an 
+\emph on
+incertae sedis
+\emph default
+ child of the container node's parent.
+ The OTT retains container nodes with the 
+\emph on
+was_container
+\emph default
+ flag, but seems to have already moved all of the container's children to
+ the container's parent.
+\end_layout
+
+\begin_layout Section
 \begin_inset CommandInset label
 LatexCommand label
 name "sec:Semantics-of-incertae"
@@ -580,11 +566,72 @@ incertae sedis
 \end_layout
 
 \begin_layout Standard
-Incertae sedis taxa affect the synthesis procedure in two ways: they affect
- what it means for a taxonomy edge to conflict with the synthesis tree,
- and they affect what it means to place a taxon name on a particular node
- in the synthesis tree.
- We examine each of these effects in turn.
+In order to incorporate 
+\emph on
+incertae sedis 
+\emph default
+taxa into a supertree analyses, we first tackle the issue of the semantics
+ of 
+\emph on
+incertae sedis
+\emph default
+ taxa.
+ We discuss various different things the term can mean within the literature,
+ and settle on a specific usage here.
+ We discuss how to move from an operational 
+\begin_inset Quotes eld
+\end_inset
+
+you can move this guy here
+\begin_inset Quotes erd
+\end_inset
+
+ semantics to a splits-based semantics.
+ This affects both what it means for a taxonomy edge to conflict with the
+ synthesis tree, and what it means to place a taxon name on a particular
+ node in the synthesis tree.
+ Finally, after a supertree has been constructed, we consider how to interpret
+ the supertree as (perhaps) placing an 
+\emph on
+incertae sedis
+\emph default
+ taxon 
+\begin_inset Formula $A$
+\end_inset
+
+ within its sister taxon 
+\begin_inset Formula $B$
+\end_inset
+
+.
+ 
+\end_layout
+
+\begin_layout Subsection
+Usage in the literature
+\end_layout
+
+\begin_layout Standard
+The term 
+\emph on
+incertae sedis
+\emph default
+ can be used in a number of different ways.
+ For example,
+\emph on
+ 
+\emph default
+one author might describe 
+\emph on
+incertae sedis
+\emph default
+ genera that are asserted to be monophyletic, whereas another author might
+ describe 
+\emph on
+incertae sedis
+\emph default
+ genera that may be interdigitated.
+ 
 \end_layout
 
 \begin_layout Subsection
@@ -854,6 +901,30 @@ This would not rule out placing
 .
 \end_layout
 
+\begin_layout Subsubsection
+Comparison to operational definition
+\end_layout
+
+\begin_layout Standard
+An definition in terms of moving node 
+\begin_inset Formula $A$
+\end_inset
+
+ to position 
+\begin_inset Formula $x$
+\end_inset
+
+ could cause trouble when moving multiple nodes, since the order of the
+ movement would matter.
+\end_layout
+
+\begin_layout Standard
+Also, the splits-based semantics might not completely recover the edit-operation
+ semantics.
+ The corner cases are ...
+ .
+\end_layout
+
 \begin_layout Subsection
 Naming 
 \end_layout
@@ -1102,6 +1173,282 @@ In summary, a taxon with split
  If this fails to resolve the problem, we arbitrarily choose one of the
  names.
  
+\end_layout
+
+\begin_layout Subsection
+Placement
+\end_layout
+
+\begin_layout Standard
+After a synthesis tree is constructed, we attach taxon names for to the
+ synthesis tree for each non-conflicting taxon.
+ These names attach at the MRCA of the include group.
+ Then, for each taxon 
+\begin_inset Formula $A$
+\end_inset
+
+ on the synth tree, we associate with the first taxon 
+\begin_inset Formula $B$
+\end_inset
+
+ found in a rootward walk on the synthesis tree.
+ If 
+\begin_inset Formula $A$
+\end_inset
+
+ is not a descendant of 
+\begin_inset Formula $B$
+\end_inset
+
+ on the taxonomy, then we say that 
+\begin_inset Formula $A$
+\end_inset
+
+ is 
+\emph on
+placed
+\emph default
+ within 
+\begin_inset Formula $B$
+\end_inset
+
+ by the synthesis tree.
+ While this may occur if 
+\begin_inset Formula $A$
+\end_inset
+
+ is 
+\emph on
+incertae sedis
+\emph default
+, more complex scenarios are possible.
+ We note that if method does not handle 
+\emph on
+incertae sedis
+\emph default
+ taxa, then this scenario could not occur because any taxa 
+\begin_inset Formula $B$
+\end_inset
+
+ that 
+\begin_inset Formula $A$
+\end_inset
+
+ is placed within would be considered incompatible with the synthesis tree
+ and so their names would not be applied.
+\end_layout
+
+\begin_layout Standard
+In order to fully describe a placement of 
+\begin_inset Formula $A$
+\end_inset
+
+ within 
+\begin_inset Formula $B$
+\end_inset
+
+ we consider the sequence of taxa encountered on a walk from 
+\begin_inset Formula $A$
+\end_inset
+
+ or 
+\begin_inset Formula $B$
+\end_inset
+
+ up to their MRCA 
+\begin_inset Formula $M$
+\end_inset
+
+ on the taxonomy tree.
+ Let us denote the sequence of taxa encountered from 
+\begin_inset Formula $A$
+\end_inset
+
+ as 
+\begin_inset Formula $A_{1},\ldots,A_{n},M$
+\end_inset
+
+ where 
+\begin_inset Formula $A_{1}=A$
+\end_inset
+
+.
+ Let 
+\begin_inset Formula $B_{1},\ldots,B_{m},M$
+\end_inset
+
+ be the sequence of taxa encountered from 
+\begin_inset Formula $B$
+\end_inset
+
+ where 
+\begin_inset Formula $B_{1}=B$
+\end_inset
+
+.
+ Then 
+\begin_inset Formula $A_{n}$
+\end_inset
+
+ must be 
+\emph on
+incertae sedis
+\emph default
+, and 
+\begin_inset Formula $A_{2},\ldots,A_{n}$
+\end_inset
+
+ must be incompatible with the synthesis tree (i.e.
+ broken taxa).
+ We then have that 
+\begin_inset Formula $A$
+\end_inset
+
+ is placed successively within 
+\begin_inset Formula $B_{m},B_{m-1},\ldots,B_{2},B_{1}$
+\end_inset
+
+, and 
+\begin_inset Formula $m$
+\end_inset
+
+ is the depth of the placement of 
+\begin_inset Formula $A$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+One question is whether this approach is able to handle nested incertae
+ sedis taxa.
+\end_layout
+
+\begin_layout Standard
+Placement of incertae sedis taxa by input trees is unfortunately not quite
+ as simple as finding a single location where an I.S.
+ taxon should attach.
+ For example, when an incertae sedis taxon is broken, its children need
+ to be 
+\begin_inset Quotes eld
+\end_inset
+
+placed
+\begin_inset Quotes erd
+\end_inset
+
+ separately.
+\end_layout
+
+\begin_layout Standard
+Each input tree can relate to an 
+\emph on
+incertae sedis
+\emph default
+ taxon 
+\begin_inset Formula $(A,B,C)D$
+\end_inset
+
+ in a number of ways
+\end_layout
+
+\begin_layout Itemize
+it could resolve 
+\begin_inset Formula $A$
+\end_inset
+
+, 
+\begin_inset Formula $B$
+\end_inset
+
+, 
+\begin_inset Formula $C$
+\end_inset
+
+, or 
+\begin_inset Formula $D$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Itemize
+it could place 
+\begin_inset Formula $D$
+\end_inset
+
+ on a degree-2 (=out-degree-1) node that bisects a branch
+\end_layout
+
+\begin_layout Itemize
+it could place a descendant taxon of 
+\begin_inset Formula $D$
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Itemize
+it could place a descendant taxon of 
+\begin_inset Formula $D$
+\end_inset
+
+ in a 
+\emph on
+different place
+\emph default
+ than another input tree.
+\end_layout
+
+\begin_layout Itemize
+it could place children of 
+\begin_inset Formula $D$
+\end_inset
+
+ in multiple places, thus conflicting with the branch.
+ If the 
+\emph on
+incertae sedis
+\emph default
+ taxon 
+\begin_inset Formula $(A,B,C)$
+\end_inset
+
+ is broken, then 
+\begin_inset Formula $A$
+\end_inset
+
+, 
+\begin_inset Formula $B$
+\end_inset
+
+ and 
+\begin_inset Formula $C$
+\end_inset
+
+ become 
+\emph on
+incertae sedis
+\emph default
+ clades in their own right, that may attach separately, except that they
+ .
+ This is because none of 
+\begin_inset Formula $A$
+\end_inset
+
+, 
+\begin_inset Formula $B$
+\end_inset
+
+, or 
+\begin_inset Formula $C$
+\end_inset
+
+ is in the exclude set of the siblings of 
+\begin_inset Formula $D$
+\end_inset
+
+.
 \end_layout
 
 \begin_layout Section
@@ -1475,282 +1822,6 @@ incertae sedis
  
 \series bold
 What issues might this raise?
-\end_layout
-
-\begin_layout Subsection
-Placement
-\end_layout
-
-\begin_layout Standard
-After a synthesis tree is constructed, we attach taxon names for to the
- synthesis tree for each non-conflicting taxon.
- These names attach at the MRCA of the include group.
- Then, for each taxon 
-\begin_inset Formula $A$
-\end_inset
-
- on the synth tree, we associate with the first taxon 
-\begin_inset Formula $B$
-\end_inset
-
- found in a rootward walk on the synthesis tree.
- If 
-\begin_inset Formula $A$
-\end_inset
-
- is not a descendant of 
-\begin_inset Formula $B$
-\end_inset
-
- on the taxonomy, then we say that 
-\begin_inset Formula $A$
-\end_inset
-
- is 
-\emph on
-placed
-\emph default
- within 
-\begin_inset Formula $B$
-\end_inset
-
- by the synthesis tree.
- While this may occur if 
-\begin_inset Formula $A$
-\end_inset
-
- is 
-\emph on
-incertae sedis
-\emph default
-, more complex scenarios are possible.
- We note that if method does not handle 
-\emph on
-incertae sedis
-\emph default
- taxa, then this scenario could not occur because any taxa 
-\begin_inset Formula $B$
-\end_inset
-
- that 
-\begin_inset Formula $A$
-\end_inset
-
- is placed within would be considered incompatible with the synthesis tree
- and so their names would not be applied.
-\end_layout
-
-\begin_layout Standard
-In order to fully describe a placement of 
-\begin_inset Formula $A$
-\end_inset
-
- within 
-\begin_inset Formula $B$
-\end_inset
-
- we consider the sequence of taxa encountered on a walk from 
-\begin_inset Formula $A$
-\end_inset
-
- or 
-\begin_inset Formula $B$
-\end_inset
-
- up to their MRCA 
-\begin_inset Formula $M$
-\end_inset
-
- on the taxonomy tree.
- Let us denote the sequence of taxa encountered from 
-\begin_inset Formula $A$
-\end_inset
-
- as 
-\begin_inset Formula $A_{1},\ldots,A_{n},M$
-\end_inset
-
- where 
-\begin_inset Formula $A_{1}=A$
-\end_inset
-
-.
- Let 
-\begin_inset Formula $B_{1},\ldots,B_{m},M$
-\end_inset
-
- be the sequence of taxa encountered from 
-\begin_inset Formula $B$
-\end_inset
-
- where 
-\begin_inset Formula $B_{1}=B$
-\end_inset
-
-.
- Then 
-\begin_inset Formula $A_{n}$
-\end_inset
-
- must be 
-\emph on
-incertae sedis
-\emph default
-, and 
-\begin_inset Formula $A_{2},\ldots,A_{n}$
-\end_inset
-
- must be incompatible with the synthesis tree (i.e.
- broken taxa).
- We then have that 
-\begin_inset Formula $A$
-\end_inset
-
- is placed successively within 
-\begin_inset Formula $B_{m},B_{m-1},\ldots,B_{2},B_{1}$
-\end_inset
-
-, and 
-\begin_inset Formula $m$
-\end_inset
-
- is the depth of the placement of 
-\begin_inset Formula $A$
-\end_inset
-
-.
-\end_layout
-
-\begin_layout Standard
-One question is whether this approach is able to handle nested incertae
- sedis taxa.
-\end_layout
-
-\begin_layout Standard
-Placement of incertae sedis taxa by input trees is unfortunately not quite
- as simple as finding a single location where an I.S.
- taxon should attach.
- For example, when an incertae sedis taxon is broken, its children need
- to be 
-\begin_inset Quotes eld
-\end_inset
-
-placed
-\begin_inset Quotes erd
-\end_inset
-
- separately.
-\end_layout
-
-\begin_layout Standard
-Each input tree can relate to an 
-\emph on
-incertae sedis
-\emph default
- taxon 
-\begin_inset Formula $(A,B,C)D$
-\end_inset
-
- in a number of ways
-\end_layout
-
-\begin_layout Itemize
-it could resolve 
-\begin_inset Formula $A$
-\end_inset
-
-, 
-\begin_inset Formula $B$
-\end_inset
-
-, 
-\begin_inset Formula $C$
-\end_inset
-
-, or 
-\begin_inset Formula $D$
-\end_inset
-
-.
-\end_layout
-
-\begin_layout Itemize
-it could place 
-\begin_inset Formula $D$
-\end_inset
-
- on a degree-2 (=out-degree-1) node that bisects a branch
-\end_layout
-
-\begin_layout Itemize
-it could place a descendant taxon of 
-\begin_inset Formula $D$
-\end_inset
-
- 
-\end_layout
-
-\begin_layout Itemize
-it could place a descendant taxon of 
-\begin_inset Formula $D$
-\end_inset
-
- in a 
-\emph on
-different place
-\emph default
- than another input tree.
-\end_layout
-
-\begin_layout Itemize
-it could place children of 
-\begin_inset Formula $D$
-\end_inset
-
- in multiple places, thus conflicting with the branch.
- If the 
-\emph on
-incertae sedis
-\emph default
- taxon 
-\begin_inset Formula $(A,B,C)$
-\end_inset
-
- is broken, then 
-\begin_inset Formula $A$
-\end_inset
-
-, 
-\begin_inset Formula $B$
-\end_inset
-
- and 
-\begin_inset Formula $C$
-\end_inset
-
- become 
-\emph on
-incertae sedis
-\emph default
- clades in their own right, that may attach separately, except that they
- .
- This is because none of 
-\begin_inset Formula $A$
-\end_inset
-
-, 
-\begin_inset Formula $B$
-\end_inset
-
-, or 
-\begin_inset Formula $C$
-\end_inset
-
- is in the exclude set of the siblings of 
-\begin_inset Formula $D$
-\end_inset
-
-.
 \end_layout
 
 \begin_layout Section
