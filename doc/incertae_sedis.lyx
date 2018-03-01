@@ -187,10 +187,17 @@ incertae sedis
 \end_layout
 
 \begin_layout Standard
-The OpenTree project seeks to build a comprehensive supertree tree covering
- all of life.
+The OpenTree project seeks to build a comprehensive supertree covering all
+ of life.
  The approach is to combine information in published phylogenies with a
- comprehensive taxonomy that supplies taxon names.
+ comprehensive taxonomy that supplies taxon names 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "redelings2017supertree"
+
+\end_inset
+
+.
  We describe an extension to our supertree method so that we can resolve
  taxonomic uncertainty by using published phylogenies to place 
 \emph on
@@ -226,122 +233,6 @@ TODO: add cases
 \end_layout
 
 \begin_layout Paragraph
-Taxonomy merging
-\end_layout
-
-\begin_layout Standard
-Not all 
-\emph on
-incertae sedis
-\emph default
- taxa in our taxonomy are directly labeled 
-\emph on
-incertae sedis
-\emph default
- by taxonomists.
- 
-\emph on
-Incertae sedis
-\emph default
- taxa can also result from automatic merging of taxonomies to create the
- OpenTree taxonomy.
- For example, in Figure 3 of 
-\begin_inset CommandInset citation
-LatexCommand citet
-key "rees2017automated"
-
-\end_inset
-
-, cases #4 and #6 illustrate examples where merging of two taxonomies leads
- to a taxonomy with a taxon of uncertain placement.
- The reason is primarily that if taxonomy 
-\begin_inset Formula $\taxonomy_{1}$
-\end_inset
-
- contains more levels of hierarchy than taxonomy 
-\begin_inset Formula $\taxonomy_{2}$
-\end_inset
-
-, then we must add internal nodes to 
-\begin_inset Formula $\taxonomy_{2}$
-\end_inset
-
- to align it to 
-\begin_inset Formula $\taxonomy_{1}$
-\end_inset
-
-.
- However, if taxonomy 
-\begin_inset Formula $\taxonomy_{2}$
-\end_inset
-
- contains more leaves than 
-\begin_inset Formula $\taxonomy_{1}$
-\end_inset
-
-, then it is unclear if these extra leaves should be nested inside the additiona
-l internal nodes, or not.
- Thus, the extra leaves are marked 
-\emph on
-incertae sedis
-\emph default
-.
-\end_layout
-
-\begin_layout Standard
-For example, if 
-\begin_inset Formula $\taxonomy_{1}=((a,b)x,(c,d)y)z$
-\end_inset
-
- and 
-\begin_inset Formula $\taxonomy_{2}=(a,b,c,d,e)z$
-\end_inset
-
- then 
-\begin_inset Formula $a$
-\end_inset
-
- and 
-\begin_inset Formula $b$
-\end_inset
-
- in 
-\begin_inset Formula $\taxonomy_{2}$
-\end_inset
-
- should be nested within 
-\begin_inset Formula $x$
-\end_inset
-
-, but we do not know if 
-\begin_inset Formula $e$
-\end_inset
-
- should be nested within 
-\begin_inset Formula $x$
-\end_inset
-
- or not.
- Thus we obtain 
-\begin_inset Formula $((a,b)x,(c,d)y,?e)z$
-\end_inset
-
-, where 
-\begin_inset Formula $?$
-\end_inset
-
- indicates that taxon 
-\begin_inset Formula $e$
-\end_inset
-
- is marked 
-\emph on
-incertae sedis
-\emph default
-.
-\end_layout
-
-\begin_layout Paragraph
 Formalism
 \end_layout
 
@@ -367,7 +258,7 @@ Formalism.
 
 \begin_layout Standard
 In contrast, input phylogenies only have labels on their leaf nodes.
- Furthermore, and the set of labels 
+ Furthermore, the set of labels 
 \begin_inset Formula $\mathcal{L}(i)$
 \end_inset
 
@@ -472,6 +363,21 @@ _inherited taxonomy.tsv
 \begin_layout Standard
 We would like to stop suppressing (pruning) incertae sedis taxa, so that
  groups such as Regulus can appear appear in the synthetic tree.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Comment
+status collapsed
+
+\begin_layout Plain Layout
+While we get Regulus back, we do not end up placing it in Sylviidae because
+ Sylviidae is broken.
+ It conflicts with about 20 different trees.
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Subsection
@@ -2957,78 +2863,337 @@ This probably is outside the scope of the paper, but if we could come up
 Results
 \end_layout
 
+\begin_layout Subsection
+Case 1
+\end_layout
+
+\begin_layout Standard
+taxonomy = (((a1,a2)A,(b1,b2)B)AB,(c1,c2)?C,D)root;
+\end_layout
+
+\begin_layout Subsubsection
+If we place 
+\begin_inset Formula $c$
+\end_inset
+
+ within 
+\begin_inset Formula $A$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+tree1 = (((a1,c1),b1),d1);
+\end_layout
+
+\begin_layout Standard
+synth-with-is: ((((a1,(c1,c2)C),a2)A,(b1,b2)B)AB),(d1)D)
+\end_layout
+
+\begin_layout Standard
+placement: C within A <- AB 
+\end_layout
+
+\begin_layout Standard
+synth-no-is: ((a1,(c1,c2)C),a1,(b1,b2)B,(d1)D)
+\end_layout
+
+\begin_layout Subsubsection
+If we place 
+\begin_inset Formula $c$
+\end_inset
+
+ within 
+\begin_inset Formula $A$
+\end_inset
+
+ but break 
+\begin_inset Formula $C$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+tree1 = ((a1,c1),(a2,c1),b1)
+\end_layout
+
+\begin_layout Standard
+synth-with-is: ((((a1,c1),(a2,c2))A,(b1,b2)B)AB, (d1)D)
+\end_layout
+
+\begin_layout Standard
+synth-no-is: ??
+\end_layout
+
+\begin_layout Standard
+placement: 
+\end_layout
+
+\begin_layout Itemize
+c1 <- (broken) C within A <- AB.
+\end_layout
+
+\begin_layout Itemize
+c2<- (broken) C within A <- AB
+\end_layout
+
+\begin_layout Standard
+result: we lose 
+\begin_inset Formula $C$
+\end_inset
+
+, but keep 
+\begin_inset Formula $A$
+\end_inset
+
+ and 
+\begin_inset Formula $AB$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Subsection
+Case 2: nested is
+\end_layout
+
+\begin_layout Standard
+taxonomy = (((a1,a2)A,(b1,b2)B),( ( (c11,c12)C1,(c21,c22)C2,(ci1,ci2)?CI
+ )?C) ,(d1)D)
+\end_layout
+
+\begin_layout Standard
+tree1 = ((a1,(c11,(ci1,c12))),b1)
+\end_layout
+
+\begin_layout Standard
+synth-with-is: places CI wihin C1, and C within A.
+\end_layout
+
+\begin_layout Subsection
+Case 3: interleaving taxa
+\end_layout
+
+\begin_layout Standard
+taxonomy = ((a1,a2)A,(b1,b2)?B,(c1,c2)?c)
+\end_layout
+
+\begin_layout Standard
+input tree: ((b1,c1),(b2,c2))
+\end_layout
+
+\begin_layout Standard
+synth-with-is: ((a1,a2)A,((b1,c1),(b2,c2))B) or ((a1,a2)A,((b1,c1),(b2,c2))C)
+\end_layout
+
+\begin_layout Standard
+Result: we name the interleaved taxon 
+\begin_inset Formula $B$
+\end_inset
+
+ or 
+\begin_inset Formula $C$
+\end_inset
+
+, but cannot name it both names.
+\end_layout
+
+\begin_layout Subsection
+Case 4: creation of monotypic taxa
+\end_layout
+
+\begin_layout Standard
+see test cases.
+\end_layout
+
 \begin_layout LyX-Code
 \begin_inset Note Comment
 status open
 
 \begin_layout LyX-Code
-?ott6145835 [6145835] <- ott698424 [698424] placed under ott4942423 [4942423]
- <- ott698424 [698424]
+
+\series bold
+Whale:
+\series default
+ ?ott6145835 [6145835 Brandtocetus/genus] <- ott698424 [698424 Cetacea/order]
+ placed under ott4942423 [4942423 Cetotherium / genus] <- ott698424 [698424
+ Cetacea/order]
 \end_layout
 
 \begin_layout LyX-Code
-?ott6145873 [6145873] <- ott698424 [698424] placed under ott4942423 [4942423]
- <- ott698424 [698424] 
+
+\series bold
+Whale:
+\series default
+ ?ott6145873 [6145873] <- ott698424 [698424 Cetacea / order] placed under
+ ott4942423 [4942423] <- ott698424 [698424] 
 \end_layout
 
 \begin_layout LyX-Code
-?ott18090 [18090] <- ott672501 [672501] placed under ott275501 [275501]
+- Cetacea broken.
+\end_layout
+
+\begin_layout LyX-Code
+
+\end_layout
+
+\begin_layout LyX-Code
+
+\series bold
+Insect:
+\series default
+ ?ott18090 [18090] <- ott672501 [672501] placed under ott275501 [275501]
  <- ott672501 [672501]
 \end_layout
 
 \begin_layout LyX-Code
-?ott190269 [190269] <- ott672501 [672501] placed under ott275501 [275501]
+
+\series bold
+Insect:
+\series default
+ ?ott190269 [190269] <- ott672501 [672501] placed under ott275501 [275501]
  <- ott672501 [672501] 
 \end_layout
 
 \begin_layout LyX-Code
-?ott349638 [349638] <- ott672501 [672501] placed under ott275501 [275501]
+
+\series bold
+Insect:
+\series default
+ ?ott349638 [349638] <- ott672501 [672501] placed under ott275501 [275501]
  <- ott672501 [672501] 
 \end_layout
 
 \begin_layout LyX-Code
-?ott1009313 [1009313] <- ott672501 [672501] placed under ott275501 [275501]
- <- ott672501 [672501] 
+
+\series bold
+Insect:
+\series default
+ ?ott1009313 [1009313] <- ott672501 [672501 Reduviidae / family] placed
+ under ott275501 [275501] <- ott672501 [672501] 
 \end_layout
 
 \begin_layout LyX-Code
-?ott564110 [564110] <- ott939130 [939130] placed under ott757344 [757344]
- <- ott939130 [939130] 
+- Reduviidae broken.
 \end_layout
 
 \begin_layout LyX-Code
-?ott679485 [679485] <- ott1074933 [1074933] placed under ott534796 [534796]
- <- ott1074933 [1074933] 
+
 \end_layout
 
 \begin_layout LyX-Code
-?ott729184 [729184] <- ott1074933 [1074933] placed under ott534796 [534796]
- <- ott1074933 [1074933] 
+
+\series bold
+Insect: 
+\series default
+?ott564110 [564110] <- ott939130 [939130 Thyrididae / family] placed under
+ ott757344 [757344] <- ott939130 [939130] 
 \end_layout
 
 \begin_layout LyX-Code
-?ott5144555 [5144555] <- ott23373 [23373] placed under ott447802 [447802]
+
+\end_layout
+
+\begin_layout LyX-Code
+
+\series bold
+Plant:
+\series default
+ ?ott679485 [679485] <- ott1074933 [1074933 Lamioidea / subfamily] placed
+ under ott534796 [534796] <- 
+\end_layout
+
+\begin_layout LyX-Code
+
+\series bold
+Plant:
+\series default
+ ?ott729184 [729184] <- ott1074933 [1074933 Lamioidea / subfamily ] placed
+ under ott534796 [534796] <- ott1074933 [1074933] 
+\end_layout
+
+\begin_layout LyX-Code
+ott1074933 [1074933] 
+\end_layout
+
+\begin_layout LyX-Code
+- Lamioidea 
+\emph on
+not
+\emph default
+ broken
+\end_layout
+
+\begin_layout LyX-Code
+
+\end_layout
+
+\begin_layout LyX-Code
+
+\series bold
+Plant:
+\series default
+ ?ott5144555 [5144555] <- ott23373 [23373] placed under ott447802 [447802]
  <- ott23373 [23373]
 \end_layout
 
 \begin_layout LyX-Code
-?ott441413 [441413] <- ott1014022 [1014022] placed under ott571842 [571842]
- <- ott997381 [997381] <- ott1014022 [1014022] 
+- Orobanchaceae broken
 \end_layout
 
 \begin_layout LyX-Code
-?ott31033 [31033] <- ott627035 [627035] placed under ott6019314 [6019314]
+
+\end_layout
+
+\begin_layout LyX-Code
+
+\series bold
+Fly:
+\series default
+ ?ott441413 [441413 Rhodesiella lungliensis/species] <- ott1014022 [1014022
+ Rubiaceae] placed under ott571842 [571842 Pavetteae / tribe] <- ott997381
+ [997381 Ixoroidea/subfamily] <- ott1014022 [1014022 Rubiaceae/family]
+\end_layout
+
+\begin_layout LyX-Code
+
+\end_layout
+
+\begin_layout LyX-Code
+
+\series bold
+Plant:
+\series default
+ ?ott31033 [31033] <- ott627035 [627035] placed under ott6019314 [6019314]
  <- ott627035 [627035] 
 \end_layout
 
 \begin_layout LyX-Code
-?ott4018918 [4018918] <- ott5248084 [5248084] placed under ott167767 [167767]
+
+\end_layout
+
+\begin_layout LyX-Code
+
+\series bold
+Bacteria:
+\series default
+ ?ott4018918 [4018918] <- ott5248084 [5248084] placed under ott167767 [167767]
  <- ott5248084 [5248084] 
 \end_layout
 
 \begin_layout LyX-Code
+
+\series bold
+Bacteria:
+\series default
 ?ott4792759 [4792759] <- ott5248084 [5248084] placed under ott167767 [167767]
  <- ott5248084 [5248084] 
+\end_layout
+
+\begin_layout LyX-Code
+- Erysipelotrichaceae broken
 \end_layout
 
 \end_inset
@@ -3041,7 +3206,25 @@ Should we do this? We could say:
 \end_layout
 
 \begin_layout Itemize
-we placed 14 incertae sedis taxa.
+there are 331 incertae sedis taxa that are mentioned in input trees.
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+what is the kingom / phylum / class / order / genus / species
+\end_layout
+
+\end_deeper
+\begin_layout Itemize
+we placed 14 incertae sedis taxa inside a sister taxon.
+\end_layout
+
+\begin_layout Itemize
+we confirmed 
+\begin_inset Formula $n$
+\end_inset
+
+ incertae sedis taxa as being separate from all sister (sampled) taxa??
 \end_layout
 
 \begin_layout Itemize
@@ -3178,6 +3361,122 @@ incertae sedis
  by the unpruner.
  This could be considered when deciding which nodes to suppress in the tree
  viewer.
+\end_layout
+
+\begin_layout Paragraph
+Taxonomy merging
+\end_layout
+
+\begin_layout Standard
+Not all 
+\emph on
+incertae sedis
+\emph default
+ taxa in our taxonomy are directly labeled 
+\emph on
+incertae sedis
+\emph default
+ by taxonomists.
+ 
+\emph on
+Incertae sedis
+\emph default
+ taxa can also result from automatic merging of taxonomies to create the
+ OpenTree taxonomy.
+ For example, in Figure 3 of 
+\begin_inset CommandInset citation
+LatexCommand citet
+key "rees2017automated"
+
+\end_inset
+
+, cases #4 and #6 illustrate examples where merging of two taxonomies leads
+ to a taxonomy with a taxon of uncertain placement.
+ The reason is primarily that if taxonomy 
+\begin_inset Formula $\taxonomy_{1}$
+\end_inset
+
+ contains more levels of hierarchy than taxonomy 
+\begin_inset Formula $\taxonomy_{2}$
+\end_inset
+
+, then we must add internal nodes to 
+\begin_inset Formula $\taxonomy_{2}$
+\end_inset
+
+ to align it to 
+\begin_inset Formula $\taxonomy_{1}$
+\end_inset
+
+.
+ However, if taxonomy 
+\begin_inset Formula $\taxonomy_{2}$
+\end_inset
+
+ contains more leaves than 
+\begin_inset Formula $\taxonomy_{1}$
+\end_inset
+
+, then it is unclear if these extra leaves should be nested inside the additiona
+l internal nodes, or not.
+ Thus, the extra leaves are marked 
+\emph on
+incertae sedis
+\emph default
+.
+\end_layout
+
+\begin_layout Standard
+For example, if 
+\begin_inset Formula $\taxonomy_{1}=((a,b)x,(c,d)y)z$
+\end_inset
+
+ and 
+\begin_inset Formula $\taxonomy_{2}=(a,b,c,d,e)z$
+\end_inset
+
+ then 
+\begin_inset Formula $a$
+\end_inset
+
+ and 
+\begin_inset Formula $b$
+\end_inset
+
+ in 
+\begin_inset Formula $\taxonomy_{2}$
+\end_inset
+
+ should be nested within 
+\begin_inset Formula $x$
+\end_inset
+
+, but we do not know if 
+\begin_inset Formula $e$
+\end_inset
+
+ should be nested within 
+\begin_inset Formula $x$
+\end_inset
+
+ or not.
+ Thus we obtain 
+\begin_inset Formula $((a,b)x,(c,d)y,?e)z$
+\end_inset
+
+, where 
+\begin_inset Formula $?$
+\end_inset
+
+ indicates that taxon 
+\begin_inset Formula $e$
+\end_inset
+
+ is marked 
+\emph on
+incertae sedis
+\emph default
+.
 \end_layout
 
 \begin_layout Standard

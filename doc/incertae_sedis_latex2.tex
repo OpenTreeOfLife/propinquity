@@ -89,9 +89,9 @@ group, such as Fungi, but the precise location within the parent group
 is uncertain. Such a taxon would then be attached as a child of the
 parent group, but labeled as \emph{incertae sedis}''. 
 
-The OpenTree project seeks to build a comprehensive supertree tree
-covering all of life. The approach is to combine information in published
-phylogenies with a comprehensive taxonomy that supplies taxon names.
+The OpenTree project seeks to build a comprehensive supertree covering
+all of life. The approach is to combine information in published phylogenies
+with a comprehensive taxonomy that supplies taxon names \citep{redelings2017supertree}.
 We describe an extension to our supertree method so that we can resolve
 taxonomic uncertainty by using published phylogenies to place \emph{incertae
 sedis} taxa. We describe an updated semantics for conflict between
@@ -109,28 +109,6 @@ taxa are incertae sedis.
 
 \emph{TODO: add cases}
 
-\paragraph{Taxonomy merging}
-
-Not all \emph{incertae sedis} taxa in our taxonomy are directly labeled
-\emph{incertae sedis} by taxonomists. \emph{Incertae sedis} taxa can
-also result from automatic merging of taxonomies to create the OpenTree
-taxonomy. For example, in Figure 3 of \citet{rees2017automated},
-cases \#4 and \#6 illustrate examples where merging of two taxonomies
-leads to a taxonomy with a taxon of uncertain placement. The reason
-is primarily that if taxonomy $\taxonomy_{1}$ contains more levels
-of hierarchy than taxonomy $\taxonomy_{2}$, then we must add internal
-nodes to $\taxonomy_{2}$ to align it to $\taxonomy_{1}$. However,
-if taxonomy $\taxonomy_{2}$ contains more leaves than $\taxonomy_{1}$,
-then it is unclear if these extra leaves should be nested inside the
-additional internal nodes, or not. Thus, the extra leaves are marked
-\emph{incertae sedis}.
-
-For example, if $\taxonomy_{1}=((a,b)x,(c,d)y)z$ and $\taxonomy_{2}=(a,b,c,d,e)z$
-then $a$ and $b$ in $\taxonomy_{2}$ should be nested within $x$,
-but we do not know if $e$ should be nested within $x$ or not. Thus
-we obtain $((a,b)x,(c,d)y,?e)z$, where $?$ indicates that taxon
-$e$ is marked \emph{incertae sedis}.
-
 \paragraph{Formalism}
 
 Formalism. We consider a ranked collection $\phyloinputs=\left\{ T_{1},\ldots,T_{n}\right\} $
@@ -140,9 +118,9 @@ taxonomy node has a label, and every label correspond to a unique
 taxonomy node.
 
 In contrast, input phylogenies only have labels on their leaf nodes.
-Furthermore, and the set of labels $\mathcal{L}(i)$ on input tree
-$T_{i}$ need not include all leaf labels, and in practice always
-contains only a relatively small part of $\mathcal{L}$.
+Furthermore, the set of labels $\mathcal{L}(i)$ on input tree $T_{i}$
+need not include all leaf labels, and in practice always contains
+only a relatively small part of $\mathcal{L}$.
 
 We extend this framework by adding a set $\mathcal{I}\subseteq\mathcal{L}$
 of labels that have the \emph{incertae sedis }property. The taxonomy
@@ -172,6 +150,12 @@ taxonomy.tsv}}.
 
 We would like to stop suppressing (pruning) incertae sedis taxa, so
 that groups such as Regulus can appear appear in the synthetic tree.
+
+\begin{comment}
+While we get Regulus back, we do not end up placing it in Sylviidae
+because Sylviidae is broken. It conflicts with about 20 different
+trees.
+\end{comment}
 
 \subsection{Taxonomy details}
 
@@ -831,42 +815,113 @@ up with a modified conflict algorithm, that would be nice/useful,
 and probably novel. It would also probably be slower...
 
 \section{Results}
+
+\subsection{Case 1}
+
+taxonomy = (((a1,a2)A,(b1,b2)B)AB,(c1,c2)?C,D)root;
+
+\subsubsection{If we place $c$ within $A$}
+
+tree1 = (((a1,c1),b1),d1);
+
+synth-with-is: ((((a1,(c1,c2)C),a2)A,(b1,b2)B)AB),(d1)D)
+
+placement: C within A <- AB 
+
+synth-no-is: ((a1,(c1,c2)C),a1,(b1,b2)B,(d1)D)
+
+\subsubsection{If we place $c$ within $A$ but break $C$}
+
+tree1 = ((a1,c1),(a2,c1),b1)
+
+synth-with-is: ((((a1,c1),(a2,c2))A,(b1,b2)B)AB, (d1)D)
+
+synth-no-is: ??
+
+placement: 
+\begin{itemize}
+\item c1 <- (broken) C within A <- AB.
+\item c2<- (broken) C within A <- AB
+\end{itemize}
+result: we lose $C$, but keep $A$ and $AB$.
+
+\subsection{Case 2: nested is}
+
+taxonomy = (((a1,a2)A,(b1,b2)B),( ( (c11,c12)C1,(c21,c22)C2,(ci1,ci2)?CI
+)?C) ,(d1)D)
+
+tree1 = ((a1,(c11,(ci1,c12))),b1)
+
+synth-with-is: places CI wihin C1, and C within A.
+
+\subsection{Case 3: interleaving taxa}
+
+taxonomy = ((a1,a2)A,(b1,b2)?B,(c1,c2)?c)
+
+input tree: ((b1,c1),(b2,c2))
+
+synth-with-is: ((a1,a2)A,((b1,c1),(b2,c2))B) or ((a1,a2)A,((b1,c1),(b2,c2))C)
+
+Result: we name the interleaved taxon $B$ or $C$, but cannot name
+it both names.
+
+\subsection{Case 4: creation of monotypic taxa}
+
+see test cases.
 \begin{lyxcode}
 \begin{comment}
 \begin{lyxcode}
-?ott6145835~{[}6145835{]}~<-~ott698424~{[}698424{]}~placed~under~ott4942423~{[}4942423{]}~<-~ott698424~{[}698424{]}
+\textbf{Whale:}~?ott6145835~{[}6145835~Brandtocetus/genus{]}~<-~ott698424~{[}698424~Cetacea/order{]}~placed~under~ott4942423~{[}4942423~Cetotherium~/~genus{]}~<-~ott698424~{[}698424~Cetacea/order{]}
 
-?ott6145873~{[}6145873{]}~<-~ott698424~{[}698424{]}~placed~under~ott4942423~{[}4942423{]}~<-~ott698424~{[}698424{]}~
+\textbf{Whale:}~?ott6145873~{[}6145873{]}~<-~ott698424~{[}698424~Cetacea~/~order{]}~placed~under~ott4942423~{[}4942423{]}~<-~ott698424~{[}698424{]}~
 
-?ott18090~{[}18090{]}~<-~ott672501~{[}672501{]}~placed~under~ott275501~{[}275501{]}~<-~ott672501~{[}672501{]}
+-~Cetacea~broken.
 
-?ott190269~{[}190269{]}~<-~ott672501~{[}672501{]}~placed~under~ott275501~{[}275501{]}~<-~ott672501~{[}672501{]}~
+\textbf{Insect:}~?ott18090~{[}18090{]}~<-~ott672501~{[}672501{]}~placed~under~ott275501~{[}275501{]}~<-~ott672501~{[}672501{]}
 
-?ott349638~{[}349638{]}~<-~ott672501~{[}672501{]}~placed~under~ott275501~{[}275501{]}~<-~ott672501~{[}672501{]}~
+\textbf{Insect:}~?ott190269~{[}190269{]}~<-~ott672501~{[}672501{]}~placed~under~ott275501~{[}275501{]}~<-~ott672501~{[}672501{]}~
 
-?ott1009313~{[}1009313{]}~<-~ott672501~{[}672501{]}~placed~under~ott275501~{[}275501{]}~<-~ott672501~{[}672501{]}~
+\textbf{Insect:}~?ott349638~{[}349638{]}~<-~ott672501~{[}672501{]}~placed~under~ott275501~{[}275501{]}~<-~ott672501~{[}672501{]}~
 
-?ott564110~{[}564110{]}~<-~ott939130~{[}939130{]}~placed~under~ott757344~{[}757344{]}~<-~ott939130~{[}939130{]}~
+\textbf{Insect:}~?ott1009313~{[}1009313{]}~<-~ott672501~{[}672501~Reduviidae~/~family{]}~placed~under~ott275501~{[}275501{]}~<-~ott672501~{[}672501{]}~
 
-?ott679485~{[}679485{]}~<-~ott1074933~{[}1074933{]}~placed~under~ott534796~{[}534796{]}~<-~ott1074933~{[}1074933{]}~
+-~Reduviidae~broken.
 
-?ott729184~{[}729184{]}~<-~ott1074933~{[}1074933{]}~placed~under~ott534796~{[}534796{]}~<-~ott1074933~{[}1074933{]}~
+\textbf{Insect:~}?ott564110~{[}564110{]}~<-~ott939130~{[}939130~Thyrididae~/~family{]}~placed~under~ott757344~{[}757344{]}~<-~ott939130~{[}939130{]}~
 
-?ott5144555~{[}5144555{]}~<-~ott23373~{[}23373{]}~placed~under~ott447802~{[}447802{]}~<-~ott23373~{[}23373{]}
+\textbf{Plant:}~?ott679485~{[}679485{]}~<-~ott1074933~{[}1074933~Lamioidea~/~subfamily{]}~placed~under~ott534796~{[}534796{]}~<-~
 
-?ott441413~{[}441413{]}~<-~ott1014022~{[}1014022{]}~placed~under~ott571842~{[}571842{]}~<-~ott997381~{[}997381{]}~<-~ott1014022~{[}1014022{]}~
+\textbf{Plant:}~?ott729184~{[}729184{]}~<-~ott1074933~{[}1074933~Lamioidea~/~subfamily~{]}~placed~under~ott534796~{[}534796{]}~<-~ott1074933~{[}1074933{]}~
 
-?ott31033~{[}31033{]}~<-~ott627035~{[}627035{]}~placed~under~ott6019314~{[}6019314{]}~<-~ott627035~{[}627035{]}~
+ott1074933~{[}1074933{]}~
 
-?ott4018918~{[}4018918{]}~<-~ott5248084~{[}5248084{]}~placed~under~ott167767~{[}167767{]}~<-~ott5248084~{[}5248084{]}~
+-~Lamioidea~\emph{not}~broken
 
-?ott4792759~{[}4792759{]}~<-~ott5248084~{[}5248084{]}~placed~under~ott167767~{[}167767{]}~<-~ott5248084~{[}5248084{]}~
+\textbf{Plant:}~?ott5144555~{[}5144555{]}~<-~ott23373~{[}23373{]}~placed~under~ott447802~{[}447802{]}~<-~ott23373~{[}23373{]}
+
+-~Orobanchaceae~broken
+
+\textbf{Fly:}~?ott441413~{[}441413~Rhodesiella~lungliensis/species{]}~<-~ott1014022~{[}1014022~Rubiaceae{]}~placed~under~ott571842~{[}571842~Pavetteae~/~tribe{]}~<-~ott997381~{[}997381~Ixoroidea/subfamily{]}~<-~ott1014022~{[}1014022~Rubiaceae/family{]}
+
+\textbf{Plant:}~?ott31033~{[}31033{]}~<-~ott627035~{[}627035{]}~placed~under~ott6019314~{[}6019314{]}~<-~ott627035~{[}627035{]}~
+
+\textbf{Bacteria:}~?ott4018918~{[}4018918{]}~<-~ott5248084~{[}5248084{]}~placed~under~ott167767~{[}167767{]}~<-~ott5248084~{[}5248084{]}~
+
+\textbf{Bacteria:}?ott4792759~{[}4792759{]}~<-~ott5248084~{[}5248084{]}~placed~under~ott167767~{[}167767{]}~<-~ott5248084~{[}5248084{]}~
+
+-~Erysipelotrichaceae~broken
 \end{lyxcode}
 \end{comment}
 \end{lyxcode}
 Should we do this? We could say: 
 \begin{itemize}
-\item we placed 14 incertae sedis taxa.
+\item there are 331 incertae sedis taxa that are mentioned in input trees.
+\begin{itemize}
+\item what is the kingom / phylum / class / order / genus / species
+\end{itemize}
+\item we placed 14 incertae sedis taxa inside a sister taxon.
+\item we confirmed $n$ incertae sedis taxa as being separate from all sister
+(sampled) taxa??
 \item we avoiding breaking 8 taxa that had IS taxa placed inside them.
 \item we allowed $z_{1}$ new taxa into the synthesis tree that were incertae
 sedis.
@@ -897,6 +952,28 @@ will be placed, and thus any other children $A_{2},A_{3},\ldots,A_{n}$
 will also be placed, since they will be added as children of the (placed)
 node $A$ by the unpruner. This could be considered when deciding
 which nodes to suppress in the tree viewer.
+
+\paragraph{Taxonomy merging}
+
+Not all \emph{incertae sedis} taxa in our taxonomy are directly labeled
+\emph{incertae sedis} by taxonomists. \emph{Incertae sedis} taxa can
+also result from automatic merging of taxonomies to create the OpenTree
+taxonomy. For example, in Figure 3 of \citet{rees2017automated},
+cases \#4 and \#6 illustrate examples where merging of two taxonomies
+leads to a taxonomy with a taxon of uncertain placement. The reason
+is primarily that if taxonomy $\taxonomy_{1}$ contains more levels
+of hierarchy than taxonomy $\taxonomy_{2}$, then we must add internal
+nodes to $\taxonomy_{2}$ to align it to $\taxonomy_{1}$. However,
+if taxonomy $\taxonomy_{2}$ contains more leaves than $\taxonomy_{1}$,
+then it is unclear if these extra leaves should be nested inside the
+additional internal nodes, or not. Thus, the extra leaves are marked
+\emph{incertae sedis}.
+
+For example, if $\taxonomy_{1}=((a,b)x,(c,d)y)z$ and $\taxonomy_{2}=(a,b,c,d,e)z$
+then $a$ and $b$ in $\taxonomy_{2}$ should be nested within $x$,
+but we do not know if $e$ should be nested within $x$ or not. Thus
+we obtain $((a,b)x,(c,d)y,?e)z$, where $?$ indicates that taxon
+$e$ is marked \emph{incertae sedis}.
 
 \bibliographystyle{upmplainnat}
 \bibliography{otcetera}
