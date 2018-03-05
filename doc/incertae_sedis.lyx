@@ -624,7 +624,7 @@ In this case the root node stands for an edge that connects the root to
 \end_layout
 
 \begin_layout Subsubsection
-Reduced exclude sets for 
+Partially reduced exclude sets for 
 \emph on
 incertae sedis
 \emph default
@@ -692,7 +692,7 @@ incertae sedis
 , then we have 
 \begin_inset Formula 
 \begin{align}
-\mathcal{E}(n) & =\mathcal{E}(parent(n))\cup\left[\mathcal{I}(m)\big|m\in siblings(n),m\text{ not \emph{incertae} \emph{sedis}}\right],\label{eq:exclude-set-formula}
+\mathcal{E}(n) & =\mathcal{E}(parent(n))\cup\left[\mathcal{I}(m)\big|m\in siblings(n),m\text{ not \emph{incertae} \emph{sedis}}\right],\label{eq:exclude-set-formula-1}
 \end{align}
 
 \end_inset
@@ -706,30 +706,28 @@ This leads to a pre-order recursion that terminates if the exclude set for
 \end_layout
 
 \begin_layout Subsubsection
-Alternative formulation
+Extended formulation
 \end_layout
 
 \begin_layout Standard
-Consider an I.S.
- clade 
+If an 
+\emph on
+incertae sedis
+\emph default
+ taxon 
 \begin_inset Formula $A$
 \end_inset
 
- that is more rootward than an I.S.
- clade 
+ is placed within a sibling clade, then it may gain a new 
+\emph on
+incertae sedis
+\emph default
+ sibling 
 \begin_inset Formula $B$
 \end_inset
 
 .
- With the above formulation, we could not place 
-\begin_inset Formula $A$
-\end_inset
-
- as sister to 
-\begin_inset Formula $B$
-\end_inset
-
- and then place 
+ We could then possibly place 
 \begin_inset Formula $B$
 \end_inset
 
@@ -737,47 +735,20 @@ Consider an I.S.
 \begin_inset Formula $A$
 \end_inset
 
-, because 
-\begin_inset Formula $A$
-\end_inset
-
- excludes 
-\begin_inset Formula $B$
-\end_inset
-
 .
- To solve this problem, we could modify formula (
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "eq:exclude-set-formula"
-
-\end_inset
-
-) above to avoid excluding 
-\family typewriter
-incertae_sedis_inherited
-\family default
- tips of a sister taxon 
+ However, the above definition does not allow this possibility.
+ We therefore adjust the above definition to exclude only descendants of
+ sibling taxon only the path to the descendant does not pass through a node
+ labeled as 
+\emph on
+incertae sedis
+\emph default
+.
+ Such descendants of a sibling 
 \begin_inset Formula $m$
 \end_inset
 
-.
- Thus, we could modify formula (
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "eq:exclude-set-formula"
-
-\end_inset
-
-) to refer to 
-\begin_inset Formula $\mathcal{I}^{\prime}(m)$
-\end_inset
-
- instead of 
-\begin_inset Formula $\mathcal{I}(m)$
-\end_inset
-
-, where 
+ are given by:
 \begin_inset Formula 
 \begin{align*}
 \mathcal{I}^{\prime}(m) & =\begin{cases}
@@ -788,23 +759,31 @@ m & \text{if }m\text{ is a leaf}\\
 
 \end_inset
 
-This would not rule out placing 
-\begin_inset Formula $B$
+We then modify the formula above to exclude 
+\begin_inset Formula $\mathcal{I}^{\prime}(m)$
 \end_inset
 
- as sister to 
-\begin_inset Formula $A$
+ instead of 
+\begin_inset Formula $\mathcal{I}(m)$
 \end_inset
 
- and then placing 
-\begin_inset Formula $A$
+ for each sibling 
+\begin_inset Formula $m$
 \end_inset
 
- within 
-\begin_inset Formula $B$
+:
+\begin_inset Formula 
+\begin{align}
+\mathcal{E}^{\prime}(n) & =\mathcal{E}^{\prime}(parent(n))\cup\left[\mathcal{I}^{\prime}(m)\big|m\in siblings(n),m\text{ not \emph{incertae} \emph{sedis}}\right],\label{eq:exclude-set-formula-2}
+\end{align}
+
 \end_inset
 
-.
+
+\end_layout
+
+\begin_layout Standard
+This less stringent formula is the one we will apply throughout this paper.
 \end_layout
 
 \begin_layout Subsubsection
@@ -2268,7 +2247,7 @@ incertae sedis
 Equation (
 \begin_inset CommandInset ref
 LatexCommand ref
-reference "eq:exclude-set-formula"
+reference "eq:exclude-set-formula-1"
 
 \end_inset
 

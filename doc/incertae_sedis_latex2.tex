@@ -226,7 +226,7 @@ taxa:
 In this case the root node stands for an edge that connects the root
 to the root's parent.
 
-\subsubsection{Reduced exclude sets for \emph{incertae sedis} taxa}
+\subsubsection{Partially reduced exclude sets for \emph{incertae sedis} taxa}
 
 Marking a taxon as \emph{incertae sedis} changes the meaning of its
 sibling taxa. Since the \emph{incertae sedis} taxon can be placed
@@ -244,29 +244,35 @@ set of its parent. If we use the terminology that the include and
 exclude sets for a node $n$ are $\mathcal{I}(n)$ and $\mathcal{E}(n)$,
 then we have 
 \begin{align}
-\mathcal{E}(n) & =\mathcal{E}(parent(n))\cup\left[\mathcal{I}(m)\big|m\in siblings(n),m\text{ not \emph{incertae} \emph{sedis}}\right],\label{eq:exclude-set-formula}
+\mathcal{E}(n) & =\mathcal{E}(parent(n))\cup\left[\mathcal{I}(m)\big|m\in siblings(n),m\text{ not \emph{incertae} \emph{sedis}}\right],\label{eq:exclude-set-formula-1}
 \end{align}
 This leads to a pre-order recursion that terminates if the exclude
 set for the root note is set to $\{\}$ as a boundary condition.
 
-\subsubsection{Alternative formulation}
+\subsubsection{Extended formulation}
 
-Consider an I.S. clade $A$ that is more rootward than an I.S. clade
-$B$. With the above formulation, we could not place $A$ as sister
-to $B$ and then place $B$ within $A$, because $A$ excludes $B$.
-To solve this problem, we could modify formula (\ref{eq:exclude-set-formula})
-above to avoid excluding \texttt{incertae\_sedis\_inherited} tips
-of a sister taxon $m$. Thus, we could modify formula (\ref{eq:exclude-set-formula})
-to refer to $\mathcal{I}^{\prime}(m)$ instead of $\mathcal{I}(m)$,
-where 
+If an \emph{incertae sedis} taxon $A$ is placed within a sibling
+clade, then it may gain a new \emph{incertae sedis} sibling $B$.
+We could then possibly place $B$ within $A$. However, the above
+definition does not allow this possibility. We therefore adjust the
+above definition to exclude only descendants of sibling taxon only
+the path to the descendant does not pass through a node labeled as
+\emph{incertae sedis}. Such descendants of a sibling $m$ are given
+by:
 \begin{align*}
 \mathcal{I}^{\prime}(m) & =\begin{cases}
 m & \text{if }m\text{ is a leaf}\\
 \left[\mathcal{I}^{\prime}(c)\big|c\in children(m),c\text{ not \emph{incertae sedis}}\right] & \text{otherwise.}
 \end{cases}
 \end{align*}
-This would not rule out placing $B$ as sister to $A$ and then placing
-$A$ within $B$.
+We then modify the formula above to exclude $\mathcal{I}^{\prime}(m)$
+instead of $\mathcal{I}(m)$ for each sibling $m$:
+\begin{align}
+\mathcal{E}^{\prime}(n) & =\mathcal{E}^{\prime}(parent(n))\cup\left[\mathcal{I}^{\prime}(m)\big|m\in siblings(n),m\text{ not \emph{incertae} \emph{sedis}}\right],\label{eq:exclude-set-formula-2}
+\end{align}
+
+This less stringent formula is the one we will apply throughout this
+paper.
 
 \subsubsection{Comparison to operational definition}
 
@@ -653,8 +659,8 @@ nodes is not empty.
 
 \subsubsection{Exclude sets modified by \emph{incertae sedis} marks}
 
-Equation (\ref{eq:exclude-set-formula}) leads to the following algorithm
-to compute the exclude set for all nodes in a tree.
+Equation (\ref{eq:exclude-set-formula-1}) leads to the following
+algorithm to compute the exclude set for all nodes in a tree.
 \begin{enumerate}
 \item Set the exclude set of the root node to be empty
 \item For each \emph{node} (except the root) in preorder
@@ -919,7 +925,9 @@ Should we do this? We could say:
 \begin{itemize}
 \item what is the kingom / phylum / class / order / genus / species
 \end{itemize}
-\item we placed 14 incertae sedis taxa inside a sister taxon.
+\item we placed 14 incertae sedis taxa inside a sister taxon. (``incertae
+sedis'', ``versus ``unplaced''?)
+\item we placed $o$ incertae sedis taxa \emph{outside} all sister taxa.
 \item we confirmed $n$ incertae sedis taxa as being separate from all sister
 (sampled) taxa??
 \item we avoiding breaking 8 taxa that had IS taxa placed inside them.
