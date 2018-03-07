@@ -4,7 +4,7 @@
 \usepackage[T1]{fontenc}
 \usepackage[latin9]{inputenc}
 \usepackage{geometry}
-\geometry{verbose,tmargin=2cm,bmargin=2cm,lmargin=2cm,rmargin=2cm}
+\geometry{verbose,tmargin=3cm,bmargin=3cm,lmargin=3cm,rmargin=3cm}
 \setlength{\parskip}{6pt}
 \setlength{\parindent}{0pt}
 \usepackage{babel}
@@ -527,6 +527,82 @@ is unaffected by incertae sedis information.}
 In addition to incertae sedis taxa containing other taxa, it is also
 possible for incertae sedis taxa to contain nested \emph{incertae
 sedis} taxa. \textbf{What issues might this raise?}
+
+\section{Cases}
+
+When only tip nodes on the taxonomy are \emph{incertae sedis}, we
+have a very simple form of the \emph{incertae sedis} supertree problem.
+However, in practice entire clades may be \emph{incertae sedis}, and
+so more complex issue arise. In this section we consider a number
+of cases that must be handled when attempting to place \emph{incertae
+sedis} taxa.
+
+\subsection{Case 1: An \emph{incertae sedis} clade}
+
+When a clade is marked as \emph{incertae sedis}, we need to consider
+two cases. In the first case, the clade may be placed within a sister
+clade intact (Figure \ref{fig:Handling-incertae-sedis}). However,
+if the clade is not monophyletic in the synthesis tree, then we allow
+the members of the clade to be placed separately (Figure \ref{fig:Broken-incertae-sedis}).
+
+\begin{figure}
+\subfloat[Input tree \#1]{\includegraphics[scale=0.5]{Figures/is-clade/tree1-shaded}
+
+}\hfill{}\subfloat[Taxonomy]{\includegraphics[scale=0.5]{Figures/is-clade/tax-shaded}
+
+}
+
+\subfloat[Synthesis Tree \#1]{\includegraphics[scale=0.5]{Figures/is-clade/synth1-no-is-shaded}
+
+}\hfill{}\subfloat[Synthesis Tree \#1]{\includegraphics[scale=0.5]{Figures/is-clade/synth1-shaded}
+
+}
+
+\caption{\label{fig:Handling-incertae-sedis}Handling \emph{incertae sedis
+}taxa recovers additional edges and taxon names. Supertree construction
+on input tree (a) and taxonomy tree (b) with \emph{incertae sedis}
+clade $C$ leads to synthesis tree (c). However, supertree construction
+with \emph{incertae sedis} handling constructs tree (d), which recovers
+taxon name $AB$ and $A$, as well as the edge to clade $AB$. Taxon
+names and edges that are conditional on handling \emph{incertae sedis}
+are shaded grey. }
+
+\end{figure}
+
+\begin{figure}
+
+\hfill{}\subfloat[Input tree \#1]{\includegraphics[scale=0.5]{Figures/is-clade/tree2-shaded}
+
+}\hfill{}\subfloat[Taxonomy]{\includegraphics[scale=0.5]{Figures/is-clade/tax-shaded}
+
+}\hfill{}
+
+\hfill{}\subfloat[Synthesis Tree \#1]{\includegraphics[scale=0.5]{Figures/is-clade/synth2-shaded}
+
+}\hfill{}
+
+\caption{Broken incertae sedis clade\label{fig:Broken-incertae-sedis}. Taxonomy
+tree (b) contains \emph{incertae sedis }taxon $C$ that is broken
+by input tree (a). Supertree construction results in a synthesis tree
+(c) that places $C1$ and $C2$ separately within $A$.}
+
+\end{figure}
+
+\subsection{Case 2: A nested \emph{incertae sedis} clade}
+
+When \emph{incertae sedis} clades are allowed, it is possible for
+an \emph{incertae sedis} taxon to be nested within another \emph{incertae
+sedis} taxon. In such a case we must allow the higher-ranked taxon
+to be placed within a sibling, while preserving the right of the lower
+ranked taxon to be placed within a lower-level sibling (Figure \#)
+
+\subsection{Case 3: Placement of one incertae sedis taxon within another.}
+
+In our semantics of incertae sedis taxa, it is possible for to place
+one \emph{incertae sedis} sibling inside another. A special case of
+this is when a higher-rank incertae sedis taxon $A$ is placed as
+sister to an incertae sedis taxon $B$, and then $B$ is placed within
+$A$ (Figure \#).
 
 \section{Handling \emph{incertae sedis} taxa in the propinquity pipeline}
 
