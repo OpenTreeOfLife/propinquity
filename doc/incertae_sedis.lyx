@@ -1710,6 +1710,111 @@ What issues might this raise?
 \end_layout
 
 \begin_layout Section
+Cases
+\end_layout
+
+\begin_layout Standard
+When only tip nodes on the taxonomy are 
+\emph on
+incertae sedis
+\emph default
+, we have a very simple form of the 
+\emph on
+incertae sedis
+\emph default
+ supertree problem.
+ However, in practice entire clades may be 
+\emph on
+incertae sedis
+\emph default
+, and so more complex issue arise.
+ In this section we consider a number of cases that must be handled when
+ attempting to place 
+\emph on
+incertae sedis
+\emph default
+ taxa.
+\end_layout
+
+\begin_layout Subsection
+Case 1: An 
+\emph on
+incertae sedis
+\emph default
+ clade
+\end_layout
+
+\begin_layout Standard
+When a clade is marked as 
+\emph on
+incertae sedis
+\emph default
+, we need to consider two cases.
+ In the first case, the clade may be places within a sister clade intact
+ (Figure #).
+ However, if the clade is not monophyletic in the synthesis tree, then we
+ allow the members of the clade to be placed separately.
+ (Figure #)
+\end_layout
+
+\begin_layout Subsection
+Case 2: A nested 
+\emph on
+incertae sedis
+\emph default
+ clade
+\end_layout
+
+\begin_layout Standard
+When 
+\emph on
+incertae sedis
+\emph default
+ clades are allowed, it is possible for an 
+\emph on
+incertae sedis
+\emph default
+ taxon to be nested within another 
+\emph on
+incertae sedis
+\emph default
+ taxon.
+ In such a case we must allow the higher-ranked taxon to be placed within
+ a sibling, while preserving the right of the lower ranked taxon to be placed
+ within a lower-level sibling (Figure #)
+\end_layout
+
+\begin_layout Subsection
+Case 3: Placement of one incertae sedis taxon within another.
+\end_layout
+
+\begin_layout Standard
+In our semantics of incertae sedis taxa, it is possible for to place one
+ 
+\emph on
+incertae sedis
+\emph default
+ sibling inside another.
+ A special case of this is when a higher-rank incertae sedis taxon 
+\begin_inset Formula $A$
+\end_inset
+
+ is placed as sister to an incertae sedis taxon 
+\begin_inset Formula $B$
+\end_inset
+
+, and then 
+\begin_inset Formula $B$
+\end_inset
+
+ is placed within 
+\begin_inset Formula $A$
+\end_inset
+
+ (Figure #).
+\end_layout
+
+\begin_layout Section
 Handling 
 \emph on
 incertae sedis
