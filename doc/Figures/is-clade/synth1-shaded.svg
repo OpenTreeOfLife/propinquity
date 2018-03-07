@@ -13,7 +13,7 @@
    viewBox="0 0 345 277"
    version="1.1"
    id="svg5916"
-   sodipodi:docname="synth1.tre.svg"
+   sodipodi:docname="synth1-shaded.svg"
    inkscape:version="0.92.3pre0 (0ab9bec, 2018-03-03)">
   <metadata
      id="metadata5920">
@@ -39,13 +39,15 @@
      inkscape:window-height="1008"
      id="namedview5918"
      showgrid="false"
-     inkscape:zoom="0.63898917"
-     inkscape:cx="230"
-     inkscape:cy="184.66667"
+     inkscape:zoom="1.8073343"
+     inkscape:cx="148.35296"
+     inkscape:cy="195.62147"
      inkscape:window-x="0"
      inkscape:window-y="35"
      inkscape:window-maximized="1"
-     inkscape:current-layer="svg5916" />
+     inkscape:current-layer="svg5916"
+     showguides="true"
+     inkscape:guide-bbox="true" />
   <defs
      id="defs5781">
     <g
@@ -138,12 +140,12 @@
      height="277"
      width="345"
      y="0"
-     x="0" />
+     x="1.265625" />
   <path
      inkscape:connector-curvature="0"
      id="path5785"
      d="M 12.777344,135.90234 H 54.726562"
-     style="fill:none;stroke:#000000;stroke-width:1.5;stroke-linecap:square;stroke-linejoin:round;stroke-miterlimit:10;stroke-opacity:1" />
+     style="fill:none;stroke:#c8c8c8;stroke-width:1.5;stroke-linecap:square;stroke-linejoin:round;stroke-miterlimit:10;stroke-opacity:1" />
   <path
      inkscape:connector-curvature="0"
      id="path5787"
@@ -163,7 +165,7 @@
      inkscape:connector-curvature="0"
      id="path5793"
      d="m 180.57422,205.17187 h 41.94922"
-     style="fill:none;stroke:#000000;stroke-width:1.49999998;stroke-linecap:square;stroke-linejoin:round;stroke-miterlimit:10;stroke-opacity:1;stroke-dasharray:1.49999998,8.99999988;stroke-dashoffset:0" />
+     style="fill:none;stroke:#000000;stroke-width:1.49999998;stroke-linecap:square;stroke-linejoin:round;stroke-miterlimit:10;stroke-opacity:1;stroke-dasharray:1.49999998,5.99999992;stroke-dashoffset:0" />
   <path
      inkscape:connector-curvature="0"
      id="path5795"
@@ -205,10 +207,17 @@
      d="M 12.777344,135.90234 V 20.457031"
      style="fill:none;stroke:#000000;stroke-width:1.5;stroke-linecap:square;stroke-linejoin:round;stroke-miterlimit:10;stroke-opacity:1" />
   <path
-     inkscape:connector-curvature="0"
-     id="path5811"
-     d="M 54.726562,189.77734 V 82.027344"
-     style="fill:none;stroke:#000000;stroke-width:1.5;stroke-linecap:square;stroke-linejoin:round;stroke-miterlimit:10;stroke-opacity:1" />
+     style="fill:none;stroke:#c8c8c8;stroke-width:1.5;stroke-linecap:square;stroke-linejoin:round;stroke-miterlimit:10;stroke-opacity:1"
+     d="m 54.726562,189.77734 v -54.0766"
+     id="path905" />
+  <path
+     style="fill:none;stroke:#000000;stroke-width:1.5;stroke-linecap:square;stroke-linejoin:round;stroke-miterlimit:10;stroke-opacity:1"
+     d="m 54.726562,135.70074 v -2.07488"
+     id="path903" />
+  <path
+     style="fill:none;stroke:#c8c8c8;stroke-width:1.5;stroke-linecap:square;stroke-linejoin:round;stroke-miterlimit:10;stroke-opacity:1"
+     d="M 54.726562,133.62586 V 82.027344"
+     id="path5811" />
   <path
      inkscape:connector-curvature="0"
      id="path5813"
@@ -447,32 +456,35 @@
   </g>
   <g
      id="g5901"
-     style="fill:#000000;fill-opacity:1">
+     style="fill:#969696;fill-opacity:1">
     <use
        height="100%"
        width="100%"
        id="use5897"
        y="140.23438"
        x="60.488281"
-       xlink:href="#glyph0-1" />
+       xlink:href="#glyph0-1"
+       style="fill:#969696;fill-opacity:1" />
     <use
        height="100%"
        width="100%"
        id="use5899"
        y="140.23438"
        x="72.494141"
-       xlink:href="#glyph0-5" />
+       xlink:href="#glyph0-5"
+       style="fill:#969696;fill-opacity:1" />
   </g>
   <g
      id="g5905"
-     style="fill:#000000;fill-opacity:1">
+     style="fill:#969696;fill-opacity:1">
     <use
        height="100%"
        width="100%"
        id="use5903"
        y="194.10938"
        x="144.38281"
-       xlink:href="#glyph0-1" />
+       xlink:href="#glyph0-1"
+       style="fill:#969696;fill-opacity:1" />
   </g>
   <g
      id="g5909"

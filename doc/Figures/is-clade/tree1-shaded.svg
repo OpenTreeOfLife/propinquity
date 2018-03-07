@@ -13,7 +13,7 @@
    viewBox="0 0 259 169"
    version="1.1"
    id="svg4961"
-   sodipodi:docname="tree1.tre.svg"
+   sodipodi:docname="tree1-shaded.svg"
    inkscape:version="0.92.3pre0 (0ab9bec, 2018-03-03)">
   <metadata
      id="metadata4965">
@@ -40,8 +40,8 @@
      id="namedview4963"
      showgrid="false"
      inkscape:zoom="1.0473373"
-     inkscape:cx="172.66667"
-     inkscape:cy="112.66667"
+     inkscape:cx="-18.771179"
+     inkscape:cy="111.23447"
      inkscape:window-x="0"
      inkscape:window-y="35"
      inkscape:window-maximized="1"
@@ -126,7 +126,7 @@
      inkscape:connector-curvature="0"
      id="path4912"
      d="m 124.42578,115.83594 h 57.41406"
-     style="fill:none;stroke:#000000;stroke-width:1.49999999;stroke-linecap:square;stroke-linejoin:round;stroke-miterlimit:10;stroke-opacity:1;stroke-dasharray:1.49999999,8.99999997;stroke-dashoffset:0" />
+     style="fill:none;stroke:#000000;stroke-width:1.49999999;stroke-linecap:square;stroke-linejoin:round;stroke-miterlimit:10;stroke-opacity:1;stroke-dasharray:1.49999999,5.99999998;stroke-dashoffset:0" />
   <path
      inkscape:connector-curvature="0"
      id="path4914"

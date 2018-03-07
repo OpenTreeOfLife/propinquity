@@ -1,0 +1,1 @@
+otc-solve-subproblem tree1.tre tax.tre > synth1-no-is.tre

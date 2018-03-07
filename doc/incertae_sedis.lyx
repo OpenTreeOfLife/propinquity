@@ -58,10 +58,10 @@
 \shortcut idx
 \color #008000
 \end_index
-\leftmargin 2cm
-\topmargin 2cm
-\rightmargin 2cm
-\bottommargin 2cm
+\leftmargin 3cm
+\topmargin 3cm
+\rightmargin 3cm
+\bottommargin 3cm
 \secnumdepth 3
 \tocdepth 3
 \paragraph_separation skip
@@ -1750,11 +1750,403 @@ When a clade is marked as
 incertae sedis
 \emph default
 , we need to consider two cases.
- In the first case, the clade may be places within a sister clade intact
- (Figure #).
+ In the first case, the clade may be placed within a sister clade intact
+ (Figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:Handling-incertae-sedis"
+
+\end_inset
+
+).
  However, if the clade is not monophyletic in the synthesis tree, then we
- allow the members of the clade to be placed separately.
- (Figure #)
+ allow the members of the clade to be placed separately (Figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:Broken-incertae-sedis"
+
+\end_inset
+
+).
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Figures/is-clade/tree1-shaded.svg
+	scale 50
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Input tree #1
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset space \hfill{}
+\end_inset
+
+
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Figures/is-clade/tax-shaded.svg
+	scale 50
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Taxonomy
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Figures/is-clade/synth1-no-is-shaded.svg
+	scale 50
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Synthesis Tree #1
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset space \hfill{}
+\end_inset
+
+
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Figures/is-clade/synth1-shaded.svg
+	scale 50
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Synthesis Tree #1
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:Handling-incertae-sedis"
+
+\end_inset
+
+Handling 
+\emph on
+incertae sedis 
+\emph default
+taxa recovers additional edges and taxon names.
+ Supertree construction on input tree (a) and taxonomy tree (b) with 
+\emph on
+incertae sedis
+\emph default
+ clade 
+\begin_inset Formula $C$
+\end_inset
+
+ leads to synthesis tree (c).
+ However, supertree construction with 
+\emph on
+incertae sedis
+\emph default
+ handling constructs tree (d), which recovers taxon name 
+\begin_inset Formula $AB$
+\end_inset
+
+ and 
+\begin_inset Formula $A$
+\end_inset
+
+, as well as the edge to clade 
+\begin_inset Formula $AB$
+\end_inset
+
+.
+ Taxon names and edges that are conditional on handling 
+\emph on
+incertae sedis
+\emph default
+ are shaded grey.
+ 
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset space \hfill{}
+\end_inset
+
+
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Figures/is-clade/tree2-shaded.svg
+	scale 50
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Input tree #1
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset space \hfill{}
+\end_inset
+
+
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Figures/is-clade/tax-shaded.svg
+	scale 50
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Taxonomy
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset space \hfill{}
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset space \hfill{}
+\end_inset
+
+
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Figures/is-clade/synth2-shaded.svg
+	scale 50
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Synthesis Tree #1
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset space \hfill{}
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Broken incertae sedis clade
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:Broken-incertae-sedis"
+
+\end_inset
+
+.
+ Taxonomy tree (b) contains 
+\emph on
+incertae sedis 
+\emph default
+taxon 
+\begin_inset Formula $C$
+\end_inset
+
+ that is broken by input tree (a).
+ Supertree construction results in a synthesis tree (c) that places 
+\begin_inset Formula $C1$
+\end_inset
+
+ and 
+\begin_inset Formula $C2$
+\end_inset
+
+ separately within 
+\begin_inset Formula $A$
+\end_inset
+
+.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Subsection
