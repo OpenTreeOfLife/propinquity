@@ -256,7 +256,7 @@ literal "true"
 \end_inset
 
 .
- The taxonomy tree is considered by ranked below any of the input trees.
+ The taxonomy tree is ranked below any of the input trees.
  Each node 
 \begin_inset Formula $i$
 \end_inset
@@ -273,8 +273,8 @@ literal "true"
  Thus the taxonomy is comprehensive and contains all taxa.
  In contrast, input phylogenies only have labels on their leaf nodes, and
  generally include a small fraction of the total number of taxa.
- Furthermore, taxa in input trees need not correspond to leaf taxa on the
- taxonomy tree, and multiple tips may be labeled with the same taxon name.
+ Furthermore, taxa in input trees may correspond to higher taxa on the taxonomy
+ tree, and multiple tips may be labeled with the same taxon name.
  
 \begin_inset CommandInset citation
 LatexCommand citet
@@ -630,6 +630,14 @@ incertae sedis
 \end_layout
 
 \begin_layout Subsection
+A splits-based semantics for 
+\emph on
+incertae sedis
+\emph default
+ taxa
+\end_layout
+
+\begin_layout Subsubsection
 Splits
 \end_layout
 
@@ -650,12 +658,16 @@ Each edge of a standard tree divides the tip taxa
  Such a split may be written
 \begin_inset Formula 
 \[
-\mathcal{I}(e)|\bullet\mathcal{E}(e),
+\mathcal{I}(e)|\bullet\mathcal{E}(e).
 \]
 
 \end_inset
 
-with the exclude set always on the right.
+where the 
+\begin_inset Formula $\bullet$
+\end_inset
+
+ indicates the root.
  If no taxa are 
 \emph on
 incertae sedis
@@ -713,11 +725,11 @@ In this case the root node stands for an edge that connects the root to
 \end_layout
 
 \begin_layout Subsubsection
-Partially reduced exclude sets for 
+Reduced exclude sets allow 
 \emph on
 incertae sedis
 \emph default
- taxa
+ to be placed into sibling taxa
 \end_layout
 
 \begin_layout Standard
@@ -726,18 +738,14 @@ Marking a taxon as
 incertae sedis
 \emph default
  changes the meaning of its sibling taxa.
- Since the 
+ We seek to represent this by constructing modified splits for each branch
+ of the taxonomy tree.
+ The include sets of these splits remain unchanged, but we construct reduced
+ exclude sets to indicate cases where 
 \emph on
 incertae sedis
 \emph default
- taxon can be placed inside its sibling subtrees, the exclude sets of the
- sibling subtrees should not include the 
-\emph on
-incertae sedis 
-\emph default
-taxon.
- Although exclude sets of sibling taxa are shrunk, the include sets of the
- sibling taxa are unaffected.
+ taxa are allowed to intrude into a taxon.
 \end_layout
 
 \begin_layout Standard
@@ -746,60 +754,41 @@ An
 incertae sedis
 \emph default
  taxon can be moved into any of the descendants of its siblings.
- Therefore, the exclude 
+ Therefore, the exclude set 
 \begin_inset Formula $\mathcal{E}(n)$
 \end_inset
 
- set for a node 
+ for node 
 \begin_inset Formula $n$
 \end_inset
 
- contains the children of all the ancestors of 
+ should not include any of its siblings marked 
+\emph on
+incertae 
+\emph default
+sedis
+\emph on
+,
+\emph default
+ but should exclude the descendants of its other siblings
+\emph on
+.
+
+\emph default
+ Additionally, the exclude 
+\begin_inset Formula $\mathcal{E}(n)$
+\end_inset
+
+ should contain the children of all the ancestors of 
 \begin_inset Formula $n$
 \end_inset
 
 , unless those children are incertae sedis.
- We can compute exclude sets recursively by writing the exclude set of a
- node 
-\begin_inset Formula $n$
-\end_inset
-
- in terms of the exclude set of its parent.
- If we use the terminology that the include and exclude sets for a node
  
-\begin_inset Formula $n$
-\end_inset
-
- are 
-\begin_inset Formula $\mathcal{I}(n)$
-\end_inset
-
- and 
-\begin_inset Formula $\mathcal{E}(n)$
-\end_inset
-
-, then we have 
-\begin_inset Formula 
-\begin{align}
-\mathcal{E}(n) & =\mathcal{E}(parent(n))\cup\left[\mathcal{I}(m)\big|m\in siblings(n),m\text{ not \emph{incertae} \emph{sedis}}\right],\label{eq:exclude-set-formula-1}
-\end{align}
-
-\end_inset
-
-This leads to a pre-order recursion that terminates if the exclude set for
- the root note is set to 
-\begin_inset Formula $\{\}$
-\end_inset
-
- as a boundary condition.
-\end_layout
-
-\begin_layout Subsubsection
-Extended formulation
 \end_layout
 
 \begin_layout Standard
-If an 
+We may also consider what happens if an 
 \emph on
 incertae sedis
 \emph default
@@ -807,16 +796,25 @@ incertae sedis
 \begin_inset Formula $A$
 \end_inset
 
- is placed within a sibling clade, then it may gain a new 
-\emph on
-incertae sedis
-\emph default
- sibling 
+ is placed within a sister group.
+ Suppose 
+\begin_inset Formula $A$
+\end_inset
+
+ is placed next to a sibling 
 \begin_inset Formula $B$
 \end_inset
 
 .
- We could then possibly place 
+ If 
+\begin_inset Formula $B$
+\end_inset
+
+ is 
+\emph on
+incertae sedis
+\emph default
+, then it should be possible to place 
 \begin_inset Formula $B$
 \end_inset
 
@@ -825,78 +823,72 @@ incertae sedis
 \end_inset
 
 .
- However, the above definition does not allow this possibility.
- We therefore adjust the above definition to exclude only descendants of
- sibling taxon only the path to the descendant does not pass through a node
- labeled as 
+ As a result, 
+\begin_inset Formula $A$
+\end_inset
+
+ should not exclude descendants of 
+\begin_inset Formula $B$
+\end_inset
+
+ than can only be reached from 
+\begin_inset Formula $A$
+\end_inset
+
+ by passing through a node marked 
+\emph on
+incertae sedis.
+ 
+\end_layout
+
+\begin_layout Standard
+We can compute exclude sets recursively by writing the exclude set of a
+ node 
+\begin_inset Formula $n$
+\end_inset
+
+ in terms of the exclude set of its parent:
+\begin_inset Formula 
+\begin{align}
+\mathcal{E}(n) & =\mathcal{E}(parent(n))\cup\left[\mathcal{I^{\prime}}(m)\big|m\in siblings(n)\right],\label{eq:exclude-set-formula-1}
+\end{align}
+
+\end_inset
+
+where 
+\begin_inset Formula $\mathcal{I}^{\prime}(n)$
+\end_inset
+
+ indicates the descendants of 
+\begin_inset Formula $n$
+\end_inset
+
+ that are reachable from 
+\begin_inset Formula $n$
+\end_inset
+
+ without passing through an 
 \emph on
 incertae sedis
 \emph default
-.
- Such descendants of a sibling 
-\begin_inset Formula $m$
-\end_inset
-
- are given by:
+ node:
 \begin_inset Formula 
 \begin{align*}
-\mathcal{I}^{\prime}(m) & =\begin{cases}
-m & \text{if }m\text{ is a leaf}\\
-\left[\mathcal{I}^{\prime}(c)\big|c\in children(m),c\text{ not \emph{incertae sedis}}\right] & \text{otherwise.}
+\mathcal{I}^{\prime}(n) & =\begin{cases}
+\emptyset & \text{if }n\text{ is \emph{incertae sedis}}\\
+\{n\} & \text{if }n\text{ is a leaf node}\\
+\left[\mathcal{I^{\prime}}(m)\big|m\in children(n)\right] & \text{if }n\text{ is an internal node}
 \end{cases}
 \end{align*}
 
 \end_inset
 
-We then modify the formula above to exclude 
-\begin_inset Formula $\mathcal{I}^{\prime}(m)$
+This recursion terminates if the exclude set for the root node is set to
+ 
+\begin_inset Formula $\emptyset$
 \end_inset
 
- instead of 
-\begin_inset Formula $\mathcal{I}(m)$
-\end_inset
-
- for each sibling 
-\begin_inset Formula $m$
-\end_inset
-
-:
-\begin_inset Formula 
-\begin{align}
-\mathcal{E}^{\prime}(n) & =\mathcal{E}^{\prime}(parent(n))\cup\left[\mathcal{I}^{\prime}(m)\big|m\in siblings(n),m\text{ not \emph{incertae} \emph{sedis}}\right],\label{eq:exclude-set-formula-2}
-\end{align}
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-This less stringent formula is the one we will apply throughout this paper.
-\end_layout
-
-\begin_layout Subsubsection
-Comparison to operational definition
-\end_layout
-
-\begin_layout Standard
-An definition in terms of moving node 
-\begin_inset Formula $A$
-\end_inset
-
- to position 
-\begin_inset Formula $x$
-\end_inset
-
- could cause trouble when moving multiple nodes, since the order of the
- movement would matter.
-\end_layout
-
-\begin_layout Standard
-Also, the splits-based semantics might not completely recover the edit-operation
- semantics.
- The corner cases are ...
- .
+ as a boundary condition.
 \end_layout
 
 \begin_layout Subsection
@@ -2512,7 +2504,6 @@ incertae sedis
 \emph on
 This case makes placement more complicated.
  Use a sequence of ordered placements, preorder?
-
 \begin_inset Float figure
 wide false
 sideways false
@@ -4418,6 +4409,37 @@ For example, if
 incertae sedis
 \emph default
 .
+\end_layout
+
+\begin_layout Subsubsection
+Comparison to operational definition
+\end_layout
+
+\begin_layout Standard
+The splits-based semantics for incertae sedis taxa has many desirable properties.
+ In allows the use of the BUILD algorithm to assess compatibility of split
+ sets.
+ However, it also has some properties that may not be expected.
+ For example, two incertae sedis siblings can be freely interdigitated,
+ which might not be the expected outcome.
+ The current definition, also ignore ranks.
+ Thus if we had two incertae sedis siblings that were genera, but other
+ siblings were families, then one might expect that the genus-level incertae
+ sedis taxa could be placed within families, but not intermixed.
+ Since the current approach ignores ranks, it cannot do that.
+\end_layout
+
+\begin_layout Standard
+The above definition of incertae sedis taxa does allow two incertae sedis
+ sister taxa to be interdigitated.
+ It also 
+\end_layout
+
+\begin_layout Standard
+Also, the splits-based semantics might not completely recover the edit-operation
+ semantics.
+ The corner cases are ...
+ .
 \end_layout
 
 \begin_layout Standard
