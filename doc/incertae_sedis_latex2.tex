@@ -1,4 +1,4 @@
-%% LyX 2.2.3 created this file.  For more info, see http://www.lyx.org/.
+%% LyX 2.3.0 created this file.  For more info, see http://www.lyx.org/.
 %% Do not edit unless you really know what you are doing.
 \documentclass[english]{article}
 \usepackage[T1]{fontenc}
@@ -7,50 +7,30 @@
 \geometry{verbose,tmargin=3cm,bmargin=3cm,lmargin=3cm,rmargin=3cm}
 \setlength{\parskip}{6pt}
 \setlength{\parindent}{0pt}
-\usepackage{babel}
 \usepackage{verbatim}
-\usepackage{url}
 \usepackage{amsmath}
 \usepackage{amssymb}
 \usepackage{graphicx}
 \usepackage[authoryear]{natbib}
-\usepackage[unicode=true]
- {hyperref}
 
 \makeatletter
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%% LyX specific LaTeX commands.
-%% Special footnote code from the package 'stblftnt.sty'
-%% Author: Robin Fairbairns -- Last revised Dec 13 1996
-\let\SF@@footnote\footnote
-\def\footnote{\ifx\protect\@typeset@protect
-    \expandafter\SF@@footnote
-  \else
-    \expandafter\SF@gobble@opt
-  \fi
-}
-\expandafter\def\csname SF@gobble@opt \endcsname{\@ifnextchar[%]
-  \SF@gobble@twobracket
-  \@gobble
-}
-\edef\SF@gobble@opt{\noexpand\protect
-  \expandafter\noexpand\csname SF@gobble@opt \endcsname}
-\def\SF@gobble@twobracket[#1]#2{}
 %% A simple dot to overcome graphicx limitations
 \newcommand{\lyxdot}{.}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Textclass specific LaTeX commands.
 \newenvironment{lyxcode}
-{\par\begin{list}{}{
-\setlength{\rightmargin}{\leftmargin}
-\setlength{\listparindent}{0pt}% needed for AMS classes
-\raggedright
-\setlength{\itemsep}{0pt}
-\setlength{\parsep}{0pt}
-\normalfont\ttfamily}%
- \item[]}
-{\end{list}}
+	{\par\begin{list}{}{
+		\setlength{\rightmargin}{\leftmargin}
+		\setlength{\listparindent}{0pt}% needed for AMS classes
+		\raggedright
+		\setlength{\itemsep}{0pt}
+		\setlength{\parsep}{0pt}
+		\normalfont\ttfamily}%
+	 \item[]}
+	{\end{list}}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%% User specified LaTeX commands.
 \sloppy
@@ -61,6 +41,7 @@
 \usepackage{subfig}
 \makeatother
 
+\usepackage{babel}
 \begin{document}
 \global\long\def\taxonomy{\mbox{\ensuremath{\mathbb{T}}}}
 
@@ -76,105 +57,79 @@
 
 \global\long\def\collections{\mathcal{C}}
 
-\title{\texttt{\emph{Incertae sedis}}\texttt{ taxa in supertree construction}}
+
+\title{\texttt{Supertree construction with}\texttt{\emph{ Incertae sedis}}\texttt{
+taxa}}
 \maketitle
 
 \section{Introduction}
 
 The phrase \textquotedblleft \emph{incertae sedis}\textquotedblright ,
-which is a Latin phrase meaning ``uncertain seat'', is used in classifications
-to indicate that a group is of uncertain taxonomic placement. Such
-groups arise in practice when they are classified within a parent
-group, such as Fungi, but the precise location within the parent group
-is uncertain. Such a taxon would then be attached as a child of the
-parent group, but labeled as \emph{incertae sedis}''. 
+which is a Latin phrase meaning ``uncertain seat'', indicates that
+a taxon is of uncertain placement. Such groups arise in practice when
+they are classified within a parent group, such as Fungi, but the
+precise location within the parent group is uncertain. Such a taxon
+would then be attached as a child of the parent group, but labeled
+as \emph{incertae sedis}''. 
 
 The OpenTree project seeks to build a comprehensive supertree covering
 all of life. The approach is to combine information in published phylogenies
 with a comprehensive taxonomy that supplies taxon names \citep{redelings2017supertree}.
-We describe an extension to our supertree method so that we can resolve
+We describe an extension to this supertree method so that we can resolve
 taxonomic uncertainty by using published phylogenies to place \emph{incertae
 sedis} taxa. We describe an updated semantics for conflict between
 phylogeny edges and taxonomy edges and an updated semantics for assigning
 taxonomy names to nodes in the synthetic tree. 
 
-The ability to place taxa within the taxonomy without breaking their
-containing taxa enables us to include thousands of new taxa that were
-previously filtered out to avoid broken taxa. It also enables us to
-use phylogenetic trees to update the taxonomy by extending taxa to
-include \emph{incertae sedis} taxa placed within them. This makes
-substantial progress towards our goal of complete representation of
-taxa. It also enables us to include extinct taxa, since many of these
-taxa are incertae sedis.
+The ability to place taxa within the taxonomy without breaking containing
+taxa enables us to include thousands of new taxa that were previously
+filtered out to avoid broken taxa. It also enables us to use published
+phylogenies to update the taxonomy by extending taxa to include \emph{incertae
+sedis} taxa placed within them. This makes substantial progress towards
+our goal of complete representation of taxa. It also enables us to
+include extinct taxa, since many of these taxa are incertae sedis.
 
-\emph{TODO: add cases}
+\paragraph{Background}
 
-\paragraph{Formalism}
+We briefly describe the supertree algorithm proposed in \citet{redelings2017supertree}.
+This supertree algorithm takes as input a ranked list $\phyloinputs=\left\{ T_{1},\ldots,T_{n}\right\} $
+of rooted input trees and a single rooted taxonomy tree $\taxonomy$.
+The taxonomy tree is considered by ranked below any of the input trees.
+Each node $i$ in the taxonomy tree is associated a taxon name $n(i)$
+in the set of taxon names $\mathcal{N}$, and each taxon name is corresponds
+to only one node of the taxonomy tree. Thus the taxonomy is comprehensive
+and contains all taxa. In contrast, input phylogenies only have labels
+on their leaf nodes, and generally include a small fraction of the
+total number of taxa. Furthermore, taxa in input trees need not correspond
+to leaf taxa on the taxonomy tree, and multiple tips may be labeled
+with the same taxon name. \citet{redelings2017supertree} described
+a method called 'exemplification' that reduces this problem to a simpler
+form where all taxon names of input trees (i) correspond to leaf taxa
+and (ii) occur only once in an input tree. For the purposes of this
+paper, we therefore assume that this is the case.
 
-Formalism. We consider a ranked collection $\phyloinputs=\left\{ T_{1},\ldots,T_{n}\right\} $
-of input trees and a single taxonomy tree $\taxonomy$. We have a
-set of labels $\mathcal{L}$ that correspond to taxon names. Therefore
-taxonomy node has a label, and every label correspond to a unique
-taxonomy node.
+Given the exemplified input trees and taxonomy, the supertree algorithm
+first divides the supertree problem into independent pieces, solves
+the problem on these pieces, and then glues the pieces back together.
+This is made possible by the assumption that any taxonomy edges that
+are not contested by any of the input trees can be assumed to occur
+in the supertree. We may then solve separately for what happens on
+each side of such an uncontested edge. When the uncontested edge is
+attached to the solution below the edge and the solution above the
+edge, the complete solution is then obtained.
 
-In contrast, input phylogenies only have labels on their leaf nodes.
-Furthermore, the set of labels $\mathcal{L}(i)$ on input tree $T_{i}$
-need not include all leaf labels, and in practice always contains
-only a relatively small part of $\mathcal{L}$.
+Supertrees for each subproblem are obtained by greedily constructing
+a set of rooted splits $\mathcal{C}$ that are jointly consistent
+and correspond to branches of the input trees. We construct an ordered
+list of splits $S(T_{i})$ by walking the branches of tree $T_{i}$
+in post-order and appending the corresponding splits to the list.
+These lists combined to form the list $\Sigma=S(T_{1})+S(T_{2})+\ldots+S(T_{n})+S(\mathbb{T})$,
+where '$+$' denotes concatenation. The set $C$ is initialized to
+the empty set, and we then iteratively consider each split in the
+list $\Sigma$ and insert it into $C$ if the resulting set remains
+jointly compatible. The BUILD algorithm is used both to check compatibility,
+and to construct a compatible tree from the final set $C$.
 
-We extend this framework by adding a set $\mathcal{I}\subseteq\mathcal{L}$
-of labels that have the \emph{incertae sedis }property. The taxonomy
-consists of the labels $\mathcal{L}$, the taxonomy tree $\taxonomy$,
-and the \emph{incertae sedis} property $\mathcal{I}$ of taxon names.
-
-\section{Details \& Methods}
-
-\subsection{Some examples in OTT\protect\footnote{This paragraph pulled from intro to otcetera/doc/handling-incertae-sedis.pdf}}
-
-The problem is becoming more acute because NCBI is putting a larger
-number of taxa into groups that are marked as \textquotedblleft unclassified.\textquotedblright{}
-For example, when OTT 2.9 was created NCBI\textquoteright s clasification
-of the bird family Sylvidae included a group five genera that were
-placed within \textquotedblleft \href{http://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?mode=Undef&id=36270&lvl=3&lin=f&keep=1&srchmode=1&unlock}{unclassified Sylviidae}.\textquotedblright{}
-This includes the genus Regulus. Thus in OTT 2.9 Regulus (ott ID =
-3599326) is placed inside the family Silvidae (OTT ID = 259942). The
-\textquotedblleft unclassified Sylviidae\textquotedblright{} does
-not appear in OTT; instead Regulus is flagged as \textquotedblleft unclassified,sibling
-higher\textquotedblright{} and all of the species within Regulus are
-flagged as \textquotedblleft unclassified inherited.\textquotedblright{}
-
-The taxonomy (as of version 2.9) also contains 685 cases of taxa that
-are flagged as both \textquotedblleft unclassified inherited\textquotedblright{}
-and \textquotedblleft unclassified\textquotedblright \footnote{based on \texttt{grep unclass.{*}unclassified\textbackslash{}\_inherited
-taxonomy.tsv}}.
-
-We would like to stop suppressing (pruning) incertae sedis taxa, so
-that groups such as Regulus can appear appear in the synthetic tree.
-
-\begin{comment}
-While we get Regulus back, we do not end up placing it in Sylviidae
-because Sylviidae is broken. It conflicts with about 20 different
-trees.
-\end{comment}
-
-\subsection{Taxonomy details}
-
-\textbf{Flags.} The Open Tree\textquoteright s reference taxonomy
-is produced by a tool called smasher that notices hints that a taxon
-is incertae sedis and labels that taxon with one of five flags\footnote{see \url{https://github.com/OpenTreeOfLife/reference-taxonomy/wiki/Taxon-flags}.This
-document is not concerned with the flagging system \emph{per se},
-so \textquotedblleft \emph{incertae sedis}\textquotedblright{} will
-be used here to refer to all of the flags that denote taxa with uncertain
-placement.}. While a taxonomist may intend to use incertae sedis to indicate
-a limited number of possible positions for a taxon to go in the taxonomy,
-we do not retain any such details.
-
-\textbf{Container nodes.} Some taxonomies have nodes with names like
-``Incertae sedis (Bacteria)''. Such nodes are called containers.
-They indicate that each child node is an \emph{incertae sedis} child
-of the container node's parent. The OTT retains container nodes with
-the \emph{was\_container} flag, but seems to have already moved all
-of the container's children to the container's parent.
 
 \section{\label{sec:Semantics-of-incertae}Semantics of \emph{incertae sedis}
 taxa}
@@ -190,6 +145,13 @@ to place a taxon name on a particular node in the synthesis tree.
 Finally, after a supertree has been constructed, we consider how to
 interpret the supertree as (perhaps) placing an \emph{incertae sedis}
 taxon $A$ within its sister taxon $B$. 
+
+\subsection{Notation}
+
+We extend this framework by adding a set $\mathcal{I}\subseteq\mathcal{N}$
+of labels that have the \emph{incertae sedis }property. The taxonomy
+consists of the labels $\mathcal{N}$, the taxonomy tree $\taxonomy$,
+and the \emph{incertae sedis} property $\mathcal{I}$ of taxon names.
 
 \subsection{Usage in the literature}
 

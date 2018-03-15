@@ -1,5 +1,5 @@
-#LyX 2.2 created this file. For more info see http://www.lyx.org/
-\lyxformat 508
+#LyX 2.3 created this file. For more info see http://www.lyx.org/
+\lyxformat 544
 \begin_document
 \begin_header
 \save_transient_properties true
@@ -25,6 +25,8 @@
 \font_osf false
 \font_sf_scale 100 100
 \font_tt_scale 100 100
+\use_microtype false
+\use_dash_ligatures true
 \graphics default
 \default_output_format default
 \output_sync 0
@@ -54,6 +56,7 @@
 \suppress_date false
 \justification true
 \use_refstyle 1
+\use_minted 0
 \index Index
 \shortcut idx
 \color #008000
@@ -66,7 +69,10 @@
 \tocdepth 3
 \paragraph_separation skip
 \defskip 6pt
-\quotes_language english
+\is_math_indent 0
+\math_numbering_side default
+\quotes_style english
+\dynamic_quotes 0
 \papercolumns 1
 \papersides 1
 \paperpagestyle default
@@ -145,10 +151,11 @@
 \begin_layout Title
 
 \family typewriter
+Supertree construction with
 \emph on
-Incertae sedis
+ Incertae sedis
 \emph default
- taxa in supertree construction
+ taxa
 \end_layout
 
 \begin_layout Section
@@ -168,8 +175,7 @@ uncertain seat
 \begin_inset Quotes erd
 \end_inset
 
-, is used in classifications to indicate that a group is of uncertain taxonomic
- placement.
+, indicates that a taxon is of uncertain placement.
  Such groups arise in practice when they are classified within a parent
  group, such as Fungi, but the precise location within the parent group
  is uncertain.
@@ -194,11 +200,12 @@ The OpenTree project seeks to build a comprehensive supertree covering all
 \begin_inset CommandInset citation
 LatexCommand citep
 key "redelings2017supertree"
+literal "true"
 
 \end_inset
 
 .
- We describe an extension to our supertree method so that we can resolve
+ We describe an extension to this supertree method so that we can resolve
  taxonomic uncertainty by using published phylogenies to place 
 \emph on
 incertae sedis
@@ -211,11 +218,11 @@ incertae sedis
 \end_layout
 
 \begin_layout Standard
-The ability to place taxa within the taxonomy without breaking their containing
+The ability to place taxa within the taxonomy without breaking containing
  taxa enables us to include thousands of new taxa that were previously filtered
  out to avoid broken taxa.
- It also enables us to use phylogenetic trees to update the taxonomy by
- extending taxa to include 
+ It also enables us to use published phylogenies to update the taxonomy
+ by extending taxa to include 
 \emph on
 incertae sedis
 \emph default
@@ -226,82 +233,125 @@ incertae sedis
  incertae sedis.
 \end_layout
 
-\begin_layout Standard
-
-\emph on
-TODO: add cases
-\end_layout
-
 \begin_layout Paragraph
-Formalism
+Background
 \end_layout
 
 \begin_layout Standard
-Formalism.
- We consider a ranked collection 
+We briefly describe the supertree algorithm proposed in 
+\begin_inset CommandInset citation
+LatexCommand citet
+key "redelings2017supertree"
+literal "true"
+
+\end_inset
+
+.
+ This supertree algorithm takes as input a ranked list 
 \begin_inset Formula $\phyloinputs=\left\{ T_{1},\ldots,T_{n}\right\} $
 \end_inset
 
- of input trees and a single taxonomy tree 
+ of rooted input trees and a single rooted taxonomy tree 
 \begin_inset Formula $\taxonomy$
 \end_inset
 
 .
- We have a set of labels 
-\begin_inset Formula $\mathcal{L}$
+ The taxonomy tree is considered by ranked below any of the input trees.
+ Each node 
+\begin_inset Formula $i$
 \end_inset
 
- that correspond to taxon names.
- Therefore taxonomy node has a label, and every label correspond to a unique
- taxonomy node.
+ in the taxonomy tree is associated a taxon name 
+\begin_inset Formula $n(i)$
+\end_inset
+
+ in the set of taxon names 
+\begin_inset Formula $\mathcal{N}$
+\end_inset
+
+, and each taxon name is corresponds to only one node of the taxonomy tree.
+ Thus the taxonomy is comprehensive and contains all taxa.
+ In contrast, input phylogenies only have labels on their leaf nodes, and
+ generally include a small fraction of the total number of taxa.
+ Furthermore, taxa in input trees need not correspond to leaf taxa on the
+ taxonomy tree, and multiple tips may be labeled with the same taxon name.
+ 
+\begin_inset CommandInset citation
+LatexCommand citet
+key "redelings2017supertree"
+literal "true"
+
+\end_inset
+
+ described a method called 'exemplification' that reduces this problem to
+ a simpler form where all taxon names of input trees (i) correspond to leaf
+ taxa and (ii) occur only once in an input tree.
+ For the purposes of this paper, we therefore assume that this is the case.
 \end_layout
 
 \begin_layout Standard
-In contrast, input phylogenies only have labels on their leaf nodes.
- Furthermore, the set of labels 
-\begin_inset Formula $\mathcal{L}(i)$
+Given the exemplified input trees and taxonomy, the supertree algorithm
+ first divides the supertree problem into independent pieces, solves the
+ problem on these pieces, and then glues the pieces back together.
+ This is made possible by the assumption that any taxonomy edges that are
+ not contested by any of the input trees can be assumed to occur in the
+ supertree.
+ We may then solve separately for what happens on each side of such an uncontest
+ed edge.
+ When the uncontested edge is attached to the solution below the edge and
+ the solution above the edge, the complete solution is then obtained.
+\end_layout
+
+\begin_layout Standard
+Supertrees for each subproblem are obtained by greedily constructing a set
+ of rooted splits 
+\begin_inset Formula $\mathcal{C}$
 \end_inset
 
- on input tree 
+ that are jointly consistent and correspond to branches of the input trees.
+ We construct an ordered list of splits 
+\begin_inset Formula $S(T_{i})$
+\end_inset
+
+ by walking the branches of tree 
 \begin_inset Formula $T_{i}$
 \end_inset
 
- need not include all leaf labels, and in practice always contains only
- a relatively small part of 
-\begin_inset Formula $\mathcal{L}$
+ in post-order and appending the corresponding splits to the list.
+ These lists combined to form the list 
+\begin_inset Formula $\Sigma=S(T_{1})+S(T_{2})+\ldots+S(T_{n})+S(\mathbb{T})$
+\end_inset
+
+, where '
+\begin_inset Formula $+$
+\end_inset
+
+' denotes concatenation.
+ The set 
+\begin_inset Formula $C$
+\end_inset
+
+ is initialized to the empty set, and we then iteratively consider each
+ split in the list 
+\begin_inset Formula $\Sigma$
+\end_inset
+
+ and insert it into 
+\begin_inset Formula $C$
+\end_inset
+
+ if the resulting set remains jointly compatible.
+ The BUILD algorithm is used both to check compatibility, and to construct
+ a compatible tree from the final set 
+\begin_inset Formula $C$
 \end_inset
 
 .
 \end_layout
 
 \begin_layout Standard
-We extend this framework by adding a set 
-\begin_inset Formula $\mathcal{I}\subseteq\mathcal{L}$
-\end_inset
-
- of labels that have the 
-\emph on
-incertae sedis 
-\emph default
-property.
- The taxonomy consists of the labels 
-\begin_inset Formula $\mathcal{L}$
-\end_inset
-
-, the taxonomy tree 
-\begin_inset Formula $\taxonomy$
-\end_inset
-
-, and the 
-\emph on
-incertae sedis
-\emph default
- property 
-\begin_inset Formula $\mathcal{I}$
-\end_inset
-
- of taxon names.
-\end_layout
+\begin_inset Note Note
+status collapsed
 
 \begin_layout Section
 Details & Methods
@@ -321,7 +371,7 @@ This paragraph pulled from intro to otcetera/doc/handling-incertae-sedis.pdf
 
 \end_layout
 
-\begin_layout Standard
+\begin_layout Plain Layout
 The problem is becoming more acute because NCBI is putting a larger number
  of taxa into groups that are marked as “unclassified.” For example, when
  OTT 2.9 was created NCBI’s clasification of the bird family Sylvidae included
@@ -330,6 +380,7 @@ The problem is becoming more acute because NCBI is putting a larger number
 LatexCommand href
 name "unclassified Sylviidae"
 target "http://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?mode=Undef&id=36270&lvl=3&lin=f&keep=1&srchmode=1&unlock"
+literal "false"
 
 \end_inset
 
@@ -341,7 +392,7 @@ target "http://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?mode=Undef&id=36
  Regulus are flagged as “unclassified inherited.”
 \end_layout
 
-\begin_layout Standard
+\begin_layout Plain Layout
 The taxonomy (as of version 2.9) also contains 685 cases of taxa that are
  flagged as both “unclassified inherited” and “unclassified”
 \begin_inset Foot
@@ -360,12 +411,12 @@ _inherited taxonomy.tsv
 .
 \end_layout
 
-\begin_layout Standard
+\begin_layout Plain Layout
 We would like to stop suppressing (pruning) incertae sedis taxa, so that
  groups such as Regulus can appear appear in the synthetic tree.
 \end_layout
 
-\begin_layout Standard
+\begin_layout Plain Layout
 \begin_inset Note Comment
 status collapsed
 
@@ -384,7 +435,7 @@ While we get Regulus back, we do not end up placing it in Sylviidae because
 Taxonomy details
 \end_layout
 
-\begin_layout Standard
+\begin_layout Plain Layout
 
 \series bold
 Flags.
@@ -428,7 +479,7 @@ incertae sedis
  retain any such details.
 \end_layout
 
-\begin_layout Standard
+\begin_layout Plain Layout
 
 \series bold
 Container nodes.
@@ -455,6 +506,11 @@ was_container
 \emph default
  flag, but seems to have already moved all of the container's children to
  the container's parent.
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Section
@@ -511,6 +567,39 @@ incertae sedis
 
 .
  
+\end_layout
+
+\begin_layout Subsection
+Notation
+\end_layout
+
+\begin_layout Standard
+We extend this framework by adding a set 
+\begin_inset Formula $\mathcal{I}\subseteq\mathcal{N}$
+\end_inset
+
+ of labels that have the 
+\emph on
+incertae sedis 
+\emph default
+property.
+ The taxonomy consists of the labels 
+\begin_inset Formula $\mathcal{N}$
+\end_inset
+
+, the taxonomy tree 
+\begin_inset Formula $\taxonomy$
+\end_inset
+
+, and the 
+\emph on
+incertae sedis
+\emph default
+ property 
+\begin_inset Formula $\mathcal{I}$
+\end_inset
+
+ of taxon names.
 \end_layout
 
 \begin_layout Subsection
@@ -3896,6 +3985,7 @@ Incertae sedis
 \begin_inset CommandInset citation
 LatexCommand citet
 key "rees2017automated"
+literal "true"
 
 \end_inset
 
