@@ -2508,6 +2508,12 @@ incertae sedis
 \end_layout
 
 \begin_layout Standard
+
+\emph on
+This case makes placement more complicated.
+ Use a sequence of ordered placements, preorder?
+\end_layout
+
 \begin_inset Float figure
 wide false
 sideways false
