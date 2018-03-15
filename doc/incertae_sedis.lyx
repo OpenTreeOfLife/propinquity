@@ -1863,13 +1863,13 @@ reference "fig:Broken-incertae-sedis"
 \begin_inset Float figure
 wide false
 sideways false
-status open
+status collapsed
 
 \begin_layout Plain Layout
 \begin_inset Float figure
 wide false
 sideways false
-status collapsed
+status open
 
 \begin_layout Plain Layout
 \begin_inset Graphics
@@ -2066,7 +2066,7 @@ incertae sedis
 \begin_inset Float figure
 wide false
 sideways false
-status open
+status collapsed
 
 \begin_layout Plain Layout
 
@@ -2263,6 +2263,202 @@ incertae sedis
  In such a case we must allow the higher-ranked taxon to be placed within
  a sibling, while preserving the right of the lower ranked taxon to be placed
  within a lower-level sibling (Figure #)
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Figures/is-nested/tree3-shaded.svg
+	scale 50
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Input tree #1
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset space \hfill{}
+\end_inset
+
+
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Figures/is-nested/tax-shaded.svg
+	scale 50
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Taxonomy tree
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Figures/is-nested/synth3-no-is-shaded.svg
+	scale 50
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Synthesis tree (
+\emph on
+incertae sedis
+\emph default
+ ignored)
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset space \hfill{}
+\end_inset
+
+
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Figures/is-nested/synth3-is-shaded.svg
+	scale 50
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Synthesis tree (
+\emph on
+incertae sedis
+\emph default
+ considered)
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Nested incertae sedis taxa.
+ (a) Input tree #1 places CI1 within CG, and C within 
+\begin_inset Formula $A$
+\end_inset
+
+.
+ (b) In the taxonomy, CI is 
+\emph on
+incertae sedis 
+\emph default
+within C, while C is 
+\emph on
+incertae sedis
+\emph default
+ under the root.
+ (c) The synthesis tree when 
+\emph on
+incertae sedis
+\emph default
+ taxa are not considered.
+ The names AB, A, and CG are lost.
+ (d) The synthesis tree when 
+\emph on
+incertae sedis
+\emph default
+ taxa are considered.
+ The names AB, A, and CG are regained, as well as the edges leading to AB
+ and CG.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Subsection
