@@ -62,6 +62,30 @@
 taxa}}
 \maketitle
 
+\section{New Introduction}
+
+Supertree methods combine a collection of input trees with different
+taxon sets into a single tree on the combined taxon set. While such
+methods are usually applied to leaf-labeled phylogenies that have
+been estimated from DNA sequence data, we additionally seek to include
+taxonomic information. We thus require that one of the input trees
+is the taxonomy tree. The taxonomy has a number of features not found
+in the input trees, such as having labels for internal nodes, containing
+monotypic nodes, and containing \emph{incertae sedis} nodes. We refer
+to labels of taxonomy nodes as ``taxa'', and require that labels
+and taxonomy nodes have a one-to-one correspondence. We additionally
+require that the taxonomy be comprehensive and contain all labels.
+
+One of the problems that arises when attempting to include taxonomic
+information is the problem of \emph{incertae sedis }taxa. \emph{Incertae
+sedis} taxa are taxa that have unknown taxonomic placement. The common
+interpretation of such taxa is that they may not be place further
+root-ward, but may be placed within their sibling taxa. This frequently
+occurs when a specimen is identified to a taxonomic level such as
+the family level but not further. It also occurs when it is unclear
+whether a genus forms its own family, or is part of an existing family.
+(Mark rewrite?)
+
 \section{Introduction}
 
 The phrase \textquotedblleft \emph{incertae sedis}\textquotedblright ,
@@ -70,43 +94,57 @@ a taxon is of uncertain placement. Such groups arise in practice when
 they are classified within a parent group, such as Fungi, but the
 precise location within the parent group is uncertain. Such a taxon
 would then be attached as a child of the parent group, but labeled
-as \emph{incertae sedis}''. 
+as \emph{incertae sedis}. 
 
-The OpenTree project seeks to build a comprehensive supertree covering
-all of life. The approach is to combine information in published phylogenies
-with a comprehensive taxonomy that supplies taxon names \citep{redelings2017supertree}.
-We describe an extension to this supertree method so that we can resolve
-taxonomic uncertainty by using published phylogenies to place \emph{incertae
-sedis} taxa. We describe an updated semantics for conflict between
-phylogeny edges and taxonomy edges and an updated semantics for assigning
-taxonomy names to nodes in the synthetic tree. 
+The Open Tree of Life project seeks to build a comprehensive supertree
+covering all of life. The approach is to combine information in published
+phylogenies with a comprehensive taxonomy that supplies taxon names
+\citep{redelings2017supertree}. We describe an extension to this
+supertree method so that we can resolve taxonomic uncertainty by using
+published phylogenies to place \emph{incertae sedis} taxa. We describe
+an updated semantics for conflict between phylogeny edges and taxonomy
+edges and an updated semantics for assigning taxonomy names to nodes
+in the synthetic tree. 
 
-The ability to place taxa within the taxonomy without breaking containing
-taxa enables us to include thousands of new taxa that were previously
-filtered out to avoid broken taxa. It also enables us to use published
-phylogenies to update the taxonomy by extending taxa to include \emph{incertae
-sedis} taxa placed within them. This makes substantial progress towards
-our goal of complete representation of taxa. It also enables us to
-include extinct taxa, since many of these taxa are incertae sedis.
+Our approach to \emph{incertae sedis} taxa enables us to use published
+phylogenies to update the taxonomy by extending taxonomic groups to
+include \emph{incertae sedis} taxa placed within them. The ability
+to update the taxonomy is important, since the placement of \emph{incertae
+sedis} taxa creates artificial conflicts with a non-updated taxonomy.
+Thus, the ability to correctly assess compatibility with the taxonomy
+when the taxonomy contains \emph{incertae sedis taxa} allows us to
+include thousands of new taxa that were previously filtered out to
+avoid conflict. It also enables us to include extinct taxa, since
+many of these taxa are \emph{incertae sedis}. This makes substantial
+progress towards our goal of completely representation of taxa.
 
 \paragraph{Background}
 
 We briefly describe the supertree algorithm proposed in \citet{redelings2017supertree}.
 This supertree algorithm takes as input a ranked list $\phyloinputs=\left\{ T_{1},\ldots,T_{n}\right\} $
-of rooted input trees and a single rooted taxonomy tree $\taxonomy$.
-The taxonomy tree is ranked below any of the input trees. Each node
-$i$ in the taxonomy tree is associated a taxon name $n(i)$ in the
-set of taxon names $\mathcal{N}$, and each taxon name is corresponds
-to only one node of the taxonomy tree. Thus the taxonomy is comprehensive
-and contains all taxa. In contrast, input phylogenies only have labels
-on their leaf nodes, and generally include a small fraction of the
-total number of taxa. Furthermore, taxa in input trees may correspond
-to higher taxa on the taxonomy tree, and multiple tips may be labeled
-with the same taxon name. \citet{redelings2017supertree} described
-a method called 'exemplification' that reduces this problem to a simpler
-form where all taxon names of input trees (i) correspond to leaf taxa
-and (ii) occur only once in an input tree. For the purposes of this
-paper, we therefore assume that this is the case.
+of rooted input phylogenies and a single rooted taxonomy tree $\taxonomy$.
+Each node in the taxonomy tree is associated with a taxon name in
+the set of taxon names $\mathcal{N}$, and each taxon name is corresponds
+to only one node of the taxonomy tree. We use \emph{$\mathcal{L}$
+}to indicate taxon names corresponding to leaf nodes of the taxonomy
+tree. Correspondence between the input trees and the taxonomy is established
+by annotating leaf nodes of each input tree with taxon names. For
+purposes of conflict resolution, the taxonomy tree is ranked below
+all of the input trees.
+
+\paragraph{Exemplification}
+
+While the taxonomy is comprehensive and contains all taxa, input phylogenies
+only have labels on their leaf nodes, and generally include a small
+fraction of the total number of taxa. Furthermore, taxa in input trees
+may correspond to higher taxa on the taxonomy tree, and multiple tips
+may be labeled with the same taxon name. \citet{redelings2017supertree}
+described a method called 'exemplification' that reduces this problem
+to a simpler form where all taxon names of input trees (i) correspond
+to leaf taxa and (ii) occur only once in an input tree. For the purposes
+of this paper, we therefore assume that this is the case.
+
+\paragraph{Problem decomposition}
 
 Given the exemplified input trees and taxonomy, the supertree algorithm
 first divides the supertree problem into independent pieces, solves
@@ -118,12 +156,14 @@ each side of such an uncontested edge. When the uncontested edge is
 attached to the solution below the edge and the solution above the
 edge, the complete solution is then obtained.
 
+\paragraph{Splits-based synthesis method}
+
 Supertrees for each subproblem are obtained by greedily constructing
 a set of rooted splits $\mathcal{C}$ that are jointly consistent
 and correspond to branches of the input trees. We construct an ordered
-list of splits $S(T_{i})$ by walking the branches of tree $T_{i}$
+list of splits $S(T_{i})$ by walking the branches of each tree $T_{i}$
 in post-order and appending the corresponding splits to the list.
-These lists combined to form the list $\Sigma=S(T_{1})+S(T_{2})+\ldots+S(T_{n})+S(\mathbb{T})$,
+These lists are combined to form the list $\Sigma=S(T_{1})+S(T_{2})+\ldots+S(T_{n})+S(\mathbb{T})$,
 where '$+$' denotes concatenation. The set $C$ is initialized to
 the empty set, and we then iteratively consider each split in the
 list $\Sigma$ and insert it into $C$ if the resulting set remains
@@ -134,40 +174,21 @@ and to construct a compatible tree from the final set $C$.
 \section{\label{sec:Semantics-of-incertae}Semantics of \emph{incertae sedis}
 taxa}
 
-In order to incorporate \emph{incertae sedis }taxa into a supertree
-analyses, we first tackle the issue of the semantics of \emph{incertae
-sedis} taxa. We discuss various different things the term can mean
-within the literature, and settle on a specific usage here. We discuss
-how to move from an operational ``you can move this guy here'' semantics
-to a splits-based semantics. This affects both what it means for a
-taxonomy edge to conflict with the synthesis tree, and what it means
-to place a taxon name on a particular node in the synthesis tree.
-Finally, after a supertree has been constructed, we consider how to
-interpret the supertree as (perhaps) placing an \emph{incertae sedis}
-taxon $A$ within its sister taxon $B$. 
-
-\subsection{Notation}
-
-We extend this framework by adding a set $\mathcal{I}\subseteq\mathcal{N}$
-of labels that have the \emph{incertae sedis }property. The taxonomy
-consists of the labels $\mathcal{N}$, the taxonomy tree $\taxonomy$,
-and the \emph{incertae sedis} property $\mathcal{I}$ of taxon names.
-
-\subsection{Usage in the literature}
-
-The term \emph{incertae sedis} can be used in a number of different
-ways. For example,\emph{ }one author might describe \emph{incertae
-sedis} genera that are asserted to be monophyletic, whereas another
-author might describe \emph{incertae sedis} genera that may be interdigitated. 
+We extend this framework by adding a set $\mathcal{U}\subseteq\mathcal{N}$
+of labels that have the \emph{incertae sedis }property. The extended
+taxonomy then consists of the taxonomy tree $\taxonomy$, the labels
+$\mathcal{N}$, and set $\mathcal{U}$ of \emph{incertae sedis }taxa.
 
 \subsection{A splits-based semantics for \emph{incertae sedis} taxa}
 
-\subsubsection{Splits}
+In order to apply supertree methods to rooted trees with \emph{incertae
+sedis} taxa, we first propose a semantics of \emph{incertae sedis
+}in terms of rooted splits.
 
-Each edge of a standard tree divides the tip taxa $\mathcal{L}$ into
-two groups: the include set $\mathcal{I}(e)$ which does not contain
-the root, and the exclude set $\mathcal{E}(e)$ which does contain
-the root. Such a split may be written
+We define rooted splits by noting that each edge of a tree divides
+the tip taxa $\mathcal{L}$ into two groups: the include set $\mathcal{I}(e)$
+which does not contain the root, and the exclude set $\mathcal{E}(e)$
+which does contain the root. Such a split may be written
 \[
 \mathcal{I}(e)|\bullet\mathcal{E}(e).
 \]
@@ -178,17 +199,9 @@ minus the include set for the node:
 \mathcal{E}(n) & =\mathcal{L}-\mathcal{I}(n).
 \end{align*}
 
-For a node $n$ on the tipward side of an edge $e$, we may also write
-$\mathcal{I}(n)$ for $\mathcal{I}(e)$, and $\mathcal{E}(n)$ for
-$\mathcal{E}(e)$. We consider the exclude set of the root node to
-be empty, and the include set of the root node to contain all tip
-taxa:
-\begin{align*}
-\mathcal{E}(root) & =\{\}\\
-\mathcal{I}(root) & =\mathcal{L}.
-\end{align*}
-In this case the root node stands for an edge that connects the root
-to the root's parent.
+For a node $n$ on the tip-ward side of an edge $e$, we may also
+write $\mathcal{I}(n)$ for $\mathcal{I}(e)$, and $\mathcal{E}(n)$
+for $\mathcal{E}(e)$. 
 
 \subsubsection{Reduced exclude sets allow \emph{incertae sedis} to be placed into
 sibling taxa}
@@ -205,14 +218,15 @@ of its siblings. Therefore, the exclude set $\mathcal{E}(n)$ for
 node $n$ should not include any of its siblings marked \emph{incertae
 }sedis\emph{,} but should exclude the descendants of its other siblings\emph{.}
 Additionally, the exclude $\mathcal{E}(n)$ should contain the children
-of all the ancestors of $n$, unless those children are incertae sedis. 
+of all the ancestors of $n$, unless those children are \emph{incertae
+sedis}. 
 
 We may also consider what happens if an \emph{incertae sedis} taxon
 $A$ is placed within a sister group. Suppose $A$ is placed next
-to a sibling $B$. If $B$ is \emph{incertae sedis}, then it should
-be possible to place $B$ within $A$. As a result, $A$ should not
-exclude descendants of $B$ than can only be reached from $A$ by
-passing through a node marked \emph{incertae sedis. }
+to a sibling $B$. If $B$ is also \emph{incertae sedis}, then it
+should be possible to place $B$ within $A$. As a result, $A$ should
+not exclude descendants of $B$ than can only be reached from $A$
+by passing through a node marked \emph{incertae sedis. }
 
 We can compute exclude sets recursively by writing the exclude set
 of a node $n$ in terms of the exclude set of its parent:
@@ -247,30 +261,36 @@ and each node can take at most one name, with the exception of monotypic
 taxa. Thus, we may simply search the solution tree for a node that
 has the same cluster $S(n)_{1}$ and apply the name $n$ to that node.
 
-However, in the \emph{incertae sedis }framework we must raise the
-question of whether one name could apply to multiple nodes, or whether
-multiple names could apply to one node. 
+However, in the \emph{incertae sedis} framework, it is possible for
+one name to apply to multiple nodes. For example, in Figure \ref{fig:One-name-can},
+the name $A$ can apply to multiple nodes. Here the name $A$ corresponds
+to the split $A1\,A2\,|\bullet B\,C$, leaving out $D$ since it is
+\emph{incertae sedis}. The two nodes $x$ and $y$ imply the splits
+$A1\,A2\,|\bullet B\,C\,D$ and $A1\,A2\,D|\bullet B\,C$ respectively,
+and both of these splits imply the split $A1\,A2\,|\bullet B\,C$,
+so the name $A$ can apply to both $x$ and \footnote{Define ``implies'', as in the propinquity paper: $A_{1}|\bullet A_{2}\implies B_{1}|\bullet B_{2}$
+means $B_{1}\subseteq A_{1}$ and $B_{2}\subseteq A_{2}$.}. This cannot happen without\emph{ incertae sedis} taxa except at
+monotypic nodes. When faced with a choice about where to place a name,
+we find the most tip-ward node where the name can apply and attach
+the name to this node. This corresponds to a conservative choice about
+whether \emph{incertae sedis} taxa should be added to an existing
+taxon.
+\begin{figure}
+\hfill{}\subfloat[Taxonomy tree]{\includegraphics[scale=0.5]{Figures/name1nodes2/tax-shaded}
 
-\textbf{BDR:} \emph{It is well known that monotypic taxa are indistinguishable
-if you consider only splits on leaf labels, but are distinguishable
-if you consider splits on all node labels. It seems that some (all?)
-of the problems with assigning multiple names to the same nodes actually
-comes from the fact that moving IS taxa can leave the parent as a
-degree-2 node. The fact that propinquity handles monotypic taxa indicates
-that we actually implicitly consider all taxa to have labels. It is
-possible that a trivial extension to the sub-problem solved could
-thus handle monotypic taxa and issues with mapping 2 names to one
-node with incertae sedis taxa.}
+}\hfill{}\subfloat[Solution tree]{\includegraphics[scale=0.5]{Figures/name1nodes2/solution-shaded}
 
-\subsubsection{Multiple nodes that fit one name}
+}\hfill{}
 
-Suppose the taxonomy is (((A1,A2)A,B)AB,C,D{*}) and the solution tree
-is (((A1,A2)x,D{*})y,B)AB,C). In this case the name $A$ leads to
-the split S(A) = A1 A2 | B C root. This name can apply to both the
-node x and the node y.
+\caption{\label{fig:One-name-can}One name can be consistent with multiple
+nodes.}
+\end{figure}
 
-\textbf{Solution:} In this case, we find the most tipward node and
-attach the name to this node.
+It is also possible for multiple names to apply to a single node.
+
+<--------------------- resume editting here ------------->
+
+\emph{}
 
 \subsubsection{Multiple names fit a single node}
 
@@ -1070,6 +1090,13 @@ sedis sister taxa to be interdigitated. It also
 
 Also, the splits-based semantics might not completely recover the
 edit-operation semantics. The corner cases are ... .
+
+\subsubsection{Usage in the literature}
+
+The term \emph{incertae sedis} can be used in a number of different
+ways. For example,\emph{ }one author might describe \emph{incertae
+sedis} genera that are asserted to be monophyletic, whereas another
+author might describe \emph{incertae sedis} genera that may be interdigitated. 
 
 \bibliographystyle{upmplainnat}
 \bibliography{otcetera}
