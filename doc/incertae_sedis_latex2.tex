@@ -250,9 +250,9 @@ set to $\emptyset$ as a boundary condition.
 
 After solving a supertree (sub) problem, we need to assign taxon names
 to the supertree nodes based on the taxonomy tree in the problem.
-Each taxon name $n$ corresponds to a split $S(n)=S(n)_{1}|S(n)_{2}$
+Each taxon name $n$ corresponds to a split $S(n)=S(n)_{1}|\bullet S(n)_{2}$
 on the corresponding branch of the taxonomy tree. Without \emph{incertae
-sedis}, such splits are always of the form $S(n)_{1}|\mathcal{L}-S(n)_{1}$,
+sedis}, such splits are always of the form $S(n)_{1}|\bullet\mathcal{L}-S(n)_{1}$,
 but with \emph{incertae sedis} taxa $S_{2}(n)$ may be smaller than
 $\mathcal{L}-S(n)_{1}$.
 
@@ -262,19 +262,19 @@ taxa. Thus, we may simply search the solution tree for a node that
 has the same cluster $S(n)_{1}$ and apply the name $n$ to that node.
 
 However, in the \emph{incertae sedis} framework, it is possible for
-one name to apply to multiple nodes. For example, in Figure \ref{fig:One-name-can},
-the name $A$ can apply to multiple nodes. Here the name $A$ corresponds
-to the split $A1\,A2\,|\bullet B\,C$, leaving out $D$ since it is
-\emph{incertae sedis}. The two nodes $x$ and $y$ imply the splits
-$A1\,A2\,|\bullet B\,C\,D$ and $A1\,A2\,D|\bullet B\,C$ respectively,
-and both of these splits imply the split $A1\,A2\,|\bullet B\,C$,
-so the name $A$ can apply to both $x$ and \footnote{Define ``implies'', as in the propinquity paper: $A_{1}|\bullet A_{2}\implies B_{1}|\bullet B_{2}$
+one name to apply to multiple nodes. For example, in Figure \ref{fig:One-name-can}b,
+the name $A$ can apply to nodes $x$ and $y$. Here the name $A$
+corresponds to the split $A1\,A2\,|\bullet B\,C$, leaving out $D$
+since it is \emph{incertae sedis}. The two nodes $x$ and $y$ imply
+the splits $A1\,A2\,|\bullet B\,C\,D$ and $A1\,A2\,D|\bullet B\,C$
+respectively, and both of these splits imply the split $A1\,A2\,|\bullet B\,C$,
+so the name $A$ can apply to both $x$ and $y$\footnote{Define ``implies'', as in the propinquity paper: $A_{1}|\bullet A_{2}\implies B_{1}|\bullet B_{2}$
 means $B_{1}\subseteq A_{1}$ and $B_{2}\subseteq A_{2}$.}. This cannot happen without\emph{ incertae sedis} taxa except at
 monotypic nodes. When faced with a choice about where to place a name,
-we find the most tip-ward node where the name can apply and attach
-the name to this node. This corresponds to a conservative choice about
-whether \emph{incertae sedis} taxa should be added to an existing
-taxon.
+our solution is to find the most tip-ward node where the name can
+apply and attach the name to this node. This corresponds to a conservative
+choice about whether \emph{incertae sedis} taxa should be added to
+an existing taxon.
 \begin{figure}
 \hfill{}\subfloat[Taxonomy tree]{\includegraphics[scale=0.5]{Figures/name1nodes2/tax-shaded}
 
@@ -287,6 +287,31 @@ nodes.}
 \end{figure}
 
 It is also possible for multiple names to apply to a single node.
+For example, in Figure \ref{fig:Multiple-names-can}a, the taxon $A$
+corresponds to the split $B1\,B2\,C\,|\bullet\,Y$, and is child taxon
+$B$ corresponds to the split $B1\,B2\,|\bullet\,Y$. The edge leading
+to $A$ is consistent with the split for $B$, but the name $B$ is
+applied to the node with the smallest include group. However, in the
+solution tree (Fig. \ref{fig:Multiple-names-can}b), there is is only
+node for both names $A$ and $B$ to apply to. In this case, we solve
+this problem by introducing a monotypic parent, and applying $A$
+to the newly created parent node (Fig. \ref{fig:Multiple-names-can}c).
+\begin{figure}
+\hfill{}\subfloat[Taxonomy tree]{\includegraphics[scale=0.5]{Figures/names2nodes1/tax-shaded}
+
+}\hfill{}\subfloat[Solution tree]{\includegraphics[scale=0.5]{Figures/names2nodes1/synth-shaded}
+
+}\hfill{}\subfloat[Solution tree]{\includegraphics[scale=0.5]{Figures/names2nodes1/solution2-shaded}
+
+}\hfill{}
+
+\caption{\label{fig:Multiple-names-can}Multiple names can apply to a single
+node.}
+
+\end{figure}
+
+Not all cases where multiple names apply to a single node can be resolved
+in this way.
 
 <--------------------- resume editting here ------------->
 

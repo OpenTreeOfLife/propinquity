@@ -990,7 +990,7 @@ After solving a supertree (sub) problem, we need to assign taxon names to
 \end_inset
 
  corresponds to a split 
-\begin_inset Formula $S(n)=S(n)_{1}|S(n)_{2}$
+\begin_inset Formula $S(n)=S(n)_{1}|\bullet S(n)_{2}$
 \end_inset
 
  on the corresponding branch of the taxonomy tree.
@@ -999,7 +999,7 @@ After solving a supertree (sub) problem, we need to assign taxon names to
 incertae sedis
 \emph default
 , such splits are always of the form 
-\begin_inset Formula $S(n)_{1}|\mathcal{L}-S(n)_{1}$
+\begin_inset Formula $S(n)_{1}|\bullet\mathcal{L}-S(n)_{1}$
 \end_inset
 
 , but with 
@@ -1052,11 +1052,19 @@ noprefix "false"
 
 \end_inset
 
-, the name 
+b, the name 
 \begin_inset Formula $A$
 \end_inset
 
- can apply to multiple nodes.
+ can apply to nodes 
+\begin_inset Formula $x$
+\end_inset
+
+ and 
+\begin_inset Formula $y$
+\end_inset
+
+.
  Here the name 
 \begin_inset Formula $A$
 \end_inset
@@ -1103,6 +1111,10 @@ incertae sedis
 \end_inset
 
  and 
+\begin_inset Formula $y$
+\end_inset
+
+
 \begin_inset Foot
 status collapsed
 
@@ -1138,8 +1150,9 @@ implies
  incertae sedis
 \emph default
  taxa except at monotypic nodes.
- When faced with a choice about where to place a name, we find the most
- tip-ward node where the name can apply and attach the name to this node.
+ When faced with a choice about where to place a name, our solution is to
+ find the most tip-ward node where the name can apply and attach the name
+ to this node.
  This corresponds to a conservative choice about whether 
 \emph on
 incertae sedis
@@ -1148,7 +1161,7 @@ incertae sedis
 \begin_inset Float figure
 wide false
 sideways false
-status collapsed
+status open
 
 \begin_layout Plain Layout
 \begin_inset space \hfill{}
@@ -1250,6 +1263,227 @@ One name can be consistent with multiple nodes.
 
 \begin_layout Standard
 It is also possible for multiple names to apply to a single node.
+ For example, in Figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:Multiple-names-can"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+a, the taxon 
+\begin_inset Formula $A$
+\end_inset
+
+ corresponds to the split 
+\begin_inset Formula $B1\,B2\,C\,|\bullet\,Y$
+\end_inset
+
+, and is child taxon 
+\begin_inset Formula $B$
+\end_inset
+
+ corresponds to the split 
+\begin_inset Formula $B1\,B2\,|\bullet\,Y$
+\end_inset
+
+.
+ The edge leading to 
+\begin_inset Formula $A$
+\end_inset
+
+ is consistent with the split for 
+\begin_inset Formula $B$
+\end_inset
+
+, but the name 
+\begin_inset Formula $B$
+\end_inset
+
+ is applied to the node with the smallest include group.
+ However, in the solution tree (Fig.
+ 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:Multiple-names-can"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+b), there is is only node for both names 
+\begin_inset Formula $A$
+\end_inset
+
+ and 
+\begin_inset Formula $B$
+\end_inset
+
+ to apply to.
+ In this case, we solve this problem by introducing a monotypic parent,
+ and applying 
+\begin_inset Formula $A$
+\end_inset
+
+ to the newly created parent node (Fig.
+ 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:Multiple-names-can"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+c).
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset space \hfill{}
+\end_inset
+
+
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Figures/names2nodes1/tax-shaded.svg
+	scale 50
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Taxonomy tree
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset space \hfill{}
+\end_inset
+
+
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Figures/names2nodes1/synth-shaded.svg
+	scale 50
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Solution tree
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset space \hfill{}
+\end_inset
+
+
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Figures/names2nodes1/solution2-shaded.svg
+	scale 50
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Solution tree
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset space \hfill{}
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:Multiple-names-can"
+
+\end_inset
+
+Multiple names can apply to a single node.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Not all cases where multiple names apply to a single node can be resolved
+ in this way.
 \end_layout
 
 \begin_layout Standard
