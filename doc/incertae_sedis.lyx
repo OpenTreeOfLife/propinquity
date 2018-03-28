@@ -875,7 +875,7 @@ incertae sedis
 \end_layout
 
 \begin_layout Standard
-We may also consider what happens if an 
+In theory it could be possible for an 
 \emph on
 incertae sedis
 \emph default
@@ -883,49 +883,60 @@ incertae sedis
 \begin_inset Formula $A$
 \end_inset
 
- is placed within a sister group.
- Suppose 
-\begin_inset Formula $A$
-\end_inset
-
- is placed next to a sibling 
-\begin_inset Formula $B$
-\end_inset
-
-.
- If 
-\begin_inset Formula $B$
-\end_inset
-
- is also 
+ to be placed within an 
 \emph on
 incertae sedis
 \emph default
-, then it should be possible to place 
+ sibling 
 \begin_inset Formula $B$
-\end_inset
-
- within 
-\begin_inset Formula $A$
 \end_inset
 
 .
- As a result, 
+ However, if we allow this behavior by reducing the exclude sets for 
 \begin_inset Formula $A$
 \end_inset
 
- should not exclude descendants of 
+ and 
 \begin_inset Formula $B$
 \end_inset
 
- than can only be reached from 
+, then this has the unfortunately consequence that the members of 
 \begin_inset Formula $A$
 \end_inset
 
- by passing through a node marked 
+ and 
+\begin_inset Formula $B$
+\end_inset
+
+ may be inter-digitated.
+ In many cases, 
 \emph on
-incertae sedis.
- 
+incertae sedis
+\emph default
+ genera have siblings that are families, and the expected semantics is that
+ genera may be placed within their sibling families, or may remain outside
+ existing families.
+ In such cases, inter-digitating the genera would not be expected behavior.
+ Thus, we choose the semantics that 
+\emph on
+incertae sedis
+\emph default
+ taxa exclude their 
+\emph on
+incertae sedis
+\emph default
+ siblings.
+ This is not because the other semantics is impossible.
+ However, we note that use of the interdigitating semantics allows a situation
+ where the names for 
+\begin_inset Formula $A$
+\end_inset
+
+ and 
+\begin_inset Formula $B$
+\end_inset
+
+ both apply to the same node.
 \end_layout
 
 \begin_layout Standard
@@ -937,34 +948,30 @@ We can compute exclude sets recursively by writing the exclude set of a
  in terms of the exclude set of its parent:
 \begin_inset Formula 
 \begin{align}
-\mathcal{E}(n) & =\mathcal{E}(parent(n))\cup\left[\mathcal{I^{\prime}}(m)\big|m\in siblings(n)\right],\label{eq:exclude-set-formula-1}
+\mathcal{E}(n) & =\mathcal{E}(parent(n))\cup\left[\mathcal{I}(m,n)\big|m\in siblings(n)\right],\label{eq:exclude-set-formula-1}
 \end{align}
 
 \end_inset
 
 where 
-\begin_inset Formula $\mathcal{I}^{\prime}(n)$
+\begin_inset Formula $\mathcal{I}(m,n)$
 \end_inset
 
  indicates the descendants of 
+\begin_inset Formula $m$
+\end_inset
+
+ that are excluded from 
 \begin_inset Formula $n$
 \end_inset
 
- that are reachable from 
-\begin_inset Formula $n$
-\end_inset
-
- without passing through an 
-\emph on
-incertae sedis
-\emph default
- node:
+.
+ Thus:
 \begin_inset Formula 
 \begin{align*}
-\mathcal{I}^{\prime}(n) & =\begin{cases}
-\emptyset & \text{if }n\text{ is \emph{incertae sedis}}\\
-\{n\} & \text{if }n\text{ is a leaf node}\\
-\left[\mathcal{I^{\prime}}(m)\big|m\in children(n)\right] & \text{if }n\text{ is an internal node}
+\mathcal{I}(m,n) & =\begin{cases}
+\emptyset & \text{if }n\text{ is \emph{incertae sedis}\,and }m\text{ is not}\\
+\mathcal{I}(m) & \text{otherwise}
 \end{cases}
 \end{align*}
 
