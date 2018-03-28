@@ -4936,6 +4936,20 @@ incertae sedis
 .
 \end_layout
 
+\begin_layout Standard
+If incertae sedis taxa are cannot be placed within other incertae sedis
+ taxa, then such an approach does not work if 
+\begin_inset Formula $y$
+\end_inset
+
+ is already incertae sedis.
+ However, we take the approach that 
+\emph on
+incertae sedis
+\emph default
+ notations are not a general solution to expression of uncertain placement.
+\end_layout
+
 \begin_layout Subsubsection
 Comparison to operational definition
 \end_layout
