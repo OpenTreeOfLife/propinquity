@@ -945,13 +945,32 @@ This formula allows us to compute exclude sets via a pre-order recursion
  as a boundary condition.
 \end_layout
 
+\begin_layout Standard
+
+\series bold
+Problem:
+\series default
+ how about the goal that we should be able to get the same outcome by moving
+ a taxon up one level and marking it as incertae sedis? This might require
+ that moving A next to B, and then moving B into A is allowed.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+Problem:
+\series default
+ should we be able to move incertae sedis taxa down into incertae sedis
+ taxa? If not, then we must change the recursion.
+\end_layout
+
 \begin_layout Subsection
 Naming 
 \end_layout
 
 \begin_layout Standard
-After solving a supertree (sub) problem, we need to assign taxon names to
- the supertree nodes based on the taxonomy tree in the problem.
+After constructing a supertree, we still need to assign taxon names to the
+ supertree nodes based on the taxonomy tree in the problem.
  Each taxon name 
 \begin_inset Formula $n$
 \end_inset
@@ -1248,7 +1267,7 @@ a, the taxon
 \begin_inset Formula $B1\,B2\,C\,|\bullet\,Y$
 \end_inset
 
-, and is child taxon 
+, and its child taxon 
 \begin_inset Formula $B$
 \end_inset
 
@@ -1449,12 +1468,261 @@ Multiple names can apply to a single node.
 \end_layout
 
 \begin_layout Standard
-Not all cases where multiple names apply to a single node can be resolved
- in this way.
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Plain Layout
+1.
+ OK, so suppose that we have two nodes 
+\begin_inset Formula $n_{1}$
+\end_inset
+
+ and 
+\begin_inset Formula $n_{2}$
+\end_inset
+
+, where 
+\begin_inset Formula $n_{2}$
+\end_inset
+
+ is an ancestor of 
+\begin_inset Formula $n_{1}$
+\end_inset
+
+.
+ Further suppose that the path from 
+\begin_inset Formula $n_{1}$
+\end_inset
+
+ to 
+\begin_inset Formula $n_{2}$
+\end_inset
+
+ traverses the intermediate nodes 
+\begin_inset Formula $N_{1}\ldots N_{m}$
+\end_inset
+
+
 \end_layout
 
-\begin_layout Standard
-<——————— resume editting here ————->
+\begin_layout Plain Layout
+\begin_inset Formula $S(n_{2})=\mathcal{I}(n_{2})|\mathcal{E}(n_{2})$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Formula 
+\begin{align*}
+S(n_{1}) & =\mathcal{I}(n_{1})|\mathcal{E}(n_{1})\\
+ & =\mathcal{I}(n_{1})|\mathcal{E}(N_{1})\cup[\mathcal{I}(m,n_{1}):m\in siblings(n_{1})]\\
+ & =\mathcal{I}(n_{1})|\mathcal{E}(n_{2})\cup\bigcup_{n\in N}[\mathcal{I}(m,n):m\in siblings(n)].
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+Now, it will be impossible for 
+\begin_inset Formula $S(n_{1})$
+\end_inset
+
+ and 
+\begin_inset Formula $S(n_{2})$
+\end_inset
+
+ to be both implied by the same branch in the supertree if 
+\begin_inset Formula $S_{1}(n_{1})$
+\end_inset
+
+ overlaps 
+\begin_inset Formula $S_{2}(n_{2})$
+\end_inset
+
+ or if 
+\begin_inset Formula $S_{2}(n_{1})$
+\end_inset
+
+ overlaps 
+\begin_inset Formula $S_{1}(n_{2})$
+\end_inset
+
+.
+ Since 
+\begin_inset Formula $\mathcal{I}(n_{1})\subseteq\mathcal{I}(n_{2})$
+\end_inset
+
+, 
+\begin_inset Formula $S_{1}(n_{1})\cap S_{2}(n_{2})$
+\end_inset
+
+ must be empty.
+ Thus the requirement is that 
+\begin_inset Formula $S_{2}(n_{1})\cap S_{1}(n_{2})$
+\end_inset
+
+ is empty.
+ Now for each 
+\begin_inset Formula $\mathcal{I}(m,n)$
+\end_inset
+
+ in 
+\emph on
+
+\begin_inset Formula $S_{2}(n_{1})$
+\end_inset
+
+, 
+\begin_inset Formula $\mathcal{I}(m)\cap S_{1}(n_{2})$
+\end_inset
+
+
+\emph default
+ is 
+\emph on
+not
+\emph default
+ empty.
+ Thus, this can only hold if 
+\begin_inset Formula $\mathcal{I}(m,n)$
+\end_inset
+
+ is empty, which occurs if 
+\begin_inset Formula $m$
+\end_inset
+
+ is 
+\emph on
+incertae sedis
+\emph default
+ and 
+\begin_inset Formula $n$
+\end_inset
+
+ is not incertae sedis.
+ Thus one node can support 2 names 
+\begin_inset Formula $n_{2}$
+\end_inset
+
+ and 
+\begin_inset Formula $n_{1}$
+\end_inset
+
+ if 
+\begin_inset Formula $n_{2}$
+\end_inset
+
+ is the ancestor of 
+\begin_inset Formula $n_{1}$
+\end_inset
+
+ and all siblings of nodes on the path from 
+\begin_inset Formula $n_{2}$
+\end_inset
+
+ to 
+\begin_inset Formula $n_{1}$
+\end_inset
+
+ are incertae sedis, and the nodes on the path are 
+\emph on
+not
+\emph default
+ incertae sedis.
+\end_layout
+
+\begin_layout Plain Layout
+2.
+ Now, suppose that 
+\begin_inset Formula $n$
+\end_inset
+
+ and 
+\begin_inset Formula $m$
+\end_inset
+
+ have a common ancestor 
+\begin_inset Formula $a$
+\end_inset
+
+, and the path from 
+\begin_inset Formula $n$
+\end_inset
+
+ to 
+\begin_inset Formula $a$
+\end_inset
+
+ contains the nodes 
+\begin_inset Formula $N$
+\end_inset
+
+, and the path from 
+\begin_inset Formula $m$
+\end_inset
+
+ to 
+\begin_inset Formula $a$
+\end_inset
+
+ contains the nodes 
+\begin_inset Formula $M$
+\end_inset
+
+.
+ Then we have 
+\begin_inset Formula 
+\begin{align*}
+S(n) & =\mathcal{I}(n)|\mathcal{E}(a)\cup\bigcup_{x\in N}[\mathcal{I}(y,x):y\in siblings(x)]\\
+S(m) & =\mathcal{I}(m)|\mathcal{E}(a)\cup\bigcup_{x\in M}[\mathcal{I}(y,x):y\in siblings(x)].
+\end{align*}
+
+\end_inset
+
+Thus, we need 
+\begin_inset Formula $n$
+\end_inset
+
+ to avoid excluding 
+\begin_inset Formula $\mathcal{I}(m)$
+\end_inset
+
+, and 
+\begin_inset Formula $m$
+\end_inset
+
+ to avoid excluding 
+\begin_inset Formula $\mathcal{I}(n)$
+\end_inset
+
+.
+ However, 
+\begin_inset Formula $\mathcal{E}(n)$
+\end_inset
+
+ definitely includes 
+\begin_inset Formula $\mathcal{I}(m,n)$
+\end_inset
+
+ and 
+\begin_inset Formula $\mathcal{E}(m)$
+\end_inset
+
+ includes 
+\begin_inset Formula $\mathcal{I}(n,m)$
+\end_inset
+
+.
+ ....
+ Finish proof...
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -1486,7 +1754,10 @@ It is well known that monotypic taxa are indistinguishable if you consider
 \end_inset
 
 
-\end_layout
+\emph default
+
+\begin_inset Note Note
+status collapsed
 
 \begin_layout Subsubsection
 Multiple names fit a single node
@@ -1496,13 +1767,13 @@ Multiple names fit a single node
 Example 1
 \end_layout
 
-\begin_layout Standard
+\begin_layout Plain Layout
 Suppose the taxonomy is (((B1,B2)B,C*)A,Y) and the input tree is (((B1,C),B2)x,Y
 ) then the names A and B both to the node x.
  In this case the names A and B are ordered.
 \end_layout
 
-\begin_layout Standard
+\begin_layout Plain Layout
 
 \series bold
 Case 1:
@@ -1511,7 +1782,7 @@ Case 1:
  of its children in the synthesis tree.
 \end_layout
 
-\begin_layout Standard
+\begin_layout Plain Layout
 
 \series bold
 Case 2:
@@ -1524,7 +1795,7 @@ Case 2:
  synthesis tree, if the IS taxa are placed within the child.
 \end_layout
 
-\begin_layout Standard
+\begin_layout Plain Layout
 
 \series bold
 Case 3:
@@ -1534,7 +1805,7 @@ Case 3:
  placed into.
 \end_layout
 
-\begin_layout Standard
+\begin_layout Plain Layout
 
 \series bold
 Case 4:
@@ -1551,7 +1822,7 @@ could
  IS children are placed with in one of the IS children.
 \end_layout
 
-\begin_layout Standard
+\begin_layout Plain Layout
 
 \series bold
 Solution:
@@ -1570,19 +1841,19 @@ Solution:
  taxa then the node could become monotypic by placement of the IS taxa.
 \end_layout
 
-\begin_layout Standard
+\begin_layout Plain Layout
 
 \series bold
 Example 2
 \end_layout
 
-\begin_layout Standard
+\begin_layout Plain Layout
 If ((A1,A2)A,(B1,B2)B*,(C1,C2)C*); is the taxonomy with asterisks denoting
  incertae sedis taxa, then the solution ((A1,A2)A,((B1,C1)mrcaB1C1,(B2,C2)mrcaB2
 C2)x); has a node x that could be called B* or C*.
 \end_layout
 
-\begin_layout Standard
+\begin_layout Plain Layout
 
 \series bold
 Case:
@@ -1592,7 +1863,7 @@ Case:
  Both names would then apply.
 \end_layout
 
-\begin_layout Standard
+\begin_layout Plain Layout
 
 \series bold
 Solution:
@@ -1600,7 +1871,7 @@ Solution:
  ??
 \end_layout
 
-\begin_layout Standard
+\begin_layout Plain Layout
 In summary, a taxon with split 
 \begin_inset Formula $A_{1}|\bullet B_{1}$
 \end_inset
@@ -1624,6 +1895,11 @@ In summary, a taxon with split
  If this fails to resolve the problem, we arbitrarily choose one of the
  names.
  
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Subsection
