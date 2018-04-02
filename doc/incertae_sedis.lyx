@@ -711,11 +711,8 @@ incertae sedis
 incertae sedis 
 \emph default
 in terms of rooted splits.
-\end_layout
-
-\begin_layout Standard
-We define rooted splits by noting that each edge of a tree divides the tip
- taxa 
+ We define rooted splits by noting that each edge of a tree divides the
+ tip taxa 
 \begin_inset Formula $\mathcal{L}$
 \end_inset
 
@@ -816,7 +813,12 @@ incertae sedis
 \end_layout
 
 \begin_layout Standard
-Marking a taxon as 
+An 
+\emph on
+incertae sedis
+\emph default
+ taxon can be moved into any of the descendants of its siblings.
+ Therefore marking a taxon as 
 \emph on
 incertae sedis
 \emph default
@@ -824,20 +826,15 @@ incertae sedis
  We seek to represent this by constructing modified splits for each branch
  of the taxonomy tree.
  The include sets of these splits remain unchanged, but we construct reduced
- exclude sets to indicate cases where 
+ exclude sets in order to allow 
 \emph on
 incertae sedis
 \emph default
- taxa are allowed to intrude into a taxon.
+ taxa to intrude into their sibling taxa.
 \end_layout
 
 \begin_layout Standard
-An 
-\emph on
-incertae sedis
-\emph default
- taxon can be moved into any of the descendants of its siblings.
- Therefore, the exclude set 
+The reduced exclude set 
 \begin_inset Formula $\mathcal{E}(n)$
 \end_inset
 
@@ -845,7 +842,7 @@ incertae sedis
 \begin_inset Formula $n$
 \end_inset
 
- should not include any of its siblings marked 
+ should therefore not contain the descendants of its siblings marked 
 \emph on
 incertae 
 \emph default
@@ -853,111 +850,30 @@ sedis
 \emph on
 ,
 \emph default
- but should exclude the descendants of its other siblings
+ but should contain the descendants of its other siblings
 \emph on
-.
-
-\emph default
- Additionally, the exclude 
-\begin_inset Formula $\mathcal{E}(n)$
-\end_inset
-
- should contain the children of all the ancestors of 
-\begin_inset Formula $n$
-\end_inset
-
-, unless those children are 
-\emph on
-incertae sedis
-\emph default
 .
  
-\end_layout
-
-\begin_layout Standard
-In theory it could be possible for an 
+\emph default
+We additionally stipulate that it is not possible for 
 \emph on
 incertae sedis
 \emph default
- taxon 
-\begin_inset Formula $A$
-\end_inset
-
- to be placed within an 
-\emph on
-incertae sedis
-\emph default
- sibling 
-\begin_inset Formula $B$
-\end_inset
-
-.
- However, if we allow this behavior by reducing the exclude sets for 
-\begin_inset Formula $A$
-\end_inset
-
- and 
-\begin_inset Formula $B$
-\end_inset
-
-, then this has the unfortunately consequence that the members of 
-\begin_inset Formula $A$
-\end_inset
-
- and 
-\begin_inset Formula $B$
-\end_inset
-
- may be inter-digitated.
- In many cases, 
-\emph on
-incertae sedis
-\emph default
- genera have siblings that are families, and the expected semantics is that
- genera may be placed within their sibling families, or may remain outside
- existing families.
- In such cases, inter-digitating the genera would not be expected behavior.
- Thus, we choose the semantics that 
-\emph on
-incertae sedis
-\emph default
- taxa exclude their 
+ taxa to intrude into their 
 \emph on
 incertae sedis
 \emph default
  siblings.
- This is not because the other semantics is impossible.
- However, we note that use of the interdigitating semantics allows a situation
- where the names for 
-\begin_inset Formula $A$
-\end_inset
-
- and 
-\begin_inset Formula $B$
-\end_inset
-
- both apply to the same node.
-\end_layout
-
-\begin_layout Standard
-We can compute exclude sets recursively by writing the exclude set of a
- node 
-\begin_inset Formula $n$
-\end_inset
-
- in terms of the exclude set of its parent:
-\begin_inset Formula 
-\begin{align}
-\mathcal{E}(n) & =\mathcal{E}(parent(n))\cup\left[\mathcal{I}(m,n)\big|m\in siblings(n)\right],\label{eq:exclude-set-formula-1}
-\end{align}
-
-\end_inset
-
-where 
+ (This is not the only way to construct a split-based semantics for 
+\emph on
+incertae sedis
+\emph default
+, but it avoids certain complications, as noted in the discussion.) We thus
+ define 
 \begin_inset Formula $\mathcal{I}(m,n)$
 \end_inset
 
- indicates the descendants of 
+ to indicate descendants of 
 \begin_inset Formula $m$
 \end_inset
 
@@ -977,7 +893,51 @@ where
 
 \end_inset
 
-This recursion terminates if the exclude set for the root node is set to
+
+\end_layout
+
+\begin_layout Standard
+Additionally, the exclude set 
+\begin_inset Formula $\mathcal{E}(n)$
+\end_inset
+
+ should contain the children of all the ancestors of 
+\begin_inset Formula $n$
+\end_inset
+
+, unless those children are 
+\emph on
+incertae sedis
+\emph default
+.
+ To avoid traversing all ancestors separately for each node 
+\begin_inset Formula $n$
+\end_inset
+
+, we note that the excluded children of any ancestors will be in the exclude
+ set of the parent of 
+\begin_inset Formula $n$
+\end_inset
+
+ already.
+ Therefore, we can write the exclude set of a node 
+\begin_inset Formula $n$
+\end_inset
+
+ in terms of the exclude set of its parent:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{align}
+\mathcal{E}(n) & =\mathcal{E}(parent(n))\cup\left[\mathcal{I}(m,n)\big|m\in siblings(n)\right].\label{eq:exclude-set-formula-1}
+\end{align}
+
+\end_inset
+
+This formula allows us to compute exclude sets via a pre-order recursion
+ on the taxonomy tree.
+ This recursion terminates if the exclude set for the root node is set to
  
 \begin_inset Formula $\emptyset$
 \end_inset
@@ -4979,6 +4939,122 @@ Also, the splits-based semantics might not completely recover the edit-operation
  semantics.
  The corner cases are ...
  .
+\end_layout
+
+\begin_layout Subsubsection
+Intrusion into incertae sedis taxa
+\end_layout
+
+\begin_layout Standard
+In theory it could be possible for an 
+\emph on
+incertae sedis
+\emph default
+ taxon 
+\begin_inset Formula $A$
+\end_inset
+
+ to be placed within an 
+\emph on
+incertae sedis
+\emph default
+ sibling 
+\begin_inset Formula $B$
+\end_inset
+
+.
+ We initially implemented this semantics.
+ It requires updating the recursion to define 
+\begin_inset Formula $I(m,n)$
+\end_inset
+
+ as the descendants of 
+\begin_inset Formula $m$
+\end_inset
+
+ that can be access from 
+\begin_inset Formula $n$
+\end_inset
+
+ without traversing an 
+\emph on
+incertae sedis
+\emph default
+ node.
+\end_layout
+
+\begin_layout Standard
+However, if we allow this behavior by reducing the exclude sets for 
+\begin_inset Formula $A$
+\end_inset
+
+ and 
+\begin_inset Formula $B$
+\end_inset
+
+, then this has the unfortunate consequence that the members of 
+\begin_inset Formula $A$
+\end_inset
+
+ and 
+\begin_inset Formula $B$
+\end_inset
+
+ may be inter-digitated.
+ In many cases, 
+\emph on
+incertae sedis
+\emph default
+ genera have siblings that are families, and the expected semantics is that
+ genera may be placed within their sibling families, or may remain outside
+ existing families.
+ In such cases, inter-digitating the genera would not be expected behavior.
+ Thus, we choose the semantics that 
+\emph on
+incertae sedis
+\emph default
+ taxa exclude their 
+\emph on
+incertae sedis
+\emph default
+ siblings.
+ This is not because the other semantics is impossible.
+ However, we note that use of the interdigitating semantics allows a situation
+ where the names for 
+\begin_inset Formula $A$
+\end_inset
+
+ and 
+\begin_inset Formula $B$
+\end_inset
+
+ both apply to the same node.
+\end_layout
+
+\begin_layout Standard
+This semantics also complicates placement, since it is possible to place
+ 
+\begin_inset Formula $A$
+\end_inset
+
+ as a sibling of 
+\begin_inset Formula $B$
+\end_inset
+
+, and then place 
+\begin_inset Formula $B$
+\end_inset
+
+ within 
+\begin_inset Formula $A$
+\end_inset
+
+.
+ This violates the current invariant that taxa are only ever placed within
+ more tipward taxa.
+ This makes the description of placement more complicated, since we can
+ no longer simply record all cases where a parent node is not ancestor on
+ the taxonomy.
 \end_layout
 
 \begin_layout Subsubsection
