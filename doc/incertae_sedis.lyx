@@ -1907,14 +1907,14 @@ Placement
 \end_layout
 
 \begin_layout Standard
-After a synthesis tree is constructed, we attach taxon names for to the
- synthesis tree for each non-conflicting taxon.
+After a synthesis tree is constructed, we attach taxon names to the synthesis
+ tree for each non-conflicting taxon.
  These names attach at the MRCA of the include group.
  Then, for each taxon 
 \begin_inset Formula $A$
 \end_inset
 
- on the synth tree, we associate with the first taxon 
+ that is found on the synth tree, we associate with the first taxon 
 \begin_inset Formula $B$
 \end_inset
 
@@ -2044,14 +2044,15 @@ incertae sedis
 \end_inset
 
 .
-\end_layout
+\begin_inset Note Note
+status open
 
-\begin_layout Standard
+\begin_layout Plain Layout
 One question is whether this approach is able to handle nested incertae
  sedis taxa.
 \end_layout
 
-\begin_layout Standard
+\begin_layout Plain Layout
 Placement of incertae sedis taxa by input trees is unfortunately not quite
  as simple as finding a single location where an I.S.
  taxon should attach.
@@ -2067,7 +2068,7 @@ placed
  separately.
 \end_layout
 
-\begin_layout Standard
+\begin_layout Plain Layout
 Each input tree can relate to an 
 \emph on
 incertae sedis
@@ -2176,6 +2177,11 @@ incertae sedis
 \end_inset
 
 .
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Section
