@@ -158,6 +158,14 @@ Taxonomic supertree construction with
  taxa
 \end_layout
 
+\begin_layout Standard
+
+\series bold
+Continue editing at:
+\series default
+ placement
+\end_layout
+
 \begin_layout Section
 Introduction
 \end_layout
@@ -2355,6 +2363,36 @@ In summary, a taxon with split
 
 \begin_layout Subsection
 Placement
+\end_layout
+
+\begin_layout Standard
+OK, so how to think about placement? If we have a simple case, then we find
+ cases where the ancestor taxon on the synth tree is not an ancestor on
+ the taxonomy tree.
+ If there are intermediate nodes missing, then in some cases they are broken
+ taxa, but in other cases it is because we had another placement occur as
+ well.
+ Example: taxonomy = ((I?,A1)A,(B1,B2)B?,C) -> ((((B1,I),B2)B,A1)AmC).
+ 
+\end_layout
+
+\begin_layout Itemize
+here we have I->B, which does not occur on the taxonomy tree.
+ we also have B->A which does not occur on the taxonomy tree.
+\end_layout
+
+\begin_layout Itemize
+can we simply process the B->A first, yielding a revised taxonomy ((I?,A1,(B1,B2
+)B)A,C), and then process the I->B?
+\end_layout
+
+\begin_layout Itemize
+if this works, then we can use the rule that missing taxa between the placed
+ taxon and the MRCA must be broken.
+\end_layout
+
+\begin_layout Itemize
+OK, check next week.
 \end_layout
 
 \begin_layout Standard
