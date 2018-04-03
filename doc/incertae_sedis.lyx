@@ -151,7 +151,7 @@
 \begin_layout Title
 
 \family typewriter
-Supertree construction with
+Taxonomic supertree construction with
 \emph on
  Incertae sedis
 \emph default
@@ -159,67 +159,59 @@ Supertree construction with
 \end_layout
 
 \begin_layout Section
-New Introduction
+Introduction
 \end_layout
 
 \begin_layout Standard
 Supertree methods combine a collection of input trees with different taxon
  sets into a single tree on the combined taxon set.
  While such methods are usually applied to leaf-labeled phylogenies that
- have been estimated from DNA sequence data, we additionally seek to include
- taxonomic information.
- We thus require that one of the input trees is the taxonomy tree.
- The taxonomy has a number of features not found in the input trees, such
- as having labels for internal nodes, containing monotypic nodes, and containing
- 
-\emph on
-incertae sedis
-\emph default
- nodes.
+ have been estimated from DNA sequence data, we seek to include taxonomic
+ information also.
+ Taxonomies can provide a comprehensive coverage of known taxa that inferred
+ phylogenies cannot.
+ Additionally, taxonomies can provide taxonomic names, which are needed
+ to align input phylogenies to each other, and to allow references to existing
+ groups.
+\end_layout
+
+\begin_layout Standard
+We thus require that one of the input trees is a taxonomy tree.
+ The taxonomy has a number of features not found in the input phylogenies.
+ While the input trees need not cover the entire taxon set, we require the
+ taxonomy to be comprehensive.
+ The taxonomy also has labels for internal nodes, whereas input phylogenies
+ only have labels for leaf nodes.
  We refer to labels of taxonomy nodes as 
 \begin_inset Quotes eld
 \end_inset
 
-taxa
+taxon names
 \begin_inset Quotes erd
 \end_inset
 
-, and require that labels and taxonomy nodes have a one-to-one correspondence.
- We additionally require that the taxonomy be comprehensive and contain
- all labels.
+, and require that taxon names and taxonomy nodes have a one-to-one corresponden
+ce.
+ The taxonomy may also contain out-degree 1 nodes.
+ These nodes correspond to monotypic taxa which contain a single child of
+ lower taxonomic rank.
 \end_layout
 
 \begin_layout Standard
-One of the problems that arises when attempting to include taxonomic information
- is the problem of 
-\emph on
-incertae sedis 
-\emph default
-taxa.
- 
-\emph on
-Incertae sedis
-\emph default
- taxa are taxa that have unknown taxonomic placement.
- The common interpretation of such taxa is that they may not be place further
- root-ward, but may be placed within their sibling taxa.
- This frequently occurs when a specimen is identified to a taxonomic level
- such as the family level but not further.
- It also occurs when it is unclear whether a genus forms its own family,
- or is part of an existing family.
- (Mark rewrite?)
-\end_layout
+In practice, taxonomies may also contain nodes with uncertain placement.
+ These nodes are often labelled 
+\begin_inset Quotes eld
+\end_inset
 
-\begin_layout Section
-Introduction
-\end_layout
 
-\begin_layout Standard
-The phrase “
 \emph on
 incertae sedis
 \emph default
-”, which is a Latin phrase meaning 
+
+\begin_inset Quotes erd
+\end_inset
+
+, which means 
 \begin_inset Quotes eld
 \end_inset
 
@@ -227,17 +219,34 @@ uncertain seat
 \begin_inset Quotes erd
 \end_inset
 
-, indicates that a taxon is of uncertain placement.
- Such groups arise in practice when they are classified within a parent
- group, such as Fungi, but the precise location within the parent group
- is uncertain.
- Such a taxon would then be attached as a child of the parent group, but
- labeled as 
+ in Latin.
+ The common interpretation of such taxa is that they may not be moved further
+ towards the root, but may be moved into their sibling taxa.
+ For example, a genus with a sibling that is a family may be annotated as
+\begin_inset Quotes eld
+\end_inset
+
+
+\emph on
+incertae familia
+\emph default
+
+\begin_inset Quotes erd
+\end_inset
+
+, indicating that it is unclear which family the genus should be placed
+ in.
+ 
+\emph on
+Incertae sedis
+\emph default
+ taxa frequently occur when a specimen is identified up to a given taxonomic
+ level, but no further.
+ Extinct taxa are often 
 \emph on
 incertae sedis
 \emph default
 .
- 
 \end_layout
 
 \begin_layout Standard
@@ -299,8 +308,12 @@ incertae sedis
  of taxa.
 \end_layout
 
-\begin_layout Paragraph
+\begin_layout Subsection
 Background
+\end_layout
+
+\begin_layout Paragraph
+Terminology
 \end_layout
 
 \begin_layout Standard
@@ -341,6 +354,36 @@ to indicate taxon names corresponding to leaf nodes of the taxonomy tree.
  by annotating leaf nodes of each input tree with taxon names.
  For purposes of conflict resolution, the taxonomy tree is ranked below
  all of the input trees.
+ 
+\end_layout
+
+\begin_layout Standard
+In this manuscript we extend this framework by adding a set 
+\begin_inset Formula $\mathcal{U}\subseteq\mathcal{N}$
+\end_inset
+
+ of labels that have the 
+\emph on
+incertae sedis 
+\emph default
+property.
+ The extended taxonomy then consists of the taxonomy tree 
+\begin_inset Formula $\taxonomy$
+\end_inset
+
+, the labels 
+\begin_inset Formula $\mathcal{N}$
+\end_inset
+
+, and set 
+\begin_inset Formula $\mathcal{U}$
+\end_inset
+
+ of 
+\emph on
+incertae sedis 
+\emph default
+taxa.
 \end_layout
 
 \begin_layout Paragraph
@@ -661,36 +704,6 @@ incertae sedis
 
 \end_inset
 
-
-\end_layout
-
-\begin_layout Standard
-We extend this framework by adding a set 
-\begin_inset Formula $\mathcal{U}\subseteq\mathcal{N}$
-\end_inset
-
- of labels that have the 
-\emph on
-incertae sedis 
-\emph default
-property.
- The extended taxonomy then consists of the taxonomy tree 
-\begin_inset Formula $\taxonomy$
-\end_inset
-
-, the labels 
-\begin_inset Formula $\mathcal{N}$
-\end_inset
-
-, and set 
-\begin_inset Formula $\mathcal{U}$
-\end_inset
-
- of 
-\emph on
-incertae sedis 
-\emph default
-taxa.
  We seek a semantics for supertrees with 
 \emph on
 incertae sedis 
@@ -888,7 +901,7 @@ As a result of this, we cannot satisfy all five of these criteria.
 \end_layout
 
 \begin_layout Subsection
-A split-based semantics for 
+Split-based semantics for 
 \emph on
 incertae sedis
 \emph default
@@ -999,11 +1012,11 @@ In this case the root node stands for an edge that connects the root to
 \end_layout
 
 \begin_layout Subsubsection
-Reduced exclude sets allow 
+A semantics that disallows inter-digitating 
 \emph on
 incertae sedis
 \emph default
- to be placed into sibling taxa
+ siblings
 \end_layout
 
 \begin_layout Standard
@@ -1151,6 +1164,255 @@ Problem:
 \series default
  should we be able to move incertae sedis taxa down into incertae sedis
  taxa? If not, then we must change the recursion.
+\end_layout
+
+\begin_layout Subsubsection
+An alternative semantics that allows inter-digitating incertae sedis siblings
+\end_layout
+
+\begin_layout Standard
+If we want to allow placing two incertae sedis siblings within each other,
+ then incertae sedis siblings are never excluded.
+\end_layout
+
+\begin_layout Standard
+Furthermore, consider placing 
+\begin_inset Formula $A$
+\end_inset
+
+ as a sibling of 
+\begin_inset Formula $B$
+\end_inset
+
+, and then placing 
+\begin_inset Formula $B$
+\end_inset
+
+ within 
+\begin_inset Formula $A$
+\end_inset
+
+.
+ In order for this to work, 
+\begin_inset Formula $A$
+\end_inset
+
+ must not exclude the incertae sedis children of 
+\begin_inset Formula $B$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+In order to accomplish both of these goals, we define the descendants 
+\begin_inset Formula $\mathcal{I}^{\prime}(n)$
+\end_inset
+
+ that are accessible without passing through an incertae sedis node.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{align*}
+\mathcal{I^{\prime}}(n) & =\begin{cases}
+\emptyset & \text{if }n\in\mathcal{U}\\
+\{n\} & \text{if }n\text{ is a leaf}\\{}
+[\mathcal{I}^{\prime}(c)|c\in children(n)] & \text{otherwise.}
+\end{cases}
+\end{align*}
+
+\end_inset
+
+We may then define the taxa excluded from 
+\begin_inset Formula $n$
+\end_inset
+
+ as:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{align*}
+\mathcal{E}(n) & =\mathcal{E}(parent(n))\cup[\mathcal{I}^{\prime}(s)|s\in siblings(n)].
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+This semantics satisfies criteria 1,3,4, and 5 above.
+\end_layout
+
+\begin_layout Subsubsection
+A third semantics
+\end_layout
+
+\begin_layout Standard
+OK, the idea here is that we want to avoid inter-digitation.
+ 
+\emph on
+Incertae sedis
+\emph default
+ taxa thus exclude
+\emph on
+ incertae sedis
+\emph default
+ siblings.
+ However, where the first semantics allows 
+\emph on
+incertae sedis 
+\emph default
+taxa to intrude into
+\emph on
+ incertae sedis 
+\emph default
+descendants of siblings, but not allow
+\emph on
+ incertae sedis
+\emph default
+ descendants of siblings to intrude into 
+\emph on
+incertae sedis
+\emph default
+ taxa, here we do the reverse.
+\end_layout
+
+\begin_layout Standard
+OK, so the idea here is that an
+\emph on
+ incertae sedis
+\emph default
+ group excludes
+\end_layout
+
+\begin_layout Itemize
+
+\emph on
+incertae sedis
+\emph default
+ siblings
+\end_layout
+
+\begin_layout Itemize
+
+\emph on
+incertae sedis 
+\emph default
+descendants of ancestors
+\end_layout
+
+\begin_layout Itemize
+but not
+\emph on
+ incertae sedis
+\emph default
+ descendants of non-incertae-sedis siblings
+\end_layout
+
+\begin_layout Standard
+It is also possible to allow placing 
+\begin_inset Formula $A$
+\end_inset
+
+ as a sibling of 
+\begin_inset Formula $B$
+\end_inset
+
+ and then placing 
+\begin_inset Formula $B$
+\end_inset
+
+ within 
+\begin_inset Formula $A$
+\end_inset
+
+ if we disallow placing 
+\begin_inset Formula $A$
+\end_inset
+
+ into incertae sedis descendants of its siblings.
+ We may then allow placing those descendants within 
+\begin_inset Formula $A$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{align*}
+\mathcal{I^{\prime}}(n) & =\begin{cases}
+\emptyset & \text{if }n\in\mathcal{U}\\
+\{n\} & \text{if }n\text{ is a leaf}\\{}
+[\mathcal{I}^{\prime}(c)|c\in children(n)] & \text{otherwise.}
+\end{cases}
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+We use 
+\begin_inset Formula $\mathcal{I}(m,n)$
+\end_inset
+
+ to indicate the descendants of 
+\begin_inset Formula $m$
+\end_inset
+
+ that are excluded from 
+\begin_inset Formula $n$
+\end_inset
+
+.
+\begin_inset Formula 
+\begin{align*}
+\mathcal{I}(m,n) & =\begin{cases}
+\emptyset & \text{if }n\text{ is \emph{incertae sedis}\,and }m\text{ is not}\\
+\mathcal{I}(m) & \text{if }n\text{ and }m\text{ are both }incertae\,sedis\\
+\mathcal{I}^{\prime}(m) & \text{otherwise.}
+\end{cases}
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+We may then define the taxa excluded from 
+\begin_inset Formula $n$
+\end_inset
+
+ as:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{align*}
+\mathcal{E}(n) & =\begin{cases}
+\left[\mathcal{L}-\mathcal{I}(parent(n))\right]\cup[\mathcal{I}(s,n)|s\in siblings(n)] & \text{if }n\in\mathcal{U}\\
+\mathcal{E}(parent(n))\cup[\mathcal{I}(s,n)|s\in siblings(n)] & \text{otherwise.}
+\end{cases}
+\end{align*}
+
+\end_inset
+
+I think this works...
+ but need to double-check.
+\end_layout
+
+\begin_layout Standard
+Also: can we genericize 
+\begin_inset Formula $\mathcal{E}(parent(n))$
+\end_inset
+
+?
 \end_layout
 
 \begin_layout Subsection
