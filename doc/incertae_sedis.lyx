@@ -184,10 +184,11 @@ Supertree methods combine a collection of input trees with different taxon
 \end_layout
 
 \begin_layout Standard
-We thus require that one of the input trees is a taxonomy tree.
+Here we describe a supertree method that takes a taxonomy as one of its
+ inputs.
  The taxonomy has a number of features not found in the input phylogenies.
- While the input trees need not cover the entire taxon set, we require the
- taxonomy to be comprehensive.
+ While the input trees need not cover the entire taxon set, our method requires
+ that the taxonomy to be comprehensive.
  The taxonomy also has labels for internal nodes, whereas input phylogenies
  only have labels for leaf nodes.
  We refer to labels of taxonomy nodes as 
@@ -270,7 +271,16 @@ literal "true"
 \end_inset
 
 .
- We describe an extension to this supertree method so that we can resolve
+ In practice, the method has been used with the Open Tree of Life taxonomy
+ 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "rees2017automated"
+literal "false"
+
+\end_inset
+
+.We describe an extension to this supertree method so that we can resolve
  taxonomic uncertainty by using published phylogenies to place 
 \emph on
 incertae sedis
@@ -302,9 +312,9 @@ incertae sedis
  Thus, the ability to correctly assess compatibility with the taxonomy when
  the taxonomy contains 
 \emph on
-incertae sedis taxa
+incertae sedis 
 \emph default
- allows us to include thousands of new taxa that were previously filtered
+taxa allows us to include thousands of new taxa that were previously filtered
  out to avoid conflict.
  It also enables us to include extinct taxa, since many of these taxa are
  
