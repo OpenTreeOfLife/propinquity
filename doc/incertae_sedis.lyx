@@ -2850,14 +2850,11 @@ incertae sedis
 \emph default
  taxa has the potential to resolve uncertain taxon placements using information
  from phylogenies.
- Since phylogenies are ranked higher than taxonomy, no special consider
- for incertae sedis taxa is needed for phylogenies to place individual taxa
- on the synthesis tree.
- However, without special consideration given to 
-\emph on
-naming
-\emph default
-, placing a taxon 
+ Since phylogenies are ranked higher than taxonomy, they may place members
+ of incertae sedis clades as they wish even when we do not take into account
+ the semantics of incertae sedis taxa.
+ However, without the incertae sedis semantics described above, placing
+ a taxon 
 \begin_inset Formula $A$
 \end_inset
 
@@ -2870,15 +2867,53 @@ naming
 \end_inset
 
  in the taxonomy.
- The clade grouping non-phylogeny taxa is lost.
- The name is lost.
- Placement is then not possible.
- In order to avoid a situation where input phylogenies conflict with a large
+ This has three main effects:
+\end_layout
+
+\begin_layout Enumerate
+The edge leading to clade 
+\begin_inset Formula $B$
+\end_inset
+
+ is lost.
+\end_layout
+
+\begin_layout Enumerate
+Any taxonomy-only taxa are placed at the MRCA of the phylogenetically informed
+ taxa, instead of at node 
+\begin_inset Formula $B$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Enumerate
+The name for taxon 
+\begin_inset Formula $B$
+\end_inset
+
+ is lost.
+\end_layout
+
+\begin_layout Enumerate
+We do not record 
+\begin_inset Formula $A$
+\end_inset
+
+ as being placed within 
+\begin_inset Formula $B$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+In order to avoid a situation where input phylogenies conflict with a large
  number of taxa when 
 \emph on
 incertae sedis
 \emph default
- taxa are placed within them, we have filtered 
+ taxa are placed within them, we have previously filtered 
 \emph on
 incertae sedis
 \emph default
@@ -2921,13 +2956,12 @@ When the synthesis tree conflicts with a taxonomy node, we way that the
  but is not broken.
 \end_layout
 
-\begin_layout Subsection
-Correctly handling placement
-\end_layout
-
 \begin_layout Standard
-Thus, we seek a synthesis method that can correctly place taxa within containing
- taxa without breaking the containing taxa.
+We therefore seek a synthesis method that can correctly introduce 
+\emph on
+incertae sedis
+\emph default
+ taxa into containing taxa without breaking the containing taxa.
  We change the semantics of names to imply, not the exclusion of all non-include
 d taxa, but only some non-included taxa, as described in section 
 \begin_inset CommandInset ref
@@ -2974,8 +3008,70 @@ incertae sedis
 Conflict with incertae sedis taxa
 \end_layout
 
-\begin_layout Subsubsection
+\begin_layout Standard
+When only tip nodes on the taxonomy are 
+\emph on
+incertae sedis
+\emph default
+, we have a very simple form of the 
+\emph on
+incertae sedis
+\emph default
+ supertree problem.
+ However, in practice entire clades may be 
+\emph on
+incertae sedis
+\emph default
+, and so more complex issue arise.
+ In this section we consider a number of cases that must be handled when
+ attempting to place 
+\emph on
+incertae sedis
+\emph default
+ taxa.
+\end_layout
+
+\begin_layout Standard
+
+\emph on
+Note that the synthesis of all input trees before the taxonomy is unaffected
+ by incertae sedis information.
+\end_layout
+
+\begin_layout Subsection
 Conflicting placement among input trees
+\end_layout
+
+\begin_layout Standard
+[
+\series bold
+BDR:
+\series default
+ 
+\emph on
+maybe we should merge this with Figure.
+ 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:Broken-incertae-sedis"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+.
+ Although the point of figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:placement-example1"
+
+\end_inset
+
+ is to talk about sub-problem decomposition as well as what the result looks
+ like.
+\emph default
+]
 \end_layout
 
 \begin_layout Standard
@@ -3030,154 +3126,6 @@ All this would occur in the previous version of propinquity.
  (b) as a result of not breaking ott8 and ott9, we do not move ott3 and
  ott2 up to ott11.
  [BDR: Extend more figures!]
-\end_layout
-
-\begin_layout Subsubsection
-Example B
-\end_layout
-
-\begin_layout Standard
-However, incertae sedis taxa are not always tip nodes, but may themselves
- contain other taxa.
- For example, consider Figure 
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "fig:Broken-incertae-sedis"
-plural "false"
-caps "false"
-noprefix "false"
-
-\end_inset
-
-.
-\end_layout
-
-\begin_layout Standard
-In this case, tree 
-\begin_inset Formula $T_{1}$
-\end_inset
-
- places 
-\begin_inset Formula $z_{1}$
-\end_inset
-
- within 
-\begin_inset Formula $w$
-\end_inset
-
-, while 
-\begin_inset Formula $T_{2}$
-\end_inset
-
- places 
-\begin_inset Formula $z_{2}$
-\end_inset
-
- within 
-\begin_inset Formula $y$
-\end_inset
-
-.
- Since different members of 
-\begin_inset Formula $z$
-\end_inset
-
- are placed, neither placement for 
-\begin_inset Formula $z$
-\end_inset
-
- is rejected.
- Instead the taxon 
-\begin_inset Formula $z$
-\end_inset
-
- is broken, the name 
-\begin_inset Formula $z$
-\end_inset
-
- disappears, and 
-\begin_inset Formula $z_{3}$
-\end_inset
-
- floats to the top level.
- 
-\end_layout
-
-\begin_layout Standard
-Furthermore, since taxon 
-\begin_inset Formula $z$
-\end_inset
-
- is a broken 
-\emph on
-incertae sedis 
-\emph default
-taxon, all of its children are effectively incertae sedis independently,
- with the difference that they cannot be placed within each other.
- Therefore, the names 
-\begin_inset Formula $w$
-\end_inset
-
- and 
-\begin_inset Formula $y$
-\end_inset
-
- are not lost, since the taxa placed within them are 
-\emph on
-incertae sedis
-\emph default
- names.
- Note that 
-\begin_inset Formula $z_{3}$
-\end_inset
-
- maybe therefore be placed in a third location, since it is also 
-\emph on
-incertae sedis
-\emph default
-.
-\end_layout
-
-\begin_layout Standard
-The situation here would be different if the monophyly of 
-\begin_inset Formula $z$
-\end_inset
-
- was supported by an input phylogeny.
-\end_layout
-
-\begin_layout Standard
-
-\emph on
-Note that the synthesis of all input trees before the taxonomy is unaffected
- by incertae sedis information.
-\end_layout
-
-\begin_layout Section
-Cases
-\end_layout
-
-\begin_layout Standard
-When only tip nodes on the taxonomy are 
-\emph on
-incertae sedis
-\emph default
-, we have a very simple form of the 
-\emph on
-incertae sedis
-\emph default
- supertree problem.
- However, in practice entire clades may be 
-\emph on
-incertae sedis
-\emph default
-, and so more complex issue arise.
- In this section we consider a number of cases that must be handled when
- attempting to place 
-\emph on
-incertae sedis
-\emph default
- taxa.
 \end_layout
 
 \begin_layout Subsection
@@ -3421,7 +3369,7 @@ incertae sedis
 \begin_inset Float figure
 wide false
 sideways false
-status open
+status collapsed
 
 \begin_layout Plain Layout
 \begin_inset space \hfill{}
@@ -3678,6 +3626,102 @@ noprefix "false"
 \end_inset
 
 .
+\end_layout
+
+\begin_layout Standard
+In Figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:Broken-incertae-sedis"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+, tree 
+\begin_inset Formula $T_{1}$
+\end_inset
+
+ places 
+\begin_inset Formula $C1$
+\end_inset
+
+ next to 
+\begin_inset Formula $A1$
+\end_inset
+
+, while 
+\begin_inset Formula $T_{2}$
+\end_inset
+
+ places 
+\begin_inset Formula $C2$
+\end_inset
+
+ next to 
+\begin_inset Formula $A2$
+\end_inset
+
+.
+ Since different members of 
+\begin_inset Formula $C$
+\end_inset
+
+ are placed, neither placement for 
+\begin_inset Formula $C$
+\end_inset
+
+ is rejected.
+ Instead the taxon 
+\begin_inset Formula $C$
+\end_inset
+
+ is broken, the name 
+\begin_inset Formula $C$
+\end_inset
+
+ disappears, and 
+\begin_inset Formula $C3$
+\end_inset
+
+ floats to the top level.
+ Furthermore, since taxon 
+\begin_inset Formula $C$
+\end_inset
+
+ is a broken 
+\emph on
+incertae sedis 
+\emph default
+taxon, all of its children are effectively incertae sedis independently,
+ with the exception that they cannot be placed within each other.
+ Therefore, the names 
+\begin_inset Formula $A$
+\end_inset
+
+ and 
+\begin_inset Formula $AB$
+\end_inset
+
+ are not lost, since the taxa placed within them are 
+\emph on
+incertae sedis
+\emph default
+ names.
+\end_layout
+
+\begin_layout Standard
+The situation here would be different if the monophyly of 
+\begin_inset Formula $C$
+\end_inset
+
+ was supported by an high-ranked input phylogeny.
+ In that case, instead of breaking 
+\begin_inset Formula $C$
+\end_inset
+
+, we would choose the placement in the highest-ranked tree.
 \end_layout
 
 \begin_layout Subsection
