@@ -3435,7 +3435,7 @@ status collapsed
 
 \begin_layout Plain Layout
 \begin_inset Graphics
-	filename Figures/is-clade/tree2-shaded.svg
+	filename Figures/is-clade/tree1-shaded.svg
 	scale 50
 
 \end_inset
@@ -3458,6 +3458,47 @@ Input tree #1
 \end_inset
 
 
+\begin_inset space \hfill{}
+\end_inset
+
+
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Figures/is-clade/tree3-shaded.svg
+	scale 50
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Input tree #2
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset space \hfill{}
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
 \begin_inset space \hfill{}
 \end_inset
 
@@ -3492,13 +3533,6 @@ Taxonomy
 \end_inset
 
 
-\begin_inset space \hfill{}
-\end_inset
-
-
-\end_layout
-
-\begin_layout Plain Layout
 \begin_inset space \hfill{}
 \end_inset
 
@@ -3543,24 +3577,27 @@ Synthesis Tree #1
 \begin_inset Caption Standard
 
 \begin_layout Plain Layout
-Broken incertae sedis clade
 \begin_inset CommandInset label
 LatexCommand label
 name "fig:Broken-incertae-sedis"
 
 \end_inset
 
-.
- Taxonomy tree (b) contains 
+ 
 \emph on
-incertae sedis 
+Incertae sedis
 \emph default
-taxon 
+ clade 
 \begin_inset Formula $C$
 \end_inset
 
- that is broken by input tree (a).
- Supertree construction results in a synthesis tree (c) that places 
+ broken by conflicting placement.
+ Input trees (a) and (b) conflict in the placement of taxa in 
+\begin_inset Formula $C$
+\end_inset
+
+.
+ The synthesis supertree (d) places places 
 \begin_inset Formula $C1$
 \end_inset
 
@@ -3572,7 +3609,30 @@ taxon
 \begin_inset Formula $A$
 \end_inset
 
+, while unplaced taxa float upwards.
+ (
+\series bold
+Note:
+\series default
+ This is what the sub-problem solver does.
+ The entire pipeline would attach 
+\begin_inset Formula $C3$
+\end_inset
+
+ at 
+\begin_inset Formula $A$
+\end_inset
+
+ actually, since it is the MRCA of 
+\begin_inset Formula $A1$
+\end_inset
+
+ and 
+\begin_inset Formula $A2$
+\end_inset
+
 .
+ Should we change this?) 
 \end_layout
 
 \end_inset
@@ -3605,7 +3665,7 @@ When the input phylogenies conflict on where members of an incertae sedis
 \end_inset
 
  floats to the top level.
- Algorithmicly, alternatively placements of children of an incertae sedis
+ Algorithmic, alternatively placements of children of an incertae sedis
  clade lead to contesting of all edges along with taxa might be placed,
  creating a large, merged sub-problem, as in Figure 
 \begin_inset CommandInset ref
