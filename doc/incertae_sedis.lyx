@@ -158,12 +158,10 @@ Taxonomic supertree construction with
  taxa
 \end_layout
 
-\begin_layout Standard
-
-\series bold
-Continue editing at:
-\series default
- placement
+\begin_layout Author
+Benjamin D.
+ Redelings and Mark T.
+ Holder
 \end_layout
 
 \begin_layout Section
@@ -2376,170 +2374,324 @@ Placement
 \end_layout
 
 \begin_layout Standard
-OK, so how to think about placement? If we have a simple case, then we find
- cases where the ancestor taxon on the synth tree is not an ancestor on
- the taxonomy tree.
- If there are intermediate nodes missing, then in some cases they are broken
- taxa, but in other cases it is because we had another placement occur as
- well.
- Example: taxonomy = ((I?,A1)A,(B1,B2)B?,C) -> ((((B1,I),B2)B,A1)AmC).
+After we have attached taxon names to the synthesis tree, we would like
+ to interpret the position of these names in terms of placing 
+\emph on
+incertae sedis 
+\emph default
+taxa in some spot, possibly a new spot.
+ This would allow us to interpret the synthesis tree as saying that phylogenetic
+ information has (for example) placed genus A within family B, or perhaps
+ in a monotypic, unnamed family that contains only 
+\begin_inset Formula $A$
+\end_inset
+
+.
+ The simplest approach to placement involves noting whenever a taxon 
+\begin_inset Formula $B$
+\end_inset
+
+ is a descendant of a taxon 
+\begin_inset Formula $A$
+\end_inset
+
+ on the named synthesis tree but not the taxonomy tree.
+ For example, in Figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:Handling-incertae-sedis"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+, taxon 
+\begin_inset Formula $C$
+\end_inset
+
+ is a descendant of taxon 
+\begin_inset Formula $A$
+\end_inset
+
+ in the synthetic tree (Fig.
+ 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:Handling-incertae-sedis"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+d), but not the taxonomy (Fig.
+ 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:Handling-incertae-sedis"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+b).
+ Thus, we could say that the synthetic tree places 
+\begin_inset Formula $C$
+\end_inset
+
+ within 
+\begin_inset Formula $A$
+\end_inset
+
+.
+ Furthermore, the synthetic tree additionally places 
+\begin_inset Formula $C$
+\end_inset
+
+ within 
+\begin_inset Formula $AB$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+A slightly more general case is shown in Figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:Broken-incertae-sedis"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+.
+ Here taxon 
+\begin_inset Formula $C1$
+\end_inset
+
+ is an descendant of 
+\begin_inset Formula $A$
+\end_inset
+
+ in the synthesis tree, but not the taxonomy.
+ Thus 
+\begin_inset Formula $C1$
+\end_inset
+
+ is placed within 
+\begin_inset Formula $A$
+\end_inset
+
+.
+ We note that the most recent common ancestor (MRCA) of 
+\begin_inset Formula $A$
+\end_inset
+
+ and 
+\begin_inset Formula $C1$
+\end_inset
+
+ in the taxonomy is the root node, and the path to the MRCA from 
+\begin_inset Formula $A$
+\end_inset
+
+ is 
+\begin_inset Formula $A\to AB\to root$
+\end_inset
+
+, while the path to the MRCA from 
+\begin_inset Formula $C1$
+\end_inset
+
+ is 
+\begin_inset Formula $C1\to C\to root$
+\end_inset
+
+.
+ Here the additional node 
+\begin_inset Formula $AB$
+\end_inset
+
+ on the path to the MRCA from 
+\begin_inset Formula $A$
+\end_inset
+
+ indicates that 
+\begin_inset Formula $C1$
+\end_inset
+
+ is placed within 
+\begin_inset Formula $AB$
+\end_inset
+
+ as well as 
+\begin_inset Formula $A$
+\end_inset
+
+.
+ In contrast, the additional node 
+\begin_inset Formula $C$
+\end_inset
+
+ on the path to the MRCA indicates that 
+\begin_inset Formula $C1$
+\end_inset
+
+ is a broken 
+\emph on
+incertae sedis
+\emph default
+ taxon.
+ Thus we may consider an algorithm that, for each taxon 
+\begin_inset Formula $B$
+\end_inset
+
+ on the synthesis tree, finds the closest ancestral taxon 
+\begin_inset Formula $A$
+\end_inset
+
+, and checks if 
+\begin_inset Formula $A$
+\end_inset
+
+ is an ancestor of 
+\begin_inset Formula $B$
+\end_inset
+
+ on the taxonomy.
+ If not, we compute the paths 
+\begin_inset Formula $A\to A_{1}\to\ldots\to MRCA(A,B)$
+\end_inset
+
+ and 
+\begin_inset Formula $B\to B_{1}\to\ldots\to MRCA(A,B)$
+\end_inset
+
+.
  
 \end_layout
 
-\begin_layout Itemize
-here we have I->B, which does not occur on the taxonomy tree.
- we also have B->A which does not occur on the taxonomy tree.
-\end_layout
-
-\begin_layout Itemize
-can we simply process the B->A first, yielding a revised taxonomy ((I?,A1,(B1,B2
-)B)A,C), and then process the I->B?
-\end_layout
-
-\begin_layout Itemize
-if this works, then we can use the rule that missing taxa between the placed
- taxon and the MRCA must be broken.
-\end_layout
-
-\begin_layout Itemize
-OK, check next week.
-\end_layout
-
 \begin_layout Standard
-After a synthesis tree is constructed, we attach taxon names to the synthesis
- tree for each non-conflicting taxon.
- These names attach at the MRCA of the include group.
- Then, for each taxon 
-\begin_inset Formula $A$
-\end_inset
-
- that is found on the synth tree, we associate with the first taxon 
-\begin_inset Formula $B$
-\end_inset
-
- found in a rootward walk on the synthesis tree.
- If 
-\begin_inset Formula $A$
-\end_inset
-
- is not a descendant of 
-\begin_inset Formula $B$
-\end_inset
-
- on the taxonomy, then we say that 
-\begin_inset Formula $A$
-\end_inset
-
- is 
-\emph on
-placed
-\emph default
- within 
-\begin_inset Formula $B$
-\end_inset
-
- by the synthesis tree.
- While this may occur if 
-\begin_inset Formula $A$
-\end_inset
-
- is 
+However, this assumes that 
 \emph on
 incertae sedis
 \emph default
-, more complex scenarios are possible.
- We note that if method does not handle 
-\emph on
-incertae sedis
-\emph default
- taxa, then this scenario could not occur because any taxa 
-\begin_inset Formula $B$
+ taxa are always placed within their siblings, or descendants of their siblings.
+ As such, it does not handle cases such as Figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:Placing-one-incertae"
+plural "false"
+caps "false"
+noprefix "false"
+
 \end_inset
 
- that 
-\begin_inset Formula $A$
+, in which 
+\begin_inset Formula $I$
 \end_inset
 
- is placed within would be considered incompatible with the synthesis tree
- and so their names would not be applied.
-\end_layout
-
-\begin_layout Standard
-In order to fully describe a placement of 
-\begin_inset Formula $A$
+ is first placed as sibling to 
+\begin_inset Formula $AI$
 \end_inset
 
- within 
-\begin_inset Formula $B$
+, and then 
+\begin_inset Formula $AI$
 \end_inset
 
- we consider the sequence of taxa encountered on a walk from 
-\begin_inset Formula $A$
-\end_inset
-
- or 
-\begin_inset Formula $B$
-\end_inset
-
- up to their MRCA 
-\begin_inset Formula $M$
-\end_inset
-
- on the taxonomy tree.
- Let us denote the sequence of taxa encountered from 
-\begin_inset Formula $A$
-\end_inset
-
- as 
-\begin_inset Formula $A_{1},\ldots,A_{n},M$
-\end_inset
-
- where 
-\begin_inset Formula $A_{1}=A$
+ is placed within 
+\begin_inset Formula $I$
 \end_inset
 
 .
- Let 
-\begin_inset Formula $B_{1},\ldots,B_{m},M$
+ Note that 
+\begin_inset Formula $I$
 \end_inset
 
- be the sequence of taxa encountered from 
-\begin_inset Formula $B$
+ is not a sibling of 
+\begin_inset Formula $AI$
 \end_inset
 
- where 
-\begin_inset Formula $B_{1}=B$
+ or a descendant of a sibling.
+ Furthermore, the MRCA of 
+\begin_inset Formula $I$
+\end_inset
+
+ and 
+\begin_inset Formula $AI$
+\end_inset
+
+ is the root, and the path from 
+\begin_inset Formula $AI$
+\end_inset
+
+ to the root includes 
+\begin_inset Formula $A$
+\end_inset
+
+, but 
+\begin_inset Formula $A$
+\end_inset
+
+ is not broken.
+ We suggest that this conundrum may be resolved by first processing the
+ placement of 
+\begin_inset Formula $I$
+\end_inset
+
+ within 
+\begin_inset Formula $A$
+\end_inset
+
+ by modifying the taxonomy to reflect this placement
+\begin_inset Foot
+status collapsed
+
+\begin_layout Plain Layout
+Does this actually work? Some placements break taxa.
+\end_layout
+
 \end_inset
 
 .
- Then 
-\begin_inset Formula $A_{n}$
+ When we consider the placement of 
+\begin_inset Formula $AI$
 \end_inset
 
- must be 
-\emph on
-incertae sedis
-\emph default
-, and 
-\begin_inset Formula $A_{2},\ldots,A_{n}$
+ within 
+\begin_inset Formula $I$
 \end_inset
 
- must be incompatible with the synthesis tree (i.e.
- broken taxa).
- We then have that 
+ on this modified taxonomy, the MRCA of 
+\begin_inset Formula $I$
+\end_inset
+
+ and 
+\begin_inset Formula $AI$
+\end_inset
+
+ is now 
 \begin_inset Formula $A$
 \end_inset
 
- is placed successively within 
-\begin_inset Formula $B_{m},B_{m-1},\ldots,B_{2},B_{1}$
-\end_inset
+ instead of the root, and the correct interpretation results.
+ We suggest that by walking the tree in a pre-order fashion and processing
+ shallowing placements first, the previous approach of finding the MRCA
+ and labelling intermediate nodes as either additional placements or broken
+ incertae sedis (or incertae_sedis_inherited) taxa holds.
+ Such an approach should also handle cases containing nested incertae sedis
+ taxa, as in Figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:Placing-one-incertae"
+plural "false"
+caps "false"
+noprefix "false"
 
-, and 
-\begin_inset Formula $m$
-\end_inset
-
- is the depth of the placement of 
-\begin_inset Formula $A$
 \end_inset
 
 .
@@ -2698,7 +2850,9 @@ incertae sedis
 \emph default
  taxa has the potential to resolve uncertain taxon placements using information
  from phylogenies.
- The propinquity pipeline has always been able to do this kind of resolution.
+ Since phylogenies are ranked higher than taxonomy, no special consider
+ for incertae sedis taxa is needed for phylogenies to place individual taxa
+ on the synthesis tree.
  However, without special consideration given to 
 \emph on
 naming
@@ -2716,6 +2870,9 @@ naming
 \end_inset
 
  in the taxonomy.
+ The clade grouping non-phylogeny taxa is lost.
+ The name is lost.
+ Placement is then not possible.
  In order to avoid a situation where input phylogenies conflict with a large
  number of taxa when 
 \emph on
@@ -2882,59 +3039,19 @@ Example B
 \begin_layout Standard
 However, incertae sedis taxa are not always tip nodes, but may themselves
  contain other taxa.
- In such cases, it is possible for input trees to conflict with the incertae
- sedis taxon itself.
- For example, consider the following example
-\end_layout
+ For example, consider Figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:Broken-incertae-sedis"
+plural "false"
+caps "false"
+noprefix "false"
 
-\begin_layout Itemize
-\begin_inset Formula $T_{1}=((w_{1},w_{2},z_{1}),y_{1})$
 \end_inset
 
-
-\end_layout
-
-\begin_layout Itemize
-\begin_inset Formula $T_{2}=((y_{1},y_{2},z_{2}),w_{1})$
-\end_inset
-
-
-\end_layout
-
-\begin_layout Itemize
-Taxonomy tree 
-\begin_inset Formula $((w_{1},w_{2})w,(y_{1},y_{2})y,(z_{1},z_{2},z_{3})z)$
-\end_inset
-
- with 
-\begin_inset Formula $z$
-\end_inset
-
- marked 
-\emph on
-incertae sedis
-\emph default
 .
 \end_layout
 
-\begin_deeper
-\begin_layout Itemize
-splits 
-\begin_inset Formula $w_{1}w_{2}|\bullet y_{1}y_{2}$
-\end_inset
-
-, 
-\begin_inset Formula $y_{1}y_{2}|\bullet w_{1}w_{2}$
-\end_inset
-
- and 
-\begin_inset Formula $z_{1}z_{2}|\bullet w_{1}w_{2}y_{1}y_{2}$
-\end_inset
-
-
-\end_layout
-
-\end_deeper
 \begin_layout Standard
 In this case, tree 
 \begin_inset Formula $T_{1}$
@@ -3034,26 +3151,6 @@ The situation here would be different if the monophyly of
 \emph on
 Note that the synthesis of all input trees before the taxonomy is unaffected
  by incertae sedis information.
-\end_layout
-
-\begin_layout Subsubsection
-Example C - Nested 
-\emph on
-incertae sedis
-\emph default
- taxa
-\end_layout
-
-\begin_layout Standard
-In addition to incertae sedis taxa containing other taxa, it is also possible
- for incertae sedis taxa to contain nested 
-\emph on
-incertae sedis
-\emph default
- taxa.
- 
-\series bold
-What issues might this raise?
 \end_layout
 
 \begin_layout Section
@@ -3324,11 +3421,7 @@ incertae sedis
 \begin_inset Float figure
 wide false
 sideways false
-status collapsed
-
-\begin_layout Plain Layout
-
-\end_layout
+status open
 
 \begin_layout Plain Layout
 \begin_inset space \hfill{}
@@ -3496,6 +3589,37 @@ taxon
 
 \end_layout
 
+\begin_layout Standard
+When the input phylogenies conflict on where members of an incertae sedis
+ clade should be placed, neither placement is rejected.
+ Instead, the taxon 
+\begin_inset Formula $C$
+\end_inset
+
+ is broken, the name 
+\begin_inset Formula $C$
+\end_inset
+
+ disappears, and 
+\begin_inset Formula $C3$
+\end_inset
+
+ floats to the top level.
+ Algorithmicly, alternatively placements of children of an incertae sedis
+ clade lead to contesting of all edges along with taxa might be placed,
+ creating a large, merged sub-problem, as in Figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:placement-example1"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+.
+\end_layout
+
 \begin_layout Subsection
 Case 2: A nested 
 \emph on
@@ -3537,7 +3661,7 @@ noprefix "false"
 \begin_inset Float figure
 wide false
 sideways false
-status open
+status collapsed
 
 \begin_layout Plain Layout
 \begin_inset Float figure
@@ -3876,6 +4000,12 @@ Synthesis tree
 \begin_inset Caption Standard
 
 \begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:Placing-one-incertae"
+
+\end_inset
+
 Placing one incertae sedis group within another.
  Here I is placed within A, and then AI is placed within A.
 \end_layout
@@ -4174,7 +4304,7 @@ incertae-sedis
 \begin_inset Float figure
 wide false
 sideways false
-status collapsed
+status open
 
 \begin_layout Plain Layout
 \begin_inset Float figure
@@ -4851,13 +4981,14 @@ incertae sedis
  taxa that have been placed within them.
  This would not require any updating to the conflict-analysis code in the
  annotation step.
-\end_layout
+\begin_inset Note Comment
+status collapsed
 
 \begin_layout Subsection
 Conflict service
 \end_layout
 
-\begin_layout Standard
+\begin_layout Plain Layout
 The current conflict service considers a group 
 \begin_inset Formula $A$
 \end_inset
@@ -4883,7 +5014,7 @@ The current conflict service considers a group
 Current conflict algorithm
 \end_layout
 
-\begin_layout Standard
+\begin_layout Plain Layout
 The current conflict algorithm is pretty fast, but it works by classifying
  tips into either (i) the include group or (ii) the exclude group.
  To avoid counting the exclude group for every split, we instead count the
@@ -5016,11 +5147,16 @@ if there are no conflicts, then this is a resolved_by.
 Modified conflict algorithm?
 \end_layout
 
-\begin_layout Standard
+\begin_layout Plain Layout
 This probably is outside the scope of the paper, but if we could come up
  with a modified conflict algorithm, that would be nice/useful, and probably
  novel.
  It would also probably be slower...
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Section
