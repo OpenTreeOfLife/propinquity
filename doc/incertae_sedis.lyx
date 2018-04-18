@@ -185,8 +185,8 @@ Supertree methods combine a collection of input trees with different taxon
 Here we describe a supertree method that takes a taxonomy as one of its
  inputs.
  The taxonomy has a number of features not found in the input phylogenies.
- While the input trees need not cover the entire taxon set, our method requires
- that the taxonomy to be comprehensive.
+ While the input trees need not cover the entire taxon set, our method uses
+ a comprehensive taxonomy.
  The taxonomy also has labels for internal nodes, whereas input phylogenies
  only have labels for leaf nodes.
  We refer to labels of taxonomy nodes as 
@@ -320,8 +320,8 @@ taxa allows us to include thousands of new taxa that were previously filtered
 incertae sedis
 \emph default
 .
- This makes substantial progress towards our goal of completely representation
- of taxa.
+ This makes substantial progress towards our goal of comprehensive inclusion
+ of known taxa into the Open Tree of Life summary tree.
 \end_layout
 
 \begin_layout Subsection
@@ -434,9 +434,8 @@ Problem decomposition
 Given the exemplified input trees and taxonomy, the supertree algorithm
  first divides the supertree problem into independent pieces, solves the
  problem on these pieces, and then glues the pieces back together.
- This is made possible by the assumption that any taxonomy edges that are
- not contested by any of the input trees can be assumed to occur in the
- supertree.
+ This decomposition means that any taxonomy edges that are not contested
+ by any of the input trees will occur in the supertree.
  We may then solve separately for what happens on each side of such an uncontest
 ed edge.
  When the uncontested edge is attached to the solution below the edge and
@@ -486,8 +485,16 @@ Supertrees for each subproblem are obtained by greedily constructing a set
 \end_inset
 
  if the resulting set remains jointly compatible.
- The BUILD algorithm is used both to check compatibility, and to construct
- a compatible tree from the final set 
+ The BUILD algorithm
+\begin_inset CommandInset citation
+LatexCommand citep
+key "AhoSSU1981"
+literal "false"
+
+\end_inset
+
+ is used both to check compatibility, and to construct a compatible tree
+ from the final set 
 \begin_inset Formula $C$
 \end_inset
 
@@ -720,6 +727,40 @@ incertae sedis
 
 \end_inset
 
+ In order to incorporate 
+\emph on
+incertae sedis 
+\emph default
+taxa into a supertree analyses, we must arrive at an operational definition
+ of the meaning of the 
+\emph on
+incertae sedis
+\emph default
+ label.
+ Ideally, the 
+\emph on
+incertae sedis
+\emph default
+ annotation some taxon 
+\emph on
+x
+\emph default
+ would be accompanied by a specific statement about which other taxa might
+ include 
+\emph on
+x
+\emph default
+.
+ Detailed readings of the character argumentation used by taxonomists could
+ provide this sort of specific information in many cases, but we lack such
+ information on the scale of the entire Open Tree of Life taxonomy.
+ Thus, here we pursue an approach of ascribing a meaning to the 
+\emph on
+incertae sedis
+\emph default
+ label which attempts to capture the core of the idea that it articulates,
+ but which can be applied automatically across the taxonomy without additional
+ information.
  We seek a semantics for supertrees with 
 \emph on
 incertae sedis 
@@ -728,11 +769,19 @@ taxa that satisfy the following properties:
 \end_layout
 
 \begin_layout Enumerate
-An incertae sedis node may intrude into its siblings and their descendants.
+An 
+\emph on
+incertae sedis
+\emph default
+ node may intrude into its siblings and their descendants.
 \end_layout
 
 \begin_layout Enumerate
-Two incertae sedis siblings may not be interdigitated.
+Two 
+\emph on
+incertae sedis
+\emph default
+ siblings may not be interdigitated.
 \end_layout
 
 \begin_layout Enumerate
@@ -744,7 +793,11 @@ Any placement
 \begin_inset Formula $T$
 \end_inset
 
- with incertae sedis taxa is also accessible from a tree 
+ with 
+\emph on
+incertae sedis
+\emph default
+ taxa is also accessible from a tree 
 \begin_inset Formula $T^{\prime}$
 \end_inset
 
@@ -757,6 +810,16 @@ Any placement
 incertae sedis
 \emph default
 .
+\begin_inset Note Comment
+status open
+
+\begin_layout Plain Layout
+MTH: I don't understand this
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Enumerate
