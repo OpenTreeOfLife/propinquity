@@ -176,9 +176,9 @@ Supertree methods combine a collection of input trees with different taxon
  information also.
  Taxonomies can provide a comprehensive coverage of known taxa that inferred
  phylogenies cannot.
- Additionally, taxonomies can provide taxonomic names, which are needed
- to align input phylogenies to each other, and to allow references to existing
- groups.
+ Additionally, taxonomies provide taxonomic names both for tip taxa, which
+ are needed to align input phylogenies to each other, and for higher taxa,
+ which allow references to existing groups.
 \end_layout
 
 \begin_layout Standard
@@ -230,6 +230,7 @@ uncertain seat
  The common interpretation of such taxa is that they may not be moved further
  towards the root, but may be moved into their sibling taxa.
  For example, a genus with a sibling that is a family may be annotated as
+ 
 \begin_inset Quotes eld
 \end_inset
 
@@ -247,7 +248,7 @@ incertae familia
 \emph on
 Incertae sedis
 \emph default
- taxa frequently occur when a specimen is identified up to a given taxonomic
+ taxa frequently occur when a specimen is identified down to a given taxonomic
  level, but no further.
  Extinct taxa are often 
 \emph on
@@ -269,51 +270,31 @@ literal "true"
 \end_inset
 
 .
- In practice, the method has been used with the Open Tree of Life taxonomy
- 
+ In practice, the method has been used with the Open Tree of Taxonomy 
 \begin_inset CommandInset citation
 LatexCommand citep
+after "OTT"
 key "rees2017automated"
 literal "false"
 
 \end_inset
 
-.We describe an extension to this supertree method so that we can resolve
+.
+ We describe an extension to this supertree method so that we can resolve
  taxonomic uncertainty by using published phylogenies to place 
 \emph on
 incertae sedis
 \emph default
  taxa.
- We describe an updated semantics for conflict between phylogeny edges and
- taxonomy edges and an updated semantics for assigning taxonomy names to
- nodes in the synthetic tree.
+ We describe an extended semantics for conflict between phylogeny edges
+ and taxonomy edges and an updated semantics for assigning taxonomy names
+ to nodes in the synthetic tree.
  
 \end_layout
 
 \begin_layout Standard
-Our approach to 
-\emph on
-incertae sedis
-\emph default
- taxa enables us to use published phylogenies to update the taxonomy by
- extending taxonomic groups to include 
-\emph on
-incertae sedis
-\emph default
- taxa placed within them.
- The ability to update the taxonomy is important, since the placement of
- 
-\emph on
-incertae sedis
-\emph default
- taxa creates artificial conflicts with a non-updated taxonomy.
- Thus, the ability to correctly assess compatibility with the taxonomy when
- the taxonomy contains 
-\emph on
-incertae sedis 
-\emph default
-taxa allows us to include thousands of new taxa that were previously filtered
- out to avoid conflict.
+The extended semantics allows us to include thousands of new taxa in our
+ supertree analysis that were previously filtered out to avoid conflict.
  It also enables us to include extinct taxa, since many of these taxa are
  
 \emph on
@@ -322,6 +303,16 @@ incertae sedis
 .
  This makes substantial progress towards our goal of comprehensive inclusion
  of known taxa into the Open Tree of Life summary tree.
+ These taxa were previously filtered out because the placement of incertae
+ sedis taxa within a group would be seen as evidence that a group is not
+ monophyletic if used with a method that is not aware of 
+\emph on
+incertae sedis
+\emph default
+ taxa.
+ This artificial conflict would cause the group of the containing group
+ from the synthesis tree.
+ 
 \end_layout
 
 \begin_layout Subsection
