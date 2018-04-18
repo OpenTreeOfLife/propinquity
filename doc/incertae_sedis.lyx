@@ -1218,13 +1218,11 @@ incertae sedis
 \end_inset
 
 This formula allows us to compute exclude sets via a pre-order traversal
- on the taxonomy tree.
- This recursion terminates if the exclude set for the root node is set to
- 
+ on the taxonomy tree with exclude set for the root node defined to be 
 \begin_inset Formula $\emptyset$
 \end_inset
 
- as a boundary condition.
+.
 \end_layout
 
 \begin_layout Standard
@@ -1688,7 +1686,7 @@ status open
 \begin_inset Float figure
 wide false
 sideways false
-status collapsed
+status open
 
 \begin_layout Plain Layout
 \begin_inset Graphics
@@ -1722,7 +1720,7 @@ Taxonomy tree
 \begin_inset Float figure
 wide false
 sideways false
-status collapsed
+status open
 
 \begin_layout Plain Layout
 \begin_inset Graphics
@@ -1860,7 +1858,7 @@ c).
 \begin_inset Float figure
 wide false
 sideways false
-status collapsed
+status open
 
 \begin_layout Plain Layout
 \begin_inset space \hfill{}
@@ -1870,7 +1868,7 @@ status collapsed
 \begin_inset Float figure
 wide false
 sideways false
-status collapsed
+status open
 
 \begin_layout Plain Layout
 \begin_inset Graphics
@@ -1904,7 +1902,7 @@ Taxonomy tree
 \begin_inset Float figure
 wide false
 sideways false
-status collapsed
+status open
 
 \begin_layout Plain Layout
 \begin_inset Graphics
@@ -1938,7 +1936,7 @@ Solution tree
 \begin_inset Float figure
 wide false
 sideways false
-status collapsed
+status open
 
 \begin_layout Plain Layout
 \begin_inset Graphics
@@ -2443,7 +2441,7 @@ After we have attached taxon names to the synthesis tree, we would like
 \emph on
 incertae sedis 
 \emph default
-taxa in some spot, possibly a new spot.
+taxa in a revised taxonomy.
  This would allow us to interpret the synthesis tree as saying that phylogenetic
  information has (for example) placed genus A within family B, or perhaps
  in a monotypic, unnamed family that contains only 
@@ -2713,7 +2711,7 @@ noprefix "false"
 
  by modifying the taxonomy to reflect this placement
 \begin_inset Foot
-status collapsed
+status open
 
 \begin_layout Plain Layout
 Does this actually work? Some placements break taxa.
@@ -2760,7 +2758,7 @@ noprefix "false"
 
 .
 \begin_inset Note Comment
-status collapsed
+status open
 
 \begin_layout Plain Layout
 One question is whether this approach is able to handle nested incertae
@@ -2985,7 +2983,7 @@ incertae sedis
 \end_layout
 
 \begin_layout Standard
-When the synthesis tree conflicts with a taxonomy node, we way that the
+When the synthesis tree conflicts with a taxonomy node, we say that the
  taxon 
 \begin_inset Formula $B$
 \end_inset
@@ -4451,7 +4449,7 @@ incertae-sedis
 \begin_inset Formula $B$
 \end_inset
 
- as contested, we are merging subproblems unnecessarily.
+ as contested, we are creating unnecessarily large subproblems.
  We could instead placed 
 \begin_inset Formula $X$
 \end_inset
