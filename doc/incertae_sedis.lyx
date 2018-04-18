@@ -337,18 +337,23 @@ literal "true"
 \begin_inset Formula $\phyloinputs=\left\{ T_{1},\ldots,T_{n}\right\} $
 \end_inset
 
- of rooted input phylogenies and a single rooted taxonomy tree 
+ of leaf-labeled rooted input phylogenies and a single rooted taxonomy tree
+ 
 \begin_inset Formula $\taxonomy$
 \end_inset
 
-.
- Each node in the taxonomy tree is associated with a taxon name in the set
- of taxon names 
+ that is ranked below all of the input trees.
+ Nodes in the taxonomy tree have a one-to-one correspondence with a set
+ of labels 
 \begin_inset Formula $\mathcal{N}$
 \end_inset
 
-, and each taxon name is corresponds to only one node of the taxonomy tree.
- We use 
+ that are called taxon names.
+ We decompose 
+\begin_inset Formula $\mathcal{N}$
+\end_inset
+
+ into the taxon names for leaf taxa 
 \emph on
 
 \begin_inset Formula $\mathcal{L}$
@@ -356,16 +361,12 @@ literal "true"
 
  
 \emph default
-to indicate taxon names corresponding to leaf nodes of the taxonomy tree.
- Correspondence between the input trees and the taxonomy is established
- by annotating leaf nodes of each input tree with taxon names.
- For purposes of conflict resolution, the taxonomy tree is ranked below
- all of the input trees.
- 
-\end_layout
+and higher taxa 
+\begin_inset Formula $\mathcal{H}$
+\end_inset
 
-\begin_layout Standard
-In this manuscript we extend this framework by adding a set 
+.
+ We then extend this framework by adding a set 
 \begin_inset Formula $\mathcal{U}\subseteq\mathcal{N}$
 \end_inset
 
@@ -391,19 +392,16 @@ property.
 incertae sedis 
 \emph default
 taxa.
-\end_layout
-
-\begin_layout Paragraph
-Exemplification
+ 
 \end_layout
 
 \begin_layout Standard
-While the taxonomy is comprehensive and contains all taxa, input phylogenies
- only have labels on their leaf nodes, and generally include a small fraction
- of the total number of taxa.
- Furthermore, taxa in input trees may correspond to higher taxa on the taxonomy
- tree, and multiple tips may be labeled with the same taxon name.
- 
+For the purposes of this chapter, we assume that leaf labels on input trees
+ are only taken from 
+\begin_inset Formula $\mathcal{L}$
+\end_inset
+
+, and that each label occurs at most once in each input tree; 
 \begin_inset CommandInset citation
 LatexCommand citet
 key "redelings2017supertree"
@@ -411,10 +409,15 @@ literal "true"
 
 \end_inset
 
- described a method called 'exemplification' that reduces this problem to
- a simpler form where all taxon names of input trees (i) correspond to leaf
- taxa and (ii) occur only once in an input tree.
- For the purposes of this paper, we therefore assume that this is the case.
+ describe a method called 
+\begin_inset Quotes eld
+\end_inset
+
+exemplification
+\begin_inset Quotes erd
+\end_inset
+
+ that ensures this is the case.
 \end_layout
 
 \begin_layout Paragraph
@@ -422,9 +425,9 @@ Problem decomposition
 \end_layout
 
 \begin_layout Standard
-Given the exemplified input trees and taxonomy, the supertree algorithm
- first divides the supertree problem into independent pieces, solves the
- problem on these pieces, and then glues the pieces back together.
+Given the input trees and taxonomy, the supertree algorithm first divides
+ the supertree problem into independent pieces, solves the problem on these
+ pieces, and then glues the pieces back together.
  This decomposition means that any taxonomy edges that are not contested
  by any of the input trees will occur in the supertree.
  We may then solve separately for what happens on each side of such an uncontest
