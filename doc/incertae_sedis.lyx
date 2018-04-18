@@ -1863,7 +1863,7 @@ c).
 \begin_inset Float figure
 wide false
 sideways false
-status open
+status collapsed
 
 \begin_layout Plain Layout
 \begin_inset space \hfill{}
@@ -2437,6 +2437,12 @@ In summary, a taxon with split
 \end_layout
 
 \begin_layout Subsection
+\begin_inset CommandInset label
+LatexCommand label
+name "subsec:Placement"
+
+\end_inset
+
 Placement
 \end_layout
 
@@ -2942,8 +2948,12 @@ The edge leading to clade
 \end_layout
 
 \begin_layout Enumerate
-Any taxonomy-only taxa are placed at the MRCA of the phylogenetically informed
- taxa, instead of at node 
+Any taxonomy-only children of 
+\begin_inset Formula $B$
+\end_inset
+
+ are placed at the MRCA of the phylogenetically informed taxa, instead of
+ at node 
 \begin_inset Formula $B$
 \end_inset
 
@@ -3229,7 +3239,7 @@ reference "fig:Broken-incertae-sedis"
 \begin_inset Float figure
 wide false
 sideways false
-status collapsed
+status open
 
 \begin_layout Plain Layout
 \begin_inset Float figure
@@ -3318,7 +3328,11 @@ status collapsed
 \begin_inset Caption Standard
 
 \begin_layout Plain Layout
-Synthesis Tree #1
+Synthesis Tree (no 
+\emph on
+incertae sedis
+\emph default
+)
 \end_layout
 
 \end_inset
@@ -3352,7 +3366,11 @@ status collapsed
 \begin_inset Caption Standard
 
 \begin_layout Plain Layout
-Synthesis Tree #1
+Synthesis Tree (
+\emph on
+incertae sedis
+\emph default
+ aware)
 \end_layout
 
 \end_inset
@@ -4059,16 +4077,10 @@ incertae sedis
 \begin_layout Standard
 
 \emph on
-This case makes placement more complicated.
- Use a sequence of ordered placements, preorder?
 \begin_inset Float figure
 wide false
 sideways false
 status open
-
-\begin_layout Plain Layout
-
-\end_layout
 
 \begin_layout Plain Layout
 \begin_inset Float figure
@@ -4179,10 +4191,6 @@ Placing one incertae sedis group within another.
 
 \end_inset
 
-
-\end_layout
-
-\begin_layout Plain Layout
 
 \end_layout
 
@@ -4329,8 +4337,28 @@ incertae sedis
 \end_layout
 
 \begin_layout Standard
-Additionally, it should also be possible to filter unplaced taxa in the
- tree viewer instead of in the synthesis pipeline.
+We should be able to to figure out which incertae sedis taxa are placed
+ (see section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "subsec:Placement"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+), and then mark the other ones incertae sedis in the 
+\emph on
+synthesis tree
+\emph default
+.
+ We could then filter out the taxa that 
+\emph on
+remain 
+\emph default
+incertae sedis (or incertae_sedis inherited) in the tree viewer instead
+ of the synthesis pipeline.
 \end_layout
 
 \begin_layout Subsection
