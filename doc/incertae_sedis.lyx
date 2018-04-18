@@ -1123,7 +1123,8 @@ The reduced exclude set
 \begin_inset Formula $n$
 \end_inset
 
- should therefore not contain the descendants of its siblings marked 
+ should therefore not contain the descendants of its siblings which are
+ marked 
 \emph on
 incertae 
 \emph default
@@ -1216,7 +1217,7 @@ incertae sedis
 
 \end_inset
 
-This formula allows us to compute exclude sets via a pre-order recursion
+This formula allows us to compute exclude sets via a pre-order traversal
  on the taxonomy tree.
  This recursion terminates if the exclude set for the root node is set to
  
