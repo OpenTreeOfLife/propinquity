@@ -1084,6 +1084,38 @@ In this case the root node stands for an edge that connects the root to
 
 \end_layout
 
+\begin_layout Standard
+For any two rooted splits 
+\begin_inset Formula $A=A_{1}|\bullet A_{2}$
+\end_inset
+
+ and 
+\begin_inset Formula $B=B_{1}|\bullet B_{2}$
+\end_inset
+
+ , we say that 
+\begin_inset Formula $A$
+\end_inset
+
+ 
+\emph on
+displays 
+\emph default
+
+\begin_inset Formula $B$
+\end_inset
+
+ if 
+\begin_inset Formula $B_{1}\subseteq A_{1}$
+\end_inset
+
+ and 
+\begin_inset Formula $B_{2}\subseteq A_{2}$
+\end_inset
+
+.
+\end_layout
+
 \begin_layout Subsubsection
 A semantics that disallows inter-digitating 
 \emph on
@@ -1492,8 +1524,17 @@ Naming
 \end_layout
 
 \begin_layout Standard
-After constructing a supertree, we still need to assign taxon names to the
- supertree nodes based on the taxonomy tree in the problem.
+After constructing a supertree, tip nodes already have names in 
+\emph on
+
+\begin_inset Formula $\mathcal{L}$
+\end_inset
+
+
+\emph default
+.
+ However, we still need to assign higher taxon names to internal supertree
+ nodes based on the taxonomy tree in the problem.
  Each taxon name 
 \begin_inset Formula $n$
 \end_inset
@@ -1599,7 +1640,7 @@ incertae sedis
 \begin_inset Formula $y$
 \end_inset
 
- imply the splits 
+ display the splits 
 \begin_inset Formula $A1\,A2\,|\bullet B\,C\,D$
 \end_inset
 
@@ -1607,7 +1648,7 @@ incertae sedis
 \begin_inset Formula $A1\,A2\,D|\bullet B\,C$
 \end_inset
 
- respectively, and both of these splits imply the split 
+ respectively, and both of these splits display the split 
 \begin_inset Formula $A1\,A2\,|\bullet B\,C$
 \end_inset
 
@@ -1621,36 +1662,6 @@ incertae sedis
 
  and 
 \begin_inset Formula $y$
-\end_inset
-
-
-\begin_inset Foot
-status collapsed
-
-\begin_layout Plain Layout
-Define 
-\begin_inset Quotes eld
-\end_inset
-
-implies
-\begin_inset Quotes erd
-\end_inset
-
-, as in the propinquity paper: 
-\begin_inset Formula $A_{1}|\bullet A_{2}\implies B_{1}|\bullet B_{2}$
-\end_inset
-
- means 
-\begin_inset Formula $B_{1}\subseteq A_{1}$
-\end_inset
-
- and 
-\begin_inset Formula $B_{2}\subseteq A_{2}$
-\end_inset
-
-.
-\end_layout
-
 \end_inset
 
 .
@@ -1670,7 +1681,7 @@ incertae sedis
 \begin_inset Float figure
 wide false
 sideways false
-status open
+status collapsed
 
 \begin_layout Plain Layout
 \begin_inset space \hfill{}
@@ -2438,11 +2449,7 @@ incertae sedis
 taxa in a revised taxonomy.
  This would allow us to interpret the synthesis tree as saying that phylogenetic
  information has (for example) placed genus A within family B, or perhaps
- in a monotypic, unnamed family that contains only 
-\begin_inset Formula $A$
-\end_inset
-
-.
+ outside of all named families.
  The simplest approach to placement involves noting whenever a taxon 
 \begin_inset Formula $B$
 \end_inset
