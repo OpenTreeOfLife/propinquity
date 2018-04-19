@@ -171,24 +171,103 @@ Introduction
 \begin_layout Standard
 Supertree methods combine a collection of input trees with different taxon
  sets into a single tree on the combined taxon set.
- While such methods are usually applied to leaf-labeled phylogenies that
- have been estimated from DNA sequence data, we seek to include taxonomic
- information also.
- Taxonomies can provide a comprehensive coverage of known taxa that inferred
- phylogenies cannot.
- Additionally, taxonomies provide taxonomic names both for tip taxa, which
- are needed to align input phylogenies to each other, and for higher taxa,
- which allow references to existing groups.
+ The methods are usually applied to leaf-labeled phylogenetic estimates.
+ Here we describe a supertree approach that overcomes issues associated
+ with using a taxonomy as one of the inputs to a supertree method.
 \end_layout
 
 \begin_layout Standard
-Here we describe a supertree method that takes a taxonomy as one of its
- inputs.
- The taxonomy has a number of features not found in the input phylogenies.
- While the input trees need not cover the entire taxon set, our method uses
- a comprehensive taxonomy.
- The taxonomy also has labels for internal nodes, whereas input phylogenies
- only have labels for leaf nodes.
+The Open Tree of Life project 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "HinchliffEtAl2015"
+literal "false"
+
+\end_inset
+
+ seeks to build a comprehensive supertree 
+\begin_inset CommandInset citation
+LatexCommand citep
+before "see"
+key "redelings2017supertree"
+literal "true"
+
+\end_inset
+
+ covering all of life.
+ The approach is to combine information in published phylogenies with a
+ comprehensive taxonomy that supplies taxon names.
+ The supertree method has been used with the Open Tree of Taxonomy 
+\begin_inset CommandInset citation
+LatexCommand citep
+before "OTT hereafter, see"
+key "rees2017automated"
+literal "false"
+
+\end_inset
+
+, but in principle is general.
+ The taxonomy is a crucial input for several reasons: it covers a wider
+ range of species, its list of names allows for alignment of different phylogene
+tic estimates to each other, and it provides names for clades.
+ Only a small proportion of known species have been included in a phylogenetic
+ analysis, thus a taxonomy is crucial for achieving comprehensive coverage
+ of known taxa.
+ Phylogenetic estimates collected from the published literature often use
+ different names for the same species.
+ Lists of synonyms in OTT (and other taxonomies) allow data curators to
+ 
+\begin_inset Quotes eld
+\end_inset
+
+align
+\begin_inset Quotes erd
+\end_inset
+
+ input phylogenies to the taxonomy 
+\begin_inset CommandInset citation
+LatexCommand citep
+after " for discussion of the curation process in the Open Tree of Life project"
+before "see"
+key "McTavishEtAt2015"
+literal "false"
+
+\end_inset
+
+.
+ This alignment is important for recognizing when two different estimates
+ refer to the same taxon.
+ Biologists are familiar with names for 
+\begin_inset Quotes eld
+\end_inset
+
+higher
+\begin_inset Quotes erd
+\end_inset
+
+ taxa (taxa above the species rank).
+ Thus, naming clades in the supertree makes the tree easier to navigate
+ and use.
+\end_layout
+
+\begin_layout Standard
+While some taxonomies may indicate hybrid taxa, the supertree approach described
+ here does not consider any hybridization.
+ Thus the taxonomic hierarchy can be converted to a tree.
+ While not all taxonomists believe that named taxa should correspond to
+ clades 
+\begin_inset CommandInset citation
+LatexCommand citep
+before "see, for example,"
+key "HorandlS2010"
+literal "false"
+
+\end_inset
+
+, the priniciples of phylogenetic classification are used by such a large
+ majority of practicing taxonomists, that we have chosen to treat the taxonomic
+ tree that mirrors the hierarchy of the taxonomy as an estimate of phylogenetic
+ relationships.
  We refer to labels of taxonomy nodes as 
 \begin_inset Quotes eld
 \end_inset
@@ -197,9 +276,9 @@ taxon names
 \begin_inset Quotes erd
 \end_inset
 
-, and require that taxon names and taxonomy nodes have a one-to-one corresponden
-ce.
- The taxonomy may also contain out-degree 1 nodes.
+, and assume that taxon names and taxonomy nodes have a one-to-one correspondenc
+e.
+ Note that the taxonomy may also contain out-degree 1 nodes.
  These nodes correspond to monotypic taxa which contain a single child of
  lower taxonomic rank.
 \end_layout
@@ -258,30 +337,9 @@ incertae sedis
 \end_layout
 
 \begin_layout Standard
-The Open Tree of Life project seeks to build a comprehensive supertree covering
- all of life.
- The approach is to combine information in published phylogenies with a
- comprehensive taxonomy that supplies taxon names 
-\begin_inset CommandInset citation
-LatexCommand citep
-key "redelings2017supertree"
-literal "true"
-
-\end_inset
-
-.
- In practice, the method has been used with the Open Tree of Taxonomy 
-\begin_inset CommandInset citation
-LatexCommand citep
-after "OTT"
-key "rees2017automated"
-literal "false"
-
-\end_inset
-
-.
- We describe an extension to this supertree method so that we can resolve
- taxonomic uncertainty by using published phylogenies to place 
+In practice, We describe an extension to this supertree method so that we
+ can resolve taxonomic uncertainty by using published phylogenies to place
+ 
 \emph on
 incertae sedis
 \emph default
