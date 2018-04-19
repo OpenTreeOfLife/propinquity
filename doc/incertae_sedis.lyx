@@ -459,14 +459,46 @@ literal "true"
 \begin_inset Formula $i$
 \end_inset
 
-.
+ and '
+\begin_inset Formula $+$
+\end_inset
+
+' denotes concatenation.
  Then the supertree would be produced in a greedy manner by iterating over
  the list 
 \begin_inset Formula $S$
 \end_inset
 
 , and adding each rooted split to a growing rooted supertree if that split
- is compatible with the tree.
+ is compatible with the supertree.
+ In other words, the set 
+\begin_inset Formula $C$
+\end_inset
+
+ is initialized to the empty set, and we then iteratively consider each
+ split in the list 
+\begin_inset Formula $\mathcal{S}$
+\end_inset
+
+ and insert it into 
+\begin_inset Formula $C$
+\end_inset
+
+ if the resulting set remains jointly compatible.
+ The BUILD algorithm
+\begin_inset CommandInset citation
+LatexCommand citep
+key "AhoSSU1981"
+literal "false"
+
+\end_inset
+
+ is used both to check compatibility, and to construct a compatible tree
+ from the final set 
+\begin_inset Formula $C$
+\end_inset
+
+.
 \end_layout
 
 \begin_layout Standard
@@ -720,63 +752,43 @@ is included in one tree in
 in the supertree algorithm would produce the same output.
 \end_layout
 
-\begin_layout Paragraph
-Splits-based synthesis method
+\begin_layout Standard
+In order to incorporate 
+\emph on
+incertae sedis 
+\emph default
+taxa into a supertree analyses, we must arrive at an operational definition
+ of the meaning of the 
+\emph on
+incertae sedis
+\emph default
+ label.
+ Ideally, the 
+\emph on
+incertae sedis
+\emph default
+ annotation some taxon 
+\emph on
+x
+\emph default
+ would be accompanied by a specific statement about which other taxa might
+ include 
+\emph on
+x
+\emph default
+.
+ Detailed readings of the character argumentation used by taxonomists could
+ provide this sort of specific information in many cases, but we lack such
+ information on the scale of the entire OTT.
+ Here we consider a few operational approaches for handling the 
+\emph on
+incertae sedis
+\emph default
+ label.
 \end_layout
 
-\begin_layout Standard
-Supertrees for each subproblem are obtained by greedily constructing a set
- of rooted splits 
-\begin_inset Formula $\mathcal{C}$
-\end_inset
-
- that are jointly consistent and correspond to branches of the input trees.
- We construct an ordered list of splits 
-\begin_inset Formula $S(T_{i})$
-\end_inset
-
- by walking the branches of each tree 
-\begin_inset Formula $T_{i}$
-\end_inset
-
- in post-order and appending the corresponding splits to the list.
- These lists are combined to form the list 
-\begin_inset Formula $\Sigma=S(T_{1})+S(T_{2})+\ldots+S(T_{n})+S(\mathbb{T})$
-\end_inset
-
-, where '
-\begin_inset Formula $+$
-\end_inset
-
-' denotes concatenation.
- The set 
-\begin_inset Formula $C$
-\end_inset
-
- is initialized to the empty set, and we then iteratively consider each
- split in the list 
-\begin_inset Formula $\Sigma$
-\end_inset
-
- and insert it into 
-\begin_inset Formula $C$
-\end_inset
-
- if the resulting set remains jointly compatible.
- The BUILD algorithm
-\begin_inset CommandInset citation
-LatexCommand citep
-key "AhoSSU1981"
-literal "false"
-
-\end_inset
-
- is used both to check compatibility, and to construct a compatible tree
- from the final set 
-\begin_inset Formula $C$
-\end_inset
-
-.
+\begin_layout Paragraph
+Splits-based synthesis method
 \end_layout
 
 \begin_layout Standard
@@ -991,34 +1003,11 @@ incertae sedis
 
 \end_inset
 
- In order to incorporate 
-\emph on
-incertae sedis 
-\emph default
-taxa into a supertree analyses, we must arrive at an operational definition
- of the meaning of the 
-\emph on
-incertae sedis
-\emph default
- label.
- Ideally, the 
-\emph on
-incertae sedis
-\emph default
- annotation some taxon 
-\emph on
-x
-\emph default
- would be accompanied by a specific statement about which other taxa might
- include 
-\emph on
-x
-\emph default
-.
- Detailed readings of the character argumentation used by taxonomists could
- provide this sort of specific information in many cases, but we lack such
- information on the scale of the entire Open Tree of Life taxonomy.
- Thus, here we pursue an approach of ascribing a meaning to the 
+ 
+\end_layout
+
+\begin_layout Standard
+Thus, here we pursue an approach of ascribing a meaning to the 
 \emph on
 incertae sedis
 \emph default
