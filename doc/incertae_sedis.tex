@@ -22,15 +22,15 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Textclass specific LaTeX commands.
 \newenvironment{lyxcode}
-	{\par\begin{list}{}{
-		\setlength{\rightmargin}{\leftmargin}
-		\setlength{\listparindent}{0pt}% needed for AMS classes
-		\raggedright
-		\setlength{\itemsep}{0pt}
-		\setlength{\parsep}{0pt}
-		\normalfont\ttfamily}%
-	 \item[]}
-	{\end{list}}
+    {\par\begin{list}{}{
+        \setlength{\rightmargin}{\leftmargin}
+        \setlength{\listparindent}{0pt}% needed for AMS classes
+        \raggedright
+        \setlength{\itemsep}{0pt}
+        \setlength{\parsep}{0pt}
+        \normalfont\ttfamily}%
+     \item[]}
+    {\end{list}}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%% User specified LaTeX commands.
 \sloppy
@@ -57,6 +57,7 @@
 
 \global\long\def\collections{\mathcal{C}}
 
+\newcommand{\note}[1]{}
 
 \title{\texttt{Taxonomic supertree construction with}\texttt{\emph{ Incertae
 sedis}}\texttt{ taxa}}
@@ -216,6 +217,26 @@ describe a method called ``exemplification'' that ensures this is
 the case. Thus pruning of the \emph{incertae sedis} taxa from the
 taxonomy was also accompanied by pruning those taxa from the input
 phylogenetic trees.
+
+\note{
+    1 Details & Methods
+
+1.1 Some examples in OTT This paragraph pulled from intro to otcetera/doc/handling-incertae-sedis.pdf
+
+The problem is becoming more acute because NCBI is putting a larger number of taxa into groups that are marked as “unclassified.” For example, when OTT 2.9 was created NCBI’s clasification of the bird family Sylvidae included a group five genera that were placed within “[http://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?mode=Undef&id=36270&lvl=3&lin=f&keep=1&srchmode=1&unlock||unclassified Sylviidae].” This includes the genus Regulus. Thus in OTT 2.9 Regulus (ott ID = 3599326) is placed inside the family Silvidae (OTT ID = 259942). The “unclassified Sylviidae” does not appear in OTT; instead Regulus is flagged as “unclassified,sibling higher” and all of the species within Regulus are flagged as “unclassified inherited.”
+
+The taxonomy (as of version 2.9) also contains 685 cases of taxa that are flagged as both “unclassified inherited” and “unclassified”based on grep unclass.*unclassified\_inherited taxonomy.tsv.
+
+We would like to stop suppressing (pruning) incertae sedis taxa, so that groups such as Regulus can appear appear in the synthetic tree.
+
+While we get Regulus back, we do not end up placing it in Sylviidae because Sylviidae is broken. It conflicts with about 20 different trees.
+
+1.2 Taxonomy details
+
+Flags. The Open Tree’s reference taxonomy is produced by a tool called smasher that notices hints that a taxon is incertae sedis and labels that taxon with one of five flagssee https://github.com/OpenTreeOfLife/reference-taxonomy/wiki/Taxon-flags.This document is not concerned with the flagging system per se, so “incertae sedis” will be used here to refer to all of the flags that denote taxa with uncertain placement.. While a taxonomist may intend to use incertae sedis to indicate a limited number of possible positions for a taxon to go in the taxonomy, we do not retain any such details.
+
+Container nodes. Some taxonomies have nodes with names like “Incertae sedis (Bacteria)”. Such nodes are called containers. They indicate that each child node is an incertae sedis child of the container node's parent. The OTT retains container nodes with the was_container flag, but seems to have already moved all of the container's children to the container's parent.
+}
 
 \section{\label{sec:Semantics-of-incertae}Semantics of \emph{incertae sedis}
 taxa}
