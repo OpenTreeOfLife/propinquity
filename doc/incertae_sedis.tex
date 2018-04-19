@@ -9,6 +9,8 @@
 \usepackage{amsmath}
 \usepackage{amssymb}
 \usepackage{graphicx}
+\usepackage{setspace}
+\linespread{1.5}
 \usepackage[authoryear]{natbib}
 
 \makeatletter
@@ -42,6 +44,7 @@
 \usepackage{babel}
 \usepackage{xspace}
 \usepackage{color}
+\usepackage[colorlinks,linkcolor=blue,citecolor=blue]{hyperref}
 \begin{document}
 
 \global\long\def\taxonomy{\mbox{\ensuremath{\mathbb{T}}}}
@@ -184,8 +187,7 @@ inputs, and $\mathcal{Y}(\taxonomy_{p})$, the list of taxonomic splits
 that conflict with at least one phylogenetic input split. Conceptually
 the approximate algorithm works by greedily adding all compatible
 splits in altered ranked list of splits:
-$\mathcal{S}^{\prime}=\mathcal{Z}(\taxonomy_{p})+S(T_{1})+S(T_{2})+\l
-dots+S(T_{n})+\mathcal{Y}(\taxonomy_{p})$.
+$\mathcal{S}^{\prime}=\mathcal{Z}(\taxonomy_{p})+S(T_{1})+S(T_{2})+\ldots+S(T_{n})+\mathcal{Y}(\taxonomy_{p})$.
 
 In practice, the decomposition allows the compatibility of splits to
 be performed on smaller, relabeled trees. This can be done much more
@@ -302,8 +304,8 @@ $\bullet$ indicates the root. The include set is the set of leaves
 that are descendants of the daughter node of the edge. The exclude set
 is the set of leaves that are not descendants of that node. If no taxa
 are \emph{incertae sedis}, then the exclude set for a node is just the
-total tip set minus the include set for the node: \begin{align*}
-\mathcal{E}(e) & =\mathcal{L}-\mathcal{I}(e). \end{align*}
+total tip set minus the include set for the node:
+$\mathcal{E}(e)  =\mathcal{L}-\mathcal{I}(e)$. 
 
 For a node $n$ on the tip-ward side of an edge $e$, we may also write
 $\mathcal{I}(n)$ for $\mathcal{I}(e)$, and $\mathcal{E}(n)$ for
@@ -390,20 +392,18 @@ automatically across the taxonomy without additional information.
 We seek a semantics for supertrees with \emph{incertae sedis }taxa
 that satisfy the following properties:
 \begin{enumerate}
-    \item An
-\emph{incertae sedis} node may intrude into its siblings and their
+    \item An \emph{incertae sedis} node may intrude into its siblings and their
 descendants.
-\item Two \emph{incertae sedis} siblings may not be
+    \item Two \emph{incertae sedis} siblings may not be
 interdigitated.
-\item Any placement $T\to T^{*}$ of a tree $T$ with
+    \item Any placement $T\to T^{*}$ of a tree $T$ with
 \emph{incertae sedis} taxa is also accessible from a tree $T^{\prime}$
 that is created from $T$ by taking a taxon, attaching it to an
-ancestor, and marking it \emph{incertae sedis}.
-\begin{comment} MTH:
-I don't understand this \end{comment} \item The semantics of an
+ancestor, and marking it \emph{incertae sedis}. \mthcomment{MTH: I don't understand this.}
+    \item The semantics of an
 \emph{incertae sedis} node does not depend on assigned ranks, but only
 on the tree.
-\item Semantics is based on deriving a split for each
+    \item Semantics is based on deriving a split for each
 branch of the tree.
 \end{enumerate}
 Here we focus on a split-based
@@ -446,8 +446,8 @@ does contain the root. Such a split may be written \[
 \mathcal{I}(e)|\bullet\mathcal{E}(e). \] where the $\bullet$ indicates
 the root. If no taxa are \emph{incertae sedis}, then the exclude set
 for a node is just the total tip set minus the include set for the
-node: \begin{align*} \mathcal{E}(n) & =\mathcal{L}-\mathcal{I}(n).
-\end{align*}
+node: $ \mathcal{E}(n) =\mathcal{L}-\mathcal{I}(n)$.
+
 
 For a node $n$ on the tip-ward side of an edge $e$, we may also write
 $\mathcal{I}(n)$ for $\mathcal{I}(e)$, and $\mathcal{E}(n)$ for
@@ -476,9 +476,15 @@ possible for \emph{incertae sedis} taxa to intrude into their
 a split-based semantics for \emph{incertae sedis}, but it avoids
 certain complications, as noted in the discussion.) We thus define
 $\mathcal{I}(m,n)$ to indicate descendants of $m$ that are excluded
-from $n$. Thus: \begin{align*} \mathcal{I}(m,n) & =\begin{cases}
-\emptyset & \text{if }n\text{ is \emph{incertae sedis}\,and }m\text{
-is not}\\ \mathcal{I}(m) & \text{otherwise} \end{cases} \end{align*}
+from $n$. Thus:
+\begin{align*}
+\mathcal{I}(m,n) & =
+    \begin{cases}
+        \emptyset & \text{if }n\text{ is \emph{incertae sedis}\,and }m\text{
+is not}\\
+        \mathcal{I}(m) & \text{otherwise}
+    \end{cases}
+\end{align*}
 
 Additionally, the exclude set $\mathcal{E}(n)$ should contain the
 children of all the ancestors of $n$, unless those children are
@@ -487,10 +493,11 @@ for each node $n$, we note that the excluded children of any ancestors
 will be in the exclude set of the parent of $n$ already. Therefore, we
 can write the exclude set of a node $n$ in terms of the exclude set of
 its parent:
-
-\begin{align} \mathcal{E}(n) &
-=\mathcal{E}(parent(n))\cup\left[\mathcal{I}(m,n)\big|m\in
-siblings(n)\right].\label{eq:exclude-set-formula-1} \end{align} This
+\begin{align}
+    \mathcal{E}(n) & = \mathcal{E}(parent(n))\cup\left[\mathcal{I}(m,n)\big|m\in
+           siblings(n)\right].\label{eq:exclude-set-formula-1}
+\end{align}
+This
 formula allows us to compute exclude sets via a pre-order traversal on
 the taxonomy tree with exclude set for the root node defined to be
 $\emptyset$.
@@ -517,10 +524,14 @@ In order to accomplish both of these goals, we define the descendants
 $\mathcal{I}^{\prime}(n)$ that are accessible without passing through
 an incertae sedis node.
 
-\begin{align*} \mathcal{I^{\prime}}(n) & =\begin{cases} \emptyset &
-\text{if }n\in\mathcal{U}\\ \{n\} & \text{if }n\text{ is a leaf}\\{}
-[\mathcal{I}^{\prime}(c)|c\in children(n)] & \text{otherwise.}
-\end{cases} \end{align*} We may then define the taxa excluded from $n$
+\begin{align*}
+    \mathcal{I^{\prime}}(n) & =
+    \begin{cases}
+        \emptyset & \text{if }n\in\mathcal{U}\\
+        \{n\} & \text{if }n\text{ is a leaf}\\
+        [\mathcal{I}^{\prime}(c)|c\in children(n)] & \text{otherwise.}
+\end{cases}
+\end{align*} We may then define the taxa excluded from $n$
 as:
 
 \begin{align*} 
@@ -1096,9 +1107,12 @@ solution node $x$, then these names must satisfy some tree structure
 on the taxonomy, such that $n_{1}<n_{2}$ if $n_{1}$ is a descendant of
 $n_{2}$ in the taxonomy. If it is possible to find a name $n_{max}$
 that is the unique maximal element of $N$, then it is permissible to
-\begin{enumerate} \item create a monotypic parent $p(x)$ of $x$, and
-assign $n_{max}$ to $p(x)$ \item continue handling name clashes at $x$
-with the set of possible names reduced to $N-n_{max}$. \end{enumerate}
+\begin{enumerate}
+    \item create a monotypic parent $p(x)$ of $x$, and
+assign $n_{max}$ to $p(x)$ 
+    \item continue handling name clashes at $x$
+with the set of possible names reduced to $N-n_{max}$. 
+\end{enumerate}
 However, its certainly possible that there might not be any such
 $N_{max}$, in which case we could just choose a name for $x$ from $N$
 (perhaps not an \emph{incertae sedis} name) and then record all the
@@ -1471,6 +1485,7 @@ sedis} genera that are asserted to be monophyletic, whereas another
 author might describe \emph{incertae sedis} genera that may be
 interdigitated.
 
-\bibliographystyle{upmplainnat} bibliography{otcetera}
+\bibliographystyle{upmplainnat}
+\bibliography{otcetera}
 
 \end{document}
