@@ -389,6 +389,12 @@ incertae sedis
  These semantics affect the interpretation of the phylogenetic statements
  being made by the input taxonomy and the rules for applying taxonomic names
  to the final supertree.
+ In addition to discussing how to interpret in the 
+\emph on
+incertae sedis
+\emph default
+ annotation, we describe the algorithmic changes to the supertree pipeline
+ that were required to adequately represent the taxonomic uncertainty.
  The approach described here allows us to include thousands of new taxa
  in our supertree analysis that were previously filtered out.
  It will also enable the Open Tree of Life project to include extinct taxa,
@@ -406,12 +412,8 @@ incertae sedis
 Background
 \end_layout
 
-\begin_layout Paragraph
-Terminology
-\end_layout
-
 \begin_layout Standard
-We briefly describe the supertree algorithm proposed in 
+The supertree algorithm of 
 \begin_inset CommandInset citation
 LatexCommand citet
 key "redelings2017supertree"
@@ -419,7 +421,7 @@ literal "true"
 
 \end_inset
 
-.This supertree algorithm takes as input a ranked list 
+ takes as input a ranked list 
 \begin_inset Formula $\phyloinputs=\left\{ T_{1},\ldots,T_{n}\right\} $
 \end_inset
 
@@ -452,7 +454,109 @@ and higher taxa
 \end_inset
 
 .
- We then extend this framework by adding a set 
+ As discussed in 
+\begin_inset CommandInset citation
+LatexCommand citet
+key "redelings2017supertree"
+literal "true"
+
+\end_inset
+
+, the preferred tree would display as many of the highly ranked input splits
+ as possible.
+ If computational barriers were not an issue, the method would act by first
+ producing a ranked list of rooted splits: 
+\begin_inset Formula $S=(T_{1,1},T_{1,2},\ldots,T_{1,S(T_{1})},T_{2,1},\ldots,T_{2,S(T_{2})},\ldots,T_{n,1},\ldots,T_{n,S(T_{n})},T_{n+1,1},\ldots,T_{n+1,S(T_{n})})$
+\end_inset
+
+ where 
+\begin_inset Formula $T_{i,j}$
+\end_inset
+
+ denotes the 
+\begin_inset Formula $j^{\mbox{{th}}}$
+\end_inset
+
+non-trivial rooted split in a post-order traversal of tree 
+\begin_inset Formula $i$
+\end_inset
+
+, 
+\begin_inset Formula $S(T_{i})$
+\end_inset
+
+ represents the number of non-trivial rooted splits in tree 
+\begin_inset Formula $T_{i}$
+\end_inset
+
+, and the taxonomy 
+\begin_inset Formula $\taxonomy$
+\end_inset
+
+ is treated as tree 
+\begin_inset Formula $T_{n+1}$
+\end_inset
+
+.
+ Then the supertree would be produced in a greedy manner by iterating over
+ the list 
+\begin_inset Formula $S$
+\end_inset
+
+, and adding each rooted split to a growing rooted supertree if that split
+ is compatible with the tree.
+ Because of the large number (over 2.6 million) of tips in the full tree,
+ the supertree method of 
+\begin_inset CommandInset citation
+LatexCommand citet
+key "redelings2017supertree"
+literal "true"
+
+\end_inset
+
+ uses an approximation approach that relies on decomposition of the full
+ problem into subproblems.
+ The decomposition partitioning the list of taxonomy splits, 
+\begin_inset Formula $S=(T,\ldots,T_{n+1,S(T_{n})})$
+\end_inset
+
+ into two lists: 
+\begin_inset Formula $\mathcal{Z},$
+\end_inset
+
+the list of splits from the taxonomy tree which are compatible with every
+ rooted split in the phylogenetic inputs, and 
+\begin_inset Formula $\mathcal{Y}$
+\end_inset
+
+, the list of taxonomic splits that conflict with at least one phylogenetic
+ input split.
+ Conceptually the approximate algorithm works by greedily adding all compatible
+ splits in altered ranked list of splits: 
+\begin_inset Formula $S^{\prime}=\mathcal{Z}+(T_{1,1},T_{1,2},\ldots,T_{1,S(T_{1})},T_{2,1},\ldots,T_{2,S(T_{2})},\ldots,T_{n,1},\ldots,T_{n,S(T_{n})})+\mathcal{Y}$
+\end_inset
+
+.
+ In practice, the decomposition allows the compatibility of splits to be
+ performed on smaller, relabeled trees.
+ This can be done much more efficiently than if compatibility was checked
+ using the BUILD algorithm of 
+\begin_inset CommandInset citation
+LatexCommand citet
+key "AhoSSU1981"
+literal "false"
+
+\end_inset
+
+ on the full leaf set.
+\end_layout
+
+\begin_layout Standard
+
+\end_layout
+
+\begin_layout Standard
+We then extend this framework by adding a set 
 \begin_inset Formula $\mathcal{U}\subseteq\mathcal{N}$
 \end_inset
 
