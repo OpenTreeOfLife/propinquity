@@ -750,6 +750,134 @@ is included in one tree in
 \end_inset
 
 in the supertree algorithm would produce the same output.
+ 
+\end_layout
+
+\begin_layout Standard
+We define rooted splits for each edge by noting that removing the edge would
+ produce two trees.
+ The leaf label sets of these trees the partition the full leaf set 
+\begin_inset Formula $\mathcal{L}$
+\end_inset
+
+ into two groups.
+ The include set 
+\begin_inset Formula $\mathcal{I}(e)$
+\end_inset
+
+ which does not contain the root, and the exclude set 
+\begin_inset Formula $\mathcal{E}(e)$
+\end_inset
+
+ which does contain the root.
+ Such a split may be written
+\begin_inset Formula 
+\[
+\mathcal{I}(e)|\bullet\mathcal{E}(e).
+\]
+
+\end_inset
+
+where the 
+\begin_inset Formula $\bullet$
+\end_inset
+
+ indicates the root.
+ The include set is the set of leaves that are descendants of the daughter
+ node of the edge.
+ The exclude set is the set of leaves that are not descendants of that node.
+ If no taxa are 
+\emph on
+incertae sedis
+\emph default
+, then the exclude set for a node is just the total tip set minus the include
+ set for the node:
+\begin_inset Formula 
+\begin{align*}
+\mathcal{E}(e) & =\mathcal{L}-\mathcal{I}(e).
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+For a node 
+\begin_inset Formula $n$
+\end_inset
+
+ on the tip-ward side of an edge 
+\begin_inset Formula $e$
+\end_inset
+
+, we may also write 
+\begin_inset Formula $\mathcal{I}(n)$
+\end_inset
+
+ for 
+\begin_inset Formula $\mathcal{I}(e)$
+\end_inset
+
+, and 
+\begin_inset Formula $\mathcal{E}(n)$
+\end_inset
+
+ for 
+\begin_inset Formula $\mathcal{E}(e)$
+\end_inset
+
+.
+ For any two rooted splits 
+\begin_inset Formula $A=A_{1}|\bullet A_{2}$
+\end_inset
+
+ and 
+\begin_inset Formula $B=B_{1}|\bullet B_{2}$
+\end_inset
+
+ , we say that 
+\begin_inset Formula $A$
+\end_inset
+
+ 
+\emph on
+displays 
+\emph default
+
+\begin_inset Formula $B$
+\end_inset
+
+ if 
+\begin_inset Formula $B_{1}\subseteq A_{1}$
+\end_inset
+
+ and 
+\begin_inset Formula $B_{2}\subseteq A_{2}$
+\end_inset
+
+.
+ 
+\end_layout
+
+\begin_layout Standard
+Note that when a taxon rooted at node 
+\begin_inset Formula $n$
+\end_inset
+
+ is not marked as 
+\emph on
+incertae sedis
+\emph default
+, then the leaf labels that are descendants of 
+\begin_inset Formula $n$
+\end_inset
+
+ will be in the include set for 
+\begin_inset Formula $n$
+\end_inset
+
+ and all its ancestors and will be in the exclude set for all other nodes/edges.
 \end_layout
 
 \begin_layout Paragraph
@@ -801,6 +929,36 @@ x
 incertae sedis
 \emph default
  label.
+\end_layout
+
+\begin_layout Standard
+In terms of rooted split interpretation, an 
+\emph on
+incertae sedis
+\emph default
+ taxon differs from a normal taxon because its leaves should not automatically
+ be mentioned in the exclude set of all of the edges that does not descend
+ from.
+ If a taxon rooted at node 
+\begin_inset Formula $n$
+\end_inset
+
+ is marked as 
+\emph on
+incertae sedis
+\emph default
+, then the leaf labels that are descendants of 
+\begin_inset Formula $n$
+\end_inset
+
+ will still be in the include set for 
+\begin_inset Formula $n$
+\end_inset
+
+ and all its ancestors, but these labels will not necessarily be the exclude
+ set for all other nodes/edges.
+ They may simply be omitted in some rooted split representations, resulting
+ in partial splits.
 \end_layout
 
 \begin_layout Paragraph
