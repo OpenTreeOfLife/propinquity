@@ -752,6 +752,14 @@ is included in one tree in
 in the supertree algorithm would produce the same output.
 \end_layout
 
+\begin_layout Paragraph
+Information content of the 
+\emph on
+incertae sedis 
+\emph default
+annotation
+\end_layout
+
 \begin_layout Standard
 In order to incorporate 
 \emph on
@@ -763,6 +771,14 @@ taxa into a supertree analyses, we must arrive at an operational definition
 incertae sedis
 \emph default
  label.
+ The core meaning of the phrase is that the annotated taxon may actually
+ be a member of one of the taxa that appear as siblings to it in the heirarchica
+l representation of the taxonomy.
+ In the most expansive interpretation, the author of the taxonomy is stating
+ that the incertae sedis taxon could be placed anywhere inside one of the
+ sibling taxa or their descendants.
+ However, frequently only a subset of the possible placement points would
+ be viewed as plausible.
  Ideally, the 
 \emph on
 incertae sedis
@@ -785,6 +801,46 @@ x
 incertae sedis
 \emph default
  label.
+\end_layout
+
+\begin_layout Paragraph
+Naive interpretation: ignoring the annotation
+\end_layout
+
+\begin_layout Standard
+The most straightforward approach for increasing the taxonomic completeness
+ of the supertree is simply to no longer prune taxa from 
+\begin_inset Formula $\taxonomy$
+\end_inset
+
+ because they are flagged as 
+\emph on
+incertae sedis
+\emph default
+, and then run the rest of the pipeline of 
+\begin_inset CommandInset citation
+LatexCommand citet
+key "redelings2017supertree"
+literal "true"
+
+\end_inset
+
+ unaltered.
+ However this approach results in a less resolved tree because taxonomic
+ vagueness (in the form of the 
+\emph on
+incertae sedis
+\emph default
+ annotation) is interpreted as an unwarranted statement that the 
+\emph on
+incertae sedis
+\emph default
+ taxa are disallowed from being members of their sibling taxa.
+\end_layout
+
+\begin_layout Standard
+DO WE HAVE SOME NUMBERS ON THIS (PRESUMABLY FROM JUST RUNNING THE ONLY PROPINQUI
+TY WITH A DIFFERENT SET OF PRUNE FLAGS)?
 \end_layout
 
 \begin_layout Paragraph
