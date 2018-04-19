@@ -903,8 +903,12 @@ incertae sedis
  be a member of one of the taxa that appear as siblings to it in the heirarchica
 l representation of the taxonomy.
  In the most expansive interpretation, the author of the taxonomy is stating
- that the incertae sedis taxon could be placed anywhere inside one of the
- sibling taxa or their descendants.
+ that the 
+\emph on
+incertae sedis
+\emph default
+ taxon could be placed anywhere inside one of the sibling taxa or their
+ descendants.
  However, frequently only a subset of the possible placement points would
  be viewed as plausible.
  Ideally, the 
@@ -999,6 +1003,53 @@ incertae sedis
 \begin_layout Standard
 DO WE HAVE SOME NUMBERS ON THIS (PRESUMABLY FROM JUST RUNNING THE ONLY PROPINQUI
 TY WITH A DIFFERENT SET OF PRUNE FLAGS)?
+\end_layout
+
+\begin_layout Paragraph
+Rich taxon-specific attachment points
+\end_layout
+
+\begin_layout Standard
+As mentioned above, the incertae sedis may mean that a taxon is unplaced,
+ but only a few placements within the taxonomy are possible.
+ For example, a genus may not be characterized as incertae sedis at the
+ level of the subfamily.
+ Thus, it could be placed inside any of the hypothesized sub-families, or
+ within its own subfamily, but it would be unexpected for it to be placed
+ inside one of the other genera within a family.
+ 
+\end_layout
+
+\begin_layout Standard
+In principle this information is easy to incorporate.
+ If 
+\begin_inset Formula $\mathcal{P}$
+\end_inset
+
+is the set of taxa that are potential ancestors for incertae sedis taxon
+ 
+\begin_inset Formula $x$
+\end_inset
+
+, then 
+\begin_inset Formula $\mathcal{L}(x)$
+\end_inset
+
+ will occur in neither the include nor the exclude set of any taxon in 
+\begin_inset Formula $\mathcal{P}$
+\end_inset
+
+.
+ Unfortunately, utilizing taxon-specific interpretations of the incertae
+ sedis flag relies on character argumentation (which is lacking in OTT)
+ or rank-based information (which is frequently untrustworthy in OTT).
+ Thus, here we pursue an approach of ascribing a meaning to the 
+\emph on
+incertae sedis
+\emph default
+ label which attempts to capture the core of the idea that it articulates,
+ but which can be applied automatically across the taxonomy without additional
+ information.
 \end_layout
 
 \begin_layout Paragraph
@@ -1221,14 +1272,7 @@ incertae sedis
 \end_layout
 
 \begin_layout Standard
-Thus, here we pursue an approach of ascribing a meaning to the 
-\emph on
-incertae sedis
-\emph default
- label which attempts to capture the core of the idea that it articulates,
- but which can be applied automatically across the taxonomy without additional
- information.
- We seek a semantics for supertrees with 
+We seek a semantics for supertrees with 
 \emph on
 incertae sedis 
 \emph default
