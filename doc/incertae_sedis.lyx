@@ -284,7 +284,18 @@ e.
 \end_layout
 
 \begin_layout Standard
-In practice, taxonomies may also contain nodes with uncertain placement.
+The supertree method described by 
+\begin_inset CommandInset citation
+LatexCommand citet
+key "redelings2017supertree"
+literal "true"
+
+\end_inset
+
+ is able to use a set of phylogentic estimates and taxonomy to produce a
+ supertree with clades names according to the taxonomy.
+ However, the method was not able to accommodate the fact that taxonomies
+ frequently contain nodes with uncertain placement.
  These nodes are often labelled 
 \begin_inset Quotes eld
 \end_inset
@@ -334,42 +345,60 @@ Incertae sedis
 incertae sedis
 \emph default
 .
+ OTT is constructed from several source taxonomies, and these sources include
+ various ways of indicating that the position of a taxon within the hierarchy
+ is uncertain.
+ OTT uses a series of 
+\begin_inset Quotes eld
+\end_inset
+
+flags
+\begin_inset Quotes erd
+\end_inset
+
+ to annotate these taxa.
+ The supertree of by 
+\begin_inset CommandInset citation
+LatexCommand citet
+key "redelings2017supertree"
+literal "true"
+
+\end_inset
+
+ simply pruned these taxa from the taxonomy and input trees.
+ Thus, the final supertree lacked taxa which were 
+\emph on
+incertae sedis
+\emph default
+.
 \end_layout
 
 \begin_layout Standard
-In practice, We describe an extension to this supertree method so that we
- can resolve taxonomic uncertainty by using published phylogenies to place
- 
+Here describe a supertree method so that we can resolve taxonomic uncertainty
+ by using published phylogenies to place 
 \emph on
 incertae sedis
 \emph default
  taxa.
- We describe an extended semantics for conflict between phylogeny edges
- and taxonomy edges and an updated semantics for assigning taxonomy names
- to nodes in the synthetic tree.
- 
-\end_layout
-
-\begin_layout Standard
-The extended semantics allows us to include thousands of new taxa in our
- supertree analysis that were previously filtered out to avoid conflict.
- It also enables us to include extinct taxa, since many of these taxa are
- 
+ Developing this method required deciding on a set operational semantics
+ to be used when interpreting the 
+\emph on
+incertae sedis
+\emph default
+ annotation.
+ These semantics affect the interpretation of the phylogenetic statements
+ being made by the input taxonomy and the rules for applying taxonomic names
+ to the final supertree.
+ The approach described here allows us to include thousands of new taxa
+ in our supertree analysis that were previously filtered out.
+ It will also enable the Open Tree of Life project to include extinct taxa,
+ since many of these taxa are 
 \emph on
 incertae sedis
 \emph default
 .
  This makes substantial progress towards our goal of comprehensive inclusion
  of known taxa into the Open Tree of Life summary tree.
- These taxa were previously filtered out because the placement of incertae
- sedis taxa within a group would be seen as evidence that a group is not
- monophyletic if used with a method that is not aware of 
-\emph on
-incertae sedis
-\emph default
- taxa.
- This artificial conflict would cause the group of the containing group
- from the synthesis tree.
  
 \end_layout
 
@@ -390,8 +419,7 @@ literal "true"
 
 \end_inset
 
-.
- This supertree algorithm takes as input a ranked list 
+.This supertree algorithm takes as input a ranked list 
 \begin_inset Formula $\phyloinputs=\left\{ T_{1},\ldots,T_{n}\right\} $
 \end_inset
 
