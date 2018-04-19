@@ -639,12 +639,10 @@ incertae sedis
 \end_layout
 
 \begin_layout Standard
-Note that we assume that leaf labels on input phylogenetic trees are only
- taken from 
-\begin_inset Formula $\mathcal{L}$
-\end_inset
-
-, and that each label occurs at most once in each input tree; 
+Throughout we assume that leaf labels on input phylogenetic trees are only
+ taken from the leaf set of the taxonomic tree that is being used and that
+ each label occurs at most once in each input tree.
+ 
 \begin_inset CommandInset citation
 LatexCommand citet
 key "redelings2017supertree"
@@ -661,6 +659,12 @@ exemplification
 \end_inset
 
  that ensures this is the case.
+ Thus pruning of the 
+\emph on
+incertae sedis
+\emph default
+ taxa from the taxonomy was also accompanied by pruning those taxa from
+ the input phylogenetic trees.
 \end_layout
 
 \begin_layout Section
@@ -675,6 +679,45 @@ Semantics of
 incertae sedis
 \emph default
  taxa
+\end_layout
+
+\begin_layout Paragraph
+Equivalence of a taxonomy tree and a list of rooted splits
+\end_layout
+
+\begin_layout Standard
+Note that, for the purposes of the supertree method, all of the information
+ from the taxonomic tree is contained in the set of rooted splits.
+ Thus, one could imagine replacing that taxonomy, 
+\begin_inset Formula $\taxonomy_{p}$
+\end_inset
+
+, with a set of trees 
+\begin_inset Formula $\mathcal{R}(\taxonomy_{p})$
+\end_inset
+
+ each of which has a single internal edge such that each edge in 
+\begin_inset Formula $\taxonomy_{p}$
+\end_inset
+
+is included in one tree in 
+\begin_inset Formula $\mathcal{R}(\taxonomy_{p})$
+\end_inset
+
+.
+ If the order of trees is set to be (with some abuse of notation): 
+\begin_inset Formula $\mathcal{R}(\taxonomy_{p})=\mathcal{Z}(\taxonomy_{p})+\mathcal{Y}(\taxonomy_{p})$
+\end_inset
+
+, then using 
+\begin_inset Formula $\mathcal{R}(\taxonomy_{p})$
+\end_inset
+
+ in place of 
+\begin_inset Formula $\taxonomy_{p}$
+\end_inset
+
+in the supertree algorithm would produce the same output.
 \end_layout
 
 \begin_layout Paragraph
