@@ -412,6 +412,10 @@ incertae sedis
 Background
 \end_layout
 
+\begin_layout Paragraph
+Previous algorithm
+\end_layout
+
 \begin_layout Standard
 The supertree algorithm of 
 \begin_inset CommandInset citation
@@ -427,17 +431,133 @@ literal "true"
 
  of leaf-labeled rooted input phylogenies and a single rooted taxonomy tree
  
-\begin_inset Formula $\taxonomy$
+\begin_inset Formula $\taxonomy_{p}$
 \end_inset
 
  that is ranked below all of the input trees.
- Nodes in the taxonomy tree have a one-to-one correspondence with a set
- of labels 
+ As discussed in 
+\begin_inset CommandInset citation
+LatexCommand citet
+key "redelings2017supertree"
+literal "true"
+
+\end_inset
+
+, the preferred tree would display as many of the highly ranked input splits
+ as possible.
+ If computational barriers were not an issue, the method would act by first
+ producing a ranked list of rooted splits: 
+\begin_inset Formula $\mathcal{S}=S(T_{1})+S(T_{2})+\ldots+S(T_{n})+S(\mathbb{T})$
+\end_inset
+
+ where 
+\begin_inset Formula $S(T_{i})$
+\end_inset
+
+ denotes a list of non-trivial rooted splits created from a post-order traversal
+ of tree 
+\begin_inset Formula $i$
+\end_inset
+
+.
+ Then the supertree would be produced in a greedy manner by iterating over
+ the list 
+\begin_inset Formula $S$
+\end_inset
+
+, and adding each rooted split to a growing rooted supertree if that split
+ is compatible with the tree.
+\end_layout
+
+\begin_layout Standard
+Because of the large number (over 2.6 million) of tips in the full tree,
+ the supertree method of 
+\begin_inset CommandInset citation
+LatexCommand citet
+key "redelings2017supertree"
+literal "true"
+
+\end_inset
+
+ uses an approximation approach that relies on decomposition of the full
+ problem into subproblems.
+ The decomposition partitioning the list of taxonomy splits 
+\begin_inset Formula $S(\taxonomy_{p})$
+\end_inset
+
+ into two lists: 
+\begin_inset Formula $\mathcal{Z}(\taxonomy_{p}),$
+\end_inset
+
+the list of splits from the taxonomy tree which are compatible with every
+ rooted split in the phylogenetic inputs, and 
+\begin_inset Formula $\mathcal{Y}(\taxonomy_{p})$
+\end_inset
+
+, the list of taxonomic splits that conflict with at least one phylogenetic
+ input split.
+ Conceptually the approximate algorithm works by greedily adding all compatible
+ splits in altered ranked list of splits: 
+\begin_inset Formula $\mathcal{S}^{\prime}=\mathcal{Z}(\taxonomy_{p})+S(T_{1})+S(T_{2})+\ldots+S(T_{n})+\mathcal{Y}(\taxonomy_{p})$
+\end_inset
+
+.
+ 
+\end_layout
+
+\begin_layout Standard
+In practice, the decomposition allows the compatibility of splits to be
+ performed on smaller, relabeled trees.
+ This can be done much more efficiently than if compatibility was checked
+ using the BUILD algorithm of 
+\begin_inset CommandInset citation
+LatexCommand citet
+key "AhoSSU1981"
+literal "false"
+
+\end_inset
+
+ on the full leaf set.
+ Thus, the supertree algorithm first divides the supertree problem into
+ independent pieces by bisecting trees at the uncontested taxa which correspond
+ to 
+\begin_inset Formula $Z$
+\end_inset
+
+, then solves the supertree problem on these pieces, and finally glues the
+ pieces back together to produce the full tree.
+\end_layout
+
+\begin_layout Standard
+The taxonomy tree, 
+\begin_inset Formula $\taxonomy_{p}$
+\end_inset
+
+, is derived from OTT.
+ As mentioned above, OTT not only contains a taxonomic hierarchy, but also
+ contains taxonomic labels and annotations (referred to as 
+\begin_inset Quotes eld
+\end_inset
+
+flags
+\begin_inset Quotes erd
+\end_inset
+
+) on the taxa to carry extra information.
+ The entire hiearchy encoded by OTT is a complete taxonomic tree, 
+\begin_inset Formula $\taxonomy^{\ast}.$
+\end_inset
+
+ Nodes in 
+\begin_inset Formula $\taxonomy^{\ast}$
+\end_inset
+
+ have a one-to-one correspondence with a set of labels 
 \begin_inset Formula $\mathcal{N}$
 \end_inset
 
  that are called taxon names.
- We decompose 
+ We will decompose 
 \begin_inset Formula $\mathcal{N}$
 \end_inset
 
@@ -454,119 +574,30 @@ and higher taxa
 \end_inset
 
 .
- As discussed in 
-\begin_inset CommandInset citation
-LatexCommand citet
-key "redelings2017supertree"
-literal "true"
-
+ We will use 
+\begin_inset Formula $\mathcal{U}$
 \end_inset
 
-, the preferred tree would display as many of the highly ranked input splits
- as possible.
- If computational barriers were not an issue, the method would act by first
- producing a ranked list of rooted splits: 
-\begin_inset Formula $S=(T_{1,1},T_{1,2},\ldots,T_{1,S(T_{1})},T_{2,1},\ldots,T_{2,S(T_{2})},\ldots,T_{n,1},\ldots,T_{n,S(T_{n})},T_{n+1,1},\ldots,T_{n+1,S(T_{n})})$
-\end_inset
-
- where 
-\begin_inset Formula $T_{i,j}$
-\end_inset
-
- denotes the 
-\begin_inset Formula $j^{\mbox{{th}}}$
-\end_inset
-
-non-trivial rooted split in a post-order traversal of tree 
-\begin_inset Formula $i$
-\end_inset
-
-, 
-\begin_inset Formula $S(T_{i})$
-\end_inset
-
- represents the number of non-trivial rooted splits in tree 
-\begin_inset Formula $T_{i}$
-\end_inset
-
-, and the taxonomy 
-\begin_inset Formula $\taxonomy$
-\end_inset
-
- is treated as tree 
-\begin_inset Formula $T_{n+1}$
-\end_inset
-
-.
- Then the supertree would be produced in a greedy manner by iterating over
- the list 
-\begin_inset Formula $S$
-\end_inset
-
-, and adding each rooted split to a growing rooted supertree if that split
- is compatible with the tree.
- Because of the large number (over 2.6 million) of tips in the full tree,
- the supertree method of 
-\begin_inset CommandInset citation
-LatexCommand citet
-key "redelings2017supertree"
-literal "true"
-
-\end_inset
-
- uses an approximation approach that relies on decomposition of the full
- problem into subproblems.
- The decomposition partitioning the list of taxonomy splits, 
-\begin_inset Formula $S=(T,\ldots,T_{n+1,S(T_{n})})$
-\end_inset
-
- into two lists: 
-\begin_inset Formula $\mathcal{Z},$
-\end_inset
-
-the list of splits from the taxonomy tree which are compatible with every
- rooted split in the phylogenetic inputs, and 
-\begin_inset Formula $\mathcal{Y}$
-\end_inset
-
-, the list of taxonomic splits that conflict with at least one phylogenetic
- input split.
- Conceptually the approximate algorithm works by greedily adding all compatible
- splits in altered ranked list of splits: 
-\begin_inset Formula $S^{\prime}=\mathcal{Z}+(T_{1,1},T_{1,2},\ldots,T_{1,S(T_{1})},T_{2,1},\ldots,T_{2,S(T_{2})},\ldots,T_{n,1},\ldots,T_{n,S(T_{n})})+\mathcal{Y}$
-\end_inset
-
-.
- In practice, the decomposition allows the compatibility of splits to be
- performed on smaller, relabeled trees.
- This can be done much more efficiently than if compatibility was checked
- using the BUILD algorithm of 
-\begin_inset CommandInset citation
-LatexCommand citet
-key "AhoSSU1981"
-literal "false"
-
-\end_inset
-
- on the full leaf set.
-\end_layout
-
-\begin_layout Standard
-
-\end_layout
-
-\begin_layout Standard
-We then extend this framework by adding a set 
+ to refer to the subset (
 \begin_inset Formula $\mathcal{U}\subseteq\mathcal{N}$
 \end_inset
 
- of labels that have the 
+) of taxa that are annotated with the 
 \emph on
 incertae sedis 
 \emph default
 property.
- The extended taxonomy then consists of the taxonomy tree 
-\begin_inset Formula $\taxonomy$
+ Other annotations identify dubious taxa and taxonomic names that are unwanted
+ artifacts of the process of building OTT.
+ Thus, the taxonomic tree which is used as an input to the supertree algorithm
+ is pruned version of 
+\begin_inset Formula $\taxonomy^{\ast}$
+\end_inset
+
+.
+ For our purposes, the relevant information from the taxonomy consists of
+ the taxonomy tree 
+\begin_inset Formula $\taxonomy^{\ast}$
 \end_inset
 
 , the labels 
@@ -582,12 +613,34 @@ property.
 incertae sedis 
 \emph default
 taxa.
- 
+ In previous work, taxa in 
+\begin_inset Formula $\mathcal{U}$
+\end_inset
+
+ were all pruned from the taxonomic hierarchy when 
+\begin_inset Formula $\taxonomy_{p}$
+\end_inset
+
+ is extracted from OTT.
+ In the present work, we consider supertree approaches that operate on a
+ taxonomic tree 
+\begin_inset Formula $\taxonomy,$
+\end_inset
+
+which is produced from 
+\begin_inset Formula $\taxonomy^{\ast}$
+\end_inset
+
+but does not prune 
+\emph on
+incertae sedis
+\emph default
+ taxa.
 \end_layout
 
 \begin_layout Standard
-For the purposes of this chapter, we assume that leaf labels on input trees
- are only taken from 
+Note that we assume that leaf labels on input phylogenetic trees are only
+ taken from 
 \begin_inset Formula $\mathcal{L}$
 \end_inset
 
@@ -610,20 +663,18 @@ exemplification
  that ensures this is the case.
 \end_layout
 
-\begin_layout Paragraph
-Problem decomposition
-\end_layout
+\begin_layout Section
+\begin_inset CommandInset label
+LatexCommand label
+name "sec:Semantics-of-incertae"
 
-\begin_layout Standard
-Given the input trees and taxonomy, the supertree algorithm first divides
- the supertree problem into independent pieces, solves the problem on these
- pieces, and then glues the pieces back together.
- This decomposition means that any taxonomy edges that are not contested
- by any of the input trees will occur in the supertree.
- We may then solve separately for what happens on each side of such an uncontest
-ed edge.
- When the uncontested edge is attached to the solution below the edge and
- the solution above the edge, the complete solution is then obtained.
+\end_inset
+
+Semantics of 
+\emph on
+incertae sedis
+\emph default
+ taxa
 \end_layout
 
 \begin_layout Paragraph
@@ -847,20 +898,6 @@ was_container
 \end_inset
 
 
-\end_layout
-
-\begin_layout Section
-\begin_inset CommandInset label
-LatexCommand label
-name "sec:Semantics-of-incertae"
-
-\end_inset
-
-Semantics of 
-\emph on
-incertae sedis
-\emph default
- taxa
 \end_layout
 
 \begin_layout Standard
