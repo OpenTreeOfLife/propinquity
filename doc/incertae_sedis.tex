@@ -345,18 +345,18 @@ Note that, for the purposes of the supertree method, all of the
 information from the taxonomic tree is contained in the set of rooted
 splits.
 Thus, one could imagine replacing that taxonomy,
-$\taxonomy_{p}$, with a set of trees $\mathcal{R}(\taxonomy_{p})$ each
-of which has a single internal edge such that each edge in
-$\taxonomy_{p}$is included in one tree in
+$\taxonomy_{p}$, with a set of rooted splits $\mathcal{R}(\taxonomy_{p})$ 
+such that each edge in
+$\taxonomy_{p}$ is encoded in one split in
 $\mathcal{R}(\taxonomy_{p})$.
-If the order of trees is set to be (with
-some abuse of notation):
+If the order of trees is set to be:
 $\mathcal{R}(\taxonomy_{p})=\mathcal{Z}(\taxonomy_{p}) + 
 \mathcal{Y}(\taxonomy_{p})$, then using $\mathcal{R}(\taxonomy_{p})$ in
-place of $\taxonomy_{p}$in the supertree algorithm would produce the
+place of $\taxonomy_{p}$ in the supertree algorithm would produce the
 same output.
 
-We define rooted splits for each edge by noting that removing the edge
+As is typically done, we define rooted splits for each edge by
+noting that removing the edge
 would produce two trees.
 The leaf label sets of these trees the
 partition the full leaf set $\mathcal{L}$ into two groups.
@@ -374,8 +374,6 @@ If no taxa
 are \emph{incertae sedis}, then the exclude set for a node is just the
 total tip set minus the include set for the node:
 $\mathcal{E}(e)  =\mathcal{L}-\mathcal{I}(e)$.
-
-
 For a node $n$ on the tip-ward side of an edge $e$, we may also write
 $\mathcal{I}(n)$ for $\mathcal{I}(e)$, and $\mathcal{E}(n)$ for
 $\mathcal{E}(e)$.
@@ -388,7 +386,7 @@ Note that when a taxon rooted at node $n$ is not marked as
 $n$ will be in the include set for $n$ and all its ancestors and will
 be in the exclude set for all other nodes/edges.
 
-\paragraph{Information content of the emph{incertae sedis }annotation}
+\paragraph{Information content of the \emph{incertae sedis }annotation}
 
 In order to incorporate \emph{incertae sedis }taxa into a supertree
 analyses, we must arrive at an operational definition of the meaning
@@ -402,6 +400,7 @@ taxonomy is stating that the \emph{incertae sedis} taxon could be
 placed anywhere inside one of the sibling taxa or their descendants.
 However, frequently only a subset of the possible placement points
 would be viewed as plausible.
+
 Ideally, the \emph{incertae sedis}
 annotation some taxon $x$ would be accompanied by a specific
 statement about which other taxa might include $x$.
@@ -423,7 +422,11 @@ $n$ will still be in the include set for $n$ and all its ancestors,
 but these labels will not necessarily be the exclude set for all other
 nodes/edges.
 They may simply be omitted in some rooted split
-representations, resulting in partial splits.
+representations, resulting in ``partial splits'' -- those which
+do not necessarily mention all of the taxa.
+Thus, when interpreted correctly the \emph{incertae sedis} annotations
+are reducing the amount of information that the taxonomy brings to
+the supertree problem.
 
 \paragraph{Naive interpretation: ignoring the annotation}
 
@@ -437,6 +440,9 @@ because taxonomic vagueness (in the form of the \emph{incertae sedis}
 annotation) is interpreted as an unwarranted statement that the
 \emph{incertae sedis} taxa are disallowed from being members of their
 sibling taxa.
+In essence, this interpretation would overinterpret the taxonomic
+    hierarchy by treating all of the groupings as statements about
+    full rooted splits, when some should be viewed as partial splits.
 
 \mthcomment{ Do we have some numbers on this (presumably from just
 running the only propinquity with a different set of prune flags)? }
