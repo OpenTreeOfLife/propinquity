@@ -427,17 +427,6 @@ placed anywhere inside one of the sibling taxa or their descendants.
 However, frequently only a subset of the possible placement points
 would be viewed as plausible.
 
-Ideally, the \emph{incertae sedis}
-annotation some taxon $x$ would be accompanied by a specific
-statement about which other taxa might include $x$.
-Detailed
-readings of the character argumentation used by taxonomists could
-provide this sort of specific information in many cases, but we lack
-such information on the scale of the entire OTT.
-Here we consider a
-few operational approaches for handling the \emph{incertae sedis}
-label.
-
 In terms of rooted split interpretation, an \emph{incertae sedis}
 taxon differs from a normal taxon because its leaves should not
 automatically be mentioned in the exclude set of all of the edges that
@@ -486,13 +475,15 @@ be unexpected for it to be placed inside one of the other genera
 within a family.
 
 In principle this information is easy to incorporate.
-If
-$\mathcal{P}$ is the set of taxa that are potential ancestors for
+Ideally, the \emph{incertae sedis}
+annotation some taxon $x$ would be accompanied by a specific
+statement about which other taxa might include $x$.
+If $\mathcal{P}$ is the set of taxa that are potential ancestors for
 incertae sedis taxon $x$, then $\mathcal{L}(x)$ will occur in neither
 the include nor the exclude set of any taxon in $\mathcal{P}$.
 Unfortunately, utilizing taxon-specific interpretations of the
-incertae sedis flag relies on character argumentation (which is
-lacking in OTT) or rank-based information (which is frequently
+incertae sedis flag relies on detailed readings of character argumentation
+(which is lacking in OTT) or rank-based information (which is frequently
 untrustworthy in OTT).
 Thus, here we pursue an approach of ascribing a
 meaning to the \emph{incertae sedis} label which attempts to capture
