@@ -70,7 +70,9 @@
 \title{\texttt{Taxonomic supertree construction with}\texttt{\emph{
 Incertae sedis}}\texttt{ taxa}}
 
-\author{Benjamin D. Redelings and Mark T. Holder} maketitle
+\author{Benjamin D. Redelings and Mark T. Holder}
+
+\maketitle
 
 \section{Introduction}
 
@@ -117,7 +119,7 @@ one correspondence. Note that the taxonomy may also contain out-degree
 single child of lower taxonomic rank.
 
 The supertree method described by \citet{redelings2017supertree} is
-able to use a set of phylogentic estimates and taxonomy to produce a
+able to use a set of phylogenetic estimates and taxonomy to produce a
 supertree with clades names according to the taxonomy. However, the
 method was not able to accommodate the fact that taxonomies frequently
 contain nodes with uncertain placement. These nodes are often labelled
@@ -135,7 +137,7 @@ taxon within the hierarchy is uncertain. OTT uses a series of
 ``flags'' to annotate these taxa. The supertree of by
 \citet{redelings2017supertree} simply pruned these taxa from the
 taxonomy and input trees. Thus, the final supertree lacked taxa which
-were \emph{incertae sedis}.
+were \emph{incertae sedis} or the descendants of such taxa.
 
 Here describe a supertree method so that we can resolve taxonomic
 uncertainty by using published phylogenies to place \emph{incertae
@@ -144,7 +146,7 @@ operational semantics to be used when interpreting the \emph{incertae
 sedis} annotation. These semantics affect the interpretation of the
 phylogenetic statements being made by the input taxonomy and the rules
 for applying taxonomic names to the final supertree. In addition to
-discussing how to interpret in the \emph{incertae sedis} annotation,
+discussing how to interpret the \emph{incertae sedis} annotation,
 we describe the algorithmic changes to the supertree pipeline that
 were required to adequately represent the taxonomic uncertainty. The
 approach described here allows us to include thousands of new taxa in
@@ -181,9 +183,9 @@ to construct a compatible tree from the final set $C$.
 Because of the large number (over 2.6 million) of tips in the full
 tree, the supertree method of \citet{redelings2017supertree} uses an
 approximation approach that relies on decomposition of the full
-problem into subproblems. The decomposition partitioning the list of
+problem into subproblems. The decomposition partitions the list of
 taxonomy splits $S(\taxonomy_{p})$ into two lists:
-$\mathcal{Z}(\taxonomy_{p}),$the list of splits from the taxonomy tree
+$\mathcal{Z}(\taxonomy_{p}),$ the list of splits from the taxonomy tree
 which are compatible with every rooted split in the phylogenetic
 inputs, and $\mathcal{Y}(\taxonomy_{p})$, the list of taxonomic splits
 that conflict with at least one phylogenetic input split. Conceptually
@@ -192,7 +194,7 @@ splits in altered ranked list of splits:
 $\mathcal{S}^{\prime}=\mathcal{Z}(\taxonomy_{p})+S(T_{1})+S(T_{2})+\ldots+S(T_{n})+\mathcal{Y}(\taxonomy_{p})$.
 
 In practice, the decomposition allows the compatibility of splits to
-be performed on smaller, relabeled trees. This can be done much more
+be checked on smaller, relabeled trees. This can be done much more
 efficiently than if compatibility was checked using the BUILD
 algorithm of \citet{AhoSSU1981} on the full leaf set. Thus, the
 supertree algorithm first divides the supertree problem into
@@ -213,14 +215,14 @@ the subset ($\mathcal{U}\subseteq\mathcal{N}$) of taxa that are
 annotated with the \emph{incertae sedis }property. Other annotations
 identify dubious taxa and taxonomic names that are unwanted artifacts
 of the process of building OTT. Thus, the taxonomic tree which is used
-as an input to the supertree algorithm is pruned version of
+as an input to the supertree algorithm is a pruned version of
 $\taxonomy^{\ast}$. For our purposes, the relevant information from
 the taxonomy consists of the taxonomy tree $\taxonomy^{\ast}$, the
 labels $\mathcal{N}$, and set $\mathcal{U}$ of \emph{incertae sedis
-}taxa. In previous work, taxa in $\mathcal{U}$ were all pruned from
+}taxa. In previous work, taxa in $\mathcal{U}$ and all of their descendants were all pruned from
 the taxonomic hierarchy when $\taxonomy_{p}$ is extracted from OTT. In
 the present work, we consider supertree approaches that operate on a
-taxonomic tree $\taxonomy,$which is produced from
+taxonomic tree $\taxonomy$, which is produced from
 $\taxonomy^{\ast}$but does not prune \emph{incertae sedis} taxa.
 
 Throughout we assume that leaf labels on input phylogenetic trees are
@@ -332,7 +334,7 @@ taxonomy is stating that the \emph{incertae sedis} taxon could be
 placed anywhere inside one of the sibling taxa or their descendants.
 However, frequently only a subset of the possible placement points
 would be viewed as plausible. Ideally, the \emph{incertae sedis}
-annotation some taxon \emph{x} would be accompanied by a specific
+annotation for some taxon \emph{x} would be accompanied by a specific
 statement about which other taxa might include \emph{x}. Detailed
 readings of the character argumentation used by taxonomists could
 provide this sort of specific information in many cases, but we lack
@@ -367,7 +369,7 @@ running the only propinquity with a different set of prune flags)? }
 
 \paragraph{Rich taxon-specific attachment points}
 
-As mentioned above, the incertae sedis may mean that a taxon is
+As mentioned above, the \emph{incertae sedis} annotation may mean that a taxon is
 unplaced, but only a few placements within the taxonomy are possible.
 For example, a genus may not be characterized as incertae sedis at the
 level of the subfamily. Thus, it could be placed inside any of the
@@ -376,7 +378,7 @@ be unexpected for it to be placed inside one of the other genera
 within a family.
 
 In principle this information is easy to incorporate. If
-$\mathcal{P}$is the set of taxa that are potential ancestors for
+$\mathcal{P}$ is the set of taxa that are potential ancestors for
 incertae sedis taxon $x$, then $\mathcal{L}(x)$ will occur in neither
 the include nor the exclude set of any taxon in $\mathcal{P}$.
 Unfortunately, utilizing taxon-specific interpretations of the
@@ -607,8 +609,8 @@ node that has the same cluster $S(n)_{1}$ and apply the name $n$ to
 that node.
 
 However, in the \emph{incertae sedis} framework, it is possible for
-one name to apply to multiple nodes. For example, in Figure \ref{fig
-:One-name-can}b, the name $A$ can apply to nodes $x$ and $y$. Here the
+one name to apply to multiple nodes. For example, in Figure \ref{fig:One-name-can}b,
+the name $A$ can apply to nodes $x$ and $y$. Here the
 name $A$ corresponds to the split $A1\,A2\,|\bullet B\,C$, leaving out
 $D$ since it is \emph{incertae sedis}. The two nodes $x$ and $y$
 display the splits $A1\,A2\,|\bullet B\,C\,D$ and $A1\,A2\,D|\bullet
@@ -639,8 +641,8 @@ this problem by introducing a monotypic parent, and applying $A$ to
 the newly created parent node (Fig. \ref{fig:Multiple-names-can}c).
 \begin{figure}
 \hfill{}\subfloat[Taxonomy tree]{\includegraphics[scale=0.5]{Figures/names2nodes1/tax-shaded}}
-\hfill{}subfloat[Solution tree]{\includegraphics[scale=0.5]{Figures/names2nodes1/synth-shaded}}
-\hfill{}subfloat[Solution tree]{\includegraphics[scale=0.5]{Figures/names2nodes1/solution2-shaded}}
+\hfill{}\subfloat[Solution tree]{\includegraphics[scale=0.5]{Figures/names2nodes1/synth-shaded}}
+\hfill{}\subfloat[Solution tree]{\includegraphics[scale=0.5]{Figures/names2nodes1/solution2-shaded}}
 \hfill{}
 \caption{\label{fig:Multiple-names-can}Multiple names can apply to a single node.}
 \end{figure}
@@ -658,14 +660,14 @@ perhaps outside of all named families. The simplest approach to
 placement involves noting whenever a taxon $B$ is a descendant of a
 taxon $A$ on the named synthesis tree but not the taxonomy tree. For
 example, in Figure \ref{fig:Handling-incertae-sedis}, taxon $C$ is a
-descendant of taxon $A$ in the synthetic tree (Fig. \ref{fig:Handling-
-incertae-sedis}d), but not the taxonomy (Fig. \ref{fig:Handling-
-incertae-sedis}b). Thus, we could say that the synthetic tree places
+descendant of taxon $A$ in the synthetic tree (Fig. \ref{fig:Handling-incertae-sedis}d),
+but not the taxonomy (Fig. \ref{fig:Handling-incertae-sedis}b).
+Thus, we could say that the synthetic tree places
 $C$ within $A$. Furthermore, the synthetic tree additionally places
 $C$ within $AB$.
 
-A slightly more general case is shown in Figure \ref{fig:Broken-
-incertae-sedis}. Here taxon $C1$ is an descendant of $A$ in the
+A slightly more general case is shown in Figure \ref{fig:Broken-incertae-sedis}.
+Here taxon $C1$ is an descendant of $A$ in the
 synthesis tree, but not the taxonomy. Thus $C1$ is placed within $A$.
 We note that the most recent common ancestor (MRCA) of $A$ and $C1$ in
 the taxonomy is the root node, and the path to the MRCA from $A$ is
@@ -681,8 +683,8 @@ MRCA(A,B)$ and $B\to B_{1}\to\ldots\to MRCA(A,B)$.
 
 However, this assumes that \emph{incertae sedis} taxa are always
 placed within their siblings, or descendants of their siblings. As
-such, it does not handle cases such as Figure \ref{fig:Placing-one-
-incertae}, in which $I$ is first placed as sibling to $AI$, and then
+such, it does not handle cases such as Figure \ref{fig:Placing-one-incertae},
+in which $I$ is first placed as sibling to $AI$, and then
 $AI$ is placed within $I$. Note that $I$ is not a sibling of $AI$ or a
 descendant of a sibling. Furthermore, the MRCA of $I$ and $AI$ is the
 root, and the path from $AI$ to the root includes $A$, but $A$ is not
@@ -765,7 +767,7 @@ We therefore seek a synthesis method that can correctly introduce
 \emph{incertae sedis} taxa into containing taxa without breaking the
 containing taxa. We change the semantics of names to imply, not the
 exclusion of all non-included taxa, but only some non-included taxa,
-as described in section \ref{sec:Semantics-of- incertae}. As a result
+as described in section \ref{sec:Semantics-of-incertae}. As a result
 of this change in semantics, placing an IS taxon $A$ within a sister
 taxon $B$ no longer results in conflict with $B$. This allows us to
 retain the split for $B$ within the synthesis tree, so that taxonomy-
@@ -791,14 +793,14 @@ is unaffected by incertae sedis information.}
 \subsection{Conflicting placement among input trees}
 
 {[}\textbf{BDR:} \emph{maybe we should merge this with Figure.
-\ref{fig:Broken- incertae-sedis}. Although the point of figure
+\ref{fig:Broken-incertae-sedis}. Although the point of figure
 \ref{fig:placement-example1} is to talk about sub-problem
 decomposition as well as what the result looks like.}{]}
 
 The addition of \emph{incertae sedis} taxa allows new types of
 conflict between input trees. For example, different input trees might
 place an incertae sedis taxon in conflicting locations. This is
-illustrated in Figure \ref{fig :placement-example1}, where the IS
+illustrated in Figure \ref{fig:placement-example1}, where the IS
 taxon (ott7,ott6)ott10 is placed as sister to ott1 by phylogeny
 $\tau_{1}$ and as sister ott3 by phylogeny $\tau_{2}$.
 
@@ -814,14 +816,13 @@ instead of being dropped. (b) as a result of not breaking ott8 and
 ott9, we do not move ott3 and ott2 up to ott11. {[}BDR: Extend more
 figures!{]}
 
-\subsection{Case 1: An emph{incertae sedis} clade}
+\subsection{Case 1: An \emph{incertae sedis} clade}
 
 When a clade is marked as \emph{incertae sedis}, we need to consider
 two cases. In the first case, the clade may be placed within a sister
 clade intact (Figure \ref{fig:Handling-incertae-sedis}). However, if
 the clade is not monophyletic in the synthesis tree, then we allow the
-members of the clade to be placed separately (Figure \ref{fig:Broken-
-incertae-sedis}).
+members of the clade to be placed separately (Figure \ref{fig:Broken-incertae-sedis}).
 
 \begin{figure}
 \subfloat[Input tree \#1]{\includegraphics[scale=0.5]{Figures/is-clade/tree1-shaded}
