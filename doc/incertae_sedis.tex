@@ -339,6 +339,22 @@ to the container's parent.
 \section{\label{sec:Semantics-of-incertae}Semantics of \emph{incertae
 sedis} taxa}
 
+
+The interpretation of the \emph{incertae sedis} annotation affects the supertree
+    pipeline at three points:
+\begin{enumerate}
+    \item The subproblem decomposition step relies on identifying uncontested nodes.
+    Thus, varying interpretations of whether or not an \emph{incertae sedis}
+    taxon can be placed within another taxon without contesting that taxon
+    will affect the subproblem decomposition.
+    \item When solving each subproblem, how taxon is represented as a rooted
+    split can affect the solution found.
+    As described below, the \emph{incertae sedis} annotation affects the 
+        exclude groups of rooted split encodings.
+    \item The step of assigning names to the supertree is affected by the 
+        operational phylogenetic definition of each name.
+\end{enumerate}
+
 \paragraph{Equivalence of a taxonomy tree and a list of rooted splits}
 
 Note that, for the purposes of the supertree method, all of the
@@ -386,7 +402,17 @@ Note that when a taxon rooted at node $n$ is not marked as
 $n$ will be in the include set for $n$ and all its ancestors and will
 be in the exclude set for all other nodes/edges.
 
-\paragraph{Information content of the \emph{incertae sedis }annotation}
+In terms of phylogenetic nomenclature the supertree pipeline acts as
+    the taxonomy defines a branch-based name \citep[see][]{deQueiroz2013}
+    for each higher taxon of the form.
+So for name labeling node $n$ in the taxonomic tree, 
+    the operational definition would be:
+    ``the clade defined by all taxa
+    that are more closely related to $\mathcal{I}(n)$ than to
+    $\mathcal{E}(n)$, if such a clade exists on the tree.''
+
+
+\paragraph{Information content of the \emph{incertae sedis} annotation}
 
 In order to incorporate \emph{incertae sedis }taxa into a supertree
 analyses, we must arrive at an operational definition of the meaning
@@ -427,6 +453,7 @@ do not necessarily mention all of the taxa.
 Thus, when interpreted correctly the \emph{incertae sedis} annotations
 are reducing the amount of information that the taxonomy brings to
 the supertree problem.
+
 
 \paragraph{Naive interpretation: ignoring the annotation}
 
