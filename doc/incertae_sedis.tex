@@ -65,6 +65,8 @@
 
 \newcommand{\mthcomment}[1]{{\color{red} #1}\xspace}
 
+\newcommand{\bdrcomment}[1]{{\color{blue} #1}\xspace}
+
 \title{\texttt{Taxonomic supertree construction with}\texttt{\emph{
 Incertae sedis}}\texttt{ taxa}}
 
@@ -400,6 +402,10 @@ interdigitated.
 \emph{incertae sedis} taxa is also accessible from a tree $T^{\prime}$
 that is created from $T$ by taking a taxon, attaching it to an
 ancestor, and marking it \emph{incertae sedis}. \mthcomment{MTH: I don't understand this.}
+\bdrcomment{BDR: Figure \ref{fig:Placing-one-incertae} is an illustration of this.  Suppose you have a genus that is incertae sedis and a family that is incertae sedis and attached at the kingdom level.  We could in theory place the family (.e.g $I$ in the figure) at the right level.  It then sits next to the incertae sedis genus (e.g. $AI$ in the figure).  We could then place the genus within the family.
+
+The goal above is trying to say (and failing to be clear at saying) that if we have a family that is sibling to an incertae sedis genus, then the placement of the genus within the family is still a possibility if we reattach the family as a child of a kingdom node and mark it incertae sedis.
+}
     \item The semantics of an
 \emph{incertae sedis} node does not depend on assigned ranks, but only
 on the tree.
