@@ -579,7 +579,14 @@ For any two rooted splits $A=A_{1}|\bullet A_{2}$ and $B=B_{1}|\bullet
 B_{2}$ , we say that $A$ \emph{displays }$B$ if $B_{1}\subseteq A_{1}$
 and $B_{2}\subseteq A_{2}$.
 
-\subsubsection{A semantics that disallows inter-digitating
+\subsubsection{semantics \#1a: The original, simplest semantics}
+\begin{align}
+    \mathcal{E}(n) & = \mathcal{E}(parent(n))\cup\left[\mathcal{I}(s)\big|s\in
+           siblings(n), s \text{ not \emph{incertae sedis}}\right].\label{eq:exclude-set-formula-1a}
+\end{align}
+This semantics \emph{does} allow interdigitation.
+
+\subsubsection{semantics \#1b: modified to disallow inter-digitating
 \emph{incertae sedis} siblings}
 
 An \emph{incertae sedis} taxon can be moved into any of the
@@ -639,8 +646,16 @@ into A is allowed.
 \textbf{Problem:} should we be able to move incertae sedis taxa down
 into incertae sedis taxa? If not, then we must change the recursion.
 
-\subsubsection{An alternative semantics that allows inter-digitating
-incertae sedis siblings}
+\subsubsection{An alternative semantics that allows placing an incertae sedis group within an incertae-sedis great-uncle}
+
+\bdrcomment{This semantics is actually designed to allow the situation in Figure \ref{fig:Placing-one-incertae}.
+
+  The problem is (might be) as follows: if we have the tree ``((?A1,A2)A,((D)C)B)MRCA;'', where A1 is incertae sedis, then we can place A1 within D.  This semantics does not exclude A1 from B, C, or D.  So, if A is broken, then nothing prohibits A1 from intruding into B, C, D, etc.
+
+  The purpose of this was to allow placing B as a siblign to A1 and then placing A1 within B -- \emph{if} B were incertae sedis.  But B is not incertae sedis.
+
+  We could try to fix up this situation by adding cases to the exclude rules to say that B excludes A1 if B is not incertae sedis.  But adding cases makes things messier.  I think it also does not actually solve the problem: suppose we mark B incertae sedis, but do NOT place it as sibling to A1.  Then again if A is broken, A1 can intrude into B.  We really want to allow A1 into B only if B is placed as sibling to A1, and I'm not sure how to do that with the partial-split-based semantics.  If you see a way, then great!
+}
 
 If we want to allow placing two incertae sedis siblings within each
 other, then incertae sedis siblings are never excluded.
@@ -671,6 +686,8 @@ as:
 This semantics satisfies criteria 1,3,4, and 5 above.
 
 \subsubsection{A third semantics}
+
+\bdrcomment{I didn't really finish working this one out.}
 
 OK, the idea here is that we want to avoid inter-digitation.
 \emph{Incertae sedis} taxa thus exclude\emph{ incertae sedis}
