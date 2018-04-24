@@ -79,7 +79,7 @@ Incertae sedis}}\texttt{ taxa}}
 
 Supertree methods combine a collection of input trees with different
 taxon sets into a single tree on the combined taxon set.
-The methods are usually applied to leaf-labeled phylogenetic estimates. 
+These methods are usually applied to leaf-labeled phylogenetic estimates. 
 Here we describe a supertree approach that overcomes issues associated with
 using a taxonomy as one of the inputs to a supertree method.
 
@@ -132,7 +132,6 @@ These nodes correspond to monotypic taxa which contain a
 single child of lower taxonomic rank.
 
 The supertree method described by \citet{redelings2017supertree} is
-
 able to use a set of phylogenetic estimates and taxonomy to produce a
 supertree with clades names according to the taxonomy.
 However, the
@@ -155,8 +154,7 @@ sources include various ways of indicating that the position of a
 taxon within the hierarchy is uncertain.
 OTT uses a series of
 ``flags'' to annotate these taxa.
-The supertree of by
-\citet{redelings2017supertree} simply pruned these taxa from the
+The supertree of \citet{redelings2017supertree} simply pruned these taxa from the
 taxonomy and input trees.
 Thus, the final supertree lacked taxa which
 were \emph{incertae sedis} or the descendants of such taxa.
@@ -164,7 +162,7 @@ were \emph{incertae sedis} or the descendants of such taxa.
 Here describe a supertree method so that we can resolve taxonomic
 uncertainty by using published phylogenies to place \emph{incertae
 sedis} taxa.
-Developing this method required deciding on a set
+Developing this method required deciding on a set of
 operational semantics to be used when interpreting the \emph{incertae
 sedis} annotation.
 These semantics affect the interpretation of the
@@ -210,7 +208,7 @@ words, the set $C$ is initialized to the empty set, and we then
 iteratively consider each split in the list $\mathcal{S}$ and insert
 it into $C$ if the resulting set remains jointly compatible.
 The BUILD
-algorithm\citep{AhoSSU1981} is used both to check compatibility, and
+algorithm \citep{AhoSSU1981} is used both to check compatibility, and
 to construct a compatible tree from the final set $C$.
 
 Because of the large number (over 2.6 million) of tips in the full
@@ -244,7 +242,7 @@ As mentioned
 above, OTT not only contains a taxonomic hierarchy, but also contains
 taxonomic labels and annotations (referred to as ``flags'') on the
 taxa to carry extra information.
-The entire hiearchy encoded by OTT is
+The entire hierarchy encoded by OTT is
 a complete taxonomic tree, $\taxonomy^{\ast}.$ Nodes in
 $\taxonomy^{\ast}$ have a one-to-one correspondence with a set of
 labels $\mathcal{N}$ that are called taxon names.
@@ -278,7 +276,8 @@ and that each label occurs at most once in each input tree.
 ``exemplification'' that ensures this is the case.
 Thus pruning of the
 \emph{incertae sedis} taxa from the taxonomy was also accompanied by
-pruning those taxa from the input phylogenetic trees.
+pruning those taxa and all of their descendants from the input phylogenetic
+trees.
 
 \note{     1 Details & Methods
 
@@ -403,9 +402,9 @@ $n$ will be in the include set for $n$ and all its ancestors and will
 be in the exclude set for all other nodes/edges.
 
 In terms of phylogenetic nomenclature the supertree pipeline acts as
-    the taxonomy defines a branch-based name \citep[see][]{deQueiroz2013}
+if the taxonomy defines a branch-based name \citep[see][]{deQueiroz2013}
     for each higher taxon of the form.
-So for name labeling node $n$ in the taxonomic tree, 
+So for the name labeling node $n$ in the taxonomic tree, 
     the operational definition would be:
     ``the clade defined by all taxa
     that are more closely related to $\mathcal{I}(n)$ than to
