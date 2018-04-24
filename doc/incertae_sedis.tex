@@ -67,7 +67,7 @@
 
 \newcommand{\mthcomment}[1]{{\color{red} #1}\xspace}
 
-\newcommand{\bdrcomment}[1]{{\color{blue} #1}\xspace}
+\newcommand{\bdrcomment}[1]{{\color{cyan} #1}\xspace}
 
 \title{\texttt{Taxonomic supertree construction with}\texttt{\emph{
 Incertae sedis}}\texttt{ taxa}}
@@ -334,6 +334,70 @@ The OTT retains container nodes with the was_container
 flag, but seems to have already moved all of the container's children
 to the container's parent.
 }
+
+\subsection{Placement causes broken taxa}
+\bdrcomment{I duplicated section \ref{conflict} to here, since we might want
+  to discuss Figure \ref{fig:Handling-incertae-sedis} in the intro to answer
+  why anybody would care.  Or not.  But note that the section on the ``naive approach''
+  asks basically this question.}
+
+Synthesis with \emph{incertae sedis} taxa has the potential to resolve
+uncertain taxon placements using information from phylogenies.
+Since
+phylogenies are ranked higher than taxonomy, they may place members of
+incertae sedis clades as they wish even when we do not take into
+account the semantics of incertae sedis taxa.
+However, without the
+incertae sedis semantics described above, placing a taxon $A$ within a
+taxon $B$ results in conflict with taxon $B$ in the taxonomy.
+This has
+three main effects: \begin{enumerate}
+    \item The edge leading to clade $B$ is lost.
+    \item Any taxonomy-only children of $B$ are placed at the
+        MRCA of the phylogenetically informed taxa, instead of at node $B$.
+    \item The name for taxon $B$ is lost.
+    \item We do not record $A$ as being placed within $B$.
+\end{enumerate} In order to avoid a situation
+where input phylogenies conflict with a large number of taxa when
+\emph{incertae sedis} taxa are placed within them, we have previously
+filtered \emph{incertae sedis} taxa from the taxonomy when
+constructing all prior synthesis trees.
+
+When the synthesis tree conflicts with a taxonomy node, we say that
+the taxon $B$ at that node is a broken taxon.
+Broken taxa have two
+main effects, both of which are negative.
+First, the name $B$ of the
+broken taxon is removed from the synthesis tree.
+Second, the
+conflicting edge for taxon $B$ is not included in the synthesis tree.
+This means that any children of $B$ that are taxonomy-only will not be
+placed with the children of $B$ that are mentioned in input
+phylogenies.
+Instead the taxonomy-only children of a broken taxon move
+towards the root of the synthesis tree and attach at the first higher-
+ranked taxon that is an ancestor of $B$ but is not broken.
+
+We therefore seek a synthesis method that can correctly introduce
+\emph{incertae sedis} taxa into containing taxa without breaking the
+containing taxa.
+We change the semantics of names to imply, not the
+exclusion of all non-included taxa, but only some non-included taxa,
+as described in section \ref{sec:Semantics-of-incertae}.
+As a result
+of this change in semantics, placing an IS taxon $A$ within a sister
+taxon $B$ no longer results in conflict with $B$.
+This allows us to
+retain the split for $B$ within the synthesis tree, so that taxonomy-
+only children of $B$ are correctly grouped with their siblings that
+are referenced by the input trees.
+We may then retain the name for the
+no-longer-broken taxon.
+Finally, we are then able to stop filtering
+\emph{incertae sedis} taxa, so that they appear in the synthesis tree.
+Thus, the synthesis tree is able to represent substantially more
+species, without suffering the loss of taxa and the loss of structure.
+
 
 \section{\label{sec:Semantics-of-incertae}Semantics of \emph{incertae
 sedis} taxa}
