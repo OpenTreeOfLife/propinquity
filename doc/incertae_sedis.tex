@@ -493,22 +493,7 @@ which criteria to satisfy.
 
 In order to apply supertree methods to rooted trees with \emph{incertae sedis}
 taxa, we first propose a semantics of \emph{incertae sedis }in terms of rooted
-splits. We define rooted splits by noting that each edge of a tree divides the
-tip taxa $\mathcal{L}$ into two groups: the include set $\mathcal{I}(e)$ which does not contain the root,
-and the exclude set $\mathcal{E}(e)$ which does contain the root. Such a split may be written
-\[
-\mathcal{I}(e)|\bullet\mathcal{E}(e).
-\]
-where the $\bullet$ indicates the root. If no taxa are \emph{incertae sedis}, then the
-exclude set for a node is just the total tip set minus the include set for the
-node: $ \mathcal{E}(n) =\mathcal{L}-\mathcal{I}(n)$.
-
-For a node $n$ on the tip-ward side of an edge $e$, we may also write $\mathcal{I}(n)$ for $\mathcal{I}(e)$,
-and $\mathcal{E}(n)$ for $\mathcal{E}(e)$.
-
-For any two rooted splits $A=A_{1}|\bullet A_{2}$ and $B=B_{1}|\bullet
-B_{2}$ , we say that $A$ \emph{displays }$B$ if $B_{1}\subseteq A_{1}$
-and $B_{2}\subseteq A_{2}$.
+splits.
 
 \subsubsection{semantics \#1a: The original, simplest semantics}
 \begin{align}
