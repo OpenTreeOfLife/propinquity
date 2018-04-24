@@ -405,22 +405,17 @@ are more closely related to $\mathcal{I}(n)$ than to $\mathcal{E}(n)$, if such a
 
 \paragraph{Information content of the \emph{incertae sedis} annotation}
 
-In terms of rooted split interpretation, an \emph{incertae sedis}
-taxon differs from a normal taxon because its leaves should not
-automatically be mentioned in the exclude set of all of the edges that
-does not descend from.
-If a taxon rooted at node $n$ is marked as
-\emph{incertae sedis}, then the leaf labels that are descendants of
-$n$ will still be in the include set for $n$ and all its ancestors,
+In terms of rooted split interpretation, an \emph{incertae sedis} taxon differs
+from a normal taxon because its leaves should not automatically be mentioned in
+the exclude set of all of the edges that does not descend from. If a taxon
+rooted at node $n$ is marked as \emph{incertae sedis}, then the leaf labels that
+are descendants of $n$ will still be in the include set for $n$ and all its ancestors,
 but these labels will not necessarily be the exclude set for all other
-nodes/edges.
-They may simply be omitted in some rooted split
-representations, resulting in ``partial splits'' -- those which
-do not necessarily mention all of the taxa.
-Thus, when interpreted correctly the \emph{incertae sedis} annotations
-are reducing the amount of information that the taxonomy brings to
-the supertree problem.
-
+nodes/edges. They may simply be omitted in some rooted split representations,
+resulting in ``partial splits'' -- those which do not necessarily mention all of
+the taxa. Thus, when interpreted correctly the \emph{incertae sedis} annotations
+are reducing the amount of information that the taxonomy brings to the supertree
+problem.
 
 \paragraph{Naive interpretation: ignoring the annotation}
 
@@ -469,89 +464,47 @@ automatically across the taxonomy without additional information.
 
 \paragraph{Splits-based synthesis method}
 
- 
+Here we focus on a split-based semantics instead of a semantics based on apply
+of a series of edit operations to the tree. The split-based semantics allows us
+to seek trees that are simultaneously consistent with a set of split-constraints.
+The use of a split-based semantics does impose some limitations. These come
+primarily because in the edit-based semantics, after we place an
+\emph{incertae sedis} taxon, it is no loner \emph{incertae sedis}, whereas with
+the split-based semantics taxa are either always \emph{incertae sedis} or never
+\emph{incertae sedis}.
 
-We seek a semantics for supertrees with \emph{incertae sedis }taxa
-that satisfy the following properties:
-\begin{enumerate}
-    \item An \emph{incertae sedis} node may intrude into its siblings and their
-descendants.
-    \item Two \emph{incertae sedis} siblings may not be
-interdigitated.
-    \item Any placement $T\to T^{*}$ of a tree $T$ with
-\emph{incertae sedis} taxa is also accessible from a tree $T^{\prime}$
-that is created from $T$ by taking a taxon, attaching it to an
-ancestor, and marking it \emph{incertae sedis}. \mthcomment{MTH: I don't understand this.}
-\bdrcomment{BDR: Figure \ref{fig:Placing-one-incertae} is an illustration of this.  Suppose you have a genus that is incertae sedis and a family that is incertae sedis and attached at the kingdom level.  We could in theory place the family (.e.g $I$ in the figure) at the right level.  It then sits next to the incertae sedis genus (e.g. $AI$ in the figure).  We could then place the genus within the family.
-
-The goal above is trying to say (and failing to be clear at saying) that if we have a family that is sibling to an incertae sedis genus, then the placement of the genus within the family is still a possibility if we reattach the family as a child of a kingdom node and mark it incertae sedis.
-}
-    \item The semantics of an
-\emph{incertae sedis} node does not depend on assigned ranks, but only
-on the tree.
-    \item Semantics is based on deriving a split for each
-branch of the tree.
-\end{enumerate}
-Here we focus on a split-based
-semantics instead of a semantics based on apply of a series of edit
-operations to the tree.
-The split-based semantics allows us to seek
-trees that are simultaneously consistent with a set of split-
-constraints.
-The use of a split-based semantics does impose some
-limitations.
-These come primarily because in the edit-based semantics,
-after we place an \emph{incertae sedis} taxon, it is no loner
-\emph{incertae sedis}, whereas with the split-based semantics taxa are
-either always \emph{incertae sedis} or never \emph{incertae sedis}.
-
-This has an effect, for example, when we consider two incertae sedis
-siblings $A$ and $B$.
-If we can place $A$ within $B$, and $B$ within
-$A$, then a split- based semantics allows us to freely inter-digitate
-$A$ and $B$.
-If we do not want to allow $A$ and $B$ to be inter-
-digitated, then we cannot both $A$ within $B$ and $B$ within $A$.
-In
-addition, we can imagine that a family $A$ is incertae sedis within a
-kingdom.
-In an edit-based semantics, we could place $A$ as a sibling
-to a genus $B$, mark $A$ as non-\emph{incertae-sedis}, and then place
-$B$ within $A$.
-In a split-based semantics, we must disallow either
-$B$ within $A$ or $A$ within $B$ if we want to disallow
+This has an effect, for example, when we consider two incertae sedis siblings $A$
+and $B$. If we can place $A$ within $B$, and $B$ within $A$, then a split- based
+semantics allows us to freely inter-digitate $A$ and $B$. If we do not want to
+allow $A$ and $B$ to be inter-digitated, then we cannot both $A$ within $B$ and $B$
+within $A$. In addition, we can imagine that a family $A$ is incertae sedis within a
+kingdom. In an edit-based semantics, we could place $A$ as a sibling to a genus $B$,
+mark $A$ as non-\emph{incertae-sedis}, and then place $B$ within $A$. In a split-based
+semantics, we must disallow either $B$ within $A$ or $A$ within $B$ if we want to disallow
 interdigitation.
 
-As a result of this, we cannot satisfy all five of these criteria.
-Thus, we describe two alternative split-based semantics.
-The non-
-interdigitation semantics gets \# (1,2,4,5), and the interdigitation
-semantics gets (1,3,4,5).
-This makes the point that each semantics
-results from different choices about which criteria to satisfy.
+As a result of this, we cannot satisfy all five of these criteria. Thus, we
+describe two alternative split-based semantics. The non-interdigitation
+semantics gets \# (1,2,4,5), and the interdigitation semantics gets (1,3,4,5).
+This makes the point that each semantics results from different choices about
+which criteria to satisfy.
 
 \subsection{Split-based semantics for \emph{incertae sedis} taxa}
 
-In order to apply supertree methods to rooted trees with
-\emph{incertae sedis} taxa, we first propose a semantics of
-\emph{incertae sedis }in terms of rooted splits.
-We define rooted
-splits by noting that each edge of a tree divides the tip taxa
-$\mathcal{L}$ into two groups: the include set $\mathcal{I}(e)$ which
-does not contain the root, and the exclude set $\mathcal{E}(e)$ which
-does contain the root.
-Such a split may be written \[
+In order to apply supertree methods to rooted trees with \emph{incertae sedis}
+taxa, we first propose a semantics of \emph{incertae sedis }in terms of rooted
+splits. We define rooted splits by noting that each edge of a tree divides the
+tip taxa $\mathcal{L}$ into two groups: the include set $\mathcal{I}(e)$ which does not contain the root,
+and the exclude set $\mathcal{E}(e)$ which does contain the root. Such a split may be written
+\[
 \mathcal{I}(e)|\bullet\mathcal{E}(e).
-\] where the $\bullet$ indicates
-the root.
-If no taxa are \emph{incertae sedis}, then the exclude set
-for a node is just the total tip set minus the include set for the
+\]
+where the $\bullet$ indicates the root. If no taxa are \emph{incertae sedis}, then the
+exclude set for a node is just the total tip set minus the include set for the
 node: $ \mathcal{E}(n) =\mathcal{L}-\mathcal{I}(n)$.
 
-
-For a node $n$ on the tip-ward side of an edge $e$, we may also write
-$\mathcal{I}(n)$ for $\mathcal{I}(e)$, and $\mathcal{E}(n)$ for
-$\mathcal{E}(e)$.
+For a node $n$ on the tip-ward side of an edge $e$, we may also write $\mathcal{I}(n)$ for $\mathcal{I}(e)$,
+and $\mathcal{E}(n)$ for $\mathcal{E}(e)$.
 
 For any two rooted splits $A=A_{1}|\bullet A_{2}$ and $B=B_{1}|\bullet
 B_{2}$ , we say that $A$ \emph{displays }$B$ if $B_{1}\subseteq A_{1}$
@@ -705,54 +658,36 @@ We may then define the taxa excluded from $n$ as:
 \mathcal{E}(parent(n))\cup[\mathcal{I}(s,n)|s\in siblings(n)] & \text{otherwise.}
 \end{cases}
 \end{align*}
-I think this works...
-but
-need to double-check.
+I think this works... but need to double-check.
 
 Also: can we genericize $\mathcal{E}(parent(n))$?
 
 \subsection{Naming }
 
-After constructing a supertree, tip nodes already have names in
-\emph{$\mathcal{L}$}.
-However, we still need to assign higher taxon
-names to internal supertree nodes based on the taxonomy tree in the
-problem.
-Each taxon name $n$ corresponds to a split
-$S(n)=S(n)_{1}|\bullet S(n)_{2}$ on the corresponding branch of the
-taxonomy tree.
-Without \emph{incertae sedis}, such splits are always
-of the form $S(n)_{1}|\bullet\mathcal{L}-S(n)_{1}$, but with
-\emph{incertae sedis} taxa $S_{2}(n)$ may be smaller than
-$\mathcal{L}-S(n)_{1}$.
+After constructing a supertree, tip nodes already have names in \emph{$\mathcal{L}$}.
+However, we still need to assign higher taxon names to internal supertree nodes
+based on the taxonomy tree in the problem. Each taxon name $n$ corresponds to a
+split $S(n)=S(n)_{1}|\bullet S(n)_{2}$ on the corresponding branch of the taxonomy tree. Without
+\emph{incertae sedis}, such splits are always of the form $S(n)_{1}|\bullet\mathcal{L}-S(n)_{1}$, but
+with \emph{incertae sedis} taxa $S_{2}(n)$ may be smaller than $\mathcal{L}-S(n)_{1}$.
 
-Without \emph{incertae sedis}, each name applies to at most one node,
-and each node can take at most one name, with the exception of
-monotypic taxa.
-Thus, we may simply search the solution tree for a
-node that has the same cluster $S(n)_{1}$ and apply the name $n$ to
-that node.
+Without \emph{incertae sedis}, each name applies to at most one node, and each
+node can take at most one name, with the exception of monotypic taxa. Thus, we
+may simply search the solution tree for a node that has the same cluster $S(n)_{1}$
+and apply the name $n$ to that node.
 
-However, in the \emph{incertae sedis} framework, it is possible for
-one name to apply to multiple nodes.
-For example, in Figure \ref{fig:One-name-can}b, 
-the name $A$ can apply to nodes $x$ and $y$.
-Here the
-name $A$ corresponds to the split $A1\,A2\,|\bullet B\,C$, leaving out
-$D$ since it is \emph{incertae sedis}.
-The two nodes $x$ and $y$
-display the splits $A1\,A2\,|\bullet B\,C\,D$ and $A1\,A2\,D|\bullet
-B\,C$ respectively, and both of these splits display the split
-$A1\,A2\,|\bullet B\,C$, so the name $A$ can apply to both $x$ and
-$y$.
-This cannot happen without\emph{ incertae sedis} taxa except at
-monotypic nodes.
-When faced with a choice about where to place a name,
-our solution is to find the most tip-ward node where the name can
-apply and attach the name to this node.
-This corresponds to a
-conservative choice about whether \emph{incertae sedis} taxa should be
-added to an existing taxon.
+However, in the \emph{incertae sedis} framework, it is possible for one name to
+apply to multiple nodes. For example, in Figure \ref{fig:One-name-can}b, the
+name $A$ can apply to nodes $x$ and $y$. Here the name $A$ corresponds to the split
+$A1\,A2\,|\bullet B\,C$, leaving out $D$ since it is \emph{incertae sedis}. The two nodes $x$
+and $y$ display the splits $A1\,A2\,|\bullet B\,C\,D$ and $A1\,A2\,D|\bullet
+B\,C$ respectively, and both
+of these splits display the split $A1\,A2\,|\bullet B\,C$, so the name $A$ can apply to both
+$x$ and $y$. This cannot happen without\emph{ incertae sedis} taxa except at
+monotypic nodes. When faced with a choice about where to place a name, our
+solution is to find the most tip-ward node where the name can apply and attach
+the name to this node. This corresponds to a conservative choice about whether
+\emph{incertae sedis} taxa should be added to an existing taxon.
 \begin{figure}
 \hfill{}\subfloat[Taxonomy tree]{\includegraphics[scale=0.5]{Figures/name1nodes2/tax-shaded}}
 \hfill{}\subfloat[Solution tree]{\includegraphics[scale=0.5]{Figures/name1nodes2/solution-shaded}}
@@ -760,22 +695,15 @@ added to an existing taxon.
 \caption{\label{fig:One-name-can}One name can be consistent with multiple nodes.}
 \end{figure}
 
-It is also possible for multiple names to apply to a single node.
-For
-example, in Figure \ref{fig:Multiple-names-can}a, the taxon $A$
-corresponds to the split $B1\,B2\,C\,|\bullet\,Y$, and its child taxon
-$B$ corresponds to the split $B1\,B2\,|\bullet\,Y$.
-The edge leading
-to $A$ is consistent with the split for $B$, but the name $B$ is
-applied to the node with the smallest include group.
-However, in the
-solution tree (Fig.
-\ref{fig:Multiple-names-can}b), there is is only
-node for both names $A$ and $B$ to apply to.
-In this case, we solve
-this problem by introducing a monotypic parent, and applying $A$ to
-the newly created parent node (Fig.
-\ref{fig:Multiple-names-can}c).
+It is also possible for multiple names to apply to a single node. For example,
+in Figure \ref{fig:Multiple-names-can}a, the taxon $A$ corresponds to the split
+$B1\,B2\,C\,|\bullet\,Y$, and its child taxon $B$ corresponds to the split $B1\,B2\,|\bullet\,Y$. The
+edge leading to $A$ is consistent with the split for $B$, but the name $B$ is
+applied to the node with the smallest include group. However, in the
+solution tree (Fig. \ref{fig:Multiple-names-can}b), there is is only node for
+both names $A$ and $B$ to apply to. In this case, we solve this problem by
+introducing a monotypic parent, and applying $A$ to the newly created parent node
+(Fig. \ref{fig:Multiple-names-can}c).
 \begin{figure}
 \hfill{}\subfloat[Taxonomy tree]{\includegraphics[scale=0.5]{Figures/names2nodes1/tax-shaded}}
 \hfill{}\subfloat[Solution tree]{\includegraphics[scale=0.5]{Figures/names2nodes1/synth-shaded}}
@@ -784,7 +712,6 @@ the newly created parent node (Fig.
 \caption{\label{fig:Multiple-names-can}Multiple names can apply to a single node.}
 \end{figure}
 
-\emph{}
 
 \subsection{Placement}\label{subsec:Placement}
 
