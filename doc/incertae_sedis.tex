@@ -363,12 +363,38 @@ descendants.
       % Side effect #2. Allow placing A next to B, and then placing B within A. (See Fig. 6)
 \end{enumerate}
 
-The rooted split derived from a node $n$ serves to determine both when $n$ is in conflict
-with an input tree, and to where to place the taxon name for $n$ on the resulting synthesis tree.
+The rooted split associated with taxonomy node $n$ serves to determine both when $n$ is in conflict
+with an input tree, and to where to place the taxon name for clade $n$ on the synthesis tree.
 % Removed mention of incertae sedis possibly affecting subproblem decomposition.  It
 % actually doesn't but that is surprising, and therefore kind of a result.
 
-\paragraph{Equivalence of a taxonomy tree and a list of rooted splits}
+\paragraph{(Not using rank information) Rich taxon-specific attachment points}
+% Question: why not use rank information?  Answer: well, we could, but lets start simple.
+As mentioned above, the \emph{incertae sedis} annotation may mean that a taxon is
+unplaced, but only a few placements within the taxonomy are possible.
+For example, a genus might be characterized as \emph{incertae sedis}
+at the level of the subfamily.
+Thus, it could be placed inside any of the
+hypothesized sub-families, or within its own subfamily, but it would
+be unexpected for it to be placed inside one of the other genera.
+
+In principle this information is easy to incorporate.
+Ideally, the \emph{incertae sedis}
+annotation some taxon $x$ would be accompanied by a specific
+statement about which other taxa might include $x$.
+If $\mathcal{P}$ is the set of taxa that are potential ancestors for
+incertae sedis taxon $x$, then $\mathcal{L}(x)$ will occur in neither
+the include nor the exclude set of any taxon in $\mathcal{P}$.
+Unfortunately, utilizing taxon-specific interpretations of the
+incertae sedis flag relies on detailed readings of character argumentation
+(which is lacking in OTT) or rank-based information (which is frequently
+untrustworthy in OTT).
+Thus, here we pursue an approach of ascribing a
+meaning to the \emph{incertae sedis} label which attempts to capture
+the core of the idea that it articulates, but which can be applied
+automatically across the taxonomy without additional information.
+
+\paragraph{(Split-based semantics) Equivalence of a taxonomy tree and a list of rooted splits}
 
 Note that, for the purposes of the supertree method, all of the information from
 the taxonomic tree is contained in the set of rooted splits. Thus, one could
@@ -403,21 +429,7 @@ tree, the operational definition would be: ``the clade defined by all taxa that
 are more closely related to $\mathcal{I}(n)$ than to $\mathcal{E}(n)$, if such a clade exists on the tree.''
 
 
-\paragraph{Information content of the \emph{incertae sedis} annotation}
-
-In terms of rooted split interpretation, an \emph{incertae sedis} taxon differs
-from a normal taxon because its leaves should not automatically be mentioned in
-the exclude set of all of the edges that does not descend from. If a taxon
-rooted at node $n$ is marked as \emph{incertae sedis}, then the leaf labels that
-are descendants of $n$ will still be in the include set for $n$ and all its ancestors,
-but these labels will not necessarily be the exclude set for all other
-nodes/edges. They may simply be omitted in some rooted split representations,
-resulting in ``partial splits'' -- those which do not necessarily mention all of
-the taxa. Thus, when interpreted correctly the \emph{incertae sedis} annotations
-are reducing the amount of information that the taxonomy brings to the supertree
-problem.
-
-\paragraph{Naive interpretation: ignoring the annotation}
+\paragraph{(A first semantics) Naive interpretation: ignoring the annotation}
 
 The most straightforward approach for increasing the taxonomic
 completeness of the supertree is simply to no longer prune taxa from
@@ -433,34 +445,25 @@ In essence, this interpretation would overinterpret the taxonomic
     hierarchy by treating all of the groupings as statements about
     full rooted splits, when some should be viewed as partial splits.
 
-\mthcomment{ Do we have some numbers on this (presumably from just
-running the only propinquity with a different set of prune flags)? }
+% \mthcomment{ Do we have some numbers on this (presumably from just
+%running the only propinquity with a different set of prune flags)? }
 
-\paragraph{Rich taxon-specific attachment points}
+% \bdrcomment{ I think we would currently lose about 10 taxa }    
 
-As mentioned above, the \emph{incertae sedis} annotation may mean that a taxon is
-unplaced, but only a few placements within the taxonomy are possible.
-For example, a genus might be characterized as \emph{incertae sedis}
-at the level of the subfamily.
-Thus, it could be placed inside any of the
-hypothesized sub-families, or within its own subfamily, but it would
-be unexpected for it to be placed inside one of the other genera.
+\bdrcomment{The reason why we don't do the naive thing is currently in section \ref{conflict}}
+\paragraph{(Split-based semantics) Information content of the \emph{incertae sedis} annotation}
 
-In principle this information is easy to incorporate.
-Ideally, the \emph{incertae sedis}
-annotation some taxon $x$ would be accompanied by a specific
-statement about which other taxa might include $x$.
-If $\mathcal{P}$ is the set of taxa that are potential ancestors for
-incertae sedis taxon $x$, then $\mathcal{L}(x)$ will occur in neither
-the include nor the exclude set of any taxon in $\mathcal{P}$.
-Unfortunately, utilizing taxon-specific interpretations of the
-incertae sedis flag relies on detailed readings of character argumentation
-(which is lacking in OTT) or rank-based information (which is frequently
-untrustworthy in OTT).
-Thus, here we pursue an approach of ascribing a
-meaning to the \emph{incertae sedis} label which attempts to capture
-the core of the idea that it articulates, but which can be applied
-automatically across the taxonomy without additional information.
+In terms of rooted split interpretation, an \emph{incertae sedis} taxon differs
+from a normal taxon because its leaves should not automatically be mentioned in
+the exclude set of all of the edges that does not descend from. If a taxon
+rooted at node $n$ is marked as \emph{incertae sedis}, then the leaf labels that
+are descendants of $n$ will still be in the include set for $n$ and all its ancestors,
+but these labels will not necessarily be the exclude set for all other
+nodes/edges. They may simply be omitted in some rooted split representations,
+resulting in ``partial splits'' -- those which do not necessarily mention all of
+the taxa. Thus, when interpreted correctly the \emph{incertae sedis} annotations
+are reducing the amount of information that the taxonomy brings to the supertree
+problem.
 
 \paragraph{Splits-based synthesis method}
 
@@ -536,23 +539,18 @@ is not}\\
     \end{cases}
 \end{align*}
 
-Additionally, the exclude set $\mathcal{E}(n)$ should contain the
-children of all the ancestors of $n$, unless those children are
-\emph{incertae sedis}.
-To avoid traversing all ancestors separately
-for each node $n$, we note that the excluded children of any ancestors
-will be in the exclude set of the parent of $n$ already.
-Therefore, we
-can write the exclude set of a node $n$ in terms of the exclude set of
-its parent:
+Additionally, the exclude set $\mathcal{E}(n)$ should contain the children of
+all the ancestors of $n$, unless those children are \emph{incertae sedis}.
+To avoid traversing all ancestors separately for each node $n$, we note that the
+excluded children of any ancestors will be in the exclude set of the parent of
+$n$ already. Therefore, we can write the exclude set of a node $n$ in terms of
+the exclude set of its parent:
 \begin{align}
     \mathcal{E}(n) & = \mathcal{E}(parent(n))\cup\left[\mathcal{I}(m,n)\big|m\in
            siblings(n)\right].\label{eq:exclude-set-formula-1}
 \end{align}
-This
-formula allows us to compute exclude sets via a pre-order traversal on
-the taxonomy tree with exclude set for the root node defined to be
-$\emptyset$.
+This formula allows us to compute exclude sets via a pre-order traversal on the
+taxonomy tree with exclude set for the root node defined to be $\emptyset$.
 
 \textbf{Problem:} how about the goal that we should be able to get the
 same outcome by moving a taxon up one level and marking it as incertae
@@ -646,6 +644,12 @@ We may then define the taxa excluded from $n$ as:
 I think this works... but need to double-check.
 
 Also: can we genericize $\mathcal{E}(parent(n))$?
+
+\subsection{Surprising results of the split-based semantics}
+
+1. Inter-digitation
+
+2. Placing A next to B, then B within A.
 
 \subsection{Naming }
 
@@ -803,7 +807,7 @@ $B$, or $C$ is in the exclude set of the siblings of $D$.
 \section{Synthesis and conflict resolution with incertae sedis taxa}
 
 \subsection{Placement causes broken taxa}
-
+\label{conflict}
 Synthesis with \emph{incertae sedis} taxa has the potential to resolve
 uncertain taxon placements using information from phylogenies.
 Since
