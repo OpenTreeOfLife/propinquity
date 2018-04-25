@@ -260,21 +260,21 @@ trees.
 otcetera/doc /handling-incertae-sedis.pdf
 
 The problem is becoming more acute because NCBI is putting a larger
-number of taxa into groups that are marked as “unclassified.” For
-example, when OTT 2.9 was created NCBI’s clasification of the bird
+number of taxa into groups that are marked as ``classified''. or
+example, when OTT 2.9 was created NCBI's clasification of the bird
 family Sylvidae included a group five genera that were placed within
-“[http://www.ncbi.nlm.nih.gov/Taxonomy/Brows er/wwwtax.cgi?mode=Undef&
+``[http://www.ncbi.nlm.nih.gov/Taxonomy/Brows er/wwwtax.cgi?mode=Undef&
 id=36270&lvl=3&lin=f&keep=1&srchmode=1&unlock||unclassi fied
-Sylviidae].” This includes the genus Regulus.
+Sylviidae].'' This includes the genus Regulus.
 Thus in OTT 2.9 Regulus
 (ott ID = 3599326) is placed inside the family Silvidae (OTT ID =
 259942).
-The “unclassified Sylviidae” does not appear in OTT; instead
-Regulus is flagged as “unclassified,sibling higher” and all of the
-species within Regulus are flagged as “unclassified inherited.”
+The ``unclassified Sylviidae'' does not appear in OTT; instead
+Regulus is flagged as ``unclassified,sibling higher'' and all of the
+species within Regulus are flagged as ``unclassified inherited.''
 
 The taxonomy (as of version 2.9) also contains 685 cases of taxa that
-are flagged as both “unclassified inherited” and “unclassified”based
+are flagged as both ``unclassified inherited'' and ``unclassified''based
 on grep unclass.*unclassified\_inherited taxonomy.tsv.
 
 We would like to stop suppressing (pruning) incertae sedis taxa, so
@@ -288,19 +288,19 @@ trees.
 1.2 Taxonomy details
 
 Flags.
-The Open Tree’s reference taxonomy is produced by a tool called
+The Open Tree's reference taxonomy is produced by a tool called
 smasher that notices hints that a taxon is incertae sedis and labels
 that taxon with one of five flagssee https://github.com/OpenTreeOfLife
 /reference-taxonomy/wiki /Taxon-flags.This document is not concerned
-with the flagging system per se, so “incertae sedis” will be used here
+with the flagging system per se, so ``incertae sedis'' will be used here
 to refer to all of the flags that denote taxa with uncertain
 placement..
 While a taxonomist may intend to use incertae sedis to
 indicate a limited number of possible positions for a taxon to go in
 the taxonomy, we do not retain any such details.
 Container nodes.
-Some taxonomies have nodes with names like “Incertae
-sedis (Bacteria)”.
+Some taxonomies have nodes with names like ``Incertae
+sedis (Bacteria)''.
 Such nodes are called containers.
 They indicate
 that each child node is an incertae sedis child of the container
@@ -309,70 +309,65 @@ The OTT retains container nodes with the was_container
 flag, but seems to have already moved all of the container's children
 to the container's parent.
 }
+\begin{figure}
+\subfloat[Input tree \#1]{\includegraphics[scale=0.5]{Figures/is-clade/tree1-shaded}
 
-\subsection{Placement causes broken taxa}
-\bdrcomment{I duplicated section \ref{conflict} to here, since we might want
-  to discuss Figure \ref{fig:Handling-incertae-sedis} in the intro to answer
-  why anybody would care.  Or not.  But note that the section on the ``naive approach''
-  asks basically this question.}
+}\hfill{}\subfloat[Taxonomy]{\includegraphics[scale=0.5]{Figures/is-clade/tax-shaded}
 
-Synthesis with \emph{incertae sedis} taxa has the potential to resolve
-uncertain taxon placements using information from phylogenies.
-Since
-phylogenies are ranked higher than taxonomy, they may place members of
-incertae sedis clades as they wish even when we do not take into
-account the semantics of incertae sedis taxa.
-However, without the
-incertae sedis semantics described above, placing a taxon $A$ within a
-taxon $B$ results in conflict with taxon $B$ in the taxonomy.
-This has
-three main effects: \begin{enumerate}
-    \item The edge leading to clade $B$ is lost.
-    \item Any taxonomy-only children of $B$ are placed at the
-        MRCA of the phylogenetically informed taxa, instead of at node $B$.
-    \item The name for taxon $B$ is lost.
-    \item We do not record $A$ as being placed within $B$.
-\end{enumerate} In order to avoid a situation
-where input phylogenies conflict with a large number of taxa when
-\emph{incertae sedis} taxa are placed within them, we have previously
-filtered \emph{incertae sedis} taxa from the taxonomy when
-constructing all prior synthesis trees.
+}
 
-When the synthesis tree conflicts with a taxonomy node, we say that
-the taxon $B$ at that node is a broken taxon.
-Broken taxa have two
-main effects, both of which are negative.
-First, the name $B$ of the
-broken taxon is removed from the synthesis tree.
-Second, the
-conflicting edge for taxon $B$ is not included in the synthesis tree.
-This means that any children of $B$ that are taxonomy-only will not be
-placed with the children of $B$ that are mentioned in input
-phylogenies.
-Instead the taxonomy-only children of a broken taxon move
-towards the root of the synthesis tree and attach at the first higher-
-ranked taxon that is an ancestor of $B$ but is not broken.
+\subfloat[Synthesis Tree (no \emph{incertae sedis})]{\includegraphics[scale=0.5]{Figures/is-clade/synth1-no-is-shaded}
 
-We therefore seek a synthesis method that can correctly introduce
-\emph{incertae sedis} taxa into containing taxa without breaking the
-containing taxa.
-We change the semantics of names to imply, not the
-exclusion of all non-included taxa, but only some non-included taxa,
-as described in section \ref{sec:Semantics-of-incertae}.
-As a result
-of this change in semantics, placing an IS taxon $A$ within a sister
-taxon $B$ no longer results in conflict with $B$.
-This allows us to
-retain the split for $B$ within the synthesis tree, so that taxonomy-
-only children of $B$ are correctly grouped with their siblings that
-are referenced by the input trees.
-We may then retain the name for the
-no-longer-broken taxon.
-Finally, we are then able to stop filtering
-\emph{incertae sedis} taxa, so that they appear in the synthesis tree.
-Thus, the synthesis tree is able to represent substantially more
-species, without suffering the loss of taxa and the loss of structure.
+}\hfill{}\subfloat[Synthesis Tree (\emph{incertae sedis} aware)]{\includegraphics[scale=0.5]{Figures/is-clade/synth1-shaded}
 
+}
+
+\caption{\label{fig:Handling-incertae-sedis}Handling \emph{incertae sedis
+}taxa recovers additional edges and taxon names.
+Supertree construction on input tree (a) and taxonomy tree (b) with \emph{incertae sedis}
+clade $C$ leads to synthesis tree (c) if \emph{incertae sedis} annotations are
+ignored, but to synthesis tree (d) if \emph{incertae sedis} annotations are respected.
+The tree in (d) recovers taxon names $AB$ and $A$, as well as the edge to clade $AB$
+that groups $A$ and $B$. Taxon names and edges that are conditional on handling
+\emph{incertae sedis}
+are shaded grey.
+}
+
+\end{figure}
+
+\subsection{A naive semantics: consequences of ignoring the annotation}
+
+The most straightforward approach for increasing the taxonomic completeness of
+the supertree is simply to no longer prune taxa from $\taxonomy$ because they are flagged
+as \emph{incertae sedis}, and then run the rest of the pipeline of
+\citet{redelings2017supertree} unaltered.  Before we propose a semantics of
+\emph{incertae sedis}, it is worth pointing out what this naive semantics is lacking.
+
+First, this approach results in a less-resolved tree because taxonomic
+vagueness (in the form of the \emph{incertae sedis} annotation) is interpreted as
+an unwarranted statement that the \emph{incertae sedis} taxa are disallowed from
+being members of their sibling taxa.  When an incertae sedis taxon is placed within
+a sibling taxon by input phylogenies, this is taken as a rejection of the monophyly
+of the sibling taxon, which is then removed from the synthesis tree.  For
+example, in the synthesis tree in Fig. \ref{fig:Handling-incertae-sedis}c, the
+placement of taxon $C$ in group $AB$ is interpreted as a rejection of the
+monophyly of $AB$. The edge leading to $AB$ is therefore not incorporated into
+the synthesis tree.  In contrast, the synthesis tree in Fig.
+\ref{fig:Handling-incertae-sedis}d that does not reject the monophyly of $AB$
+retains the grouping of $A$ and $B$.
+
+Second, this approach results in the removal of clade names for all clades that
+have an \emph{incertae sedis} taxon place within them.  For example, in Fig.
+\ref{fig:Handling-incertae-sedis}c the names for the clades $A$ and $AB$ are lost.
+
+Third, this approach cannot use information from phylogenies to resolve the
+location of uncertain taxa.  For example, the synthesis tree in
+\ref{fig:Handling-incertae-sedis}c has lost the label for $A$, and so does not
+allow us to place $C$ within $A$.  In contrast, the synthesis tree in Fig.
+\ref{fig:Handling-incertae-sedis}d that takes account of \emph{incertae sedis}
+annotations and retains the label for $A$.  This allows us to infer that
+\emph{incertae sedis} taxon $C$ has been placed within $A$, resolving
+the uncertainty.
 
 \section{\label{sec:Semantics-of-incertae}Semantics of \emph{incertae
 sedis} taxa}
@@ -467,29 +462,6 @@ higher taxon of the form. So for the name labeling node $n$ in the taxonomic
 tree, the operational definition would be: ``the clade defined by all taxa that
 are more closely related to $\mathcal{I}(n)$ than to $\mathcal{E}(n)$, if such a clade exists on the tree.''
 
-
-\paragraph{(A first semantics) Naive interpretation: ignoring the annotation}
-
-The most straightforward approach for increasing the taxonomic
-completeness of the supertree is simply to no longer prune taxa from
-$\taxonomy$ because they are flagged as \emph{incertae sedis}, and
-then run the rest of the pipeline of \citet{redelings2017supertree}
-unaltered.
-However this approach results in a less resolved tree
-because taxonomic vagueness (in the form of the \emph{incertae sedis}
-annotation) is interpreted as an unwarranted statement that the
-\emph{incertae sedis} taxa are disallowed from being members of their
-sibling taxa.
-In essence, this interpretation would overinterpret the taxonomic
-    hierarchy by treating all of the groupings as statements about
-    full rooted splits, when some should be viewed as partial splits.
-
-% \mthcomment{ Do we have some numbers on this (presumably from just
-%running the only propinquity with a different set of prune flags)? }
-
-% \bdrcomment{ I think we would currently lose about 10 taxa }    
-
-\bdrcomment{The reason why we don't do the naive thing is currently in section \ref{conflict}}
 \paragraph{(Split-based semantics) Information content of the \emph{incertae sedis} annotation}
 
 In terms of rooted split interpretation, an \emph{incertae sedis} taxon differs
@@ -960,34 +932,6 @@ clade intact (Figure \ref{fig:Handling-incertae-sedis}).
 However, if
 the clade is not monophyletic in the synthesis tree, then we allow the
 members of the clade to be placed separately (Figure \ref{fig:Broken-incertae-sedis}).
-
-\begin{figure}
-\subfloat[Input tree \#1]{\includegraphics[scale=0.5]{Figures/is-clade/tree1-shaded}
-
-}\hfill{}\subfloat[Taxonomy]{\includegraphics[scale=0.5]{Figures/is-clade/tax-shaded}
-
-}
-
-\subfloat[Synthesis Tree (no \emph{incertae sedis})]{\includegraphics[scale=0.5]{Figures/is-clade/synth1-no-is-shaded}
-
-}\hfill{}\subfloat[Synthesis Tree (\emph{incertae sedis} aware)]{\includegraphics[scale=0.5]{Figures/is-clade/synth1-shaded}
-
-}
-
-\caption{\label{fig:Handling-incertae-sedis}Handling \emph{incertae sedis
-}taxa recovers additional edges and taxon names.
-Supertree construction
-on input tree (a) and taxonomy tree (b) with \emph{incertae sedis}
-clade $C$ leads to synthesis tree (c).
-However, supertree construction
-with \emph{incertae sedis} handling constructs tree (d), which recovers
-taxon name $AB$ and $A$, as well as the edge to clade $AB$.
-Taxon
-names and edges that are conditional on handling \emph{incertae sedis}
-are shaded grey.
-}
-
-\end{figure}
 \begin{figure}
 \hfill{}\subfloat[Input tree \#1]{\includegraphics[scale=0.5]{Figures/is-clade/tree1-shaded}
 
