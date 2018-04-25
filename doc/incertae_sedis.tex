@@ -90,10 +90,10 @@ The approach is to combine information in
 published phylogenies with a comprehensive taxonomy that supplies
 taxon names.
 The supertree method has been used with the Open Tree of
-Taxonomy \citep[OTT hereafter, see][]{rees2017automated}, but in
-principle is general.
+Taxonomy \citep[OTT hereafter, see][]{rees2017automated}, but 
+could be used in more general contexts.
 The taxonomy is a crucial input for several
-reasons: it covers a wider range of species, its list of names allows
+reasons: it covers a wide range of species, its list of names allows
 for alignment of different phylogenetic estimates to each other, and
 it provides names for clades.
 Only a small proportion of known species
@@ -104,7 +104,8 @@ use different names for the same species.
 Lists of synonyms in OTT
 (and other taxonomies) allow data curators to ``align'' input
 phylogenies to the taxonomy \citep[see][ for discussion of the
-curation process in the Open Tree of Life project]{McTavishEtAt2015}.
+curation process that the Open Tree of Life project uses to align phylogenetic
+estimates to OTT]{McTavishEtAt2015}.
 This alignment is important for recognizing when two different
 estimates refer to the same taxon.
 Biologists are familiar with names
@@ -112,7 +113,8 @@ for ``higher'' taxa (taxa above the species rank).
 Thus, naming clades
 in the supertree makes the tree easier to navigate and use.
 
-While some taxonomies may indicate hybrid taxa, the supertree approach
+Some taxonomies indicate which taxa are thought to be the result of hybridization, 
+but the supertree approach
 described here does not consider any hybridization.
 Thus the taxonomic
 hierarchy can be converted to a tree.
@@ -159,7 +161,7 @@ taxonomy and input trees.
 Thus, the final supertree lacked taxa which
 were \emph{incertae sedis} or the descendants of such taxa.
 
-Here describe a supertree method so that we can resolve taxonomic
+Here we describe a supertree method so that we can resolve taxonomic
 uncertainty by using published phylogenies to place \emph{incertae
 sedis} taxa.
 Developing this method required deciding on a set of
@@ -208,8 +210,15 @@ words, the set $C$ is initialized to the empty set, and we then
 iteratively consider each split in the list $\mathcal{S}$ and insert
 it into $C$ if the resulting set remains jointly compatible.
 The BUILD
-algorithm \citep{AhoSSU1981} is used both to check compatibility, and
-to construct a compatible tree from the final set $C$.
+algorithm \citep{AhoSSU1981} is used both to check compatibility.
+ and to construct many aspects of a compatible tree from the final set $C$.
+Refer to \citet{redelings2017supertree} for details of the procedure, including
+a description of an optimization from
+  pruning taxa that do not occur in any phylogenetic estimates in pre-processing
+  and then reattaching them to a backbone tree.
+This optimization is not crucial to the current work, but it does
+  cause some groups to attach more tipward than they would if the entire
+  tree were constructed using BUILD.
 
 Because of the large number (over 2.6 million) of tips in the full
 tree, the supertree method of \citet{redelings2017supertree} uses an
