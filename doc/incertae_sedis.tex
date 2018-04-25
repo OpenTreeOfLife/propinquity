@@ -188,103 +188,69 @@ into the Open Tree of Life summary tree.
 
 \paragraph{Previous algorithm}
 
-The supertree algorithm of \citet{redelings2017supertree} takes as
-input a ranked list $\phyloinputs=\left\{ T_{1},\ldots,T_{n}\right\} $
-of leaf-labeled rooted input phylogenies and a single rooted taxonomy
-tree $\taxonomy_{p}$ that is ranked below all of the input trees.
-As
-discussed in \citet{redelings2017supertree}, the preferred tree would
-display as many of the highly ranked input splits as possible.
-If
-computational barriers were not an issue, the method would act by
-first producing a ranked list of rooted splits:
-$\mathcal{S}=S(T_{1})+S(T_{2})+\ldots+S(T_{n})+S(\mathbb{T})$ where
-$S(T_{i})$ denotes a list of non-trivial rooted splits created from a
-post-order traversal of tree $i$ and '$+$' denotes concatenation.
-Then
-the supertree would be produced in a greedy manner by iterating over
-the list $S$, and adding each rooted split to a growing rooted
-supertree if that split is compatible with the supertree.
-In other
-words, the set $C$ is initialized to the empty set, and we then
-iteratively consider each split in the list $\mathcal{S}$ and insert
-it into $C$ if the resulting set remains jointly compatible.
-The BUILD
-algorithm \citep{AhoSSU1981} is used both to check compatibility.
- and to construct many aspects of a compatible tree from the final set $C$.
-Refer to \citet{redelings2017supertree} for details of the procedure, including
-a description of an optimization from
-  pruning taxa that do not occur in any phylogenetic estimates in pre-processing
-  and then reattaching them to a backbone tree.
-This optimization is not crucial to the current work, but it does
-  cause some groups to attach more tipward than they would if the entire
-  tree were constructed using BUILD.
+The supertree algorithm of \citet{redelings2017supertree} takes as input a
+ranked list $\phyloinputs=\left\{ T_{1},\ldots,T_{n}\right\} $ of leaf-labeled rooted input phylogenies and a
+single rooted taxonomy tree $\taxonomy_{p}$ that is ranked below all of the input trees.
+As discussed in \citet{redelings2017supertree}, the preferred tree would
+display as many of the highly ranked input splits as possible. If computational
+barriers were not an issue, the method would act by first producing a ranked
+list of rooted splits: $\mathcal{S}=S(T_{1})+S(T_{2})+\ldots+S(T_{n})+S(\mathbb{T})$ where $S(T_{i})$ denotes a list
+of non-trivial rooted splits created from a post-order traversal of tree $i$ and '$+$'
+denotes concatenation. Then the supertree would be produced in a greedy manner
+by iterating over the list $S$, and adding each rooted split to a growing rooted
+supertree if that split is compatible with the supertree. In other words, the set
+$C$ is initialized to the empty set, and we then iteratively consider each split in
+the list $\mathcal{S}$ and insert it into $C$ if the resulting set remains jointly compatible.
+The BUILD algorithm \citep{AhoSSU1981} is used both to check compatibility,  and
+to construct many aspects of a compatible tree from the final set $C$.  Refer to
+\citet{redelings2017supertree} for details of the procedure, including a
+description of an optimization for pruning taxa that do not occur in any
+phylogenetic estimates during pre-processing and then reattaching them to a
+backbone tree.  This optimization is not crucial to the current work, but it
+does cause some groups to attach more tipward than they would if the entire tree
+were constructed using BUILD.
 
-Because of the large number (over 2.6 million) of tips in the full
-tree, the supertree method of \citet{redelings2017supertree} uses an
-approximation approach that relies on decomposition of the full
-problem into subproblems.
-The decomposition partitions the list of
-taxonomy splits $S(\taxonomy_{p})$ into two lists:
-$\mathcal{Z}(\taxonomy_{p}),$ the list of splits from the taxonomy tree
-which are compatible with every rooted split in the phylogenetic
-inputs, and $\mathcal{Y}(\taxonomy_{p})$, the list of taxonomic splits
-that conflict with at least one phylogenetic input split.
-Conceptually
-the approximate algorithm works by greedily adding all compatible
-splits in altered ranked list of splits:
-$\mathcal{S}^{\prime}=\mathcal{Z}(\taxonomy_{p})+S(T_{1})+S(T_{2})+\ldots+S(T_{n})+\mathcal{Y}(\taxonomy_{p})$.
+Because of the large number (over 2.6 million) of tips in the full tree, the
+supertree method of \citet{redelings2017supertree} uses an approximation
+approach that relies on decomposition of the full problem into subproblems.
+The decomposition partitions the list of taxonomy splits $S(\taxonomy_{p})$ into two lists:
+$\mathcal{Z}(\taxonomy_{p}),$ the list of splits from the taxonomy tree which are compatible with every
+rooted split in the phylogenetic inputs, and $\mathcal{Y}(\taxonomy_{p})$, the list of taxonomic splits
+that conflict with at least one phylogenetic input split. Conceptually the
+approximate algorithm works by greedily adding all compatible splits in
+altered ranked list of splits: $\mathcal{S}^{\prime}=\mathcal{Z}(\taxonomy_{p})+S(T_{1})+S(T_{2})+\ldots+S(T_{n})+\mathcal{Y}(\taxonomy_{p})$.
 
-In practice, the decomposition allows the compatibility of splits to
-be checked on smaller, relabeled trees.
-This can be done much more
-efficiently than if compatibility was checked using the BUILD
-algorithm of \citet{AhoSSU1981} on the full leaf set.
-Thus, the
-supertree algorithm first divides the supertree problem into
-independent pieces by bisecting trees at the uncontested taxa which
-correspond to $Z$, then solves the supertree problem on these pieces,
-and finally glues the pieces back together to produce the full tree.
+In practice, the decomposition allows the compatibility of splits to be checked
+on smaller, relabeled trees. This can be done much more efficiently than if
+compatibility was checked using the BUILD algorithm of \citet{AhoSSU1981} on the
+full leaf set. Thus, the supertree algorithm first divides the supertree problem
+into independent pieces by bisecting trees at the uncontested taxa which
+correspond to $Z$, then solves the supertree problem on these pieces, and finally
+glues the pieces back together to produce the full tree.
 
-The taxonomy tree, $\taxonomy_{p}$, is derived from OTT.
-As mentioned
-above, OTT not only contains a taxonomic hierarchy, but also contains
-taxonomic labels and annotations (referred to as ``flags'') on the
-taxa to carry extra information.
-The entire hierarchy encoded by OTT is
-a complete taxonomic tree, $\taxonomy^{\ast}.$ Nodes in
-$\taxonomy^{\ast}$ have a one-to-one correspondence with a set of
-labels $\mathcal{N}$ that are called taxon names.
-We will decompose
-$\mathcal{N}$ into the taxon names for leaf taxa \emph{$\mathcal{L}$
-}and higher taxa $\mathcal{H}$.
-We will use $\mathcal{U}$ to refer to
-the subset ($\mathcal{U}\subseteq\mathcal{N}$) of taxa that are
-annotated with the \emph{incertae sedis }property.
-Other annotations
-identify dubious taxa and taxonomic names that are unwanted artifacts
-of the process of building OTT.
-Thus, the taxonomic tree which is used
-as an input to the supertree algorithm is pruned version of
-$\taxonomy^{\ast}$.
-For our purposes, the relevant information from
-the taxonomy consists of the taxonomy tree $\taxonomy^{\ast}$, the
-labels $\mathcal{N}$, and set $\mathcal{U}$ of \emph{incertae sedis} taxa.
-In previous work, taxa in $\mathcal{U}$ and all of their descendants 
-were all pruned from
-the taxonomic hierarchy when $\taxonomy_{p}$ is extracted from OTT.
-In
-the present work, we consider supertree approaches that operate on a
-taxonomic tree $\taxonomy$, which is produced from
-$\taxonomy^{\ast}$but does not prune \emph{incertae sedis} taxa.
+The taxonomy tree, $\taxonomy_{p}$, is derived from OTT. As mentioned above, OTT not only
+contains a taxonomic hierarchy, but also contains taxonomic labels and
+annotations (referred to as ``flags'') on the taxa to carry extra information.
+The entire hierarchy encoded by OTT is a complete taxonomic tree, $\taxonomy^{\ast}.$ Nodes in
+$\taxonomy^{\ast}$ have a one-to-one correspondence with a set of labels $\mathcal{N}$ that are called
+taxon names. We will decompose $\mathcal{N}$ into the taxon names for leaf taxa $\mathcal{L}$ and
+higher taxa $\mathcal{H}$. We will use $\mathcal{U}$ to refer to the subset ($\mathcal{U}\subseteq\mathcal{N}$) of taxa that are
+annotated with the \emph{incertae sedis }property. Other annotations identify
+dubious taxa and taxonomic names that are unwanted artifacts of the process of
+building OTT. Thus, the taxonomic tree which is used as an input to the
+supertree algorithm is pruned version of $\taxonomy^{\ast}$. For our purposes, the relevant
+information from the taxonomy consists of the taxonomy tree $\taxonomy^{\ast}$, the labels $\mathcal{N}$,
+and set $\mathcal{U}$ of \emph{incertae sedis} taxa. In previous work, taxa in $\mathcal{U}$ and all
+of their descendants were all pruned from the taxonomic hierarchy when $\taxonomy_{p}$ is
+extracted from OTT. In the present work, we consider supertree approaches that
+operate on a taxonomic tree $\taxonomy$, which is produced from $\taxonomy^{\ast}$but does not prune
+\emph{incertae sedis} taxa.
 
-Throughout we assume that leaf labels on input phylogenetic trees are
-only taken from the leaf set of the taxonomic tree that is being used
-and that each label occurs at most once in each input tree.
-\citet{redelings2017supertree} describe a method called
-``exemplification'' that ensures this is the case.
-Thus pruning of the
-\emph{incertae sedis} taxa from the taxonomy was also accompanied by
+Throughout we assume that leaf labels on input phylogenetic trees are only taken
+from the leaf set of the taxonomic tree that is being used and that each label
+occurs at most once in each input tree. \citet{redelings2017supertree} describe
+a method called ``exemplification'' that ensures this is the case. Thus pruning
+of the \emph{incertae sedis} taxa from the taxonomy was also accompanied by
 pruning those taxa and all of their descendants from the input phylogenetic
 trees.
 
