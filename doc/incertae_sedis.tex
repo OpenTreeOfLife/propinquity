@@ -343,31 +343,39 @@ as \emph{incertae sedis}, and then run the rest of the pipeline of
 \citet{redelings2017supertree} unaltered.  Before we propose a semantics of
 \emph{incertae sedis}, it is worth pointing out what this naive semantics is lacking.
 
-First, this approach results in a less-resolved tree because taxonomic
-vagueness (in the form of the \emph{incertae sedis} annotation) is interpreted as
-an unwarranted statement that the \emph{incertae sedis} taxa are disallowed from
-being members of their sibling taxa.  When an incertae sedis taxon is placed within
-a sibling taxon by input phylogenies, this is taken as a rejection of the monophyly
-of the sibling taxon, which is then removed from the synthesis tree.  For
-example, in the synthesis tree in Fig. \ref{fig:Handling-incertae-sedis}c, the
-placement of taxon $C$ in group $AB$ is interpreted as a rejection of the
-monophyly of $AB$. The edge leading to $AB$ is therefore not incorporated into
-the synthesis tree.  In contrast, the synthesis tree in Fig.
-\ref{fig:Handling-incertae-sedis}d that does not reject the monophyly of $AB$
-retains the grouping of $A$ and $B$.
+This approach incorrectly treats the intrusion of an \emph{incertae sedis} taxon
+into a sibling taxon as a conflicting with monophyly of the sibling taxon. For
+example, in Fig. \ref{fig:Handling-incertae-sedis}, the placement of the
+\emph{incertae sedis} taxon $C$ within $A$ and $AB$, is considered
+to contradict the monophyly of $A$ and $AB$ and thus to conflict with those taxa.
+This has three main effects.  These effects are illustrated in the difference
+between the synthesis tree in Fig. \ref{fig:Handling-incertae-sedis}c, which
+ignores \emph{incertae sedis} annotations, and the synthesis tree in Fig.
+\ref{fig:Handling-incertae-sedis}d, which respects them.
+
+First, this approach results in a less-resolved tree.  While input trees are
+free to place incertae sedis taxa within a sibling, the naive approach
+interprets this placement as conflict with the sibling.  Since the taxonomy
+is ranked below all input trees, conflict is always resolved in favor of the
+input trees, and so the sibling in the taxonomy is removed from the synthesis
+tree.  For example, in the synthesis tree in Fig.
+\ref{fig:Handling-incertae-sedis}c, the placement of taxon $C$ in group $AB$ is
+interpreted as a rejection of the monophyly of $AB$. The edge leading to $AB$ is
+therefore not incorporated into the synthesis tree.  In contrast, the synthesis
+tree in Fig. \ref{fig:Handling-incertae-sedis}d that does not reject the
+monophyly of $AB$ retains the grouping of $A$ and $B$.
 
 Second, this approach results in the removal of clade names for all clades that
-have an \emph{incertae sedis} taxon place within them.  For example, in Fig.
+have an \emph{incertae sedis} taxon placed within them.  For example, in Fig.
 \ref{fig:Handling-incertae-sedis}c the names for the clades $A$ and $AB$ are lost.
 
 Third, this approach cannot use information from phylogenies to resolve the
 location of uncertain taxa.  For example, the synthesis tree in
 \ref{fig:Handling-incertae-sedis}c has lost the label for $A$, and so does not
-allow us to place $C$ within $A$.  In contrast, the synthesis tree in Fig.
-\ref{fig:Handling-incertae-sedis}d that takes account of \emph{incertae sedis}
-annotations and retains the label for $A$.  This allows us to infer that
-\emph{incertae sedis} taxon $C$ has been placed within $A$, resolving
-the uncertainty.
+allow us to note that $C$ has been placed within $A$.  In contrast, the
+synthesis tree in Fig. \ref{fig:Handling-incertae-sedis}d retains the label for
+$A$, which allows us to resolve taxonomic uncertainty by infering that
+\emph{incertae sedis} taxon $C$ has been placed within $A$.
 
 \section{\label{sec:Semantics-of-incertae}Semantics of \emph{incertae
 sedis} taxa}
