@@ -465,7 +465,8 @@ sets in a helpful way.  We note that a node $n$ ordinarily excludes the
 descendants of $\mathcal{I}(s)$ for all of its siblings, as well as the siblings
 of all of its ancestors.  This leads to the following equation:
 \begin{align*}
-\mathcal{E}(n) & =\left[\mathcal{I}(s)\big|a\in n+ancestors(n),s\in siblings(a)\right]\\
+  \mathcal{E}(n) & = \mathcal{L} - \mathcal{I}(n)\\
+ & =\left[\mathcal{I}(s)\big|a\in n+ancestors(n),s\in siblings(a)\right]\\
  & =\left[\mathcal{I}(s)\big|s\in siblings(n)\right]\cup\left[\mathcal{I}(s)\big|a\in ancestors(n),s\in siblings(a)\right]\\
  & =\left[\mathcal{I}(s)\big|s\in siblings(n)\right]\cup\mathcal{E}(parent(n)) \label{eq:exclude-set-formula-traditional}
 \end{align*}
@@ -480,7 +481,7 @@ might intrude are just the \emph{incertae sedis} siblings of $n$ and all of its 
  & =\left[\mathcal{I}(s)\big|s\in siblings(n),s\text{ not \emph{incertae sedis}}\right]\cup\mathcal{E}(parent(n)).\label{eq:exclude-set-formula-1a}
 \end{align*}
 This formula allows us to compute exclude sets via a pre-order traversal on the
-taxonomy tree with exclude set for the root node defined to be $\emptyset$. 
+taxonomy tree with the exclude set for the root node defined to be $\emptyset$. 
 
 \subsection{Naming }
 
@@ -531,6 +532,9 @@ introducing a monotypic parent, and applying $A$ to the newly created parent nod
 \hfill{}
 \caption{\label{fig:Multiple-names-can}Multiple names can apply to a single node.}
 \end{figure}
+
+
+\bdrcomment{Ben: discuss naming + interdigitation}
 
 
 \subsection{Placement}\label{subsec:Placement}
@@ -634,131 +638,7 @@ $B$, or $C$ is in the exclude set of the siblings of $D$.
 \end{itemize}
 \end{comment}
 
-\subsection{Cases that this semantics can handle}
-
-\subsection{Surprising results of the split-based semantics}
-
-\subsubsection{Inter-digitation}
-1. Inter-digitation
-
-\bdrcomment{Ben: Add figure}
-
-\subsubsection{Placing one \emph{incertae sedis} group within another}
-It would be nice if our semantics of incertae sedis taxa would allow us to place
-one \emph{incertae sedis} sibling inside another.
-A special case of
-this is when a higher-rank incertae sedis taxon $A$ is placed as
-sister to an incertae sedis taxon $B$, and then $B$ is placed within
-$A$ (Figure \#).
-
-\begin{figure}
-\subfloat[Input tree \#1]{\includegraphics[scale=0.5]{Figures/is-within-is/tree1\lyxdot tre}
-
-}\subfloat[Taxonomy]{\includegraphics[scale=0.5]{Figures/is-within-is/tax-shaded}
-
-}\subfloat[Synthesis tree]{\includegraphics[scale=0.5]{Figures/is-within-is/synth1-shaded}
-
-}
-
-\caption{\label{fig:Placing-one-incertae}Placing one incertae sedis group
-within another.
-Here I is placed within A, and then AI is placed within
-A.}
-\end{figure}
-
-2. Placing A next to B, then B within A.
-
-\bdrcomment{Ben: Write discussion of Figure \ref{fig:Placing-one-incertae}}
-
-\paragraph{Splits-based synthesis method}
-
-Here we focus on a split-based semantics instead of a semantics based on apply
-of a series of edit operations to the tree. The split-based semantics allows us
-to seek trees that are simultaneously consistent with a set of split-constraints.
-The use of a split-based semantics does impose some limitations. These come
-primarily because in the edit-based semantics, after we place an
-\emph{incertae sedis} taxon, it is no loner \emph{incertae sedis}, whereas with
-the split-based semantics taxa are either always \emph{incertae sedis} or never
-\emph{incertae sedis}.
-
-This has an effect, for example, when we consider two incertae sedis siblings $A$
-and $B$. If we can place $A$ within $B$, and $B$ within $A$, then a split- based
-semantics allows us to freely inter-digitate $A$ and $B$. If we do not want to
-allow $A$ and $B$ to be inter-digitated, then we cannot both $A$ within $B$ and $B$
-within $A$. In addition, we can imagine that a family $A$ is incertae sedis within a
-kingdom. In an edit-based semantics, we could place $A$ as a sibling to a genus $B$,
-mark $A$ as non-\emph{incertae-sedis}, and then place $B$ within $A$. In a split-based
-semantics, we must disallow either $B$ within $A$ or $A$ within $B$ if we want to disallow
-interdigitation.
-
-As a result of this, we cannot satisfy all five of these criteria. Thus, we
-describe two alternative split-based semantics. The non-interdigitation
-semantics gets \# (1,2,4,5), and the interdigitation semantics gets (1,3,4,5).
-This makes the point that each semantics results from different choices about
-which criteria to satisfy.
-
-
-
 \section{Synthesis and conflict resolution with incertae sedis taxa}
-
-\subsection{Placement causes broken taxa}
-\label{conflict}
-Synthesis with \emph{incertae sedis} taxa has the potential to resolve
-uncertain taxon placements using information from phylogenies.
-Since
-phylogenies are ranked higher than taxonomy, they may place members of
-incertae sedis clades as they wish even when we do not take into
-account the semantics of incertae sedis taxa.
-However, without the
-incertae sedis semantics described above, placing a taxon $A$ within a
-taxon $B$ results in conflict with taxon $B$ in the taxonomy.
-This has
-three main effects: \begin{enumerate}
-    \item The edge leading to clade $B$ is lost.
-    \item Any taxonomy-only children of $B$ are placed at the
-        MRCA of the phylogenetically informed taxa, instead of at node $B$.
-    \item The name for taxon $B$ is lost.
-    \item We do not record $A$ as being placed within $B$.
-\end{enumerate} In order to avoid a situation
-where input phylogenies conflict with a large number of taxa when
-\emph{incertae sedis} taxa are placed within them, we have previously
-filtered \emph{incertae sedis} taxa from the taxonomy when
-constructing all prior synthesis trees.
-
-When the synthesis tree conflicts with a taxonomy node, we say that
-the taxon $B$ at that node is a broken taxon.
-Broken taxa have two
-main effects, both of which are negative.
-First, the name $B$ of the
-broken taxon is removed from the synthesis tree.
-Second, the
-conflicting edge for taxon $B$ is not included in the synthesis tree.
-This means that any children of $B$ that are taxonomy-only will not be
-placed with the children of $B$ that are mentioned in input
-phylogenies.
-Instead the taxonomy-only children of a broken taxon move
-towards the root of the synthesis tree and attach at the first higher-
-ranked taxon that is an ancestor of $B$ but is not broken.
-
-We therefore seek a synthesis method that can correctly introduce
-\emph{incertae sedis} taxa into containing taxa without breaking the
-containing taxa.
-We change the semantics of names to imply, not the
-exclusion of all non-included taxa, but only some non-included taxa,
-as described in section \ref{sec:Semantics-of-incertae}.
-As a result
-of this change in semantics, placing an IS taxon $A$ within a sister
-taxon $B$ no longer results in conflict with $B$.
-This allows us to
-retain the split for $B$ within the synthesis tree, so that taxonomy-
-only children of $B$ are correctly grouped with their siblings that
-are referenced by the input trees.
-We may then retain the name for the
-no-longer-broken taxon.
-Finally, we are then able to stop filtering
-\emph{incertae sedis} taxa, so that they appear in the synthesis tree.
-Thus, the synthesis tree is able to represent substantially more
-species, without suffering the loss of taxa and the loss of structure.
 
 \subsection{Conflict with incertae sedis taxa}
 
@@ -804,8 +684,7 @@ updated version differs that (a) the names ott9 and ott8 are retained
 instead of being dropped.
 (b) as a result of not breaking ott8 and
 ott9, we do not move ott3 and ott2 up to ott11.
-{[}BDR: Extend more
-figures!{]}
+{[}BDR: Extend more figures!{]}
 
 \subsection{Case 1: An \emph{incertae sedis} clade}
 
@@ -915,6 +794,69 @@ to AB and CG.}
 
 \subsection{Case 3: Placement of one \emph{incertae sedis} taxon within
 another.}
+\subsection{Surprising results of the split-based semantics}
+
+\subsubsection{Inter-digitation}
+1. Inter-digitation
+
+\bdrcomment{Ben: Add figure}
+
+\subsubsection{Placing one \emph{incertae sedis} group within another}
+It would be nice if our semantics of incertae sedis taxa would allow us to place
+one \emph{incertae sedis} sibling inside another.
+A special case of
+this is when a higher-rank incertae sedis taxon $A$ is placed as
+sister to an incertae sedis taxon $B$, and then $B$ is placed within
+$A$ (Figure \#).
+
+\begin{figure}
+\subfloat[Input tree \#1]{\includegraphics[scale=0.5]{Figures/is-within-is/tree1\lyxdot tre}
+
+}\subfloat[Taxonomy]{\includegraphics[scale=0.5]{Figures/is-within-is/tax-shaded}
+
+}\subfloat[Synthesis tree]{\includegraphics[scale=0.5]{Figures/is-within-is/synth1-shaded}
+
+}
+
+\caption{\label{fig:Placing-one-incertae}Placing one incertae sedis group
+within another.
+Here I is placed within A, and then AI is placed within
+A.}
+\end{figure}
+
+2. Placing A next to B, then B within A.
+
+\bdrcomment{Ben: Write discussion of Figure \ref{fig:Placing-one-incertae}}
+
+\paragraph{Splits-based synthesis method}
+
+Here we focus on a split-based semantics instead of a semantics based on apply
+of a series of edit operations to the tree. The split-based semantics allows us
+to seek trees that are simultaneously consistent with a set of split-constraints.
+The use of a split-based semantics does impose some limitations. These come
+primarily because in the edit-based semantics, after we place an
+\emph{incertae sedis} taxon, it is no loner \emph{incertae sedis}, whereas with
+the split-based semantics taxa are either always \emph{incertae sedis} or never
+\emph{incertae sedis}.
+
+This has an effect, for example, when we consider two incertae sedis siblings $A$
+and $B$. If we can place $A$ within $B$, and $B$ within $A$, then a split- based
+semantics allows us to freely inter-digitate $A$ and $B$. If we do not want to
+allow $A$ and $B$ to be inter-digitated, then we cannot both $A$ within $B$ and $B$
+within $A$. In addition, we can imagine that a family $A$ is incertae sedis within a
+kingdom. In an edit-based semantics, we could place $A$ as a sibling to a genus $B$,
+mark $A$ as non-\emph{incertae-sedis}, and then place $B$ within $A$. In a split-based
+semantics, we must disallow either $B$ within $A$ or $A$ within $B$ if we want to disallow
+interdigitation.
+
+As a result of this, we cannot satisfy all five of these criteria. Thus, we
+describe two alternative split-based semantics. The non-interdigitation
+semantics gets \# (1,2,4,5), and the interdigitation semantics gets (1,3,4,5).
+This makes the point that each semantics results from different choices about
+which criteria to satisfy.
+
+
+
 
 
 
