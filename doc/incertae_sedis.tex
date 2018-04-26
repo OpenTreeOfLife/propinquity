@@ -752,13 +752,6 @@ tree.
 
 \subsection{Case 2: A nested \emph{incertae sedis} clade}
 
-When \emph{incertae sedis} clades are allowed, it is possible for an
-\emph{incertae sedis} taxon to be nested within another \emph{incertae
-sedis} taxon.
-In such a case we must allow the higher-ranked taxon to
-be placed within a sibling, while preserving the right of the lower
-ranked taxon to be placed within a lower-level sibling (Figure
-\ref{fig:Nested-incertae-sedis}).
 
 \begin{figure}
 \subfloat[Input tree \#1]{\includegraphics[scale=0.5]{Figures/is-nested/tree3-shaded}
@@ -787,6 +780,13 @@ The names AB, A, and CG are regained, as well as the edges leading
 to AB and CG.}
 
 \end{figure}
+When \emph{incertae sedis} clades are allowed, it is possible for an
+\emph{incertae sedis} taxon to be nested within another \emph{incertae
+sedis} taxon.
+In such a case we must allow the higher-ranked taxon to
+be placed within a sibling, while preserving the right of the lower
+ranked taxon to be placed within a lower-level sibling (Figure
+\ref{fig:Nested-incertae-sedis}).
 
 
 \subsection{Case 3: Placement of one \emph{incertae sedis} taxon within
@@ -826,9 +826,9 @@ A.}
 
 \bdrcomment{Ben: Write discussion of Figure \ref{fig:Placing-one-incertae}}
 
-\paragraph{Splits-based synthesis method}
+\subsection{Splits-based semantics versus edit-based semantics}
 
-Here we focus on a split-based semantics instead of a semantics based on apply
+Here we focus on a split-based semantics instead of a semantics based on applying
 of a series of edit operations to the tree. The split-based semantics allows us
 to seek trees that are simultaneously consistent with a set of split-constraints.
 The use of a split-based semantics does impose some limitations. These come
@@ -1229,118 +1229,6 @@ It would also probably be slower...
 
 \section{Results}
 
-\subsection{Case 1}
-
-taxonomy = (((a1,a2)A,(b1,b2)B)AB,(c1,c2)?C,D)root;
-
-\subsubsection{If we place $c$ within $A$}
-
-tree1 = (((a1,c1),b1),d1);
-
-synth-with-is: ((((a1,(c1,c2)C),a2)A,(b1,b2)B)AB),(d1)D)
-
-placement: C within A <- AB
-
-synth-no-is: ((a1,(c1,c2)C),a1,(b1,b2)B,(d1)D)
-
-\subsubsection{If we place $c$ within $A$ but break $C$}
-
-tree1 = ((a1,c1),(a2,c1),b1)
-
-synth-with-is: ((((a1,c1),(a2,c2))A,(b1,b2)B)AB, (d1)D)
-
-synth-no-is: ??
-
-placement:  \begin{itemize} \item c1 <- (broken) C within A <- AB.
-\item c2<- (broken) C within A <- AB \end{itemize} result: we lose
-$C$, but keep $A$ and $AB$.
-
-\subsection{Case 2: nested is}
-
-taxonomy = (((a1,a2)A,(b1,b2)B),( (
-(c11,c12)C1,(c21,c22)C2,(ci1,ci2)?CI )?C) ,(d1)D)
-
-tree1 = ((a1,(c11,(ci1,c12))),b1)
-
-synth-with-is: places CI wihin C1, and C within A.
-
-\subsection{Case 3: interleaving taxa}
-
-taxonomy = ((a1,a2)A,(b1,b2)?B,(c1,c2)?c)
-
-input tree: ((b1,c1),(b2,c2))
-
-synth-with-is: ((a1,a2)A,((b1,c1),(b2,c2))B) or
-((a1,a2)A,((b1,c1),(b2,c2))C)
-
-Result: we name the interleaved taxon $B$ or $C$, but cannot name it
-both names.
-
-\subsection{Case 4: creation of monotypic taxa}
-
-see test cases.
-\begin{comment} \begin{lyxcode}
-\textbf{Whale:}~ ?ott6145835~{[}6145835~Brandtocetus/genus{]}~<-~ott69
-8424~{[}698424~Cetacea/orde r{]}~placed~under~ott4942423~{[}4942423~Ce
-totherium~/~genus{]}~<-~ott698424~{[}6 98424~Cetacea/order{]}
-
-\textbf{Whale:}~?ott6145873~{[}6145873{]}~<-~ott698424~{[}698424~Cetac
-\ea~/~order
-\{]}~placed~under~ott4942423~{[}4942423{]}~<-~ott698424~{[}698424{]}~
-
--~Cetacea~broken.
-
-\textbf{Insect:}~?ott18090~{[}18090{]}~<-~ott672501~{[}672501{]}~place
-\d~under~ot t275501~{[}275501{]}~<-~ott672501~{[}672501{]}
-
-\textbf{Insect:}~?ott190269~{[}190269{]}~<-~ott672501~{[}672501{]}~pla
-\ced~under~ ott275501~{[}275501{]}~<-~ott672501~{[}672501{]}~
-
-\textbf{Insect:}~?ott349638~{[}349638{]}~<-~ott672501~{[}672501{]}~pla
-\ced~under~ ott275501~{[}275501{]}~<-~ott672501~{[}672501{]}~
-
-\textbf{Insect:}~?ott1009313~{[}1009313{]}~<-~ott672501~{[}672501~Redu
-\viidae~/~f amily{]}~placed~under~ott275501~{[}275501{]}~<-~ott672501~
-\{[}672501{]}~
-
--~Reduviidae~broken.
-
-\textbf{Insect:~}?ott564110~{[}564110{]}~<-~ott939130~{[}939130~Thyrid
-\idae~/~fam
-\ily{]}~placed~under~ott757344~{[}757344{]}~<-~ott939130~{[}939130{]}~
-
-\textbf{Plant:}~?ott679485~{[}679485{]}~<-~ott1074933~{[}1074933~Lamio
-\idea~/~sub family{]}~placed~under~ott534796~{[}534796{]}~<-~
-
-\textbf{Plant:}~?ott729184~{[}729184{]}~<-~ott1074933~{[}1074933~Lamio
-\idea~/~sub family~{]}~placed~under~ott534796~{[}534796{]}~<-~ott10749
-\33~{[}1074933{]}~
-
-ott1074933~{[}1074933{]}~
-
--~Lamioidea~\emph{not}~broken
-
-\textbf{Plant:}~?ott5144555~{[}5144555{]}~<-~ott23373~{[}23373{]}~plac
-\ed~under~o tt447802~{[}447802{]}~<-~ott23373~{[}23373{]}
-
--~Orobanchaceae~broken
-
-\textbf{Fly:}~?ott441413~{[}441413~Rhodesiella~lungliensis/species{]}~
-\<-~ott1014 022~{[}1014022~Rubiaceae{]}~placed~under~ott571842~{[}5718
-\42~Pavetteae~/~tribe{ ]}~<-~ott997381~{[}997381~Ixoroidea/subfamily{]
-\}~<-~ott1014022~{[}1014022~Rubia ceae/family{]}
-
-\textbf{Plant:}~?ott31033~{[}31033{]}~<-~ott627035~{[}627035{]}~placed
-\~under~ott 6019314~{[}6019314{]}~<-~ott627035~{[}627035{]}~
-
-\textbf{Bacteria:}~?ott4018918~{[}4018918{]}~<-~ott5248084~{[}5248084{
-\]}~placed~ under~ott167767~{[}167767{]}~<-~ott5248084~{[}5248084{]}~
-
-\textbf{Bacteria:}?ott4792759~{[}4792759{]}~<-~ott5248084~{[}5248084{]
-\}~placed~u nder~ott167767~{[}167767{]}~<-~ott5248084~{[}5248084{]}~
-
--~Erysipelotrichaceae~broken 
-\end{lyxcode} \end{comment}
 Should we do this? We could say:  \begin{itemize} \item there are 331
 incertae sedis taxa that are mentioned in input trees.
 \begin{itemize}
@@ -1665,7 +1553,67 @@ incertae sedis child of the container node's parent. The OTT retains container
 nodes with the was\_container flag, but seems to have already moved all of the
 container's children to the container's parent.
 
+\section{Placements}
+\textbf{Whale:}~ ?ott6145835~{[}6145835~Brandtocetus/genus{]}~<-~ott69
+8424~{[}698424~Cetacea/orde r{]}~placed~under~ott4942423~{[}4942423~Ce
+totherium~/~genus{]}~<-~ott698424~{[}6 98424~Cetacea/order{]}
 
+\textbf{Whale:}~?ott6145873~{[}6145873{]}~<-~ott698424~{[}698424~Cetac
+\ea~/~order
+\{]}~placed~under~ott4942423~{[}4942423{]}~<-~ott698424~{[}698424{]}~
+
+-~Cetacea~broken.
+
+\textbf{Insect:}~?ott18090~{[}18090{]}~<-~ott672501~{[}672501{]}~place
+\d~under~ot t275501~{[}275501{]}~<-~ott672501~{[}672501{]}
+
+\textbf{Insect:}~?ott190269~{[}190269{]}~<-~ott672501~{[}672501{]}~pla
+\ced~under~ ott275501~{[}275501{]}~<-~ott672501~{[}672501{]}~
+
+\textbf{Insect:}~?ott349638~{[}349638{]}~<-~ott672501~{[}672501{]}~pla
+\ced~under~ ott275501~{[}275501{]}~<-~ott672501~{[}672501{]}~
+
+\textbf{Insect:}~?ott1009313~{[}1009313{]}~<-~ott672501~{[}672501~Redu
+\viidae~/~f amily{]}~placed~under~ott275501~{[}275501{]}~<-~ott672501~
+\{[}672501{]}~
+
+-~Reduviidae~broken.
+
+\textbf{Insect:~}?ott564110~{[}564110{]}~<-~ott939130~{[}939130~Thyrid
+\idae~/~fam
+\ily{]}~placed~under~ott757344~{[}757344{]}~<-~ott939130~{[}939130{]}~
+
+\textbf{Plant:}~?ott679485~{[}679485{]}~<-~ott1074933~{[}1074933~Lamio
+\idea~/~sub family{]}~placed~under~ott534796~{[}534796{]}~<-~
+
+\textbf{Plant:}~?ott729184~{[}729184{]}~<-~ott1074933~{[}1074933~Lamio
+\idea~/~sub family~{]}~placed~under~ott534796~{[}534796{]}~<-~ott10749
+\33~{[}1074933{]}~
+
+ott1074933~{[}1074933{]}~
+
+-~Lamioidea~\emph{not}~broken
+
+\textbf{Plant:}~?ott5144555~{[}5144555{]}~<-~ott23373~{[}23373{]}~plac
+\ed~under~o tt447802~{[}447802{]}~<-~ott23373~{[}23373{]}
+
+-~Orobanchaceae~broken
+
+\textbf{Fly:}~?ott441413~{[}441413~Rhodesiella~lungliensis/species{]}~
+\<-~ott1014 022~{[}1014022~Rubiaceae{]}~placed~under~ott571842~{[}5718
+\42~Pavetteae~/~tribe{ ]}~<-~ott997381~{[}997381~Ixoroidea/subfamily{]
+\}~<-~ott1014022~{[}1014022~Rubia ceae/family{]}
+
+\textbf{Plant:}~?ott31033~{[}31033{]}~<-~ott627035~{[}627035{]}~placed
+\~under~ott 6019314~{[}6019314{]}~<-~ott627035~{[}627035{]}~
+
+\textbf{Bacteria:}~?ott4018918~{[}4018918{]}~<-~ott5248084~{[}5248084{
+\]}~placed~ under~ott167767~{[}167767{]}~<-~ott5248084~{[}5248084{]}~
+
+\textbf{Bacteria:}?ott4792759~{[}4792759{]}~<-~ott5248084~{[}5248084{]
+\}~placed~u nder~ott167767~{[}167767{]}~<-~ott5248084~{[}5248084{]}~
+
+-~Erysipelotrichaceae~broken 
 
 
 \bibliographystyle{upmplainnat}
