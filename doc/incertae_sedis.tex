@@ -151,7 +151,7 @@ makes substantial progress towards our goal of comprehensive inclusion of known
 taxa into the Open Tree of Life summary tree.
 
 \subsection{Background}
-
+\label{sec:background}
 \paragraph{Previous algorithm}
 
 The supertree algorithm of \citet{redelings2017supertree} takes as input a
@@ -220,61 +220,6 @@ of the \emph{incertae sedis} taxa from the taxonomy was also accompanied by
 pruning those taxa and all of their descendants from the input phylogenetic
 trees.
 
-\note{     1 Details & Methods
-
-1.1 Some examples in OTT This paragraph pulled from intro to
-otcetera/doc /handling-incertae-sedis.pdf
-
-The problem is becoming more acute because NCBI is putting a larger
-number of taxa into groups that are marked as ``classified''. or
-example, when OTT 2.9 was created NCBI's clasification of the bird
-family Sylvidae included a group five genera that were placed within
-``[http://www.ncbi.nlm.nih.gov/Taxonomy/Brows er/wwwtax.cgi?mode=Undef&
-id=36270&lvl=3&lin=f&keep=1&srchmode=1&unlock||unclassi fied
-Sylviidae].'' This includes the genus Regulus.
-Thus in OTT 2.9 Regulus
-(ott ID = 3599326) is placed inside the family Silvidae (OTT ID =
-259942).
-The ``unclassified Sylviidae'' does not appear in OTT; instead
-Regulus is flagged as ``unclassified,sibling higher'' and all of the
-species within Regulus are flagged as ``unclassified inherited.''
-
-The taxonomy (as of version 2.9) also contains 685 cases of taxa that
-are flagged as both ``unclassified inherited'' and ``unclassified''based
-on grep unclass.*unclassified\_inherited taxonomy.tsv.
-
-We would like to stop suppressing (pruning) incertae sedis taxa, so
-that groups such as Regulus can appear appear in the synthetic tree.
-
-While we get Regulus back, we do not end up placing it in Sylviidae
-because Sylviidae is broken.
-It conflicts with about 20 different
-trees.
-
-1.2 Taxonomy details
-
-Flags.
-The Open Tree's reference taxonomy is produced by a tool called
-smasher that notices hints that a taxon is incertae sedis and labels
-that taxon with one of five flagssee https://github.com/OpenTreeOfLife
-/reference-taxonomy/wiki /Taxon-flags.This document is not concerned
-with the flagging system per se, so ``incertae sedis'' will be used here
-to refer to all of the flags that denote taxa with uncertain
-placement..
-While a taxonomist may intend to use incertae sedis to
-indicate a limited number of possible positions for a taxon to go in
-the taxonomy, we do not retain any such details.
-Container nodes.
-Some taxonomies have nodes with names like ``Incertae
-sedis (Bacteria)''.
-Such nodes are called containers.
-They indicate
-that each child node is an incertae sedis child of the container
-node's parent.
-The OTT retains container nodes with the was_container
-flag, but seems to have already moved all of the container's children
-to the container's parent.
-}
 \begin{figure}
 \subfloat[Input tree \#1]{\includegraphics[scale=0.5]{Figures/is-clade/tree1-shaded}
 
@@ -660,7 +605,37 @@ $B$, or $C$ is in the exclude set of the siblings of $D$.
 \end{itemize}
 \end{comment}
 
-\section{Synthesis and conflict resolution with incertae sedis taxa}
+\section{The rooted-split semantics in practice}
+
+In order to examine the results of the rooted splits-semantics above, we explore
+the outcome on a series of complex cases.  These cases are intended to
+illustrate some of the issues that arise when developing a semantics of
+\emph{incertae sedis}, as well as the outcomes for the rooted-split semantics.
+We think that they constitute one of the main contributions of the paper.  In
+each case, the synthesis trees in this section are constructed using the
+BUILD-based algorithm described in section \ref{sec:background}, without
+decomposing them into smaller subproblems or pruning and then unpruning
+taxonomy-only taxa.  Synthesis trees that are described as \emph{incertae
+sedis}-aware apply the BUILD algorithm to splits constructed using equation
+\ref{eq:exsetformonea}, whereas the synthesis trees that are not \emph{incertae
+sedis}-aware are constructed from splits using equation
+\ref{eq:exsetformonea-traditional}.
+
+Much of the complexity that we explore here comes from the fact that it is not
+only tip taxa that can be \emph{incertae sedis}.  It is also possible to have
+higher ranked  \emph{incertae sedis} taxa, such as genera that are marked
+\emph{incertae familia}.
+
+\subsection{The \emph{incertae sedis} semantics restores taxonomic groups and names}
+
+With the naive semantics, intrusion of an incertae sedis taxon into a sibling is
+interpreted as conflict with that sibling.  This results in the loss of the edge
+corresponding to the sibling taxon as well as the taxon name.
+
+We see from Fig. \ref{fig:Handling-incertae-sedis}d that use of the incertae sedis
+semantics results the taxonomy edge $AB$ grouping $A$ and $B$.  It also restores the
+names $AB$ and $A$.  We may thus determine that $C$ has been placed within $A$ (and
+its ancestor $AB$).
 
 \subsection{Conflict with incertae sedis taxa}
 
@@ -1639,6 +1614,58 @@ We may then define the taxa excluded from $n$ as:
 I think this works... but need to double-check.
 
 Also: can we genericize $\mathcal{E}(parent(n))$?
+
+\section{Details \& Methods}
+
+\subsection{Cases of incertae sedis taxa}
+1.1 Some examples in OTT This paragraph pulled from intro to
+otcetera/doc /handling-incertae-sedis.pdf
+
+The problem is becoming more acute because NCBI is putting a larger
+number of taxa into groups that are marked as ``classified''. For
+example, when OTT 2.9 was created NCBI's clasification of the bird
+family Sylvidae included a group five genera that were placed within
+\url{http://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?mode=Undef&id=36270&lvl=3&lin=f&keep=1&srchmode=1&unlock||unclassified Sylviidae}.
+This includes the genus Regulus. Thus in OTT 2.9 Regulus (ott ID = 3599326) is placed inside the family Silvidae (OTT ID =
+259942).
+The ``unclassified Sylviidae'' does not appear in OTT; instead
+Regulus is flagged as ``unclassified,sibling higher'' and all of the
+species within Regulus are flagged as ``unclassified inherited.''
+
+The taxonomy (as of version 2.9) also contains 685 cases of taxa that
+are flagged as both ``unclassified inherited'' and ``unclassified'' based
+on {\tt grep unclass.*unclassified\_inherited taxonomy.tsv}.
+
+We would like to stop suppressing (pruning) incertae sedis taxa, so
+that groups such as Regulus can appear appear in the synthetic tree.
+
+\bdrcomment{We get Regulus back, bu we do not end up placing it in Sylviidae
+because Sylviidae is broken. It conflicts with about 20 different trees.}
+
+\subsection{Taxonomy details}
+
+\paragraph{Flags.}
+The Open Tree's reference taxonomy is produced by a tool called
+smasher that notices hints that a taxon is incertae sedis and labels
+that taxon with one of five flags (see https://github.com/OpenTreeOfLife
+/reference-taxonomy/wiki /Taxon-flags). This document is not concerned
+with the flagging system per se, so ``incertae sedis'' will be used here
+to refer to all of the flags that denote taxa with uncertain
+placement.
+
+\paragraph{Limited attachment range}
+While a taxonomist may intend to use incertae sedis to
+indicate a limited number of possible positions for a taxon to go in
+the taxonomy, we do not retain any such details.
+
+\paragraph{Container nodes.}
+Some taxonomies have nodes with names like ``Incertae sedis (Bacteria)''.
+Such nodes are called containers. They indicate that each child node is an
+incertae sedis child of the container node's parent. The OTT retains container
+nodes with the was\_container flag, but seems to have already moved all of the
+container's children to the container's parent.
+
+
 
 
 \bibliographystyle{upmplainnat}
