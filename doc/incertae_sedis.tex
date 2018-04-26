@@ -464,24 +464,23 @@ In order to determine how the exclude sets should be modified to account for
 sets in a helpful way.  We note that a node $n$ ordinarily excludes the
 descendants of $\mathcal{I}(s)$ for all of its siblings, as well as the siblings
 of all of its ancestors.  This leads to the following equation:
-\begin{eqnarray*}
-  \mathcal{E}(n) & = \mathcal{L} - \mathcal{I}(n)\\
- & =\left[\mathcal{I}(s)\big|a\in n+ancestors(n),s\in siblings(a)\right]\\
- & =\left[\mathcal{I}(s)\big|s\in siblings(n)\right]\cup\left[\mathcal{I}(s)\big|a\in ancestors(n),s\in siblings(a)\right]\\
- & =\left[\mathcal{I}(s)\big|s\in siblings(n)\right]\cup\mathcal{E}(parent(n)) \label{eq:exsetformtraditional}
-\end{eqnarray*}
+\begin{align}
+\mathcal{E}(n) & = \mathcal{L} - \mathcal{I}(n)\nonumber\\
+ & =\left[\mathcal{I}(s)\big|a\in n+ancestors(n),s\in siblings(a)\right]\nonumber\\
+ & =\left[\mathcal{I}(s)\big|s\in siblings(n)\right]\cup\left[\mathcal{I}(s)\big|a\in ancestors(n),s\in siblings(a)\right]\nonumber\\
+ & =\left[\mathcal{I}(s)\big|s\in siblings(n)\right]\cup\mathcal{E}(parent(n)).\label{eq:exsetformonea-traditional}
+\end{align}
 
 When modifying the exclude set for a node $n$, we seek to find all the \emph{incertae
 sedis} taxa that may intrude into it. It turns out that the incertae sedis taxa that
 might intrude are just the \emph{incertae sedis} siblings of $n$ and all of its ancestors.
-\begin{align*}
+\begin{align}
 \mathcal{E}(n) & =
-    \left[\mathcal{I}(s)\big|a\in n+ancestors(n),s\in siblings(a),s\text{ not \emph{incertae sedis}}\right]\\
-& =\left[\mathcal{I}(s)\big|s\in siblings(n),s\text{ not \emph{incertae sedis}}\right]\cup\\
-& \,\,\,\,\,\,\,\,\,\,\,\,\left[\mathcal{I}(s)\big|a\in ancestors(n),s\in siblings(a),s\text{ not \emph{incertae sedis}}\right]\\
-& =\left[\mathcal{I}(s)\big|s\in siblings(n),s\text{ not \emph{incertae sedis}}\right]\cup\mathcal{E}(parent(n)).
-\label{eq:exsetformonea}
-\end{align*}
+    \left[\mathcal{I}(s)\big|a\in n+ancestors(n),s\in siblings(a),s\text{ not \emph{incertae sedis}}\right]\nonumber\\
+& =\left[\mathcal{I}(s)\big|s\in siblings(n),s\text{ not \emph{incertae sedis}}\right]\cup\nonumber\\
+& \,\,\,\,\,\,\,\,\,\,\,\,\left[\mathcal{I}(s)\big|a\in ancestors(n),s\in siblings(a),s\text{ not \emph{incertae sedis}}\right]\nonumber\\
+& =\left[\mathcal{I}(s)\big|s\in siblings(n),s\text{ not \emph{incertae sedis}}\right]\cup\mathcal{E}(parent(n)).\label{eq:exsetformonea}
+\end{align}
 This formula allows us to compute exclude sets via a pre-order traversal on the
 taxonomy tree with the exclude set for the root node defined to be $\emptyset$. 
 
