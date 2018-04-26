@@ -77,112 +77,78 @@ Incertae sedis}}\texttt{ taxa}}
 
 \section{Introduction}
 
-Supertree methods combine a collection of input trees with different
-taxon sets into a single tree on the combined taxon set.
-These methods are usually applied to leaf-labeled phylogenetic estimates. 
-Here we describe a supertree approach that overcomes issues associated with
-using a taxonomy as one of the inputs to a supertree method.
+Supertree methods combine a collection of input trees with different taxon sets
+into a single tree on the combined taxon set. These methods are usually applied
+to leaf-labeled phylogenetic estimates.  Here we describe a supertree approach
+that overcomes issues associated with using a taxonomy as one of the inputs to
+a supertree method.
 
-The Open Tree of Life project \citep{HinchliffEtAl2015} seeks to build
-a comprehensive supertree \citep[see][]{redelings2017supertree}
-covering all of life.
-The approach is to combine information in
-published phylogenies with a comprehensive taxonomy that supplies
-taxon names.
-The supertree method has been used with the Open Tree of
-Taxonomy \citep[OTT hereafter, see][]{rees2017automated}, but 
-could be used in more general contexts.
-The taxonomy is a crucial input for several
-reasons: it covers a wide range of species, its list of names allows
-for alignment of different phylogenetic estimates to each other, and
-it provides names for clades.
-Only a small proportion of known species
-have been included in a phylogenetic analysis, thus a taxonomy is
-important for achieving comprehensive coverage of known taxa.
-Phylogenetic estimates collected from the published literature often
-use different names for the same species.
-Lists of synonyms in OTT
-(and other taxonomies) allow data curators to ``align'' input
-phylogenies to the taxonomy \citep[see][ for discussion of the
-curation process that the Open Tree of Life project uses to align phylogenetic
-estimates to OTT]{McTavishEtAt2015}.
-This alignment is important for recognizing when two different
-estimates refer to the same taxon.
-Biologists are familiar with names
-for ``higher'' taxa (taxa above the species rank).
-Thus, naming clades
-in the supertree makes the tree easier to navigate and use.
+The Open Tree of Life project \citep{HinchliffEtAl2015} seeks to build a
+comprehensive supertree \citep[see][]{redelings2017supertree} covering all of
+life. The approach is to combine information in published phylogenies with a
+comprehensive taxonomy that supplies taxon names. The supertree method has
+been used with the Open Tree Taxonomy \citep[OTT hereafter, see][]{rees2017automated},
+but could be used in more general contexts. The taxonomy is a crucial input for
+several reasons: it covers a wide range of species, its list of names allows
+for alignment of different phylogenetic estimates to each other, and it provides
+names for clades. Only a small proportion of known species have been included in
+a phylogenetic analysis, thus a taxonomy is important for achieving
+comprehensive coverage of known taxa. Phylogenetic estimates collected from the
+published literature often use different names for the same species. Lists of
+synonyms in OTT (and other taxonomies) allow data curators to ``align'' input
+phylogenies to the taxonomy \citep[see][ for discussion of the curation process
+that the Open Tree of Life project uses to align phylogenetic estimates to OTT]{McTavishEtAt2015}.
+This alignment is important for recognizing when two different estimates refer
+to the same taxon. Biologists are familiar with names for ``higher'' taxa (taxa
+above the species rank). Thus, naming clades in the supertree makes the tree
+easier to navigate and use.
 
-Some taxonomies indicate which taxa are thought to be the result of hybridization, 
-but the supertree approach
-described here does not consider any hybridization.
-Thus the taxonomic
-hierarchy can be converted to a tree.
-While not all taxonomists
-believe that named taxa should correspond to clades \citep[see, for
-example,][]{HorandlS2010}, the priniciples of phylogenetic
-classification are used by such a large majority of practicing
-taxonomists, that we have chosen to treat the taxonomic tree that
-mirrors the hierarchy of the taxonomy as an estimate of phylogenetic
-relationships.
-We refer to labels of taxonomy nodes as ``taxon
-names'', and assume that taxon names and taxonomy nodes have a one-to-
-one correspondence.
-Note that the taxonomy may also contain out-degree
-1 nodes.
-These nodes correspond to monotypic taxa which contain a
-single child of lower taxonomic rank.
+Some taxonomies indicate which taxa are thought to be the result of
+hybridization, but the supertree approach described here does not consider any
+hybridization. Thus the taxonomic hierarchy can be converted to a tree. While
+not all taxonomists believe that named taxa should correspond to clades \citep[see,
+for example,][]{HorandlS2010}, the priniciples of phylogenetic classification
+are used by such a large majority of practicing taxonomists, that we have chosen
+to treat the taxonomic tree that mirrors the hierarchy of the taxonomy as an
+estimate of phylogenetic relationships. We refer to labels of taxonomy nodes as
+``taxon names'', and assume that taxon names and taxonomy nodes have a
+one-to-one correspondence. Note that the taxonomy may also contain out-degree
+1 nodes. These nodes correspond to monotypic taxa which contain a single child
+of lower taxonomic rank.
 
-The supertree method described by \citet{redelings2017supertree} is
-able to use a set of phylogenetic estimates and taxonomy to produce a
-supertree with clades names according to the taxonomy.
-However, the
-method was not able to accommodate the fact that taxonomies frequently
-contain nodes with uncertain placement.
-These nodes are often labelled
-``\emph{incertae sedis}'', which means ``uncertain seat'' in Latin.
-The common interpretation of such taxa is that they may not be moved
-further towards the root, but may be moved into their sibling taxa.
-For example, a genus with a sibling that is a family may be annotated
-as ``\emph{incertae familia}'', indicating that it is unclear which
-family the genus should be placed in.
-\emph{Incertae sedis} taxa
-frequently occur when a specimen is identified down to a given
-taxonomic level, but no further.
-Extinct taxa are often \emph{incertae
-sedis}.
-OTT is constructed from several source taxonomies, and these
-sources include various ways of indicating that the position of a
-taxon within the hierarchy is uncertain.
-OTT uses a series of
-``flags'' to annotate these taxa.
-The supertree of \citet{redelings2017supertree} simply pruned these taxa from the
-taxonomy and input trees.
-Thus, the final supertree lacked taxa which
-were \emph{incertae sedis} or the descendants of such taxa.
+The supertree method described by \citet{redelings2017supertree} is able to use
+a set of phylogenetic estimates and taxonomy to produce a supertree with clades
+named according to the taxonomy. However, the method was not able to accommodate
+the fact that taxonomies frequently contain nodes with uncertain placement.
+These nodes are often labelled ``\emph{incertae sedis}'', which means
+``uncertain seat'' in Latin. The common interpretation of such taxa is that
+they may not be moved further towards the root, but may be moved into their
+sibling taxa. For example, a genus with a sibling that is a family may be
+annotated as ``\emph{incertae familia}'', indicating that it is unclear which
+family the genus should be placed in. \emph{Incertae sedis} taxa frequently
+occur when a specimen is identified down to a given taxonomic level, but no
+further. Extinct taxa are often \emph{incertae sedis}. OTT is constructed from
+several source taxonomies, and these sources include various ways of indicating
+that the position of a taxon within the hierarchy is uncertain. OTT uses a
+series of ``flags'' to annotate these taxa. The supertree of
+\citet{redelings2017supertree} simply pruned these taxa from the taxonomy and
+input trees. Thus, the final supertree lacked taxa which were \emph{incertae
+sedis} or the descendants of such taxa.
 
-Here we describe a supertree method so that we can resolve taxonomic
-uncertainty by using published phylogenies to place \emph{incertae
-sedis} taxa.
-Developing this method required deciding on a set of
-operational semantics to be used when interpreting the \emph{incertae
-sedis} annotation.
-These semantics affect the interpretation of the
-phylogenetic statements being made by the input taxonomy and the rules
-for applying taxonomic names to the final supertree.
-In addition to
-discussing how to interpret the \emph{incertae sedis} annotation,
-we describe the algorithmic changes to the supertree pipeline that
-were required to adequately represent the taxonomic uncertainty.
-The
-approach described here allows us to include thousands of new taxa in
-our supertree analysis that were previously filtered out.
-It will also
-enable the Open Tree of Life project to include extinct taxa, since
-many of these taxa are \emph{incertae sedis}.
-This makes substantial
-progress towards our goal of comprehensive inclusion of known taxa
-into the Open Tree of Life summary tree.
+Here we describe a supertree method so that we can resolve taxonomic uncertainty
+by using published phylogenies to place \emph{incertae sedis} taxa. Developing
+this method required deciding on a set of operational semantics to be used when
+interpreting the \emph{incertae sedis} annotation. These semantics affect the
+interpretation of the phylogenetic statements being made by the input taxonomy
+and the rules for applying taxonomic names to the final supertree. In addition
+to discussing how to interpret the \emph{incertae sedis} annotation, we describe
+the algorithmic changes to the supertree pipeline that were required to
+adequately represent the taxonomic uncertainty. The approach described here
+allows us to include thousands of new taxa in our supertree analysis that were
+previously filtered out. It will also enable the Open Tree of Life project to
+include extinct taxa, since many of these taxa are \emph{incertae sedis}. This
+makes substantial progress towards our goal of comprehensive inclusion of known
+taxa into the Open Tree of Life summary tree.
 
 \subsection{Background}
 
@@ -346,14 +312,14 @@ as \emph{incertae sedis}, and then run the rest of the pipeline of
 This approach incorrectly treats the intrusion of an \emph{incertae sedis} taxon
 into a sibling taxon as a conflicting with monophyly of the sibling taxon. For
 example, in Fig. \ref{fig:Handling-incertae-sedis}, the placement of the
-\emph{incertae sedis} taxon $C$ within $A$ and $AB$, is considered
+\emph{incertae sedis} taxon $C$ within $A$ and $AB$ is considered
 to contradict the monophyly of $A$ and $AB$ and thus to conflict with those taxa.
 This has three main effects.  These effects are illustrated in the difference
 between the synthesis tree in Fig. \ref{fig:Handling-incertae-sedis}c, which
 ignores \emph{incertae sedis} annotations, and the synthesis tree in Fig.
 \ref{fig:Handling-incertae-sedis}d, which respects them.
 
-First, this approach results in a less-resolved tree.  While input trees are
+First, the naive approach results in a less-resolved tree.  While input trees are
 free to place incertae sedis taxa within a sibling, the naive approach
 interprets this placement as conflict with the sibling.  Since the taxonomy
 is ranked below all input trees, conflict is always resolved in favor of the
@@ -365,20 +331,22 @@ therefore not incorporated into the synthesis tree.  In contrast, the synthesis
 tree in Fig. \ref{fig:Handling-incertae-sedis}d that does not reject the
 monophyly of $AB$ retains the grouping of $A$ and $B$.
 
-Second, this approach results in the removal of clade names for all clades that
+Second, the naive approach results in the removal of clade names for all clades that
 have an \emph{incertae sedis} taxon placed within them.  For example, in Fig.
 \ref{fig:Handling-incertae-sedis}c the names for the clades $A$ and $AB$ are lost.
 
-Third, this approach cannot use information from phylogenies to resolve the
+Third, the naive approach cannot use information from phylogenies to resolve the
 location of uncertain taxa.  For example, the synthesis tree in
 \ref{fig:Handling-incertae-sedis}c has lost the label for $A$, and so does not
-allow us to note that $C$ has been placed within $A$.  In contrast, the
-synthesis tree in Fig. \ref{fig:Handling-incertae-sedis}d retains the label for
-$A$, which allows us to resolve taxonomic uncertainty by infering that
-\emph{incertae sedis} taxon $C$ has been placed within $A$.
+allow us to note that $C$ has been placed within $A$.  In contrast, the synthesis
+tree in Fig. \ref{fig:Handling-incertae-sedis}d retains the label for $A$, which
+allows us to resolve taxonomic uncertainty by inferring that $C$ has been placed
+within $A$.
 
 \section{\label{sec:Semantics-of-incertae}Semantics of \emph{incertae
 sedis} taxa}
+
+\subsection{Goals for an \emph{incertae sedis} semantics}
 
 In order to incorporate \emph{incertae sedis }taxa into a supertree
 analyses, we must arrive at an operational definition of the meaning
@@ -396,9 +364,9 @@ would be viewed as plausible.
 We seek a semantics for supertrees with \emph{incertae sedis }taxa
 that satisfy the following properties:
 \begin{enumerate}
-    \item An \emph{incertae sedis} node may intrude into its siblings and their
-descendants.
-    \item The semantics of an \emph{incertae sedis} node does not depend on assigned ranks, but only on the tree.
+    \item An \emph{incertae sedis} node may intrude into its siblings and their descendants without conflict.
+    \item An \emph{incertae sedis} node has an unrestricted range within the descendants of its sibling taxa.
+    \item The semantics of an \emph{incertae sedis} node does not depend on side-information such as taxon ranks, but only on the taxonomy tree.
     \item Semantics is based on deriving a rooted (partial) split for each branch of the taxonomy.
       % These could be goals, but maybe discuss them as side-effects:
       % Side effect #1. Don't interdigitate
@@ -410,33 +378,35 @@ with an input tree, and to where to place the taxon name for clade $n$ on the sy
 % Removed mention of incertae sedis possibly affecting subproblem decomposition.  It
 % actually doesn't but that is surprising, and therefore kind of a result.
 
-\paragraph{(Not using rank information) Rich taxon-specific attachment points}
-% Question: why not use rank information?  Answer: well, we could, but lets start simple.
-As mentioned above, the \emph{incertae sedis} annotation may mean that a taxon is
-unplaced, but only a few placements within the taxonomy are possible.
-For example, a genus might be characterized as \emph{incertae sedis}
-at the level of the subfamily.
-Thus, it could be placed inside any of the
-hypothesized sub-families, or within its own subfamily, but it would
-be unexpected for it to be placed inside one of the other genera.
+\subsubsection{Unrestricted range and ignoring side information}
+The choice to allow each \emph{incertae sedis} taxon to attach anywhere within
+the descendants of its siblings requires some explanation, for two reasons.
+First, more precise information about where a taxon can attach is easy to
+incorporate. If $\mathcal{P}$ is the set of taxa that are potential ancestors for \emph{incertae
+sedis} taxon $x$, then we may simply remove the descendants of $x$ from the exclude
+set for each $p\in\mathcal{P}$.  Such an approach would require that the path from $x$ to $p$
+go through only other potential ancestors.
 
-In principle this information is easy to incorporate.
-Ideally, the \emph{incertae sedis}
-annotation some taxon $x$ would be accompanied by a specific
-statement about which other taxa might include $x$.
-If $\mathcal{P}$ is the set of taxa that are potential ancestors for
-incertae sedis taxon $x$, then $\mathcal{L}(x)$ will occur in neither
-the include nor the exclude set of any taxon in $\mathcal{P}$.
-Unfortunately, utilizing taxon-specific interpretations of the
-incertae sedis flag relies on detailed readings of character argumentation
-(which is lacking in OTT) or rank-based information (which is frequently
-untrustworthy in OTT).
-Thus, here we pursue an approach of ascribing a
-meaning to the \emph{incertae sedis} label which attempts to capture
-the core of the idea that it articulates, but which can be applied
-automatically across the taxonomy without additional information.
+Second, as mentioned above, it may be expected that an \emph{incertae sedis} taxon
+attach only a specific points within the taxonomy. For example, a genus
+might be characterized as \emph{incertae sedis} at the level of the subfamily.
+Thus, it could be placed inside any of the hypothesized sub-families, or within
+its own subfamily, but it would be unexpected for it to be placed inside one of
+the other genera.
 
-\paragraph{(Split-based semantics) Equivalence of a taxonomy tree and a list of rooted splits}
+Unfortunately, reliable information about the range of valid attachment points
+for each \emph{incertae sedis} taxon is lacking.  Ideally, the \emph{incertae
+  sedis} annotation for some taxon $x$ would be accompanied by a specific statement
+about which other taxa might include $x$.  However, OTT does not provide this
+directly.  Constructing a range for each incertae sedis taxon relies on detailed
+readings of character argumentation (which is lacking in OTT) or rank-based
+information (which is frequently untrustworthy in OTT). Thus, here we pursue
+an approach of ascribing a meaning to the \emph{incertae sedis} label which
+attempts to capture the core of the idea that it articulates, but which can be
+applied automatically across the taxonomy without additional information.
+
+\subsubsection{Split-based semantics}
+\paragraph{Equivalence of a taxonomy tree and a list of rooted splits}
 
 Note that, for the purposes of the supertree method, all of the information from
 the taxonomic tree is contained in the set of rooted splits. Thus, one could
@@ -446,6 +416,7 @@ to be: $\mathcal{R}(\taxonomy_{p})=\mathcal{Z}(\taxonomy_{p}) +
 \mathcal{Y}(\taxonomy_{p})$, then using $\mathcal{R}(\taxonomy_{p})$ in place of $\taxonomy_{p}$ in the supertree
 algorithm would produce the same output.
 
+\paragraph{Definition of rooted splits}
 As is typically done, we define rooted splits for each edge by noting that
 removing the edge would produce two trees. The leaf label sets of these trees
 the partition the full leaf set $\mathcal{L}$ into two groups. The include set $\mathcal{I}(e)$ which
@@ -470,205 +441,46 @@ higher taxon of the form. So for the name labeling node $n$ in the taxonomic
 tree, the operational definition would be: ``the clade defined by all taxa that
 are more closely related to $\mathcal{I}(n)$ than to $\mathcal{E}(n)$, if such a clade exists on the tree.''
 
-\paragraph{(Split-based semantics) Information content of the \emph{incertae sedis} annotation}
-
-In terms of rooted split interpretation, an \emph{incertae sedis} taxon differs
-from a normal taxon because its leaves should not automatically be mentioned in
-the exclude set of all of the edges that does not descend from. If a taxon
-rooted at node $n$ is marked as \emph{incertae sedis}, then the leaf labels that
-are descendants of $n$ will still be in the include set for $n$ and all its ancestors,
-but these labels will not necessarily be the exclude set for all other
-nodes/edges. They may simply be omitted in some rooted split representations,
-resulting in ``partial splits'' -- those which do not necessarily mention all of
-the taxa. Thus, when interpreted correctly the \emph{incertae sedis} annotations
-are reducing the amount of information that the taxonomy brings to the supertree
-problem.
-
-\paragraph{Splits-based synthesis method}
-
-Here we focus on a split-based semantics instead of a semantics based on apply
-of a series of edit operations to the tree. The split-based semantics allows us
-to seek trees that are simultaneously consistent with a set of split-constraints.
-The use of a split-based semantics does impose some limitations. These come
-primarily because in the edit-based semantics, after we place an
-\emph{incertae sedis} taxon, it is no loner \emph{incertae sedis}, whereas with
-the split-based semantics taxa are either always \emph{incertae sedis} or never
-\emph{incertae sedis}.
-
-This has an effect, for example, when we consider two incertae sedis siblings $A$
-and $B$. If we can place $A$ within $B$, and $B$ within $A$, then a split- based
-semantics allows us to freely inter-digitate $A$ and $B$. If we do not want to
-allow $A$ and $B$ to be inter-digitated, then we cannot both $A$ within $B$ and $B$
-within $A$. In addition, we can imagine that a family $A$ is incertae sedis within a
-kingdom. In an edit-based semantics, we could place $A$ as a sibling to a genus $B$,
-mark $A$ as non-\emph{incertae-sedis}, and then place $B$ within $A$. In a split-based
-semantics, we must disallow either $B$ within $A$ or $A$ within $B$ if we want to disallow
-interdigitation.
-
-As a result of this, we cannot satisfy all five of these criteria. Thus, we
-describe two alternative split-based semantics. The non-interdigitation
-semantics gets \# (1,2,4,5), and the interdigitation semantics gets (1,3,4,5).
-This makes the point that each semantics results from different choices about
-which criteria to satisfy.
-
 \subsection{Split-based semantics for \emph{incertae sedis} taxa}
 
-In order to apply supertree methods to rooted trees with \emph{incertae sedis}
-taxa, we first propose a semantics of \emph{incertae sedis }in terms of rooted
-splits.
+An \emph{incertae sedis} taxon $n$ differs from a normal taxon because it can be
+moved into the descendants of any of its siblings.  Thus, annotating $n$ as
+\emph{incertae sedis} really modifies the meanings of its siblings so that they
+no longer exclude $n$.  In terms of rooted splits, we can represent this lack of
+exclusion by omitting taxa from the exclude set for a node.  Such a split does
+not mention the complete set of tip labels $\mathcal{L}$ and is therefore called a
+`partial split'', as opposed to a ``full split'' that contains the entirely of $\mathcal{L}$.
+Thus, when interpreted correctly the \emph{incertae sedis} 
+annotations are reducing the amount of information that the taxonomy brings to
+the supertree problem.
 
-\subsubsection{semantics \#1a: The original, simplest semantics}
-\begin{align}
-    \mathcal{E}(n) & = \mathcal{E}(parent(n))\cup\left[\mathcal{I}(s)\big|s\in
-           siblings(n), s \text{ not \emph{incertae sedis}}\right].\label{eq:exclude-set-formula-1a}
-\end{align}
-This semantics \emph{does} allow interdigitation.
+We seek to define modified splits for each branch of the taxonomy tree. The
+include sets of these splits remain unchanged, but the exclude sets may be reduced
+\emph{incertae sedis} taxa to intrude into their sibling taxa.  Therefore, a
+semantics can be given simply in terms of the exclude set for each taxonomy node.
 
-\subsubsection{semantics \#1b: modified to disallow inter-digitating
-\emph{incertae sedis} siblings}
-
-An \emph{incertae sedis} taxon can be moved into any of the
-descendants of its siblings.
-We seek to represent this by constructing
-modified splits for each branch of the taxonomy tree.
-The include sets
-of these splits remain unchanged, but we construct reduced exclude
-sets in order to allow \emph{incertae sedis} taxa to intrude into
-their sibling taxa.
-
-The reduced exclude set $\mathcal{E}(n)$ for node $n$ should therefore
-not contain the descendants of its siblings which are marked
-\emph{incertae }sedis\emph{,} but should contain the descendants of
-its other siblings\emph{.
-}We additionally stipulate that it is not
-possible for \emph{incertae sedis} taxa to intrude into their
-\emph{incertae sedis} siblings.
-(This is not the only way to construct
-a split-based semantics for \emph{incertae sedis}, but it avoids
-certain complications, as noted in the discussion.) We thus define
-$\mathcal{I}(m,n)$ to indicate descendants of $m$ that are excluded
-from $n$.
-Thus:
+In order to determine how the exclude sets should be modified to account for
+\emph{incertae sedis} taxa, we first attempt to express the unmodified exclude
+sets in a helpful way.  We note that a node $n$ ordinarily excludes the
+descendants of $\mathcal{I}(s)$ for all of its siblings, as well as the siblings
+of all of its ancestors.  This leads to the following equation:
 \begin{align*}
-\mathcal{I}(m,n) & =
-    \begin{cases}
-        \emptyset & \text{if }n\text{ is \emph{incertae sedis}\,and }m\text{
-is not}\\
-        \mathcal{I}(m) & \text{otherwise}
-    \end{cases}
+\mathcal{E}(n) & =\left[\mathcal{I}(s)\big|a\in n+ancestors(n),s\in siblings(a)\right]\\
+ & =\left[\mathcal{I}(s)\big|s\in siblings(n)\right]\cup\left[\mathcal{I}(s)\big|a\in ancestors(n),s\in siblings(a)\right]\\
+ & =\left[\mathcal{I}(s)\big|s\in siblings(n)\right]\cup\mathcal{E}(parent(n)) \label{eq:exclude-set-formula-traditional}
 \end{align*}
 
-Additionally, the exclude set $\mathcal{E}(n)$ should contain the children of
-all the ancestors of $n$, unless those children are \emph{incertae sedis}.
-To avoid traversing all ancestors separately for each node $n$, we note that the
-excluded children of any ancestors will be in the exclude set of the parent of
-$n$ already. Therefore, we can write the exclude set of a node $n$ in terms of
-the exclude set of its parent:
-\begin{align}
-    \mathcal{E}(n) & = \mathcal{E}(parent(n))\cup\left[\mathcal{I}(m,n)\big|m\in
-           siblings(n)\right].\label{eq:exclude-set-formula-1}
-\end{align}
+When modifying the exclude set for a node $n$, we seek to find all the \emph{incertae
+sedis} taxa that may intrude into it. It turns out that the incertae sedis taxa that
+might intrude are just the \emph{incertae sedis} siblings of $n$ and all of its ancestors.
+\begin{align*}
+\mathcal{E}(n) & =\left[\mathcal{I}(s)\big|a\in n+ancestors(n),s\in siblings(a),s\text{ not \emph{incertae sedis}}\right]\\
+ & =\left[\mathcal{I}(s)\big|s\in siblings(n),s\text{ not \emph{incertae sedis}}\right]\cup\\
+ & \,\,\,\,\,\,\,\,\,\,\,\,\left[\mathcal{I}(s)\big|a\in ancestors(n),s\in siblings(a),s\text{ not \emph{incertae sedis}}\right]\\
+ & =\left[\mathcal{I}(s)\big|s\in siblings(n),s\text{ not \emph{incertae sedis}}\right]\cup\mathcal{E}(parent(n)).\label{eq:exclude-set-formula-1a}
+\end{align*}
 This formula allows us to compute exclude sets via a pre-order traversal on the
-taxonomy tree with exclude set for the root node defined to be $\emptyset$.
-
-\textbf{Problem:} how about the goal that we should be able to get the
-same outcome by moving a taxon up one level and marking it as incertae
-sedis? This might require that moving A next to B, and then moving B
-into A is allowed.
-
-\textbf{Problem:} should we be able to move incertae sedis taxa down
-into incertae sedis taxa? If not, then we must change the recursion.
-
-\subsubsection{An alternative semantics that allows placing an incertae sedis group within an incertae-sedis great-uncle}
-
-\bdrcomment{This semantics is actually designed to allow the situation in Figure \ref{fig:Placing-one-incertae}.
-
-  The problem is (might be) as follows: if we have the tree ``((?A1,A2)A,((D)C)B)MRCA;'', where A1 is incertae sedis, then we can place A1 within D.  This semantics does not exclude A1 from B, C, or D.  So, if A is broken, then nothing prohibits A1 from intruding into B, C, D, etc.
-
-  The purpose of this was to allow placing B as a siblign to A1 and then placing A1 within B -- \emph{if} B were incertae sedis.  But B is not incertae sedis.
-
-  We could try to fix up this situation by adding cases to the exclude rules to say that B excludes A1 if B is not incertae sedis.  But adding cases makes things messier.  I think it also does not actually solve the problem: suppose we mark B incertae sedis, but do NOT place it as sibling to A1.  Then again if A is broken, A1 can intrude into B.  We really want to allow A1 into B only if B is placed as sibling to A1, and I'm not sure how to do that with the partial-split-based semantics.  If you see a way, then great!
-}
-
-If we want to allow placing two incertae sedis siblings within each
-other, then incertae sedis siblings are never excluded.
-
-Furthermore, consider placing $A$ as a sibling of $B$, and then
-placing $B$ within $A$.
-In order for this to work, $A$ must not
-exclude the incertae sedis children of $B$.
-
-In order to accomplish both of these goals, we define the descendants
-$\mathcal{I}^{\prime}(n)$ that are accessible without passing through
-an incertae sedis node.
-
-\begin{align*}
-    \mathcal{I^{\prime}}(n) & =
-    \begin{cases}
-        \emptyset & \text{if }n\in\mathcal{U}\\
-        \{n\} & \text{if }n\text{ is a leaf}\\
-        [\mathcal{I}^{\prime}(c)|c\in children(n)] & \text{otherwise.}
-\end{cases}
-\end{align*} We may then define the taxa excluded from $n$
-as:
-
-\begin{align*} 
-\mathcal{E}(n) & =\mathcal{E}(parent(n))\cup\left[\mathcal{I}(m,n)\big|m\in siblings(n)\right].\label{eq:exclude-set-formula-1}
-\end{align*}
-
-This semantics satisfies criteria 1,3,4, and 5 above.
-
-\subsubsection{A third semantics}
-
-\bdrcomment{I didn't really finish working this one out.}
-
-OK, the idea here is that we want to avoid inter-digitation.
-\emph{Incertae sedis} taxa thus exclude\emph{ incertae sedis}
-siblings.
-However, where the first semantics allows \emph{incertae
-sedis }taxa to intrude into \emph{incertae sedis} descendants of
-siblings, but not allow\emph{ incertae sedis} descendants of siblings
-to intrude into \emph{incertae sedis} taxa, here we do the reverse.
-
-OK, so the idea here is that an\emph{ incertae sedis} group excludes
-\begin{itemize} \item \emph{incertae sedis} siblings \item
-\emph{incertae sedis }descendants of ancestors \item but not\emph{
-incertae sedis} descendants of non-incertae-sedis siblings
-\end{itemize} It is also possible to allow placing $A$ as a sibling of
-$B$ and then placing $B$ within $A$ if we disallow placing $A$ into
-incertae sedis descendants of its siblings.
-We may then allow placing
-those descendants within $A$.
-
-\begin{align*} \mathcal{I^{\prime}}(n) & =\begin{cases} \emptyset &
-\text{if }n\in\mathcal{U}\\ \{n\} & \text{if }n\text{ is a leaf}\\{}
-[\mathcal{I}^{\prime}(c)|c\in children(n)] & \text{otherwise.}
-\end{cases} \end{align*}
-
-We use $\mathcal{I}(m,n)$ to indicate the descendants of $m$ that are
-excluded from $n$.
-\begin{align*} \mathcal{I}(m,n) & =\begin{cases}
-\emptyset & \text{if }n\text{ is \emph{incertae sedis}\,and }m\text{
-is not}\\ \mathcal{I}(m) & \text{if }n\text{ and }m\text{ are both
-}incertae\,sedis\\ \mathcal{I}^{\prime}(m) & \text{otherwise.}
-\end{cases} \end{align*}
-
-We may then define the taxa excluded from $n$ as:
-\begin{align*}
-\mathcal{E}(n) & =\begin{cases}
-\left[\mathcal{L}-\mathcal{I}(parent(n))\right]\cup[\mathcal{I}(s,n)|s\in siblings(n)] & \text{if }n\in\mathcal{U}\\
-\mathcal{E}(parent(n))\cup[\mathcal{I}(s,n)|s\in siblings(n)] & \text{otherwise.}
-\end{cases}
-\end{align*}
-I think this works... but need to double-check.
-
-Also: can we genericize $\mathcal{E}(parent(n))$?
-
-\subsection{Surprising results of the split-based semantics}
-
-1. Inter-digitation
-
-2. Placing A next to B, then B within A.
+taxonomy tree with exclude set for the root node defined to be $\emptyset$. 
 
 \subsection{Naming }
 
@@ -821,6 +633,70 @@ This is because none of $A$,
 $B$, or $C$ is in the exclude set of the siblings of $D$.
 \end{itemize}
 \end{comment}
+
+\subsection{Cases that this semantics can handle}
+
+\subsection{Surprising results of the split-based semantics}
+
+\subsubsection{Inter-digitation}
+1. Inter-digitation
+
+\bdrcomment{Ben: Add figure}
+
+\subsubsection{Placing one \emph{incertae sedis} group within another}
+It would be nice if our semantics of incertae sedis taxa would allow us to place
+one \emph{incertae sedis} sibling inside another.
+A special case of
+this is when a higher-rank incertae sedis taxon $A$ is placed as
+sister to an incertae sedis taxon $B$, and then $B$ is placed within
+$A$ (Figure \#).
+
+\begin{figure}
+\subfloat[Input tree \#1]{\includegraphics[scale=0.5]{Figures/is-within-is/tree1\lyxdot tre}
+
+}\subfloat[Taxonomy]{\includegraphics[scale=0.5]{Figures/is-within-is/tax-shaded}
+
+}\subfloat[Synthesis tree]{\includegraphics[scale=0.5]{Figures/is-within-is/synth1-shaded}
+
+}
+
+\caption{\label{fig:Placing-one-incertae}Placing one incertae sedis group
+within another.
+Here I is placed within A, and then AI is placed within
+A.}
+\end{figure}
+
+2. Placing A next to B, then B within A.
+
+\bdrcomment{Ben: Write discussion of Figure \ref{fig:Placing-one-incertae}}
+
+\paragraph{Splits-based synthesis method}
+
+Here we focus on a split-based semantics instead of a semantics based on apply
+of a series of edit operations to the tree. The split-based semantics allows us
+to seek trees that are simultaneously consistent with a set of split-constraints.
+The use of a split-based semantics does impose some limitations. These come
+primarily because in the edit-based semantics, after we place an
+\emph{incertae sedis} taxon, it is no loner \emph{incertae sedis}, whereas with
+the split-based semantics taxa are either always \emph{incertae sedis} or never
+\emph{incertae sedis}.
+
+This has an effect, for example, when we consider two incertae sedis siblings $A$
+and $B$. If we can place $A$ within $B$, and $B$ within $A$, then a split- based
+semantics allows us to freely inter-digitate $A$ and $B$. If we do not want to
+allow $A$ and $B$ to be inter-digitated, then we cannot both $A$ within $B$ and $B$
+within $A$. In addition, we can imagine that a family $A$ is incertae sedis within a
+kingdom. In an edit-based semantics, we could place $A$ as a sibling to a genus $B$,
+mark $A$ as non-\emph{incertae-sedis}, and then place $B$ within $A$. In a split-based
+semantics, we must disallow either $B$ within $A$ or $A$ within $B$ if we want to disallow
+interdigitation.
+
+As a result of this, we cannot satisfy all five of these criteria. Thus, we
+describe two alternative split-based semantics. The non-interdigitation
+semantics gets \# (1,2,4,5), and the interdigitation semantics gets (1,3,4,5).
+This makes the point that each semantics results from different choices about
+which criteria to satisfy.
+
 
 
 \section{Synthesis and conflict resolution with incertae sedis taxa}
@@ -1039,28 +915,6 @@ to AB and CG.}
 
 \subsection{Case 3: Placement of one \emph{incertae sedis} taxon within
 another.}
-
-In our semantics of incertae sedis taxa, it is possible for to place
-one \emph{incertae sedis} sibling inside another.
-A special case of
-this is when a higher-rank incertae sedis taxon $A$ is placed as
-sister to an incertae sedis taxon $B$, and then $B$ is placed within
-$A$ (Figure \#).
-
-\begin{figure}
-\subfloat[Input tree \#1]{\includegraphics[scale=0.5]{Figures/is-within-is/tree1\lyxdot tre}
-
-}\subfloat[Taxonomy]{\includegraphics[scale=0.5]{Figures/is-within-is/tax-shaded}
-
-}\subfloat[Synthesis tree]{\includegraphics[scale=0.5]{Figures/is-within-is/synth1-shaded}
-
-}
-
-\caption{\label{fig:Placing-one-incertae}Placing one incertae sedis group
-within another.
-Here I is placed within A, and then AI is placed within
-A.}
-\end{figure}
 
 
 
@@ -1709,6 +1563,117 @@ For example,\emph{ }one author might describe \emph{incertae
 sedis} genera that are asserted to be monophyletic, whereas another
 author might describe \emph{incertae sedis} genera that may be
 interdigitated.
+
+
+\appendix
+\section{Alternative semantics}
+\subsubsection{semantics \#1b: modified to disallow inter-digitating
+\emph{incertae sedis} siblings}
+
+
+We additionally stipulate that it is not possible for \emph{incertae sedis} taxa
+to intrude into their \emph{incertae sedis} siblings.  We thus define $\mathcal{I}(m,n)$ to
+indicate descendants of $m$ that are excluded from $n$. Thus:
+\begin{align*}
+\mathcal{I}(m,n) & =
+    \begin{cases}
+        \emptyset & \text{if }n\text{ is \emph{incertae sedis}\,and }m\text{
+is not}\\
+        \mathcal{I}(m) & \text{otherwise}
+    \end{cases}
+\end{align*}
+
+We can write the exclude set of a node $n$ in terms of
+the exclude set of its parent:
+\begin{align}
+    \mathcal{E}(n) & = \mathcal{E}(parent(n))\cup\left[\mathcal{I}(m,n)\big|m\in
+           siblings(n)\right].\label{eq:exclude-set-formula-1}
+\end{align}
+\subsubsection{An alternative semantics that allows placing an incertae sedis group within an incertae-sedis great-uncle}
+
+\bdrcomment{This semantics is actually designed to allow the situation in Figure \ref{fig:Placing-one-incertae}.
+
+  The problem is (might be) as follows: if we have the tree ``((?A1,A2)A,((D)C)B)MRCA;'', where A1 is incertae sedis, then we can place A1 within D.  This semantics does not exclude A1 from B, C, or D.  So, if A is broken, then nothing prohibits A1 from intruding into B, C, D, etc.
+
+  The purpose of this was to allow placing B as a siblign to A1 and then placing A1 within B -- \emph{if} B were incertae sedis.  But B is not incertae sedis.
+
+  We could try to fix up this situation by adding cases to the exclude rules to say that B excludes A1 if B is not incertae sedis.  But adding cases makes things messier.  I think it also does not actually solve the problem: suppose we mark B incertae sedis, but do NOT place it as sibling to A1.  Then again if A is broken, A1 can intrude into B.  We really want to allow A1 into B only if B is placed as sibling to A1, and I'm not sure how to do that with the partial-split-based semantics.  If you see a way, then great!
+}
+
+If we want to allow placing two incertae sedis siblings within each
+other, then incertae sedis siblings are never excluded.
+
+Furthermore, consider placing $A$ as a sibling of $B$, and then
+placing $B$ within $A$.
+In order for this to work, $A$ must not
+exclude the incertae sedis children of $B$.
+
+In order to accomplish both of these goals, we define the descendants
+$\mathcal{I}^{\prime}(n)$ that are accessible without passing through
+an incertae sedis node.
+
+\begin{align*}
+    \mathcal{I^{\prime}}(n) & =
+    \begin{cases}
+        \emptyset & \text{if }n\in\mathcal{U}\\
+        \{n\} & \text{if }n\text{ is a leaf}\\
+        [\mathcal{I}^{\prime}(c)|c\in children(n)] & \text{otherwise.}
+\end{cases}
+\end{align*} We may then define the taxa excluded from $n$
+as:
+
+\begin{align*} 
+\mathcal{E}(n) & =\mathcal{E}(parent(n))\cup\left[\mathcal{I}(m,n)\big|m\in siblings(n)\right].\label{eq:exclude-set-formula-1}
+\end{align*}
+
+This semantics satisfies criteria 1,3,4, and 5 above.
+
+\subsubsection{A third semantics}
+
+\bdrcomment{I didn't really finish working this one out.}
+
+OK, the idea here is that we want to avoid inter-digitation.
+\emph{Incertae sedis} taxa thus exclude\emph{ incertae sedis}
+siblings.
+However, where the first semantics allows \emph{incertae
+sedis }taxa to intrude into \emph{incertae sedis} descendants of
+siblings, but not allow\emph{ incertae sedis} descendants of siblings
+to intrude into \emph{incertae sedis} taxa, here we do the reverse.
+
+OK, so the idea here is that an\emph{ incertae sedis} group excludes
+\begin{itemize} \item \emph{incertae sedis} siblings \item
+\emph{incertae sedis }descendants of ancestors \item but not\emph{
+incertae sedis} descendants of non-incertae-sedis siblings
+\end{itemize} It is also possible to allow placing $A$ as a sibling of
+$B$ and then placing $B$ within $A$ if we disallow placing $A$ into
+incertae sedis descendants of its siblings.
+We may then allow placing
+those descendants within $A$.
+
+\begin{align*} \mathcal{I^{\prime}}(n) & =\begin{cases} \emptyset &
+\text{if }n\in\mathcal{U}\\ \{n\} & \text{if }n\text{ is a leaf}\\{}
+[\mathcal{I}^{\prime}(c)|c\in children(n)] & \text{otherwise.}
+\end{cases} \end{align*}
+
+We use $\mathcal{I}(m,n)$ to indicate the descendants of $m$ that are
+excluded from $n$.
+\begin{align*} \mathcal{I}(m,n) & =\begin{cases}
+\emptyset & \text{if }n\text{ is \emph{incertae sedis}\,and }m\text{
+is not}\\ \mathcal{I}(m) & \text{if }n\text{ and }m\text{ are both
+}incertae\,sedis\\ \mathcal{I}^{\prime}(m) & \text{otherwise.}
+\end{cases} \end{align*}
+
+We may then define the taxa excluded from $n$ as:
+\begin{align*}
+\mathcal{E}(n) & =\begin{cases}
+\left[\mathcal{L}-\mathcal{I}(parent(n))\right]\cup[\mathcal{I}(s,n)|s\in siblings(n)] & \text{if }n\in\mathcal{U}\\
+\mathcal{E}(parent(n))\cup[\mathcal{I}(s,n)|s\in siblings(n)] & \text{otherwise.}
+\end{cases}
+\end{align*}
+I think this works... but need to double-check.
+
+Also: can we genericize $\mathcal{E}(parent(n))$?
+
 
 \bibliographystyle{upmplainnat}
 \bibliography{otcetera}
