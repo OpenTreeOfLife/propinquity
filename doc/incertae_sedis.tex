@@ -590,7 +590,7 @@ In such cases, we treat all applicable names as synonyms for the node.
 
 
 
-\subsection{Placement}\label{subsec:Placement}
+\subsection{Taxonomic revision}\label{subsec:Placement}
 
 After we have attached taxon names to the synthesis tree, we would
 like to interpret the position of these names in terms of placing
@@ -613,24 +613,48 @@ $C$ within $AB$.
 
 A slightly more general case is shown in 
 Figure \ref{fig:Broken-incertae-sedis}.
-Here taxon $C1$ is an descendant of $A$ in the
+Here taxon $T1$ is an descendant of $R$ in the
 synthesis tree, but not the taxonomy.
-Thus $C1$ is placed within $A$.
-We note that the most recent common ancestor (MRCA) of $A$ and $C1$ in
-the taxonomy is the root node, and the path to the MRCA from $A$ is
-$A\to AB\to root$, while the path to the MRCA from $C1$ is $C1\to C\to
+Thus $T1$ is placed within $R$.
+We note that the MRCA of $R$ and $T1$ in
+the taxonomy is the root node, and the path to the MRCA from $R$ is
+$R\to RS\to root$, while the path to the MRCA from $T1$ is $T1\to T\to
 root$.
-Here the additional node $AB$ on the path to the MRCA from $A$
-indicates that $C1$ is placed within $AB$ as well as $A$.
+Here the additional node $RS$ on the path to the MRCA from $R$
+indicates that $T1$ is placed within $RS$ as well as $R$.
 In contrast,
-the additional node $C$ on the path to the MRCA indicates that $C1$ is
+the additional node $T$ on the path to the MRCA indicates that $T1$ is
 a broken \emph{incertae sedis} taxon.
 Thus we may consider an
-algorithm that, for each taxon $B$ on the synthesis tree, finds the
+algorithm that, for each taxon $S$ on the synthesis tree, finds the
 closest ancestral taxon $A$, and checks if $A$ is an ancestor of $B$
 on the taxonomy.
 If not, we compute the paths $A\to A_{1}\to\ldots\to
 MRCA(A,B)$ and $B\to B_{1}\to\ldots\to MRCA(A,B)$.
+
+\begin{figure}
+\hfill{}\subfloat[Input tree \#1]{\includegraphics[scale=0.5]{Figures/is-clade/tree1-shaded}
+
+}\hfill{}\subfloat[Input tree \#2]{\includegraphics[scale=0.5]{Figures/is-clade/tree3-shaded}
+
+}\hfill{}
+
+\hfill{}\subfloat[Taxonomy]{\includegraphics[scale=0.5]{Figures/is-clade/tax-shaded}
+
+}\hfill{}\subfloat[Synthesis Tree \#1]{\includegraphics[scale=0.5]{Figures/is-clade/synth2-shaded}
+
+}\hfill{}
+
+\caption{\label{fig:Broken-incertae-sedis} \emph{Incertae sedis} clade $T$
+broken by conflicting placement.
+Input trees (a) and (b) conflict
+in the placement of taxa in $T$.
+The synthesis supertree (d) places
+places $T1$ and $T2$ separately within $R$, while unplaced taxa
+float upwards.
+}
+
+\end{figure}
 
 However, this assumes that \emph{incertae sedis} taxa are always
 placed within their siblings, or descendants of their siblings.
@@ -778,33 +802,7 @@ clade intact (Figure \ref{fig:Handling-incertae-sedis}).
 However, if
 the clade is not monophyletic in the synthesis tree, then we allow the
 members of the clade to be placed separately (Figure \ref{fig:Broken-incertae-sedis}).
-\begin{figure}
-\hfill{}\subfloat[Input tree \#1]{\includegraphics[scale=0.5]{Figures/is-clade/tree1-shaded}
 
-}\hfill{}\subfloat[Input tree \#2]{\includegraphics[scale=0.5]{Figures/is-clade/tree3-shaded}
-
-}\hfill{}
-
-\hfill{}\subfloat[Taxonomy]{\includegraphics[scale=0.5]{Figures/is-clade/tax-shaded}
-
-}\hfill{}\subfloat[Synthesis Tree \#1]{\includegraphics[scale=0.5]{Figures/is-clade/synth2-shaded}
-
-}\hfill{}
-
-\caption{\label{fig:Broken-incertae-sedis} \emph{Incertae sedis} clade $C$
-broken by conflicting placement.
-Input trees (a) and (b) conflict
-in the placement of taxa in $C$.
-The synthesis supertree (d) places
-places $C1$ and $C2$ separately within $A$, while unplaced taxa
-float upwards.
-(\textbf{Note:} This is what the sub-problem solver
-does.
-The entire pipeline would attach $C3$ at $A$ actually, since
-it is the MRCA of $A1$ and $A2$.
-Should we change this?) }
-
-\end{figure}
 
 When the input phylogenies conflict on where members of an incertae
 sedis clade should be placed, neither placement is rejected.
@@ -816,24 +814,24 @@ incertae sedis clade lead to contesting of all edges along with taxa
 might be placed, creating a large, merged sub-problem, as in Figure
 \ref{fig:placement-example1}.
 
-In Figure \ref{fig:Broken-incertae-sedis}, tree $T_{1}$ places $C1$
-next to $A1$, while $T_{2}$ places $C2$ next to $A2$.
+In Figure \ref{fig:Broken-incertae-sedis}, tree $T_{1}$ places $T1$
+next to $R1$, while $T_{2}$ places $T2$ next to $R2$.
 Since different
-members of $C$ are placed, neither placement for $C$ is rejected.
-Instead the taxon $C$ is broken, the name $C$ disappears, and $C3$
-floats to the top level.
-Furthermore, since taxon $C$ is a broken
-\emph{incertae sedis }taxon, all of its children are effectively
+members of $C$ are placed, neither placement for $T$ is rejected.
+Instead the taxon $T$ is broken, the name $T$ disappears, and $T3$
+floats to the MRCA of the placed members of $T$.
+Furthermore, since taxon $T$ is a broken
+\emph{incertae sedis} taxon, all of its children are effectively
 incertae sedis independently, with the exception that they cannot be
 placed within each other.
-Therefore, the names $A$ and $AB$ are not
+Therefore, the names $R$ and $RS$ are not
 lost, since the taxa placed within them are \emph{incertae sedis}
 names.
 
-The situation here would be different if the monophyly of $C$ was
+The situation here would be different if the monophyly of $T$ was
 supported by an high-ranked input phylogeny.
 In that case, instead of
-breaking $C$, we would choose the placement in the highest-ranked
+breaking $T$, we would choose the placement in the highest-ranked
 tree.
 
 \subsection{Case 2: A nested \emph{incertae sedis} clade}
