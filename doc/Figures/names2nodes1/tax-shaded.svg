@@ -5,7 +5,6 @@
    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
    xmlns:svg="http://www.w3.org/2000/svg"
    xmlns="http://www.w3.org/2000/svg"
-   xmlns:xlink="http://www.w3.org/1999/xlink"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    width="205.24023pt"
@@ -23,7 +22,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -36,16 +35,16 @@
      guidetolerance="10"
      inkscape:pageopacity="0"
      inkscape:pageshadow="2"
-     inkscape:window-width="1920"
-     inkscape:window-height="1136"
+     inkscape:window-width="1032"
+     inkscape:window-height="1022"
      id="namedview92"
      showgrid="false"
-     inkscape:zoom="2.5554129"
-     inkscape:cx="170.45339"
+     inkscape:zoom="1"
+     inkscape:cx="46.307292"
      inkscape:cy="106.044"
-     inkscape:window-x="0"
-     inkscape:window-y="27"
-     inkscape:window-maximized="1"
+     inkscape:window-x="2789"
+     inkscape:window-y="125"
+     inkscape:window-maximized="0"
      inkscape:current-layer="svg90"
      fit-margin-top="0"
      fit-margin-left="0"
@@ -202,95 +201,59 @@
      id="path57"
      d="m 182.32422,8.7929692 c 0,5.4023428 -8.10157,5.4023428 -8.10157,0 0,-5.398438 8.10157,-5.398438 8.10157,0"
      style="fill:#bdbdbd;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:1.125;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;stroke-opacity:1" />
-  <g
-     id="g63"
-     style="fill:#000000;fill-opacity:1"
-     transform="translate(-4.980469,-12.824219)">
-    <use
-       height="100%"
-       width="100%"
-       id="use59"
-       y="167.07031"
-       x="189.01172"
-       xlink:href="#glyph0-1" />
-    <use
-       height="100%"
-       width="100%"
-       id="use61"
-       y="167.07031"
-       x="201.01758"
-       xlink:href="#glyph0-2" />
-  </g>
-  <g
-     id="g69"
-     style="fill:#000000;fill-opacity:1"
-     transform="translate(-4.980469,-12.824219)">
-    <use
-       height="100%"
-       width="100%"
-       id="use65"
-       y="120.03125"
-       x="189.01172"
-       xlink:href="#glyph0-1" />
-    <use
-       height="100%"
-       width="100%"
-       id="use67"
-       y="120.03125"
-       x="201.01758"
-       xlink:href="#glyph0-3" />
-  </g>
-  <g
-     id="g73"
-     style="fill:#000000;fill-opacity:1"
-     transform="translate(-4.980469,-12.824219)">
-    <use
-       height="100%"
-       width="100%"
-       id="use71"
-       y="72.988281"
-       x="189.01172"
-       xlink:href="#glyph0-4" />
-  </g>
-  <g
-     id="g77"
-     style="fill:#000000;fill-opacity:1"
-     transform="translate(-4.980469,-12.824219)">
-    <use
-       height="100%"
-       width="100%"
-       id="use75"
-       y="25.949219"
-       x="189.01172"
-       xlink:href="#glyph0-5" />
-  </g>
   <path
      inkscape:connector-curvature="0"
      id="path79"
      d="m 8.664062,49.957031 c 0,5.398438 -8.101562,5.398438 -8.101562,0 0,-5.402344 8.101562,-5.402344 8.101562,0"
      style="fill:#bdbdbd;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:1.125;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;stroke-opacity:1" />
-  <g
-     id="g83"
-     style="fill:#000000;fill-opacity:1"
-     transform="translate(-4.980469,-12.824219)">
-    <use
-       height="100%"
-       width="100%"
-       id="use81"
-       y="108.26953"
-       x="73.238281"
-       xlink:href="#glyph0-6" />
-  </g>
-  <g
-     id="g87"
-     style="fill:#000000;fill-opacity:1"
-     transform="translate(-4.980469,-12.824219)">
-    <use
-       height="100%"
-       width="100%"
-       id="use85"
-       y="143.55078"
-       x="131.125"
-       xlink:href="#glyph0-1" />
-  </g>
+  <text
+     xml:space="preserve"
+     style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:16px;line-height:125%;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.75px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+     x="186.00781"
+     y="13.353516"
+     id="text3778-1-8"><tspan
+       sodipodi:role="line"
+       id="tspan138"
+       x="186.00781"
+       y="13.353516">J</tspan></text>
+  <text
+     xml:space="preserve"
+     style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:15.99999969px;line-height:125%;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.75px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;"
+     x="184.73828"
+     y="62.070511"
+     id="text3778-1-8-8"><tspan
+       sodipodi:role="line"
+       id="tspan148">K</tspan></text>
+  <text
+     xml:space="preserve"
+     style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:15.99999969px;line-height:125%;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.75px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;"
+     x="184.50781"
+     y="109.35352"
+     id="text3778-1-8-9"><tspan
+       sodipodi:role="line"
+       id="tspan158">L1</tspan></text>
+  <text
+     xml:space="preserve"
+     style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:15.99999969px;line-height:125%;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.75px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;"
+     x="183.98828"
+     y="154.32051"
+     id="text3778-1-8-2"><tspan
+       sodipodi:role="line"
+       id="tspan168">L2</tspan></text>
+  <text
+     xml:space="preserve"
+     style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:15.99999969px;line-height:125%;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.75px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;"
+     x="127.50781"
+     y="129.60352"
+     id="text3778-1-8-88"><tspan
+       sodipodi:role="line"
+       id="tspan178">L</tspan></text>
+  <text
+     xml:space="preserve"
+     style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:15.99999969px;line-height:125%;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.75px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;"
+     x="70.507812"
+     y="96.603516"
+     id="text3778-1-8-86"><tspan
+       sodipodi:role="line"
+       id="tspan188">M</tspan></text>
 </svg>

@@ -554,21 +554,23 @@ For example, $H$ is placed inside taxon $EF$ in Figure \ref{fig:One-name-can}, b
 \end{figure}
 
 It is also possible for multiple names to apply to a single node. For example,
-in Figure \ref{fig:Multiple-names-can}a, the taxon $A$ corresponds to the split
-$B1\,B2\,C\,|\bullet\,Y$, and its child taxon $B$ corresponds to the split $B1\,B2\,|\bullet\,Y$. The
-edge leading to $A$ is consistent with the split for $B$, but the name $B$ is
-applied to the node with the smallest include group. However, in the
+in Figure \ref{fig:Multiple-names-can}a, the taxon $M$ corresponds to the split
+$L1\,L2\,K\,|\bullet\,J$, and its child taxon $L$ corresponds to the split $L1\,L2\,|\bullet\,Y$.
+The edge leading to $M$ is consistent with the split for $L$, but the name $L$ is
+applied to the node with the smallest include group.
+However, in the
 solution tree (Fig. \ref{fig:Multiple-names-can}b), there is is only node for
-both names $A$ and $B$ to apply to.  This kind of situation arises when a taxon
+both names $M$ and $L$ to apply to.
+This kind of situation arises when a taxon
 becomes monotypic after its \emph{incertae sedis} children are placed elsewhere.
-For such cases, we can solve this problem by (i) selecting a taxon at the
+For such cases, we can address this synonymy by (i) selecting a taxon at the
 node that is ancestral to all other taxa and (ii) moving this taxon to a
-newly-introduced out-degree-1 parent.  For example, $A$ is moved to an
+newly-introduced out-degree-1 parent.  For example, $M$ is moved to an
 out-degree-1 parent in Fig. \ref{fig:Multiple-names-can}c.  We repeatedly perform
 this procedure until no taxon at the node is the parent of all taxa.
 
 However, there are cases where thus procedure does not result in one name per
-node.  This case can occur, for example, when two incertae sedis siblings are 
+node.  This case can occur, for example, when two \emph{incertae sedis} siblings are 
 ``inter-digitated'', or  combined into a single clade in such a way that their
 members cannot be separated.  When the members of the two clades share the same
 MRCA, as in Fig. \ref{fig:interdigitation}, then the names for both clades
