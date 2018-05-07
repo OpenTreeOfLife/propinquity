@@ -509,16 +509,41 @@ and apply the name $n$ to that node.
 
 However, in the \emph{incertae sedis} framework, it is possible for one name to
 apply to multiple nodes. For example, in Figure \ref{fig:One-name-can}b, the
-name $A$ can apply to nodes $x$ and $y$. Here the name $A$ corresponds to the split
-$A1\,A2\,|\bullet B\,C$, leaving out $D$ since it is \emph{incertae sedis}. The two nodes $x$
-and $y$ display the splits $A1\,A2\,|\bullet B\,C\,D$ and $A1\,A2\,D|\bullet
-B\,C$ respectively, and both
-of these splits display the split $A1\,A2\,|\bullet B\,C$, so the name $A$ can apply to both
-$x$ and $y$. This cannot happen without\emph{ incertae sedis} taxa except at
-monotypic nodes. When faced with a choice about where to place a name, our
+name $E$ can apply to nodes $x$ and $y$. Here the name $E$ corresponds to the split
+$E1\,E2\,|\bullet F\,G$, leaving $H$ out of the definition since $H$ is \emph{incertae sedis}. 
+The two nodes $x$
+and $y$ display the splits $E1\,E2\,|\bullet F\,G\,H$ and $E1\,E2\,H|\bullet
+F\,G$ respectively, and both
+of these splits display the split $E1\,E2\,|\bullet F\,G$, so the name $E$ can apply to both
+$x$ and $y$. 
+This cannot happen when the rooted splits that correspond to a taxonomic name
+    are generated without\emph{ incertae sedis} taxa except at
+monotypic nodes.
+
+This situation is the result of the fact that it is not clear whether the names
+    in the taxonomic tree should be treated as node-based or branch-based
+    phylogenetic defintions.
+A node-based definition of $E$ would be ``the clade rooted at the MRCA of $E1$ and $E2$ as long as it is not
+    the ancestor of $F$ or $G$''; this would correspond to node $y$ in the solution
+    depicted in figure Figure \ref{fig:One-name-can}b.
+The branch-based definition would take the form ``The clade containing all lineages more closely related to 
+   $E1$ and $E2$ than to either $F$ or $G$, if such a clade exists''; this definition
+   would include node $x$ and the lineage connecting it to its parent.
+The ambiguity arises because both definitions refer to the same node in the taxonomy,
+    so it is unclear which is a preferable way to define the taxon concept of $E$.
+
+When faced with a choice about where to place a name, our
 solution is to find the most tip-ward node where the name can apply and attach
-the name to this node. This corresponds to a conservative choice about whether
-\emph{incertae sedis} taxa should be added to an existing taxon.
+the name to this node.
+This corresponds to using a node-based definition of the taxonomic names.
+The result of this naming choice is that the algorithm is conservative with respect
+    to when the \emph{incertae sedis} taxa should be placed within another named
+    taxon.
+
+Note that the intrusion of an \emph{incertae sedis} taxon within another taxon does not
+    always lead to ambiguity in which node should be named. 
+For example, $H$ is placed inside taxon $EF$ in Figure \ref{fig:One-name-can}, but the
+    the name $EF$ only applies to one node in the solution tree.
 
 \begin{figure}
 \hfill{}\subfloat[Taxonomy tree]{\includegraphics[scale=0.5]{Figures/names2nodes1/tax-shaded}}
