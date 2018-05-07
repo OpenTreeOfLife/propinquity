@@ -311,23 +311,78 @@ that satisfy the following properties:
 \begin{enumerate}
     \item An \emph{incertae sedis} node may intrude into its siblings and their descendants without conflict.
     \item An \emph{incertae sedis} node has an unrestricted range within the descendants of its sibling taxa.
-    \item The semantics of an \emph{incertae sedis} node does not depend on side-information such as taxon ranks, but only on the taxonomy tree.
-    \item Semantics is based on deriving a rooted (partial) split for each branch of the taxonomy.
+    \item The semantics of an \emph{incertae sedis} node does not depend on additional information such as taxon ranks, but only on the taxonomy tree.
+    \item The semantics is based on deriving a rooted (partial) split for each branch of the taxonomy.
       % These could be goals, but maybe discuss them as side-effects:
       % Side effect #1. Don't interdigitate
       % Side effect #2. Allow placing A next to B, and then placing B within A. (See Fig. 6)
 \end{enumerate}
 
+%\subsubsection{Terminology for rooted splits}
+
 The rooted split associated with taxonomy node $n$ serves to determine both when $n$ is in conflict
 with an input tree, and to where to place the taxon name for clade $n$ on the synthesis tree.
 % Removed mention of incertae sedis possibly affecting subproblem decomposition.  It
 % actually doesn't but that is surprising, and therefore kind of a result.
+% \paragraph{Definition of rooted splits}
+As is typically done, we define rooted splits for each node by noting that
+removing the edge connecting the node to its parent would produce two trees.
+The leaf label sets of these trees
+the partition the full leaf set $\mathcal{L}$ into two groups.
+The include set $\mathcal{I}(n)$ which
+does not contain the root, and the exclude set $\mathcal{E}(n)$ which does contain the root.
+Such a split may be written
+\[ \mathcal{I}(n)|\bullet\mathcal{E}(n).\]
+where the $\bullet$ indicates the root. 
+The include set is the set of labels for leaves that are
+descendants of the node.
+The exclude set is the set of
+labels for leaves that are not descendants of that node. 
+If no taxa are \emph{incertae sedis},
+then the exclude set for a node is just the total tip set minus the include set
+for the node: $\mathcal{E}(n)  =\mathcal{L}-\mathcal{I}(n)$.
+%For a node $n$ on the tip-ward side of an edge $e$, we
+%may also write $\mathcal{I}(n)$ for $\mathcal{I}(e)$, and $\mathcal{E}(n)$ for $\mathcal{E}(e)$.
+For any two rooted splits $A=A_{1}|\bullet A_{2}$
+and $B=B_{1}|\bullet B_{2}$ , we say that $A$ \emph{displays }$B$ if $B_{1}\subseteq A_{1}$ and $B_{2}\subseteq A_{2}$.
 
-\subsubsection{Unrestricted range and ignoring side information}
+Note that when a taxon rooted at node $n$ is not marked as \emph{incertae sedis},
+then the leaf labels that are descendants of $n$ will be in the include set for
+$n$ and all its ancestors and will be in the exclude set for all other nodes.
+
+In terms of phylogenetic nomenclature the supertree pipeline acts as if the
+taxonomy defines a conditional node-based name \citep[see][]{deQueiroz2013} for each
+higher taxon.
+So for the name labeling node $n$ in the taxonomic
+tree, the operational definition would be: ``the clade defined by the most recent
+common ancestor (MRCA) of $\mathcal{I}(n)$ as long as that MRCA is not an ancestor of
+$\mathcal{E}(n)$.''
+OTT is not based on a set of explicitly defined phylogenetic name definitions.
+In many contexts, a branch-based definition for $n$ (``the clade by all of the taxa more
+closely related to all fo them members of $\mathcal{I}(n)$ than to any member of
+$\mathcal{E}(n)$, if such a clade exists'') would result in similar behavior
+during the tree construction. 
+An exception to this (discussed below) arises in the step of assigning names to the 
+    supertree.
+
+\paragraph{Equivalence of a taxonomy tree and a list of rooted splits}
+
+Note that, for the purposes of the supertree method, all of the information from
+the taxonomic tree is contained in the set of rooted splits. Thus, one could
+imagine replacing that taxonomy, $\taxonomy_{p}$, with a set of rooted splits $\mathcal{R}(\taxonomy_{p})$ such that
+each edge in $\taxonomy_{p}$ is encoded in one split in $\mathcal{R}(\taxonomy_{p})$. If the order of trees is set
+to be: $\mathcal{R}(\taxonomy_{p})=\mathcal{Z}(\taxonomy_{p}) + 
+\mathcal{Y}(\taxonomy_{p})$, then using $\mathcal{R}(\taxonomy_{p})$ in place of $\taxonomy_{p}$ in the supertree
+algorithm would produce the same output.
+
+
+
+\subsubsection{Unrestricted range and ignoring additional information}
 The choice to allow each \emph{incertae sedis} taxon to attach anywhere within
 the descendants of its siblings requires some explanation, for two reasons.
 First, more precise information about where a taxon can attach is easy to
-incorporate. If $\mathcal{P}$ is the set of taxa that are potential ancestors for \emph{incertae
+incorporate. 
+If $\mathcal{P}$ is the set of taxa that are potential ancestors for \emph{incertae
 sedis} taxon $x$, then we may simply remove the descendants of $x$ from the exclude
 set for each $p\in\mathcal{P}$.  Such an approach would require that the path from $x$ to $p$
 go through only other potential ancestors.
@@ -340,7 +395,9 @@ its own subfamily, but it would be unexpected for it to be placed inside one of
 the other genera.
 
 Unfortunately, reliable information about the range of valid attachment points
-for each \emph{incertae sedis} taxon is lacking.  Ideally, the \emph{incertae
+for each \emph{incertae sedis} taxon is lacking in OTT and most other large-scale
+taxonomies.
+Ideally, the \emph{incertae
   sedis} annotation for some taxon $x$ would be accompanied by a specific statement
 about which other taxa might include $x$.  However, OTT does not provide this
 directly.  Constructing a range for each incertae sedis taxon relies on detailed
@@ -350,59 +407,32 @@ an approach of ascribing a meaning to the \emph{incertae sedis} label which
 attempts to capture the core of the idea that it articulates, but which can be
 applied automatically across the taxonomy without additional information.
 
-\subsubsection{Terminology for rooted splits}
-\paragraph{Equivalence of a taxonomy tree and a list of rooted splits}
-
-Note that, for the purposes of the supertree method, all of the information from
-the taxonomic tree is contained in the set of rooted splits. Thus, one could
-imagine replacing that taxonomy, $\taxonomy_{p}$, with a set of rooted splits $\mathcal{R}(\taxonomy_{p})$ such that
-each edge in $\taxonomy_{p}$ is encoded in one split in $\mathcal{R}(\taxonomy_{p})$. If the order of trees is set
-to be: $\mathcal{R}(\taxonomy_{p})=\mathcal{Z}(\taxonomy_{p}) + 
-\mathcal{Y}(\taxonomy_{p})$, then using $\mathcal{R}(\taxonomy_{p})$ in place of $\taxonomy_{p}$ in the supertree
-algorithm would produce the same output.
-
-\paragraph{Definition of rooted splits}
-As is typically done, we define rooted splits for each edge by noting that
-removing the edge would produce two trees. The leaf label sets of these trees
-the partition the full leaf set $\mathcal{L}$ into two groups. The include set $\mathcal{I}(e)$ which
-does not contain the root, and the exclude set $\mathcal{E}(e)$ which does contain the root.
-Such a split may be written
-\[ \mathcal{I}(e)|\bullet\mathcal{E}(e).\]
-where the $\bullet$ indicates the root. The include set is the set of leaves that are
-descendants of the daughter node of the edge. The exclude set is the set of
-leaves that are not descendants of that node. If no taxa are \emph{incertae sedis},
-then the exclude set for a node is just the total tip set minus the include set
-for the node: $\mathcal{E}(e)  =\mathcal{L}-\mathcal{I}(e)$. For a node $n$ on the tip-ward side of an edge $e$, we
-may also write $\mathcal{I}(n)$ for $\mathcal{I}(e)$, and $\mathcal{E}(n)$ for $\mathcal{E}(e)$. For any two rooted splits $A=A_{1}|\bullet A_{2}$
-and $B=B_{1}|\bullet B_{2}$ , we say that $A$ \emph{displays }$B$ if $B_{1}\subseteq A_{1}$ and $B_{2}\subseteq A_{2}$.
-
-Note that when a taxon rooted at node $n$ is not marked as \emph{incertae sedis},
-then the leaf labels that are descendants of $n$ will be in the include set for
-$n$ and all its ancestors and will be in the exclude set for all other nodes/edges.
-
-In terms of phylogenetic nomenclature the supertree pipeline acts as if the
-taxonomy defines a branch-based name \citep[see][]{deQueiroz2013} for each
-higher taxon of the form. So for the name labeling node $n$ in the taxonomic
-tree, the operational definition would be: ``the clade defined by all taxa that
-are more closely related to $\mathcal{I}(n)$ than to $\mathcal{E}(n)$, if such a clade exists on the tree.''
 
 \subsection{Split-based semantics for \emph{incertae sedis} taxa}
 
 An \emph{incertae sedis} taxon $n$ differs from a normal taxon because it can be
-moved into the descendants of any of its siblings.  Thus, annotating $n$ as
-\emph{incertae sedis} really modifies the meanings of its siblings so that they
-no longer exclude $n$.  In terms of rooted splits, we can represent this lack of
-exclusion by omitting taxa from the exclude set for a node.  Such a split does
+moved into the descendants of any of its siblings.
+Thus, annotating $n$ as
+\emph{incertae sedis} really modifies the meanings of the taxanomic statements
+that of the siblings of $n$ and all taxonomic nodes that descend from those siblings.
+ so that they
+no longer exclude $n$.
+If we denote this set of taxa (the set of taxa that are {\emph{potential}} 
+ancestors for \emph{incertae sedis} taxon $n$) as $\mathcal{P}_n$, 
+then we may simply remove the descendants of $n$ from the exclude
+set for each $p\in\mathcal{P}_n$.
+%In terms of rooted splits, we can represent this lack of
+%   exclusion by omitting taxa from the exclude set for a node.
+% We seek to define modified splits for each branch of the taxonomy tree.
+The include sets of these splits remain unchanged, but the exclude sets may be reduced
+\emph{incertae sedis} taxa to intrude into their sibling taxa.
+% Therefore, a semantics can be given simply in terms of the exclude set for each taxonomy node.
+Such a split does
 not mention the complete set of tip labels $\mathcal{L}$ and is therefore called a
 `partial split'', as opposed to a ``full split'' that contains the entirely of $\mathcal{L}$.
 Thus, when interpreted correctly the \emph{incertae sedis} 
 annotations are reducing the amount of information that the taxonomy brings to
 the supertree problem.
-
-We seek to define modified splits for each branch of the taxonomy tree. The
-include sets of these splits remain unchanged, but the exclude sets may be reduced
-\emph{incertae sedis} taxa to intrude into their sibling taxa.  Therefore, a
-semantics can be given simply in terms of the exclude set for each taxonomy node.
 
 In order to determine how the exclude sets should be modified to account for
 \emph{incertae sedis} taxa, we first attempt to express the unmodified exclude
