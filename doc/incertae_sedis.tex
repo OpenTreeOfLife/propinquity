@@ -566,8 +566,10 @@ becomes monotypic after its \emph{incertae sedis} children are placed elsewhere.
 For such cases, we can address this synonymy by (i) selecting a taxon at the
 node that is ancestral to all other taxa and (ii) moving this taxon to a
 newly-introduced out-degree-1 parent.  For example, $M$ is moved to an
-out-degree-1 parent in Fig. \ref{fig:Multiple-names-can}c.  We repeatedly perform
+out-degree-1 parent in Fig. \ref{fig:Multiple-names-can}c.
+We repeatedly perform
 this procedure until no taxon at the node is the parent of all taxa.
+
 
 However, there are cases where thus procedure does not result in one name per
 node.  This case can occur, for example, when two \emph{incertae sedis} siblings are 
@@ -575,8 +577,9 @@ node.  This case can occur, for example, when two \emph{incertae sedis} siblings
 members cannot be separated.  When the members of the two clades share the same
 MRCA, as in Fig. \ref{fig:interdigitation}, then the names for both clades
 apply to the same node.  However, in this case, neither name is ancestral to
-the other, and the previous solution does not apply.  In such cases, we choose
-one of the names arbitrarily.
+the other, and the previous solution does not apply.
+In such cases, we treat all applicable names as synonyms for the node.
+\mthcomment{Need to verify that the namer records this situation as synonyms!}
 
 \begin{figure}
 \hfill{}\subfloat[Taxonomy tree]{\includegraphics[scale=0.5]{Figures/is-interdigitation/tax-shaded}}
