@@ -439,12 +439,25 @@ Our method takes $\mathcal{P}_n$ to be the set of nodes that
     are in the taxonomic subtrees rooted at the sibling taxa of \emph{incertae sedis} taxon $n$.
 This allows us to encode the exclude set of some node $x$ efficiently by sweeping
     over the tree from root to tip.
-If $\mathcal{S}(x)$ is the set of siblings of $x$ which are not annotated as being 
-    \emph{incertae sedis} and $p(x)$ is the parent of $x$, then
+If $\mathcal{S}(x)$ is the set of siblings of $x$and $p(x)$ is the parent of $x$, then
+the naive approach of ignoring the \emph{incertae sedis}  annotation amount to setting
+    the exclude set as:
 \begin{align}
-    \mathcal{E}(x) = \mathcal{E}(p(x)) \cup \bigcup_{s\in \mathcal{S}(x)} \mathcal{E}(s)
+    \mathcal{E}(x) = \mathcal{E}(p(x)) \cup \left\{ \bigcup_{s\in \mathcal{S}(x)} \mathcal{I}(s) \right\}
+    \label{eq:exsetformonea-traditional}
 \end{align}
 with $\mathcal{E}(\rho) = \emptyset$ for the root of the taxonomic tree.
+
+If we treat the  \emph{incertae sedis} annotation as an indication that the 
+    \emph{incertae sedis} taxon $x$ can be place in any of its sister taxa, then
+    we let $\mathcal{Q}(x)$ denote the set of siblings of $x$ that are not
+    flagged as being \emph{incertae sedis} and we define the exclude set as:
+\begin{align}
+    \mathcal{E}(x) = \mathcal{E}(p(x)) \cup \left\{ \bigcup_{s\in \mathcal{Q}(x)} \mathcal{I}(s)\right\}
+    \label{eq:exsetformonea}
+\end{align}
+We will refer to this interpretation of the \emph{incertae sedis} annotation as ``unrestricted
+    intrusion'' semantics.
 
 %If $\mathcal{P}$ is the set of taxa that are potential ancestors for \emph{incertae
 %  sedis} taxon $x$, then we may simply remove the descendants of $x$ from the exclude
@@ -650,8 +663,11 @@ broken by conflicting placement.
 Input trees (a) and (b) conflict
 in the placement of taxa in $T$.
 The synthesis supertree (d) places
-places $T1$ and $T2$ separately within $R$, while unplaced taxa
-float upwards.
+places $T1$ and $T2$ separately within $R$.
+The BUILD algorithm would place the unsampled taxon $T3$ at the
+root of the tree, while our unprune operation implemented to 
+handle taxonomy-only taxa would place $T3$ as a child of the MRCA
+of the other members of $T$, as pictured in (d).
 }
 
 \end{figure}
@@ -721,8 +737,8 @@ In order to examine the results of the rooted splits-semantics above, we explore
 the outcome on a series of complex cases.  These cases are intended to
 illustrate some of the issues that arise when developing an operational semantics of
 \emph{incertae sedis}, as well as the outcomes for the rooted-split semantics.
-We think that they constitute one of the main contributions of the paper.  In
-each case, the synthesis trees in this section are constructed using the
+%We think that they constitute one of the main contributions of the paper.
+In each case, the synthesis trees in this section are constructed using the
 BUILD-based algorithm described in section \ref{sec:background}, without
 decomposing them into smaller subproblems or pruning and then unpruning
 taxonomy-only taxa.  Synthesis trees that are described as \emph{incertae
@@ -738,16 +754,16 @@ higher ranked  \emph{incertae sedis} taxa, such as genera that are marked
 
 \subsection{The \emph{incertae sedis} semantics restores taxonomic groups and names}
 
-With the naive semantics, intrusion of an incertae sedis taxon into a sibling is
+With the naive semantics, intrusion of an \emph{incertae sedis} taxon into a sibling is
 interpreted as conflict with that sibling.  This results in the loss of the edge
 corresponding to the sibling taxon as well as the taxon name.
 
-We see from Fig. \ref{fig:Handling-incertae-sedis}d that use of the incertae sedis
+We see from Fig. \ref{fig:Handling-incertae-sedis}d that use of the unrestricted intrusion
 semantics results the taxonomy edge $AB$ grouping $A$ and $B$.  It also restores the
 names $AB$ and $A$.  We may thus determine that $C$ has been placed within $A$ (and
 its ancestor $AB$).
 
-\subsection{Conflict with incertae sedis taxa}
+\subsection{Conflict with \emph{incertae sedis} taxa}
 
 When only tip nodes on the taxonomy are \emph{incertae sedis}, we have
 a very simple form of the \emph{incertae sedis} supertree problem.
