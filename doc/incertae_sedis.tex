@@ -10,7 +10,9 @@
 \usepackage{amssymb}
 \usepackage{graphicx}
 \usepackage{setspace}
-\linespread{1.5}
+\linespread{1.0}
+\usepackage{multirow}
+
 \usepackage[authoryear]{natbib}
 
 \makeatletter
@@ -337,7 +339,11 @@ where the $\bullet$ indicates the root.
 The include set is the set of labels for leaves that are
 descendants of the node.
 The exclude set is the set of
-labels for leaves that are not descendants of that node. 
+labels for leaves that are not descendants of that node.
+The ``include set'' and ``exclude set'' of a ``rooted split'' used here are equivalent
+    to the ``inside set'' and ``outside set'' of a ``$n$-taxon statement''
+    \citep[\emph{sensu}][]{Wilkinson1994}.
+
 If no taxa are \emph{incertae sedis},
 then the exclude set for a node is just the total tip set minus the include set
 for the node: $\mathcal{E}(n)  =\mathcal{L}-\mathcal{I}(n)$.
@@ -376,7 +382,39 @@ during the tree construction.
 An exception to this (discussed below) arises in the step of assigning names to the 
     supertree.
 
+\paragraph{Equivalence rooted split definitions with character encodings}
+Representing a split in a tree by a character is the basis of one of the oldest
+    supertree methods: matrix representation with parsimony \citep[MRP, see][]{Baum1992,Ragan1992}.
+In the rooted form of such an approach, character state 1 is used for tips that are
+    descendants of a internal node in an input tree and 0 is used for other tips.
+The partial splits caused by \emph{incertae sedis} annotations naturally map to
+    an encoding of missing data (typically denoted with the `?' symbol in a matrix).
+Thus the taxonomy shown in Figure \ref{fig:Handling-incertae-sedis}b could be represented as the matrix shown in 
+    Figure \ref{fig:Handling-incertae-sedis-mrp}.
+In the naive treatment of ignoring the \emph{incertae sedis} annotation, the `?' characters
+   in the row for taxa $C1$, $C2$, and $C3$ would be replaced with 0's.
 
+\begin{figure}
+\begin{center}
+\begin{tabular}{|r|p{2em}|p{2em}|p{2em}|p{2em}|}
+\hline
+& \multicolumn{4}{|c|}{Character/clade label} \\
+leaves & C & AB & B & A \\
+\hline
+$A1$, $A2$ & 0 & 1 & 0 & 1 \\
+$B1$, $B2$ & 0 & 1 & 1 & 0 \\
+$C1$, $C2$, $C3$ & 1 & ? & ? & ?  \\
+$D$  & 0 & 0 & 0 & 0 \\
+\hline
+\end{tabular}
+\end{center}
+\caption{\label{fig:Handling-incertae-sedis-mrp} The matrix encoding 
+of an \emph{incertae sedis} interpretation of the taxonomy shown in  Figure \ref{fig:Handling-incertae-sedis}b.
+Only the unique character encodings are show, thus the leftmost column
+lists all of the tip taxa that would be assigned a particular character encoding.
+}
+
+\end{figure}
 
 
 \subsection{Split-based semantics for \emph{incertae sedis} taxa}
@@ -592,7 +630,7 @@ MRCA, as in Fig. \ref{fig:interdigitation}, then the names for both clades
 apply to the same node.  However, in this case, neither name is ancestral to
 the other, and the previous solution does not apply.
 In such cases, we treat all applicable names as synonyms for the node.
-\mthcomment{Need to verify that the namer records this situation as synonyms!}
+\mthcomment{Need to verify that the namer records this situation as synonyms, as it should!}
 
 \begin{figure}
 \hfill{}\subfloat[Taxonomy tree]{\includegraphics[scale=0.5]{Figures/is-interdigitation/tax-shaded}}
