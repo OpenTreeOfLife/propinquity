@@ -870,32 +870,32 @@ The representations only vary in the scoring of leaf $W$ for character $V$. Pane
 \end{figure}
 
 
-However, this assumes that \emph{incertae sedis} taxa are always
-placed within their siblings, or descendants of their siblings.
-As
-such, it does not handle cases such as Figure \ref{fig:Placing-one-incertae}, 
-in which $I$ is first placed as sibling to $AI$, and then
-$AI$ is placed within $I$.
-Note that $I$ is not a sibling of $AI$ or a
-descendant of a sibling.
-Furthermore, the MRCA of $I$ and $AI$ is the
-root, and the path from $AI$ to the root includes $A$, but $A$ is not
-broken.
-We suggest that this conundrum may be resolved by first
-processing the placement of $I$ within $A$ by modifying the taxonomy
-to reflect this placement\footnote{Does this actually work? Some
-placements break taxa.}.
-When we consider the placement of $AI$ within
-$I$ on this modified taxonomy, the MRCA of $I$ and $AI$ is now $A$
-instead of the root, and the correct interpretation results.
-We
-suggest that by walking the tree in a pre-order fashion and processing
-shallowing placements first, the previous approach of finding the MRCA
-and labelling intermediate nodes as either additional placements or
-broken incertae sedis (or incertae\_sedis\_inherited) taxa holds.
-Such
-an approach should also handle cases containing nested incertae sedis
-taxa, as in Figure \ref{fig:Placing-one-incertae}.
+% However, this assumes that \emph{incertae sedis} taxa are always
+% placed within their siblings, or descendants of their siblings.
+% As
+% such, it does not handle cases such as Figure \ref{fig:Placing-one-incertae}, 
+% in which $I$ is first placed as sibling to $AI$, and then
+% $AI$ is placed within $I$.
+% Note that $I$ is not a sibling of $AI$ or a
+% descendant of a sibling.
+% Furthermore, the MRCA of $I$ and $AI$ is the
+% root, and the path from $AI$ to the root includes $A$, but $A$ is not
+% broken.
+% We suggest that this conundrum may be resolved by first
+% processing the placement of $I$ within $A$ by modifying the taxonomy
+% to reflect this placement\footnote{Does this actually work? Some
+% placements break taxa.}.
+% When we consider the placement of $AI$ within
+% $I$ on this modified taxonomy, the MRCA of $I$ and $AI$ is now $A$
+% instead of the root, and the correct interpretation results.
+% We
+% suggest that by walking the tree in a pre-order fashion and processing
+% shallowing placements first, the previous approach of finding the MRCA
+% and labelling intermediate nodes as either additional placements or
+% broken incertae sedis (or incertae\_sedis\_inherited) taxa holds.
+% Such
+% an approach should also handle cases containing nested incertae sedis
+% taxa, as in Figure \ref{fig:Placing-one-incertae}.
 
 \begin{comment}
 One question is whether this approach is able to handle nested
