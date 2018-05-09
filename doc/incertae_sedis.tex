@@ -456,7 +456,6 @@ the supertree problem.
 % % Therefore, a semantics can be given simply in terms of the exclude set for each taxonomy node.
 
 
-
 \subsection{Unrestricted range and ignoring additional information}
 In principle, an \emph{incertae sedis} taxon $n$ could carry with it additional
     information that indicates which specific points within the taxonomic tree
@@ -470,6 +469,7 @@ information (which is frequently untrustworthy in OTT). Thus, here we pursue
 an approach of ascribing a meaning to the \emph{incertae sedis} label which
 attempts to capture the core of the idea that it articulates, but which can be
 applied automatically across the taxonomy without additional information.
+
 
 Specifically, the methods described here only consider cases in which 
     $\mathcal{P}_n$ can be determined from the structure of the tree.
@@ -659,29 +659,72 @@ descendant of taxon $A$ in the synthetic tree
 (Fig.\ref{fig:Handling-incertae-sedis}d), but not the taxonomy 
 (Fig.\ref{fig:Handling-incertae-sedis}b).
 Thus, we could say that the synthetic tree places
-$C$ within $A$. Furthermore, the synthetic tree additionally places
-$C$ within $AB$.
+$C$ within $A$. 
+%Furthermore, the synthetic tree additionally places
+% $C$ within $AB$.
 
-A slightly more general case is shown in 
-Figure \ref{fig:Broken-incertae-sedis}.
+In general, after naming the clades in the supertree, the
+    taxonomic placement of an \emph{incertae sedis} taxon
+    can be detected if the most tip-ward named ancestor of
+    the clade in the supertree was not an ancestor in the
+    taxonomic tree.
+Note that if an \emph{incertae sedis} taxon is broken
+    during the supertree algorithm, it can be ambiguous whether
+    or not all of the members should be placed in a new
+    parent taxon.
+See, for example, Figure \ref{fig:Broken-incertae-sedis}.
 Here taxon $T1$ is an descendant of $R$ in the
 synthesis tree, but not the taxonomy.
-Thus $T1$ is placed within $R$.
-We note that the MRCA of $R$ and $T1$ in
-the taxonomy is the root node, and the path to the MRCA from $R$ is
-$R\to RS\to root$, while the path to the MRCA from $T1$ is $T1\to T\to
-root$.
-Here the additional node $RS$ on the path to the MRCA from $R$
-indicates that $T1$ is placed within $RS$ as well as $R$.
-In contrast,
-the additional node $T$ on the path to the MRCA indicates that $T1$ is
-a broken \emph{incertae sedis} taxon.
-Thus we may consider an
-algorithm that, for each taxon $S$ on the synthesis tree, finds the
-closest ancestral taxon $A$, and checks if $A$ is an ancestor of $B$
-on the taxonomy.
-If not, we compute the paths $A\to A_{1}\to\ldots\to
-MRCA(A,B)$ and $B\to B_{1}\to\ldots\to MRCA(A,B)$.
+Thus $T1$ is placed within $R$; taxon
+ $T2$ is similarly placed with in $R$.
+$T3$ is not mentioned in either input tree, and the 
+    only tree that speaks to its placement is the taxonomic input.
+However, the taxon $T$ cannot be monophyletic based on the
+     two input trees.
+Thus the correct placement of $T3$ is uncertain.
+
+The ambiguity of where to place $T3$ can also be compared to the
+    behavior of maximum compatibility tree estimation and parsimony.
+The matrix representation context the taxonomic tree's
+    character representation of taxon $T$ would include $T1$, $T2$ and $T3$
+    all being assigned state 1 and all of the other leaves being assigned 
+    state 0.
+This character is not compatible with the solution tree. 
+The compatability approach would be to conclude that the character encoding 
+    that taxon was incorrect and should be ignored.
+Since, no other character speaks to the position of $T3$, it would fall to being
+    a child of the root of the tree.
+In a similar result, the BUILD algorithm would place $T3$ as a child of the root.
+
+In a parsimony view, while the character cannot be mapped onto the solution in
+    a homoplasy-free manner, one might hope that the character data that the
+    taxonomy was based on was not completely unreliable.
+Placing of $T3$ as either sister to $T1$ or $T2$ could explain the character
+    representation of taxon $T$ with only two acquisitions of the state 1.
+Other placements of $T3$ would require at least three 0 to 1 changes (or a reversion
+    to state 0)l
+Placing $T3$ at the MRCA 
+    of the other members of $T$ corresponds
+    to handling of ``rogue'' taxa in an Adams consensus method of the two
+    most parsimonious placements of $T3$ under an irreversible parsimony model.
+
+
+
+% We note that the MRCA of $R$ and $T1$ in
+% the taxonomy is the root node, and the path to the ch from $R$ is
+% $R\to RS\to root$, while the path to the MRCA from $T1$ is $T1\to T\to
+% root$.
+% Here the additional node $RS$ on the path to the MRCA from $R$
+% indicates that $T1$ is placed within $RS$ as well as $R$.
+% In contrast,
+% the additional node $T$ on the path to the MRCA indicates that $T1$ is
+% a broken \emph{incertae sedis} taxon.
+% Thus we may consider an
+% algorithm that, for each taxon $S$ on the synthesis tree, finds the
+% closest ancestral taxon $A$, and checks if $A$ is an ancestor of $B$
+% on the taxonomy.
+% If not, we compute the paths $A\to A_{1}\to\ldots\to
+% MRCA(A,B)$ and $B\to B_{1}\to\ldots\to MRCA(A,B)$.
 
 \begin{figure}
 \hfill{}\subfloat[Input tree \#1]{\includegraphics[scale=0.5]{Figures/is-clade/tree1-shaded}
@@ -709,6 +752,79 @@ of the other members of $T$, as pictured in (d).
 }
 
 \end{figure}
+
+\subsection{Ambiguity of imputed taxonomic characters}
+It is tempting to view the matrix representation of the taxonomic tree
+    as an encoding of the presence, absence, and uncertainty about
+    suites of synapomorphies which allow us to diagnose a taxon.
+Clearly by simply representing the taxonomic tree, we will not be
+    able to recover the identity or even the number of characters that
+    a taxonomist might have used when classifying the organisms in question.
+Nevertheless, one might hope that a matrix representation of a taxonomy (such
+    as the matrix in Figure \ref{fig:Handling-incertae-sedis-mrp} as a 
+    representation of Figure \ref{fig:Handling-incertae-sedis}b) has a unique, uncontroversial 
+    association with the taxonomic tree.
+
+The rules for associated leaves in $\mathcal{I}(n)$ with state 1, leaves
+     in $\mathcal{E}(n)$, and other leaves with the missing data symbol 
+     do allow to encode the taxon $n$ in a taxonomic tree unambiguously.
+However, these are not the only set of rules for generating a character matrix
+    representation that would cause the taxonomic tree allows the characters to
+    be mapped without homoplasy.
+For example consider the case of the taxonomy shown in Figure \ref{fig:Placing-one-incertae}a.
+Either of the two matrices shown in \ref{fig:Placing-one-incertae-MRP} could encode this
+    taxonomy along with its \emph{incertae sedis} interpretation.
+
+\begin{figure}
+%\subfloat[Input tree \#1]{\includegraphics[scale=0.5]{Figures/is-within-is/tree1\lyxdot tre}}
+\subfloat[Taxonomy]{\includegraphics[scale=0.5]{Figures/is-within-is/tax-shaded}
+}
+\subfloat[Synthesis tree]{\includegraphics[scale=0.5]{Figures/is-within-is/synth1-shaded}
+}
+\subfloat[Possible intermediate]{\includegraphics[scale=0.5]{Figures/is-within-is/intermed-shaded}
+}
+
+\caption{\label{fig:Placing-one-incertae}
+One \emph{incertae sedis} group ($W$) being placed within another ($V$), with possible
+loss of the taxon $V$.}
+\end{figure}
+
+\begin{figure}
+%\subfloat[Input tree \#1]{\includegraphics[scale=0.5]{Figures/is-within-is/tree1\lyxdot tre}}
+\subfloat[maximally scored]{
+    \begin{tabular}{|r|p{2em}|p{2em}|}
+\hline
+& \multicolumn{2}{|c|}{Character} \\
+taxa & $V$ & $WX$  \\
+\hline
+$U$  & 0 & 0  \\
+$V1$ & 1 & ?  \\
+$V2$ & 1 & ?  \\
+$W$  & 0 & 1  \\
+$X$  & 0 & 1 \\
+\hline
+\end{tabular}
+}
+\subfloat[less informative]{
+    \begin{tabular}{|r|p{2em}|p{2em}|}
+\hline
+& \multicolumn{2}{|c|}{Character} \\
+taxa & $V$ & $WX$  \\
+\hline
+$U$  & 0 & 0 \\
+$V1$ & 1 & ? \\
+$V2$ & 1 & ? \\
+$W$  & ? & 1 \\
+$X$  & 0 & 1 \\
+\hline
+\end{tabular}
+}
+\caption{\label{fig:Placing-one-incertae-MRP}
+Two possible encodings that would support the $V$ and $WX$ branches and \emph{incertae sedis}
+annotation shown in the taxonomy from in Figure \ref{fig:Placing-one-incertae}a.
+The representations only vary in the scoring of leaf $W$ for character $V$.}
+\end{figure}
+
 
 However, this assumes that \emph{incertae sedis} taxa are always
 placed within their siblings, or descendants of their siblings.
@@ -891,33 +1007,33 @@ tree.
 \subsection{Case 2: A nested \emph{incertae sedis} clade}
 
 
-\begin{figure}
-\subfloat[Input tree \#1]{\includegraphics[scale=0.5]{Figures/is-nested/tree3-shaded}
+% \begin{figure}
+% \subfloat[Input tree \#1]{\includegraphics[scale=0.5]{Figures/is-nested/tree3-shaded}
 
-}\hfill{}\subfloat[Taxonomy tree]{\includegraphics[scale=0.5]{Figures/is-nested/tax-shaded}
+% }\hfill{}\subfloat[Taxonomy tree]{\includegraphics[scale=0.5]{Figures/is-nested/tax-shaded}
 
-}
+% }
 
-\subfloat[Synthesis tree (\emph{incertae sedis} ignored)]{\includegraphics[scale=0.5]{Figures/is-nested/synth3-no-is-shaded}
+% \subfloat[Synthesis tree (\emph{incertae sedis} ignored)]{\includegraphics[scale=0.5]{Figures/is-nested/synth3-no-is-shaded}
 
-}\hfill{}\subfloat[Synthesis tree (\emph{incertae sedis} considered)]{\includegraphics[scale=0.5]{Figures/is-nested/synth3-is-shaded}
+% }\hfill{}\subfloat[Synthesis tree (\emph{incertae sedis} considered)]{\includegraphics[scale=0.5]{Figures/is-nested/synth3-is-shaded}
 
-}
+% }
 
-\caption{\label{fig:Nested-incertae-sedis}Nested incertae sedis taxa.
-(a)
-Input tree \#1 places CI1 within CG, and C within $A$.
-(b) In the
-taxonomy, CI is \emph{incertae sedis }within C, while C is \emph{incertae
-sedis} under the root.
-(c) The synthesis tree when \emph{incertae
-sedis} taxa are not considered.
-The names AB, A, and CG are lost.
-(d) The synthesis tree when \emph{incertae sedis} taxa are considered.
-The names AB, A, and CG are regained, as well as the edges leading
-to AB and CG.}
+% \caption{\label{fig:Nested-incertae-sedis}Nested incertae sedis taxa.
+% (a)
+% Input tree \#1 places CI1 within CG, and C within $A$.
+% (b) In the
+% taxonomy, CI is \emph{incertae sedis }within C, while C is \emph{incertae
+% sedis} under the root.
+% (c) The synthesis tree when \emph{incertae
+% sedis} taxa are not considered.
+% The names AB, A, and CG are lost.
+% (d) The synthesis tree when \emph{incertae sedis} taxa are considered.
+% The names AB, A, and CG are regained, as well as the edges leading
+% to AB and CG.}
+% \end{figure}
 
-\end{figure}
 When \emph{incertae sedis} clades are allowed, it is possible for an
 \emph{incertae sedis} taxon to be nested within another \emph{incertae
 sedis} taxon.
@@ -944,21 +1060,6 @@ this is when a higher-rank incertae sedis taxon $A$ is placed as
 sister to an incertae sedis taxon $B$, and then $B$ is placed within
 $A$ (Figure \#).
 
-
-\begin{figure}
-\subfloat[Input tree \#1]{\includegraphics[scale=0.5]{Figures/is-within-is/tree1\lyxdot tre}
-
-}\subfloat[Taxonomy]{\includegraphics[scale=0.5]{Figures/is-within-is/tax-shaded}
-
-}\subfloat[Synthesis tree]{\includegraphics[scale=0.5]{Figures/is-within-is/synth1-shaded}
-
-}
-
-\caption{\label{fig:Placing-one-incertae}Placing one incertae sedis group
-within another.
-Here I is placed within A, and then AI is placed within
-A.}
-\end{figure}
 
 2. Placing A next to B, then B within A.
 
