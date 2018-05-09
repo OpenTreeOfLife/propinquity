@@ -774,12 +774,42 @@ However, these are not the only set of rules for generating a character matrix
 For example consider the case of the taxonomy shown in Figure \ref{fig:Placing-one-incertae}a.
 Either of the two matrices shown in \ref{fig:Placing-one-incertae-MRP} could encode this
     taxonomy along with its \emph{incertae sedis} interpretation.
+The matrix in Figure \ref{fig:Placing-one-incertae-MRP}a would result in the 
+    taxon $V$ not being named in the supertree shown in Figure \ref{fig:Placing-one-incertae}b,
+    while the matrix shown in Figure \ref{fig:Placing-one-incertae-MRP}b would lead
+    to $V$ being named.
+Thus, accurately
+    honors the input taxonomic content we would need more taxonomic information
+    than simply a hierarchy and knowledge of which taxa can float more tipward.
+
+Note that this example also presents a challenge for iterative supertree building and refinement
+    of the taxonomy without retention of additional information.
+Consider the case, in which there are two phylogenetic inputs along with the taxonomy from
+    tree Figure \ref{fig:Placing-one-incertae}b with the first phylogeny, $T_1$, providing the single
+    rooted split: $V1\,X \mid \bullet\,U$ and the second phylogeny, $T_2$ providing the 
+    rooted split: $W\, V1 \mid \bullet\,V2$.
+If the supertree pipeline were run with just the taxonomy and and $T_1$ as inputs, then the supertree
+    would be the tree shown in Figure \ref{fig:Placing-one-incertae}c.
+One might hope that using that tree as the revised taxonomy and then adding the split from $T_2$ in
+    a subsequent analysis would result in the same tree as if $T_1$ and $T_2$ to the original taxonomy.
+While the topology for the final tree in either order of analyses would indeed be the tree shown in 
+    Figure \ref{fig:Placing-one-incertae}b}, the decision about whether or not to name $V$ would differ.
+Our handling of \emph{incertae sedis} in the original taxonomy via rooted partial splits
+    would encode the taxonomic definitions in the manner depicted in Figure \ref{fig:Placing-one-incertae-MRP}a,
+    but the encoding of the revised taxonomy in Figure \ref{fig:Placing-one-incertae}c would result
+    in an altered definition of taxon $V$, as shown in \ref{fig:Placing-one-incertae-MRP}c.
+As expected, in the encoding of the revised taxonomy, the definition of $WX$ has been altered to reflect the
+    fact $T_1$ placed $V$ inside $WX$.
+Perhaps, unexpected is the fact that storing the revised taxonomy with an \emph{incertae sedis} annotation
+    and then reprocessing the taxonomy using our rooted partial splits approach would also shift
+    the definition of $V$ from a taxon that must exclude $W$ to one that may include $W$.
+
 
 \begin{figure}
 %\subfloat[Input tree \#1]{\includegraphics[scale=0.5]{Figures/is-within-is/tree1\lyxdot tre}}
 \subfloat[Taxonomy]{\includegraphics[scale=0.5]{Figures/is-within-is/tax-shaded}
 }
-\subfloat[Synthesis tree]{\includegraphics[scale=0.5]{Figures/is-within-is/synth1-shaded}
+\subfloat[Final supertree]{\includegraphics[scale=0.5]{Figures/is-within-is/synth1-shaded}
 }
 \subfloat[Possible intermediate]{\includegraphics[scale=0.5]{Figures/is-within-is/intermed-shaded}
 }
@@ -819,10 +849,24 @@ $X$  & 0 & 1 \\
 \hline
 \end{tabular}
 }
+\subfloat[from revised taxonomy]{
+    \begin{tabular}{|r|p{2em}|p{2em}|}
+\hline
+& \multicolumn{2}{|c|}{Character} \\
+taxa & $V$ & $WX$  \\
+\hline
+$U$  & 0 & 0 \\
+$V1$ & 1 & 1 \\
+$V2$ & 1 & 1 \\
+$W$  & ? & 1 \\
+$X$  & 0 & 1 \\
+\hline
+\end{tabular}
+}
 \caption{\label{fig:Placing-one-incertae-MRP}
-Two possible encodings that would support the $V$ and $WX$ branches and \emph{incertae sedis}
+Panels (a) and (b) show two possible encodings that would support the $V$ and $WX$ branches and \emph{incertae sedis}
 annotation shown in the taxonomy from in Figure \ref{fig:Placing-one-incertae}a.
-The representations only vary in the scoring of leaf $W$ for character $V$.}
+The representations only vary in the scoring of leaf $W$ for character $V$. Panel (c) shows the information encoded by the tree in \ref{fig:Placing-one-incertae}c. }
 \end{figure}
 
 
