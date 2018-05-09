@@ -870,272 +870,30 @@ The representations only vary in the scoring of leaf $W$ for character $V$. Pane
 \end{figure}
 
 
-% However, this assumes that \emph{incertae sedis} taxa are always
-% placed within their siblings, or descendants of their siblings.
-% As
-% such, it does not handle cases such as Figure \ref{fig:Placing-one-incertae}, 
-% in which $I$ is first placed as sibling to $AI$, and then
-% $AI$ is placed within $I$.
-% Note that $I$ is not a sibling of $AI$ or a
-% descendant of a sibling.
-% Furthermore, the MRCA of $I$ and $AI$ is the
-% root, and the path from $AI$ to the root includes $A$, but $A$ is not
-% broken.
-% We suggest that this conundrum may be resolved by first
-% processing the placement of $I$ within $A$ by modifying the taxonomy
-% to reflect this placement\footnote{Does this actually work? Some
-% placements break taxa.}.
-% When we consider the placement of $AI$ within
-% $I$ on this modified taxonomy, the MRCA of $I$ and $AI$ is now $A$
-% instead of the root, and the correct interpretation results.
-% We
-% suggest that by walking the tree in a pre-order fashion and processing
-% shallowing placements first, the previous approach of finding the MRCA
-% and labelling intermediate nodes as either additional placements or
-% broken incertae sedis (or incertae\_sedis\_inherited) taxa holds.
-% Such
-% an approach should also handle cases containing nested incertae sedis
-% taxa, as in Figure \ref{fig:Placing-one-incertae}.
+\begin{figure}
+\subfloat[Taxonomy $\protect\taxonomy$]{\includegraphics[scale=0.5]{Figures/placement1/tax\lyxdot tre}
 
-\begin{comment}
-One question is whether this approach is able to handle nested
-incertae sedis taxa.
+}\subfloat[$\tau_{1}$]{\includegraphics[scale=0.5]{Figures/placement1/input1\lyxdot tre}
 
-Placement of incertae sedis taxa by input trees is unfortunately not
-quite as simple as finding a single location where an I.S.
-taxon
-should attach.
-For example, when an incertae sedis taxon is broken,
-its children need to be ``placed'' separately.
+}\subfloat[$\tau_{2}$]{\includegraphics[scale=0.5]{Figures/placement1/input2\lyxdot tre}
 
-Each input tree can relate to an \emph{incertae sedis} taxon
-$(A,B,C)D$ in a number of ways
-\begin{itemize}
-    \item it could resolve
-$A$, $B$, $C$, or $D$.
-    \item it could place $D$ on a degree-2 (=out-
-degree-1) node that bisects a branch 
-    \item it could place a descendant
-taxon of $D$ 
-    \item it could place a descendant taxon of $D$ in a
-\emph{different place} than another input tree.
-    \item it could place
-children of $D$ in multiple places, thus conflicting with the branch.
-If the \emph{incertae sedis} taxon $(A,B,C)$ is broken, then $A$, $B$
-and $C$ become \emph{incertae sedis} clades in their own right, that
-may attach separately, except that they .
-This is because none of $A$,
-$B$, or $C$ is in the exclude set of the siblings of $D$.
-\end{itemize}
-\end{comment}
+}
 
-\section{The rooted-split semantics in practice}
-
-In order to examine the results of the rooted splits-semantics above, we explore
-the outcome on a series of complex cases.  These cases are intended to
-illustrate some of the issues that arise when developing an operational semantics of
-\emph{incertae sedis}, as well as the outcomes for the rooted-split semantics.
-%We think that they constitute one of the main contributions of the paper.
-In each case, the synthesis trees in this section are constructed using the
-BUILD-based algorithm described in section \ref{sec:background}, without
-decomposing them into smaller subproblems or pruning and then unpruning
-taxonomy-only taxa.  Synthesis trees that are described as \emph{incertae
-sedis}-aware apply the BUILD algorithm to splits constructed using equation
-\ref{eq:exsetformonea}, whereas the synthesis trees that are not \emph{incertae
-sedis}-aware are constructed from splits using equation
-\ref{eq:exsetformonea-traditional}.
-
-Much of the complexity that we explore here comes from the fact that it is not
-only tip taxa that can be \emph{incertae sedis}.  It is also possible to have
-higher ranked  \emph{incertae sedis} taxa, such as genera that are marked
-\emph{incertae familia}.
-
-\subsection{The \emph{incertae sedis} semantics restores taxonomic groups and names}
-
-With the naive semantics, intrusion of an \emph{incertae sedis} taxon into a sibling is
-interpreted as conflict with that sibling.  This results in the loss of the edge
-corresponding to the sibling taxon as well as the taxon name.
-
-We see from Fig. \ref{fig:Handling-incertae-sedis}d that use of the unrestricted intrusion
-semantics results the taxonomy edge $AB$ grouping $A$ and $B$.  It also restores the
-names $AB$ and $A$.  We may thus determine that $C$ has been placed within $A$ (and
-its ancestor $AB$).
-
-\subsection{Conflict with \emph{incertae sedis} taxa}
-
-When only tip nodes on the taxonomy are \emph{incertae sedis}, we have
-a very simple form of the \emph{incertae sedis} supertree problem.
-However, in practice entire clades may be \emph{incertae sedis}, and
-so more complex issue arise.
-In this section we consider a number of
-cases that must be handled when attempting to place \emph{incertae
-sedis} taxa.
-
-\emph{Note that the synthesis of all input trees before the taxonomy
-is unaffected by incertae sedis information.}
-
-\subsection{Conflicting placement among input trees}
-
-{[}\textbf{BDR:} \emph{maybe we should merge this with Figure.
-\ref{fig:Broken-incertae-sedis}.
-Although the point of figure
-\ref{fig:placement-example1} is to talk about sub-problem
-decomposition as well as what the result looks like.}{]}
-
-The addition of \emph{incertae sedis} taxa allows new types of
-conflict between input trees.
-For example, different input trees might
-place an incertae sedis taxon in conflicting locations.
-This is
-illustrated in Figure \ref{fig:placement-example1}, where the IS
-taxon (ott7,ott6)ott10 is placed as sister to ott1 by phylogeny
-$\tau_{1}$ and as sister ott3 by phylogeny $\tau_{2}$.
-
-When this happens, the placement of the IS taxon is not influenced by
-its being marked IS on the taxonomy.
-Thus, in Example 1, the higher
-ranked tree $\tau_{1}$ will be reflected in the synthesis tree, ott10
-will be placed as sister to ott1.
-In contrast, the conflicting
-placement in $\tau_{2}$ will not be reflected in the synth tree.
-
-All this would occur in the previous version of propinquity.
-Where the
-updated version differs that (a) the names ott9 and ott8 are retained
-instead of being dropped.
-(b) as a result of not breaking ott8 and
-ott9, we do not move ott3 and ott2 up to ott11.
-{[}BDR: Extend more figures!{]}
-
-\subsection{Case 1: An \emph{incertae sedis} clade}
-
-When a clade is marked as \emph{incertae sedis}, we need to consider
-two cases.
-In the first case, the clade may be placed within a sister
-clade intact (Figure \ref{fig:Handling-incertae-sedis}).
-However, if
-the clade is not monophyletic in the synthesis tree, then we allow the
-members of the clade to be placed separately (Figure \ref{fig:Broken-incertae-sedis}).
-
-
-When the input phylogenies conflict on where members of an incertae
-sedis clade should be placed, neither placement is rejected.
-Instead,
-the taxon $C$ is broken, the name $C$ disappears, and $C3$ floats to
-the top level.
-Algorithmic, alternatively placements of children of an
-incertae sedis clade lead to contesting of all edges along with taxa
-might be placed, creating a large, merged sub-problem, as in Figure
-\ref{fig:placement-example1}.
-
-In Figure \ref{fig:Broken-incertae-sedis}, tree $T_{1}$ places $T1$
-next to $R1$, while $T_{2}$ places $T2$ next to $R2$.
-Since different
-members of $C$ are placed, neither placement for $T$ is rejected.
-Instead the taxon $T$ is broken, the name $T$ disappears, and $T3$
-floats to the MRCA of the placed members of $T$.
-Furthermore, since taxon $T$ is a broken
-\emph{incertae sedis} taxon, all of its children are effectively
-incertae sedis independently, with the exception that they cannot be
-placed within each other.
-Therefore, the names $R$ and $RS$ are not
-lost, since the taxa placed within them are \emph{incertae sedis}
-names.
-
-The situation here would be different if the monophyly of $T$ was
-supported by an high-ranked input phylogeny.
-In that case, instead of
-breaking $T$, we would choose the placement in the highest-ranked
-tree.
-
-\subsection{Case 2: A nested \emph{incertae sedis} clade}
-
-
-% \begin{figure}
-% \subfloat[Input tree \#1]{\includegraphics[scale=0.5]{Figures/is-nested/tree3-shaded}
-
-% }\hfill{}\subfloat[Taxonomy tree]{\includegraphics[scale=0.5]{Figures/is-nested/tax-shaded}
-
-% }
-
-% \subfloat[Synthesis tree (\emph{incertae sedis} ignored)]{\includegraphics[scale=0.5]{Figures/is-nested/synth3-no-is-shaded}
-
-% }\hfill{}\subfloat[Synthesis tree (\emph{incertae sedis} considered)]{\includegraphics[scale=0.5]{Figures/is-nested/synth3-is-shaded}
-
-% }
-
-% \caption{\label{fig:Nested-incertae-sedis}Nested incertae sedis taxa.
-% (a)
-% Input tree \#1 places CI1 within CG, and C within $A$.
-% (b) In the
-% taxonomy, CI is \emph{incertae sedis }within C, while C is \emph{incertae
-% sedis} under the root.
-% (c) The synthesis tree when \emph{incertae
-% sedis} taxa are not considered.
-% The names AB, A, and CG are lost.
-% (d) The synthesis tree when \emph{incertae sedis} taxa are considered.
-% The names AB, A, and CG are regained, as well as the edges leading
-% to AB and CG.}
-% \end{figure}
-
-When \emph{incertae sedis} clades are allowed, it is possible for an
-\emph{incertae sedis} taxon to be nested within another \emph{incertae
-sedis} taxon.
-In such a case we must allow the higher-ranked taxon to
-be placed within a sibling, while preserving the right of the lower
-ranked taxon to be placed within a lower-level sibling (Figure
-\ref{fig:Nested-incertae-sedis}).
-
-
-\subsection{Case 3: Placement of one \emph{incertae sedis} taxon within
-another.}
-\subsection{Surprising results of the split-based semantics}
-
-\subsubsection{Inter-digitation}
-1. Inter-digitation
-
-\bdrcomment{Ben: discuss figure \ref{fig:interdigitation}.}
-
-\subsubsection{Placing one \emph{incertae sedis} group within another}
-It would be nice if our semantics of incertae sedis taxa would allow us to place
-one \emph{incertae sedis} sibling inside another.
-A special case of
-this is when a higher-rank incertae sedis taxon $A$ is placed as
-sister to an incertae sedis taxon $B$, and then $B$ is placed within
-$A$ (Figure \#).
-
-
-2. Placing A next to B, then B within A.
-
-\bdrcomment{Ben: Write discussion of Figure \ref{fig:Placing-one-incertae}}
-
-\subsection{Splits-based semantics versus edit-based semantics}
-
-Here we focus on a split-based semantics instead of a semantics based on applying
-of a series of edit operations to the tree. The split-based semantics allows us
-to seek trees that are simultaneously consistent with a set of split-constraints.
-The use of a split-based semantics does impose some limitations. These come
-primarily because in the edit-based semantics, after we place an
-\emph{incertae sedis} taxon, it is no loner \emph{incertae sedis}, whereas with
-the split-based semantics taxa are either always \emph{incertae sedis} or never
-\emph{incertae sedis}.
-
-This has an effect, for example, when we consider two incertae sedis siblings $A$
-and $B$. If we can place $A$ within $B$, and $B$ within $A$, then a split- based
-semantics allows us to freely inter-digitate $A$ and $B$. If we do not want to
-allow $A$ and $B$ to be inter-digitated, then we cannot both $A$ within $B$ and $B$
-within $A$. In addition, we can imagine that a family $A$ is incertae sedis within a
-kingdom. In an edit-based semantics, we could place $A$ as a sibling to a genus $B$,
-mark $A$ as non-\emph{incertae-sedis}, and then place $B$ within $A$. In a split-based
-semantics, we must disallow either $B$ within $A$ or $A$ within $B$ if we want to disallow
-interdigitation.
-
-As a result of this, we cannot satisfy all five of these criteria. Thus, we
-describe two alternative split-based semantics. The non-interdigitation
-semantics gets \# (1,2,4,5), and the interdigitation semantics gets (1,3,4,5).
-This makes the point that each semantics results from different choices about
-which criteria to satisfy.
-
+\caption{\label{fig:placement-example1}Example.
+    An incertae sedis clade (ott6,ott7)
+    is placed in different subtrees by input trees $\tau_{1}$ and $\tau_{2}$.
+    In $\tau_{1}$, two nodes that correspond to the taxonomy their ingroup
+    extended to include (ott6,ott7), and the branches leading to these
+    nodes have been colored blue.
+    The dashed blue edge leads to a node
+    that is a newly-introduced degree-2 node which does not correspond
+    to any taxonomy node.
+    In $\tau_{2}$, only one node that corresponds
+    to a taxonomy node needs to have its ingroup extended.
+    The placement
+    of (ott6,ott7) into ott8 toward ott1 by $\tau_{1}$ conflicts with
+    the placement of (ott6,ott7) into ott9 toward ott3 by $\tau_{2},$}
+\end{figure}
 
 
 
@@ -1144,13 +902,12 @@ which criteria to satisfy.
 \section{Handling \emph{incertae sedis} taxa in the propinquity
 pipeline}
 
-In order to handle \emph{incertae sedis} taxa within propinquity, we
+In order to handle \emph{incertae sedis} taxa within propinquity \citep{redelings2017supertree}, we
 must modify some of the stages of the propinquity pipeline.
 Subproblem
 decomposition must place \emph{incertae sedis} taxa in the correct
 subproblem.
-Subproblem files must indicate which taxa are incertae
-sedis.
+Subproblem files must indicate which taxa are \emph{incertae sedis}.
 The subproblem solver must read this information, account for
 \emph{incertae sedis} taxa when solving subproblems, and correctly
 name taxa that have been modified by having \emph{incertae sedis} taxa
@@ -1159,52 +916,9 @@ The unpruner must be aware of \emph{incertae sedis}
 taxa.
 Annotations of the tree must be aware of \emph{incertae sedis}
 taxa so that it does not consider taxa broken when they have an
-incertae sedis taxon placed inside them.
+\emph{incertae sedis} taxon placed inside them.
 
-\subsection{Exemplifying taxa}
 
-One current problem is that well-known taxa like Fungi or Mammalia
-tend to have a very large number of incertae sedis children, making
-browsing in the tree viewer difficult.
-This can happen when, for
-example, fossils or other hard-to- place taxa get classified only to
-the level of these well-known nodes and no further.
-This leads to a
-situation where well-known taxa serve as a dumping ground for unplaced
-taxa.
-
-Our current approach to this problem is to perform a second round of
-pruning, or ``cleaning'', during the exemplification step.
-Incertae
-sedis taxa are pruned at this stage if they do not occur in any input
-trees.
-We thus generate a second ``cleaned taxonomy'' that has
-undergone this further round of cleaning.
-This approach improves on
-the previous approach in that \emph{incertae sedis} taxa in input
-trees are no longer pruned.
-This approach also removes tons of
-\emph{incertae sedis} children from nodes like ``Fungi'', where a lot
-of unplaced fossils with few observable characters have been dumped.
-
-However, this approach has the negative effect of pruning some
-incertae sedis taxa that need not be pruned.
-For example, suppose
-\emph{incertae sedis} taxon $A$ contains 5 children, of which only 1
-child $A_{1}$ occurs in an input tree.
-If the taxon $A$ is not broken,
-then it should be possible to attach the other 4 members of $A$ next
-to $A_{1}$, without cluttering up the synthesis tree.
-Such taxa have
-been successfully placed even though they are not in any input tree.
-This can only be discovered after synthesis is complete, though.
-
-We should be able to to figure out which incertae sedis taxa are
-placed (see section \ref{subsec:Placement}), and then mark the other
-ones incertae sedis in the \emph{synthesis tree}.
-We could then filter
-out the taxa that \emph{remain }incertae sedis (or incertae\_sedis
-inherited) in the tree viewer instead of the synthesis pipeline.
 
 \subsection{Sub-problem decomposition}
 
@@ -1253,30 +967,7 @@ the edge $B$.
 However, this approach is more complex and does not seem
 necessary in practice.
 
-\begin{figure}
-\subfloat[Taxonomy $\protect\taxonomy$]{\includegraphics[scale=0.5]{Figures/placement1/tax\lyxdot tre}
 
-}\subfloat[$\tau_{1}$]{\includegraphics[scale=0.5]{Figures/placement1/input1\lyxdot tre}
-
-}\subfloat[$\tau_{2}$]{\includegraphics[scale=0.5]{Figures/placement1/input2\lyxdot tre}
-
-}
-
-\caption{\label{fig:placement-example1}Example.
-An incertae sedis clade (ott6,ott7)
-is placed in different subtrees by input trees $\tau_{1}$ and $\tau_{2}$.
-In $\tau_{1}$, two nodes that correspond to the taxonomy their ingroup
-extended to include (ott6,ott7), and the branches leading to these
-nodes have been colored blue.
-The dashed blue edge leads to a node
-that is a newly-introduced degree-2 node which does not correspond
-to any taxonomy node.
-In $\tau_{2}$, only one node that corresponds
-to a taxonomy node needs to have its ingroup extended.
-The placement
-of (ott6,ott7) into ott8 toward ott1 by $\tau_{1}$ conflicts with
-the placement of (ott6,ott7) into ott9 toward ott3 by $\tau_{2},$}
-\end{figure}
  For example, in Figure
 \ref{fig:placement-example1}, input tree $\tau_{1}$ contests ott9 and
 input tree $\tau_{2}$ contests ott9 and ott8.
