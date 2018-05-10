@@ -787,7 +787,7 @@ If the supertree pipeline were run with just the taxonomy and and $T_1$ as input
 One might hope that using that tree as the revised taxonomy and then adding the split from $T_2$ in
     a subsequent analysis would result in the same tree as if $T_1$ and $T_2$ to the original taxonomy.
 While the topology for the final tree in either order of analyses would indeed be the tree shown in 
-    Figure \ref{fig:Placing-one-incertae}b}, the decision about whether or not to name $V$ would differ.
+    Figure \ref{fig:Placing-one-incertae}b, the decision about whether or not to name $V$ would differ.
 Our handling of \emph{incertae sedis} in the original taxonomy via rooted partial splits
     would encode the taxonomic definitions in the manner depicted in Figure \ref{fig:Placing-one-incertae-MRP}a,
     but the encoding of the revised taxonomy in Figure \ref{fig:Placing-one-incertae}c would result
@@ -864,44 +864,6 @@ The representations only vary in the scoring of leaf $W$ for character $V$. Pane
 \end{figure}
 
 
-\begin{figure}
-\subfloat[$\tau_{1}$]{\includegraphics[scale=0.5]{Figures/decomp/tree1}
-}
-\subfloat[$\tau_{2}$]{\includegraphics[scale=0.5]{Figures/decomp/tree2}
-}
-\subfloat[$\tau_{3}$]{\includegraphics[scale=0.5]{Figures/decomp/tree3}
-}
-\subfloat[$\tau_{4}$]{\includegraphics[scale=0.5]{Figures/decomp/tree4}
-}
-
-\subfloat[Taxonomy $\protect\taxonomy$]{\includegraphics[scale=0.5]{Figures/decomp/tax}
-}
-\subfloat[$Y$ and $Z$ decomposition]{\includegraphics[scale=0.5]{Figures/decomp/decompRep}
-}
-\subfloat[Pruned $Y$ and $Z$ decomposition]{\includegraphics[scale=0.5]{Figures/decomp/decompPruned}
-}
-
-
-\caption{\label{fig:placement-example1}Example.
-    An incertae sedis clade (ott6,ott7)
-    is placed in different subtrees by input trees $\tau_{1}$ and $\tau_{2}$.
-    In $\tau_{1}$, two nodes that correspond to the taxonomy their ingroup
-    extended to include (ott6,ott7), and the branches leading to these
-    nodes have been colored blue.
-    The dashed blue edge leads to a node
-    that is a newly-introduced degree-2 node which does not correspond
-    to any taxonomy node.
-    In $\tau_{2}$, only one node that corresponds
-    to a taxonomy node needs to have its ingroup extended.
-    The placement
-    of (ott6,ott7) into ott8 toward ott1 by $\tau_{1}$ conflicts with
-    the placement of (ott6,ott7) into ott9 toward ott3 by $\tau_{2},$}
-\end{figure}
-
-
-
-
-
 \section{Handling \emph{incertae sedis} taxa in the propinquity
 pipeline}
 
@@ -923,6 +885,40 @@ taxa so that it does not consider taxa broken when they have an
 
 
 
+\newpage %TEMP
+
+\begin{figure}
+\subfloat[$\tau_{1}$]{\includegraphics[scale=0.5]{Figures/decomp/tree1}
+}
+\subfloat[$\tau_{2}$]{\includegraphics[scale=0.5]{Figures/decomp/tree2}
+}
+\subfloat[$\tau_{3}$]{\includegraphics[scale=0.5]{Figures/decomp/tree3}
+}
+\subfloat[$\tau_{4}$]{\includegraphics[scale=0.5]{Figures/decomp/tree4}
+}
+
+\subfloat[Taxonomy $\protect\taxonomy$]{\includegraphics[scale=0.5]{Figures/decomp/tax}
+}
+\subfloat[$Y$ and $Z$ decomposition]{\includegraphics[scale=0.5]{Figures/decomp/decompRep}
+}
+\subfloat[Pruned $Y$ and $Z$ decomposition]{\includegraphics[scale=0.5]{Figures/decomp/decompPruned}
+}
+
+
+\caption{\label{fig:decomp} Four phylogenetic trees (a-d) an
+example taxonomy (e) which are possible inputs to the propinquity supertree pipeline.
+(f) shows the taxonomic component of the subproblem decompositions for taxa $Y$ and $Z$ subproblems 
+that would result
+from an unmodified pipeline with used $\tau_1$ and either $\tau_2$ or $\tau_3$ as the phylogenetic
+inputs.
+(g) shows a possible decomposition from a decomposition tool that avoids duplication of taxa.
+}
+\end{figure}
+
+
+
+
+
 \subsection{Sub-problem decomposition}
 
 The presence of \emph{incertae sedis }taxa poses a problem to sub-
@@ -940,16 +936,49 @@ splits.
 However, it does have the effect of creating larger
 subproblems.
 
-We must also handle conflicting placements of \emph{incertae sedis}
-taxa by different input trees.
-Thus, if one input tree places the
-\emph{incertae sedis} taxon $X$ in $((X)B)A$ and another places $X$ in
-$((X)C)A$ then we must mark both edges $B$ and $C$ as contested edges,
-even if these edges would \emph{not} be contested were taxon $X$ to be
-removed.
-This results in a new way to contest edges that involves the
-interaction of two input trees, and not just the interaction of each
-input tree with the taxonomy.
+Simply allowing the subproblem decomposer to recognize that intrusion
+    of an \emph{incertae sedis} taxon does not contest the existence
+    of a clade would be straightforward, but problems arise if the
+    decomposer is not further altered.
+Consider, for example, the inputs of the $\tau_1$, $\tau_2$, $\tau_3$, and the taxonomy
+    shown in Figure \ref{fig:decomp}.
+Because the taxon $\alpha$ is annotated as being \emph{incertae sedis}, 
+    neither  $\tau_1$, $\tau_2$, nor $\tau_3$ contest the monophyly of 
+    the taxa $Y$, $Z$, or $\alpha$.
+This would lead to the taxonomic portion of both the $Y$ and $Z$ subproblems
+    containing the taxonomy for $\alpha$, leading to the members of
+    $\alpha$ occurring in two different subproblems (see Figure \ref{fig:decomp}f).
+Solving and merging these problems would result in the duplication of $\alpha$ 
+    in the supertree.
+
+
+One could easily
+    imagine a ``pruning decomposer'' that does not allow the say taxon to
+    occur in more than one subproblem.
+This approach would work in a straightforward way if the phylogenetic inputs were only $\tau_1$ and $\tau_3$,
+    yielding the decomposition shown in Figure \ref{fig:decomp}g, but if
+    both $\tau_1$ and $\tau_2$ were inputs the decomposer would have to
+    resolve conflict about the placement of $\alpha_1$.
+Implementing the behavior in the subproblem decomposition step would
+    break the separation between the ``divide'' and ``conquer'' steps
+    which is a key aspect of propinquity's current efficiency.
+
+Even considering ranked phylogenetic inputs of $\tau_4$ then $\tau_1$ from
+    Figure \ref{fig:decomp} reveal some difficulties.
+In this case the inclusion of $\alpha$ within the taxon $Y$ in $\tau_1$ would
+    cause $\alpha$ to be solved in the subproblem for $Y$.
+If $\tau_4$ were ranked higher than $\tau_1$, then the grouping of $Y_1+Y_2+\alpha$ would
+    not be permitted because they conflict with the split $Y_1\,Y_3 \mid \bullet\,Y_2$ from
+    $\tau_4$.
+Thus, $\alpha$ would be placed inside of $Y$ on the basis of a rooted split
+    that is not displayed in the final tree.
+While this is placement is permissible based on the \emph{incertae sedis} annotation of the
+    taxonomy, a major goal of the propinquity pipeline is to make it
+    easy for biologists to understand the cause of different groupings in the 
+    supertree.
+Allowing splits which are not displayed to determine the placement of groups runs counter to that goal.
+
+
 
 We choose to solve these problems by merging any subproblems that an
 \emph{incertae sedis} taxon might be placed in.
@@ -961,21 +990,13 @@ both $B$ and $C$ as contested edges in the example above.
 In fact,
 this is the current behaviour of the non-\emph{incertae-sedis} aware
 subproblem decomposer.
-One downside of this approach is that, if we
-have $((X)B)A)$ in one input tree, and $X$ is mentioned nowhere else,
-then by marking $B$ as contested, we are creating unnecessarily large
-subproblems.
-We could instead placed $X$ in $B$ and avoid contesting
-the edge $B$.
-However, this approach is more complex and does not seem
-necessary in practice.
+One downside of this approach is that, an \emph{incertae sedis} taxon
+    place in only one input tree, the clade it is placed in will be
+    marked as contested even though none of the counterintuitive
+    behaviors mentioned above would arise if we did not
+    mark it as contested.
 
 
- For example, in Figure
-\ref{fig:placement-example1}, input tree $\tau_{1}$ contests ott9 and
-input tree $\tau_{2}$ contests ott9 and ott8.
-Thus ott1, ott2, ott3,
-ott6, and ott7 end up in the same sub-problem.
 
 \subsection{Subproblem solution}
 
@@ -993,33 +1014,6 @@ The solution tree is considered to a fixed tree and not
 to have any \emph{incertae sedis} nodes, or any other forms of
 uncertainty.
 
-\subsubsection{Reading incertae sedis information}
-
-Currently, we read the \emph{incertae sedis} information as a list of
-OTT ids for \emph{incertae sedis} taxa.
-This does not require adding
-further annotations to the node names.
-Only taxonomy nodes can be
-\emph{incertae sedis} at the moment, and only the taxonomy tree for
-the subproblem contains OTT ids for internal nodes.
-Therefore we
-handle \emph{incertae sedis} information by constructing modified
-split sets for the lowest-ranked tree when the list of \emph{incertae
-sedis} nodes is not empty.
-
-\subsubsection{Exclude sets modified by \emph{incertae sedis} marks}
-
-Equation (\ref{eq:exsetformone}) leads to the following
-algorithm to compute the exclude set for all nodes in a tree.
-\begin{enumerate} \item Set the exclude set of the root node to be
-empty \item For each \emph{node} (except the root) in preorder
-\begin{itemize} \item combine the \emph{exclude} set of the parent
-node with the \emph{include} set of non-\emph{incertae-sedis}
-siblings.
-\item store this set in a hash, with key \emph{node}
-\end{itemize} \end{enumerate} This algorithm is currently implemented
-in \emph{otc-solve- subproblem}.
-We store the sets as \emph{std::set}.
 
 \subsubsection{Implementation: finding the node for a name}
 
