@@ -471,8 +471,8 @@ Our method takes $\mathcal{P}_n$ to be the set of nodes that
     are in the taxonomic subtrees rooted at the sibling taxa of \emph{incertae sedis} taxon $n$.
 This allows us to encode the exclude set of some node $x$ efficiently by sweeping
     over the tree from root to tip.
-If $\mathcal{S}(x)$ is the set of siblings of $x$and $p(x)$ is the parent of $x$, then
-the naive approach of ignoring the \emph{incertae sedis}  annotation amount to setting
+If $\mathcal{S}(x)$ is the set of siblings of $x$ and $p(x)$ is the parent of $x$, then
+the naive approach of ignoring the \emph{incertae sedis}  annotation amounts to setting
     the exclude set as:
 \begin{align}
     \mathcal{E}(x) = \mathcal{E}(p(x)) \cup \left\{ \bigcup_{s\in \mathcal{S}(x)} \mathcal{I}(s) \right\}
@@ -481,7 +481,7 @@ the naive approach of ignoring the \emph{incertae sedis}  annotation amount to s
 with $\mathcal{E}(\rho) = \emptyset$ for the root of the taxonomic tree.
 
 If we treat the  \emph{incertae sedis} annotation as an indication that the 
-    \emph{incertae sedis} taxon $x$ can be place in any of its sister taxa, then
+    \emph{incertae sedis} taxon $x$ can be placed in any of its sister taxa, then
     we let $\mathcal{Q}(x)$ denote the set of siblings of $x$ that are not
     flagged as being \emph{incertae sedis} and we define the exclude set as:
 \begin{align}
@@ -630,7 +630,7 @@ In such cases, we treat all applicable names as synonyms for the node.
 \hfill{}\subfloat[Taxonomy tree]{\includegraphics[scale=0.5]{Figures/is-interdigitation/tax-shaded}}
 \hfill{}\subfloat[Solution tree]{\includegraphics[scale=0.5]{Figures/is-interdigitation/synth-shaded}}
 \hfill{}
-\caption{\label{fig:interdigitation}Interdigitation of \emph{incertae sedis} siblings.  Here the names $A$ and $B$ apply to the same node on the solution tree, but neither is ancestral to the other on the taxonomy.}
+\caption{\label{fig:interdigitation}Interdigitation of \emph{incertae sedis} siblings.  Here the names $P$ and $Q$ apply to the same node on the solution tree, but neither is ancestral to the other on the taxonomy.}
 \end{figure}
 
 
