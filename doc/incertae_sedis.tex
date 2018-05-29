@@ -1043,7 +1043,7 @@ $N_{max}$, in which case we could just choose a name for $x$ from $N$
 (perhaps not an \emph{incertae sedis} name) and then record all the
 other names as equivalents somewhere.
 
-\textbf{BDR:}\textbf{\emph{ }}\emph{we might get this behavior in a
+\bdrcomment{we might get this behavior in a
 nice an automatic way if we create a single fake leaf for each
 monotypic taxonomy node that holds the node's leaf label.}
 
@@ -1074,6 +1074,29 @@ that have been placed within them.
 This would not require any updating
 to the conflict-analysis code in the annotation step.
 
+\section{Discussion}
+
+In this paper we've described a method for handling \emph{incertae sedis} taxa
+when constructing taxonomic supertrees.  Our method incorporates the uncertain
+placement information from such taxa when constructing the supertree.  It also
+handles higher taxon names and allows input trees to revise the taxonomy by
+determining where \emph{incertae sedis} taxa should be placed.
+
+However, our method leaves a number of problems for future work.  One of these
+problems is that we consider taxa with an \emph{incertae sedis} label to 
+about which siblings in attach within.  However, in practice,
+the taxonomist may only consider it plausible for the taxon to intrude only within specific
+siblings.  Our method also assumes that an \emph{incertae sedis} label on a taxon
+indicates that a taxon may attach at any depth within its siblings.  In practice, an
+\emph{incertae sedis} genus with sister families (for example) is unlikely to attach
+so deeply within a sister family that it becomes nested within another genus.
+
+In order to consider more precise attachment ranges for \emph{incertae sedis} taxa, we
+would have to obtain specifications for attachment ranges that are machine readable and
+robust.  Obtaining these specifications would be difficult or impossible in many cases.
+However, in cases that result from taxonomy merging (below) it would be possible to obtain
+them.  This necessitates the creation of a format \emph{incertae sedis} taxa that is more
+expressive that a simple label.
 
 \paragraph{Taxonomy merging}
 
