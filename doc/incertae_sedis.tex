@@ -236,8 +236,7 @@ clade $C$ leads to synthesis tree (c) if \emph{incertae sedis} annotations are
 ignored, but to synthesis tree (d) if \emph{incertae sedis} annotations are respected.
 The tree in (d) recovers taxon names $AB$ and $A$, as well as the edge to clade $AB$
 that groups $A$ and $B$. Taxon names and edges that are conditional on handling
-\emph{incertae sedis} are shaded grey. \mthcomment{We should probably remove $C3$ and replace $B1$ and $B2$ with $B$
-to simplify this. We could use triangle to indicate that $D$ and $B$ could be leaves or clades.}
+\emph{incertae sedis} are shaded grey. \mthcomment{We could use triangle to indicate that $D$ and $B$ could be leaves or clades.}
 }
 
 \end{figure}
@@ -317,22 +316,18 @@ that satisfy the following properties:
 \subsection{Terminology for rooted splits}
 
 The rooted split associated with taxonomy node $n$ serves to determine both when $n$ is in conflict
-with an input tree, and to where to place the taxon name for clade $n$ on the synthesis tree.
+with an input tree, and where to place the taxon name for clade $n$ on the synthesis tree.
 % Removed mention of incertae sedis possibly affecting subproblem decomposition.  It
 % actually doesn't but that is surprising, and therefore kind of a result.
 % \paragraph{Definition of rooted splits}
 As is typically done, we define rooted splits for each node by noting that
 removing the edge connecting the node to its parent would produce two trees.
-The leaf label sets of these trees
-the partition the full leaf set $\mathcal{L}$ into two groups.
-The include set $\mathcal{I}(n)$ which
-does not contain the root, and the exclude set $\mathcal{E}(n)$ which does contain the root.
-Such a split may be written
+The leaf label sets of these trees partition the full leaf set $\mathcal{L}$ into two groups: the include
+set $\mathcal{I}(n)$ which does not contain the root, and the exclude set $\mathcal{E}(n)$
+which does contain the root. Such a split may be written
 \[ \mathcal{I}(n)|\bullet\mathcal{E}(n).\]
-where the $\bullet$ indicates the root. 
-The include set is the set of labels for leaves that are
-descendants of the node.
-The exclude set is the set of
+where the $\bullet$ indicates the root. The include set is the set of labels for leaves that are
+descendants of the node. The exclude set is the set of 
 labels for leaves that are not descendants of that node.
 The ``include set'' and ``exclude set'' of a ``rooted split'' used here are equivalent
     to the ``inside set'' and ``outside set'' of a ``$n$-taxon statement''
@@ -360,7 +355,7 @@ to be: $\mathcal{R}(\taxonomy_{p})=\mathcal{Z}(\taxonomy_{p}) +
 \mathcal{Y}(\taxonomy_{p})$, then using $\mathcal{R}(\taxonomy_{p})$ in place of $\taxonomy_{p}$ in the supertree
 algorithm would produce the same output.
 
-\paragraph{Equivalence rooted split definitions and phylogenetic definitions of names}
+\paragraph{Equivalence of rooted split definitions and phylogenetic definitions of names}
 In terms of phylogenetic nomenclature the supertree pipeline acts as if the
 taxonomy defines a conditional node-based name \citep[see][]{deQueiroz2013} for each
 higher taxon.
@@ -376,15 +371,15 @@ during the tree construction.
 An exception to this (discussed below) arises in the step of assigning names to the 
     supertree.
 
-\paragraph{Equivalence rooted split definitions with character encodings}
+\paragraph{Equivalence of rooted split definitions with character encodings}
 Representing a split in a tree by a character is the basis of one of the oldest
-    supertree methods: matrix representation with parsimony \citep[MRP, see][]{Baum1992,Ragan1992}.
+supertree methods: matrix representation with parsimony \citep[MRP, see][]{Baum1992,Ragan1992}.
 In the rooted form of such an approach, character state 1 is used for tips that are
-    descendants of a internal node in an input tree and 0 is used for other tips.
+descendants of a internal node in an input tree and 0 is used for other tips and for the root.
 The partial splits caused by \emph{incertae sedis} annotations naturally map to
-    an encoding of missing data (typically denoted with the `?' symbol in a matrix).
+an encoding of missing data (typically denoted with the `?' symbol in a matrix).
 Thus the taxonomy shown in Figure \ref{fig:Handling-incertae-sedis}b could be represented as the matrix shown in 
-    Figure \ref{fig:Handling-incertae-sedis-mrp}.
+Figure \ref{fig:Handling-incertae-sedis-mrp}.
 In the naive treatment of ignoring the \emph{incertae sedis} annotation, the `?' characters
    in the row for taxa $C1$, $C2$, and $C3$ would be replaced with 0's.
 
@@ -392,20 +387,22 @@ In the naive treatment of ignoring the \emph{incertae sedis} annotation, the `?'
 \begin{center}
 \begin{tabular}{|r|p{2em}|p{2em}|p{2em}|p{2em}|}
 \hline
-& \multicolumn{4}{|c|}{Character/clade label} \\
-leaves & C & AB & B & A \\
+& \multicolumn{3}{|c|}{Character/clade label} \\
+leaves & C & AB & A \\
 \hline
-$A1$, $A2$ & 0 & 1 & 0 & 1 \\
-$B1$, $B2$ & 0 & 1 & 1 & 0 \\
-$C1$, $C2$, $C3$ & 1 & ? & ? & ?  \\
-$D$  & 0 & 0 & 0 & 0 \\
+$A1$       & 0 & 1 & 1 \\
+$A2$       & 0 & 1 & 1 \\
+$B$        & 0 & 1 & 0 \\
+$C1$       & 1 & ? & ? \\
+$C2$       & 1 & ? & ? \\
+  $D$      & 0 & 0 & 0 \\
+  root     & 0 & 0 & 0 \\
 \hline
 \end{tabular}
 \end{center}
 \caption{\label{fig:Handling-incertae-sedis-mrp} The matrix encoding 
 of an \emph{incertae sedis} interpretation of the taxonomy shown in  Figure \ref{fig:Handling-incertae-sedis}b.
-Only the unique character encodings are show, thus the leftmost column
-lists all of the tip taxa that would be assigned a particular character encoding.
+The root is coded as a special leaf.
 }
 
 \end{figure}
@@ -625,6 +622,7 @@ apply to the same node.  However, in this case, neither name is ancestral to
 the other, and the previous solution does not apply.
 In such cases, we treat all applicable names as synonyms for the node.
 \mthcomment{Need to verify that the namer records this situation as synonyms, as it should!}
+\bdrcomment{I assume this is not linked to publication}
 
 \begin{figure}
 \hfill{}\subfloat[Taxonomy tree]{\includegraphics[scale=0.5]{Figures/is-interdigitation/tax-shaded}}
@@ -953,7 +951,7 @@ Solving and merging these problems would result in the duplication of $\alpha$
 
 
 One could easily
-    imagine a ``pruning decomposer'' that does not allow the say taxon to
+    imagine a ``pruning decomposer'' that does not allow the same taxon to
     occur in more than one subproblem.
 This approach would work in a straightforward way if the phylogenetic inputs were only $\tau_1$ and $\tau_3$,
     yielding the decomposition shown in Figure \ref{fig:decomp}g, but if
@@ -1010,7 +1008,7 @@ sedis} taxa before solving a sub-problem.
 After solving a sub-problem,
 we must apply taxon names from the taxonomy tree to the sub-problem
 solution tree.
-The solution tree is considered to a fixed tree and not
+The solution tree is considered to be a fixed tree and not
 to have any \emph{incertae sedis} nodes, or any other forms of
 uncertainty.
 
