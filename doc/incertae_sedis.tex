@@ -67,9 +67,11 @@
 
 \newcommand{\note}[1]{}
 
-\newcommand{\mthcomment}[1]{{\color{red} #1}\xspace}
+%\newcommand{\mthcomment}[1]{{\color{red} #1}\xspace}
+\newcommand{\mthcomment}[1]{}
 
-\newcommand{\bdrcomment}[1]{{\color{cyan} #1}\xspace}
+%\newcommand{\bdrcomment}[1]{{\color{cyan} #1}\xspace}
+\newcommand{\bdrcomment}[1]{}
 
 \title{\texttt{Taxonomic supertree construction with}\texttt{\emph{
 Incertae sedis}}\texttt{ taxa}}
@@ -376,34 +378,47 @@ Representing a split in a tree by a character is the basis of one of the oldest
 supertree methods: matrix representation with parsimony \citep[MRP, see][]{Baum1992,Ragan1992}.
 In the rooted form of such an approach, character state 1 is used for tips that are
 descendants of a internal node in an input tree and 0 is used for other tips and for the root.
-The partial splits caused by \emph{incertae sedis} annotations naturally map to
-an encoding of missing data (typically denoted with the `?' symbol in a matrix).
-Thus the taxonomy shown in Figure \ref{fig:Handling-incertae-sedis}b could be represented as the matrix shown in 
-Figure \ref{fig:Handling-incertae-sedis-mrp}.
-In the naive treatment of ignoring the \emph{incertae sedis} annotation, the `?' characters
-   in the row for taxa $C1$, $C2$, and $C3$ would be replaced with 0's.
+Partial splits, such as those caused by \emph{incertae sedis} annotations, are naturally encoded by
+encoding missing labels in a split as missing data in the corresponding character
+(typically denoted with the `?' symbol in a matrix).
 
-\begin{figure}
-\begin{center}
-\begin{tabular}{|r|p{2em}|p{2em}|p{2em}|p{2em}|}
-\hline
-& \multicolumn{3}{|c|}{Character/clade label} \\
-leaves & C & AB & A \\
-\hline
-$A1$       & 0 & 1 & 1 \\
-$A2$       & 0 & 1 & 1 \\
-$B$        & 0 & 1 & 0 \\
-$C1$       & 1 & ? & ? \\
-$C2$       & 1 & ? & ? \\
-  $D$      & 0 & 0 & 0 \\
-  root     & 0 & 0 & 0 \\
-\hline
-\end{tabular}
-\end{center}
-\caption{\label{fig:Handling-incertae-sedis-mrp} The matrix encoding 
-of an \emph{incertae sedis} interpretation of the taxonomy shown in  Figure \ref{fig:Handling-incertae-sedis}b.
-The root is coded as a special leaf.
+A rooted split is equivalent to the corresponding character in a matrix representation in the
+sense that each can be treated as a condition that each tree may or may not satisfy.  A tree satisfies
+a split if there a branch which divides include and exclude group when cut.  A tree satisfies the
+corresponding character in a matrix representation if the character has a parsimony score of $1$ on the tree.  This equivalence is illustrated in Figure \ref{fig:Handling-incertae-sedis-mrp}.  Thus the taxonomy shown in Figure \ref{fig:Handling-incertae-sedis}b could be represented in terms of the splits
+in Figure \ref{fig:Handling-incertae-sedis-mrp}a or the characters in Figure \ref{fig:Handling-incertae-sedis-mrp}b.  In the naive treatment of ignoring the \emph{incertae sedis} annotation, the `?' characters in the row for taxa $C1$ and $C2$ would be replaced with 0's.  Equivalently, the naive interpretation would add $C1$ and $C2$ to the exclude set for the $A$ and $AB$ splits.
+
+   \begin{figure}
+     \subfloat[Split representation]{
+\noindent\begin{minipage}[t]{0.45\columnwidth}%
+\begin{align*}
+C & =C1\,C2\,\phantom{B\,}|\bullet\,A1\,A2\,B\,D\\
+A & =A1\,A1\,\phantom{B\,}|\bullet\,B\,D\\
+AB & =A1\,A2\,B\,|\bullet\,D
+\end{align*}
+%
+\end{minipage}
+
 }
+     \subfloat[Matrix representation]{
+         \begin{tabular}{|r|p{2em}|p{2em}|p{2em}|p{2em}|}
+           \hline
+           & \multicolumn{3}{|c|}{Character/clade label} \\
+           leaves & C & AB & A \\
+           \hline
+           $A1$       & 0 & 1 & 1 \\
+           $A2$       & 0 & 1 & 1 \\
+           $B$        & 0 & 1 & 0 \\
+           $C1$       & 1 & ? & ? \\
+           $C2$       & 1 & ? & ? \\
+           $D$      & 0 & 0 & 0 \\
+           (root)     & 0 & 0 & 0 \\
+           \hline
+         \end{tabular}
+}
+       \caption{\label{fig:Handling-incertae-sedis-mrp} Rooted splits have an equivalent matrix encoding.
+        (a) Rooted splits for an \emph{incertae sedis} interpretation of the taxonomy shown in  Figure \ref{fig:Handling-incertae-sedis}b. (b) The equivalent matrix representation. The root is coded as a special leaf. Split C is a full split, because it mentions all labels.  Splits A and AB are partial splits, and therefore have missing labels in the left panel, and '?' in the right panel.
+       }
 
 \end{figure}
 
@@ -414,7 +429,7 @@ An \emph{incertae sedis} taxon $n$ differs from a normal taxon because it can be
 placed as a descendant of some set of taxa without invalidating these taxa.
 We will use $\mathcal{P}_n$ to denote this set of taxa which are {\emph{potential}} 
 ancestors for \emph{incertae sedis} taxon $n$.
-Note that this distinct from the taxa that are ancestral to $n$ in the taxonomy;
+Note that this is distinct from the taxa that are ancestral to $n$ in the taxonomy;
     those are taxa which must contain all of the descandants of $n$.
 The effect of the \emph{incertae sedis} annotation of taxon $n$ is
     to simply remove $\mathcal{I}(n)$ from the exclude set for each $p\in\mathcal{P}_n$.
@@ -883,7 +898,7 @@ taxa so that it does not consider taxa broken when they have an
 
 
 
-\newpage %TEMP
+% \newpage %TEMP
 
 \begin{figure}
 \subfloat[$\tau_{1}$]{\includegraphics[scale=0.5]{Figures/decomp/tree1}
