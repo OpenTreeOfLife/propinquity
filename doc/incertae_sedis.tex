@@ -112,7 +112,8 @@ hybridization, but the supertree approach described here does not consider any
 hybridization. Thus the taxonomic hierarchy can be converted to a tree. While
 not all taxonomists believe that named taxa should correspond to clades \citep[see,
 for example,][]{HorandlS2010}, the priniciples of phylogenetic classification
-are used by such a large majority of practicing taxonomists, that we have chosen
+are used by such a large majority of practicing taxonomists.
+Thus we have chosen
 to treat the taxonomic tree that mirrors the hierarchy of the taxonomy as an
 estimate of phylogenetic relationships. We refer to labels of taxonomy nodes as
 ``taxon names'', and assume that taxon names and taxonomy nodes have a
@@ -233,9 +234,13 @@ trees.
 
 \caption{\label{fig:Handling-incertae-sedis}Handling \emph{incertae sedis
 }taxa recovers additional edges and taxon names.
-Supertree construction on input tree (a) and taxonomy tree (b) with \emph{incertae sedis}
-clade $C$ leads to synthesis tree (c) if \emph{incertae sedis} annotations are
-ignored, but to synthesis tree (d) if \emph{incertae sedis} annotations are respected.
+Panel (a) shows the only phylogenetic to the supertree algorithm;
+(b) shows taxonomy tree the edge subtending the \emph{incertae sedis}
+clade $C$ shown using a dashed line.
+The tree in (c) would be the output of the supertree algorithm
+if \emph{incertae sedis} annotations are simply ignored.
+The tree shown in (d) is the supertree produced 
+if \emph{incertae sedis} annotations are respected.
 The tree in (d) recovers taxon names $AB$ and $A$, as well as the edge to clade $AB$
 that groups $A$ and $B$. Taxon names and edges that are conditional on handling
 \emph{incertae sedis} are shaded grey. \mthcomment{We could use triangle to indicate that $D$ and $B$ could be leaves or clades.}
@@ -252,8 +257,11 @@ as \emph{incertae sedis}, and then run the rest of the pipeline of
 \emph{incertae sedis}, it is worth pointing out what this naive semantics is lacking.
 
 This approach incorrectly treats the intrusion of an \emph{incertae sedis} taxon
-into a sibling taxon as a conflicting with monophyly of the sibling taxon. For
-example, in Fig. \ref{fig:Handling-incertae-sedis}, the placement of the
+into a sibling taxon as a conflicting with monophyly of the sibling taxon.
+Consider, for example, the trees shown in Fig. \ref{fig:Handling-incertae-sedis}.
+In this figure (and throughout this chapter) dashed lines are used for edges that
+connect an \emph{incertae sedis} taxon to its parent.
+Note that if we were to use the naive semantics,  the placement of the
 \emph{incertae sedis} taxon $C$ within $A$ and $AB$ is considered
 to contradict the monophyly of $A$ and $AB$ and thus to conflict with those taxa.
 This has three main effects.  These effects are illustrated in the difference
