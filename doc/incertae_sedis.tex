@@ -401,7 +401,7 @@ in Figure \ref{fig:Handling-incertae-sedis-mrp}a or the characters in Figure \re
 \noindent\begin{minipage}[t]{0.45\columnwidth}%
 \begin{align*}
 C & =C1\,C2\,\phantom{B\,}|\bullet\,A1\,A2\,B\,D\\
-A & =A1\,A1\,\phantom{B\,}|\bullet\,B\,D\\
+A & =A1\,A2\,\phantom{B\,}|\bullet\,B\,D\\
 AB & =A1\,A2\,B\,|\bullet\,D
 \end{align*}
 %
@@ -440,7 +440,7 @@ ancestors for \emph{incertae sedis} taxon $n$.
 Note that this is distinct from the taxa that are ancestral to $n$ in the taxonomy;
     those are taxa which must contain all of the descandants of $n$.
 The effect of the \emph{incertae sedis} annotation of taxon $n$ is
-    to simply remove $\mathcal{I}(n)$ from the exclude set for each $p\in\mathcal{P}_n$.
+    to simply remove $\mathcal{I}(n)$ from the exclude set for each taxon in $\mathcal{P}_n$.
 The include sets of these splits remain unchanged, but the exclude sets may be reduced
 \emph{incertae sedis} taxa to intrude.
 Such a split does
@@ -717,10 +717,10 @@ In a parsimony view, while the character cannot be mapped onto the solution in
 Placing of $T3$ as either sister to $T1$ or $T2$ could explain the character
     representation of taxon $T$ with only two acquisitions of the state 1.
 Other placements of $T3$ would require at least three 0 to 1 changes (or a reversion
-    to state 0)l
+    to state 0).
 Placing $T3$ at the MRCA 
     of the other members of $T$ corresponds
-    to handling of ``rogue'' taxa in an Adams consensus method of the two
+    to handling of ``rogue'' taxa in an Adam's consensus tree \citep{Adams1972} method of the two
     most parsimonious placements of $T3$ under an irreversible parsimony model.
 
 
@@ -793,8 +793,8 @@ The matrix in Figure \ref{fig:Placing-one-incertae-MRP}a would result in the
     taxon $V$ not being named in the supertree shown in Figure \ref{fig:Placing-one-incertae}b,
     while the matrix shown in Figure \ref{fig:Placing-one-incertae-MRP}b would lead
     to $V$ being named.
-Thus, accurately
-    honors the input taxonomic content we would need more taxonomic information
+Thus, to honor the input taxonomic content accurately,
+   we need more taxonomic information
     than simply a hierarchy and knowledge of which taxa can float more tipward.
 
 Note that this example also presents a challenge for iterative supertree building and refinement
@@ -813,8 +813,9 @@ Our handling of \emph{incertae sedis} in the original taxonomy via rooted partia
     would encode the taxonomic definitions in the manner depicted in Figure \ref{fig:Placing-one-incertae-MRP}a,
     but the encoding of the revised taxonomy in Figure \ref{fig:Placing-one-incertae}c would result
     in an altered definition of taxon $V$, as shown in \ref{fig:Placing-one-incertae-MRP}c.
-As expected, in the encoding of the revised taxonomy, the definition of $WX$ has been altered to reflect the
-    fact $T_1$ placed $V$ inside $WX$.
+As expected,  the definition of $WX$ has been altered to reflect the
+    fact $T_1$ placed $V$ inside $WX$
+    when we encode the revised taxonomy.
 Perhaps, unexpected is the fact that storing the revised taxonomy with an \emph{incertae sedis} annotation
     and then reprocessing the taxonomy using our rooted partial splits approach would also shift
     the definition of $V$ from a taxon that must exclude $W$ to one that may include $W$.
@@ -863,7 +864,7 @@ $W$  & ? & 1 \\
 $X$  & 0 & 1 \\
 \hline
 \end{tabular}
-}\hfill()
+}\hfill
 \subfloat[from revised taxonomy]{
     \begin{tabular}{|r|p{2em}|p{2em}|}
 \hline
@@ -1025,10 +1026,10 @@ Our sub-problem solver naturally handles \emph{incertae sedis} taxa.
 This is because we define the semantics of \emph{incertae sedis} taxa
 in terms of partial splits, and our solver natively supports building
 trees from partial splits through its use of the BUILD algorithm.
-Handling \emph{incertae sedis} taxa thus requires loading incertae
-sedis information and computing partial splits for \emph{incertae
-sedis} taxa before solving a sub-problem.
-After solving a sub-problem,
+Handling \emph{incertae sedis} taxa thus requires loading \emph{incertae
+sedis} information and computing partial splits for \emph{incertae
+sedis} taxa before solving a subproblem.
+After solving a subproblem,
 we must apply taxon names from the taxonomy tree to the sub-problem
 solution tree.
 The solution tree is considered to be a fixed tree and not
@@ -1068,10 +1069,14 @@ other names as equivalents somewhere.
 nice an automatic way if we create a single fake leaf for each
 monotypic taxonomy node that holds the node's leaf label.}
 
-
+\mthcomment{We might be able to skip mentioning the annotation step
+for this chapter$\ldots 
 \subsection{Annotation}
-
-Annotation primarily involves running a conflict analysis between the
+The Open Tree of Life's supertree construction involves an 
+    ``annotation'' step which notes whether or not
+    different groupings in the input trees are displayed
+    by the supertree.
+Annotation essentially involves running a conflict analysis between the
 synthesis tree and each input tree.
 Since neither tree has any
 \emph{incertae sedis} taxa, the conflict algorithm does not need to
@@ -1094,34 +1099,43 @@ taxonomy'', with groups extended to include \emph{incertae sedis} taxa
 that have been placed within them.
 This would not require any updating
 to the conflict-analysis code in the annotation step.
+}
 
 \section{Discussion}
 
-In this paper we've described a method for handling \emph{incertae sedis} taxa
-when constructing taxonomic supertrees.  Our method incorporates the uncertain
-placement information from such taxa when constructing the supertree.  It also
+In this chapter we haveve described a method for handling \emph{incertae sedis} taxa
+when constructing taxonomic supertrees.
+Our method incorporates the uncertain
+placement information from such taxa when constructing the supertree.
+It also
 handles higher taxon names and allows input trees to revise the taxonomy by
 determining where \emph{incertae sedis} taxa should be placed.
 
-However, our method leaves a number of problems for future work.  One of these
+However, our method leaves a number of problems for future work.
+One of these
 problems is that we consider taxa with an \emph{incertae sedis} label to 
-about which siblings in attach within.  However, in practice,
-the taxonomist may only consider it plausible for the taxon to intrude only within specific
-siblings.  Our method also assumes that an \emph{incertae sedis} label on a taxon
+``invade'' a subtrees rooted by any of the taxon's siblings.  
+However,
+the taxonomist who made the \emph{incertae sedis} designation,
+may only consider it plausible for the taxon to intrude only within specific
+siblings.
+Our method also assumes that an \emph{incertae sedis} label on a taxon
 indicates that a taxon may attach at any depth within its siblings.  In practice, an
 \emph{incertae sedis} genus with sister families (for example) is unlikely to attach
 so deeply within a sister family that it becomes nested within another genus.
 
-In order to consider more precise attachment ranges for \emph{incertae sedis} taxa, we
-would have to obtain specifications for attachment ranges that are machine readable and
-robust.  Obtaining these specifications would be difficult or impossible in many cases.
-However, in cases that result from taxonomy merging (below) it would be possible to obtain
-them.  This necessitates the creation of a format \emph{incertae sedis} taxa that is more
-expressive that a simple label.
-
-\paragraph{Taxonomy merging}
-
-Not all \emph{incertae sedis} taxa in our taxonomy are directly
+As we demonstrated above (in the discussion of figure \ref{fig:Placing-one-incertae-MRP}),
+if the \emph{incertae sedis} status of a taxon consists solely of
+    a flag on that taxon, we can encounter 
+    multiple equally plausible ways of encoding the information
+    into a character matrix.
+Resolving such ambiguities would require some datastore of intended
+    meanings of each restricted \emph{incertae sedis} annotation.
+In order to consider more precise attachment ranges for \emph{incertae sedis} taxa,
+    we would have to obtain machine readable specifications for attachment ranges
+    for groupings that a taxonomist has labeled as \emph{incertae sedis}
+Obtaining these specifications would be difficult or impossible in many cases.
+However,  not all \emph{incertae sedis} taxa in our taxonomy are directly
 labeled \emph{incertae sedis} by taxonomists.
 \emph{Incertae sedis}
 taxa can also result from automatic merging of taxonomies to create
@@ -1130,29 +1144,24 @@ For example, in Figure 3 of
 \citet{rees2017automated}, cases \#4 and \#6 illustrate examples where
 merging of two taxonomies leads to a taxonomy with a taxon of
 uncertain placement.
-The reason is primarily that if taxonomy
-$\taxonomy_{1}$ contains more levels of hierarchy than taxonomy
-$\taxonomy_{2}$, then we must add internal nodes to $\taxonomy_{2}$ to
-align it to $\taxonomy_{1}$.
-However, if taxonomy $\taxonomy_{2}$
-contains more leaves than $\taxonomy_{1}$, then it is unclear if these
-extra leaves should be nested inside the additional internal nodes, or
-not.
-Thus, the extra leaves are marked \emph{incertae sedis}.
 
-For example, if $\taxonomy_{1}=((a,b)x,(c,d)y)z$ and
-$\taxonomy_{2}=(a,b,c,d,e)z$ then $a$ and $b$ in $\taxonomy_{2}$
-should be nested within $x$, but we do not know if $e$ should be
-nested within $x$ or not.
-Thus we obtain $((a,b)x,(c,d)y,?e)z$, where
-$?$ indicates that taxon $e$ is marked \emph{incertae sedis}.
+Taxonomy merging generates a automated \emph{incertae sedis} annotation
+    in a number of ways.
+Perhaps, the easiest cause to contemplate is if
+one input taxonomy,
+$\taxonomy_{1}$, contains more levels of hierarchy than a second
+input taxonomy,
+$\taxonomy_{2}$.
+When the merger adds must add internal nodes that are unique to $\taxonomy_{2}$,
+it is unclear where these
+extra leaves should be nested be placed in the richer hierarchy of $\taxonomy_1$.
+In such a case, it is feasible to imagine the taxonomy merging procedure outputting
+    a list of plausible attachment points for each generated \emph{incertae sedis}
+    label.
+Case in which the \emph{incertae sedis} label is present in an input taxonomy,
+    restricting the range of attachment points would need to be treated as
+    some manually curated statements. 
 
-If incertae sedis taxa are cannot be placed within other incertae
-sedis taxa, then such an approach does not work if $y$ is already
-incertae sedis.
-However, we take the approach that \emph{incertae
-sedis} notations are not a general solution to expression of uncertain
-placement.
 
 
 
