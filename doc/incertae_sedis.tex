@@ -67,11 +67,11 @@
 
 \newcommand{\note}[1]{}
 
-%\newcommand{\mthcomment}[1]{{\color{red} #1}\xspace}
-\newcommand{\mthcomment}[1]{}
+\newcommand{\mthcomment}[1]{{\color{red} #1}\xspace}
+%\newcommand{\mthcomment}[1]{}
 
-%\newcommand{\bdrcomment}[1]{{\color{cyan} #1}\xspace}
-\newcommand{\bdrcomment}[1]{}
+\newcommand{\bdrcomment}[1]{{\color{cyan} #1}\xspace}
+%\newcommand{\bdrcomment}[1]{}
 
 \title{\texttt{Taxonomic supertree construction with}\texttt{\emph{
 Incertae sedis}}\texttt{ taxa}}
@@ -1088,18 +1088,62 @@ This would not require any updating
 to the conflict-analysis code in the annotation step.
 
 \section{Discussion}
+\bdrcomment{This is slightly exaggerated in the sense that there might be other
+  frameworks to incertae sedis taxa that do not require these exact moves.  Nonetheless,
+  I think this is not just a ``review'', in the sense that any well-founded approach
+  would have to work through all of these problems.  By working through them, we have
+  navigated the paths that subsequent approaches will need to walk.
 
-In this paper we've described a method for handling \emph{incertae sedis} taxa
-when constructing taxonomic supertrees.  Our method incorporates the uncertain
-placement information from such taxa when constructing the supertree.  It also
-handles higher taxon names and allows input trees to revise the taxonomy by
-determining where \emph{incertae sedis} taxa should be placed.
+  I would argue that
+  the fact that our solution seems relatively simple should be seen as a success, and not
+  a sign that we haven't done enough work.  It often takes a lot of work to get a complex
+  solution down to a simple solution.
 
-However, our method leaves a number of problems for future work.  One of these
-problems is that we consider taxa with an \emph{incertae sedis} label to 
-about which siblings in attach within.  However, in practice,
-the taxonomist may only consider it plausible for the taxon to intrude only within specific
-siblings.  Our method also assumes that an \emph{incertae sedis} label on a taxon
+  Additionally, the fact that we do not have
+  a lot of ``results'', in the sense of (say) large number of higher-taxon names that
+  are rescued by avoiding the naive approach, is a result of the fact that we didn't want
+  to do the work to add more input phylogenies with incertae sedis tips that will cause
+  problems.  We could always go back and try to get these ``results'', but the percieved value
+  wasn't very high.  Also, the algorithm that we came up with is itself a ``result''.
+}
+
+
+This paper introduces the necessary concepts and methods for handling \emph{incertae sedis}
+taxa in taxonomic supertrees.  We describe the goals of preserving internal edges,
+preserving higher taxon names, and preserving the opportunity to revise the taxonomy
+based on placement of \emph{incertae sedis} taxa.  In addition to explaining why
+the naive approach to taxonomic supertrees that ignores incertae sedis taxa sacrifices
+these three goals, we introduce a simple and satisfying way to achieve these goals
+through defining rooted splits for taxonomy edges with reduced exclude sets.  We also
+provide a simple and efficient recursion for computing these splits.
+
+Despite the simplicity of our approach, some complexities and conceptual difficulties
+remain.  While the correspondence of nodes and names is a simple one-to-one and onto
+relationship without \emph{incertae sedis} taxa, when \emph{incertae sedis} taxa are
+introduced, the relationship might be neither one-to-one (Figures \ref{fig:Multiple-names-can},\ref{fig:interdigitation}) nor onto (Figure \ref{fig:One-name-can}).
+This necessitates putting more thought into the semantics of taxon names, including
+whether names might become synonyms.  This may be considered a ``complexity''.
+
+In addition, our attempt to define reduced exclude sets for taxonomy splits yields
+a semantics that is not the only concievable semantics for \emph{incertae sedis}
+taxa (Figure \ref{fig:Placing-one-incertae}).  It allows \emph{incertae sedis} siblings to inter-digitate
+(Figure \ref{fig:interdigitation}), which might be a surprising result to the taxonomist.  Furthermore,
+in what might seem a lack of consistency, it does \emph{not} allow \emph{incertae sedis}
+taxa to intrude into each other if they become siblings through the result of
+placement, as is the case for taxa W and V in Figure \ref{fig:Placing-one-incertae}c.
+While each of these problems can be solved separately by adjusting the definition of the
+reduces exclude sets, no solution seems to be best in all respects.  This may be a result
+of the fact that split-based approaches to supertrees seek a simultaneous solution to a set
+of constraints.  This simultaneity can be contrasted with a solution that is phrased
+as a set of sequential operations to the taxonomy, as would be the case when (for example)
+(i) placing V within WX so that it is sister to W, (ii) marking V as no longer incertae sedis, and then (iii)
+placing W within V (which is no longer incertae sedis).  This maybe considered a ``conceptual difficulty''.
+
+Another issue that we have postponed for future work is how to more narrowly delimit
+the ranges in which \emph{incertae sedis} may attach.  The current paper allows
+\emph{incertae sedis} to attach anywhere within their sisters, but the taxonomist
+may only consider it plausible for the taxon to intrude only within specific
+siblings.  Furthermore, our method also assumes that an \emph{incertae sedis} label on a taxon
 indicates that a taxon may attach at any depth within its siblings.  In practice, an
 \emph{incertae sedis} genus with sister families (for example) is unlikely to attach
 so deeply within a sister family that it becomes nested within another genus.
