@@ -660,6 +660,7 @@ In such cases, we treat all applicable names as synonyms for the node.
 
 \subsection{Taxonomic revision}\label{subsec:Placement}
 
+\subsubsection{Revision of unbroken \emph{incertae sedis} taxa}
 After we have attached taxon names to the synthesis tree, we would
 like to interpret the position of these names in terms of placing
 \emph{incertae sedis }taxa in a revised taxonomy.
@@ -676,55 +677,91 @@ descendant of taxon $A$ in the synthetic tree
 (Fig.\ref{fig:Handling-incertae-sedis}d), but not the taxonomy 
 (Fig.\ref{fig:Handling-incertae-sedis}b).
 Thus, we could say that the synthetic tree places
-$C$ within $A$. 
-%Furthermore, the synthetic tree additionally places
-% $C$ within $AB$.
+$C$ within $A$.
 
 In general, after naming the clades in the supertree, the
     taxonomic placement of an \emph{incertae sedis} taxon
-    can be detected if the most tip-ward named ancestor of
-    the clade in the supertree was not an ancestor in the
-    taxonomic tree.
-Note that if an \emph{incertae sedis} taxon is broken
-    during the supertree algorithm, it can be ambiguous whether
-    or not all of the members should be placed in a new
-    parent taxon.
-See, for example, Figure \ref{fig:Broken-incertae-sedis}.
-Here taxon $T1$ is a descendant of $R$ in the
-synthesis tree, but not the taxonomy.
-Thus $T1$ is placed within $R$; taxon
- $T2$ is similarly placed with in $R$.
-$T3$ is not mentioned in either input tree, and the 
-    only tree that speaks to its placement is the taxonomic input.
-However, the taxon $T$ cannot be monophyletic based on the
-     two input trees.
-Thus the correct placement of $T3$ is uncertain.
+    can be detected if the name of the \emph{incertae sedis} taxon
+    survives in the solution tree, and the most tip-ward named
+    ancestor of the clade in the supertree was not an ancestor in the
+    taxonomic tree.  In complex scenarios such as Figure
+    \ref{fig:Placing-one-incertae}c, it may be necessary to
+    walk the solution tree in pre-order and revise the taxonomy
+    incrementally, in order to (for example) place V within WX
+    before placing W within V.
+    
+\subsubsection{Revision of broken \emph{incertae sedis} taxa}
+When an \emph{incertae sedis} taxon is broken and its name does not
+occur on the solution tree, taxonomic revision becomes considerably
+more complex.  For example, it can be ambiguous whether or not all of
+the members of a broken taxon should be placed in a new parent
+taxon. See, for example, Figure \ref{fig:Broken-incertae-sedis}. Here
+taxon $T1$ is a descendant of $R$ in the synthesis tree, but not the
+taxonomy. Thus $T1$ is placed within $R$; taxon  $T2$ is similarly
+placed with in $R$. $T3$ is not mentioned in either input tree, and
+the  only tree that speaks to its placement is the taxonomic
+input. However, the taxon $T$ cannot be monophyletic based on the two
+input trees.  Thus the correct placement of $T3$ is unclear.
+Furthermore, the taxon name for $T$ does not occur on the solution tree.
 
-The ambiguity of where to place $T3$ can also be compared to the
-    behavior of maximum compatibility tree estimation and parsimony.
-The matrix representation context the taxonomic tree's
-    character representation of taxon $T$ would include $T1$, $T2$ and $T3$
-    all being assigned state 1 and all of the other leaves being assigned 
-    state 0.
-This character is not compatible with the solution tree. 
-The compatability approach would be to conclude that the character encoding 
-    that taxon was incorrect and should be ignored.
-Since, no other character speaks to the position of $T3$, it would fall to being
-    a child of the root of the tree.
-In a similar result, the BUILD algorithm would place $T3$ as a child of the root.
+The ambiguity of where to place $T3$ can explored by comparing the
+behavior of maximum-compatibility tree estimation and parsimony-based
+scoring schemes such as MRP. The taxonomic tree's character
+representation of taxon $T$ would include $T1$, $T2$ and $T3$ 
+all being assigned state 1 and all of the other leaves being assigned 
+state 0.  This character is not compatible with the solution tree. 
+The compatibility approach would be to conclude that the character
+(or, equivalently, the corresponding rooted split) encoding that taxon was incorrect and should be completely ignored.
+Since, no other character speaks to the position of $T3$, it would
+fall to being  a child of the root of the tree.  This seems to
+contradict the intuition that $T3$ should be placed at the MRCA of
+$T1$ and $T2$.
+\bdrcomment{This is not really a feature of BUILD, but of our choice to
+completely throw all all triplets from incompatible splits.}
 
-In a parsimony view, while the character cannot be mapped onto the solution in
-    a homoplasy-free manner, one might hope that the character data that the
-    taxonomy was based on was not completely unreliable.
-Placing of $T3$ as either sister to $T1$ or $T2$ could explain the character
-    representation of taxon $T$ with only two acquisitions of the state 1.
-Other placements of $T3$ would require at least three 0 to 1 changes (or a reversion
-    to state 0).
-Placing $T3$ at the MRCA 
-    of the other members of $T$ corresponds
-    to handling of ``rogue'' taxa in an Adam's consensus tree \citep{Adams1972} method of the two
-    most parsimonious placements of $T3$ under an irreversible parsimony model.
+Using a parsimony-based scoring scheme, the information from the
+character that encodes taxon $T$ is not completely ignored, even though it
+is contradicted by an input tree.  Placing $T3$ as either sister to
+$T1$ or $T2$ could explain the character representation of taxon $T$
+with only two acquisitions of the state 1. Other placements of $T3$
+would require at least three 0 to 1 changes (or a reversion to state
+0). Placing $T3$ at the MRCA of the other members of $T$ corresponds
+to handling of ``rogue'' taxa in an Adam's consensus tree
+\citep{Adams1972} method of the two  most parsimonious placements of
+$T3$ under an irreversible parsimony model. 
 
+Our current supertree algorithm places $T3$ at the MRCA of $T1$ and
+$T2$ if $T3$ is a taxonomy-only taxon, but places $T3$ at the root
+of the tree if it occurs in an input tree.  This inconsistent behavior
+is not restricted to cases that contain \emph{incertae sedis} taxa, but is a
+general problem with compatibility-based algorithms that do not retain
+partial information from incompatible splits.  Such information could
+include compatible triplets that comprise parts of the incompatible split.
+The inconsistency results from the fact that our sub-problem solver
+implements compatibility-based consensus and completely discards
+incompatible splits, while the unpruner implements an \emph{ad hoc}
+rule to place pruned taxonomy-only taxa at the MRCA of taxa that occur
+in input trees.  It would be desirable to update the sub-problem
+solver to be consistent with the unpruner, so that we could treat the
+pruning and unpruning steps as an optimization that has no effect on
+semantics.
+
+It is possible to update our compatability-based supertree algorithm
+to achieve the intuitive result of placing $T3$ at the MRCA of $T1$
+and $T2$ without resorting to a parsimony-based scoring scheme. We
+note that the split $T1\,T2\,T3\,|\bullet\,U\,S\,R1\,R2$ implies
+many rooted triplets, and that we need not discard all of these
+triplets because some of them are contradicted by input trees.  A
+simple method of retaining partial information from incompatible
+rooted splits would be to note that the MRCA of $T1$, $T2$ and must
+also have $R1$ and $R2$ as descendants.  We would then remove these
+additional taxa from the exclude group, obtaining the partial split
+$T1\,T2\,T3\,|\bullet\,U\,S$.  Adding this split to the solution
+tree places $T3$ at the MRCA of $T1$ and $T2$ as desired.  While this
+approach places all members of $T$ inside $R$, it does not
+place a monophyletic $T$ within $R$, since $T$ is not monophyletic.
+Placing the name for $T$ at the MRCA of its members would make $T$ a
+synonym for $R$.
 
 
 % We note that the MRCA of $R$ and $T1$ in
