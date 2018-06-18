@@ -1173,7 +1173,7 @@ in what might seem a lack of consistency, it does \emph{not} allow \emph{incerta
 taxa to intrude into each other if they become siblings through the result of
 placement, as is the case for taxa W and V in Figure \ref{fig:Placing-one-incertae}c.
 While each of these problems can be solved separately by adjusting the definition of the
-reduces exclude sets, no solution seems to be best in all respects.  This may be a result
+reduced exclude sets, no solution seems to be best in all respects.  This may be a result
 of the fact that split-based approaches to supertrees seek a simultaneous solution to a set
 of constraints.  This simultaneity can be contrasted with a solution that is phrased
 as a set of sequential operations to the taxonomy, as would be the case when (for example)
@@ -1182,50 +1182,38 @@ placing W within V (which is no longer \emph{incertae sedis}).  This maybe consi
 
 Another issue that we have postponed for future work is how to more narrowly delimit
 the ranges in which \emph{incertae sedis} may attach.  The current paper allows
-\emph{incertae sedis} to attach anywhere within their sisters, but the taxonomist
+\emph{incertae sedis} to attach within any of their siblings, but the taxonomist
 may only consider it plausible for the taxon to intrude only within specific
-siblings.  Furthermore, our method also assumes that an \emph{incertae sedis} label on a taxon
-indicates that a taxon may attach at any depth within its siblings.  In practice, an
-\emph{incertae sedis} genus with sister families (for example) is unlikely to attach
-so deeply within a sister family that it becomes nested within another genus.
+siblings.  We also assume that a taxon labeled as \emph{incertae sedis} may
+attach at any depth within its siblings. In practice, an \emph{incertae sedis}
+genus with sister families (for example) is unlikely to attach so deeply within
+a sister family that it becomes nested within another genus.
 
-As we demonstrated above (in the discussion of figure \ref{fig:Placing-one-incertae-MRP}),
-if the \emph{incertae sedis} status of a taxon consists solely of
-    a flag on that taxon, we can encounter 
-    multiple equally plausible ways of encoding the information
-    into a character matrix.
-Resolving such ambiguities would require some datastore of intended
-    meanings of each restricted \emph{incertae sedis} annotation.
-In order to consider more precise attachment ranges for \emph{incertae sedis} taxa,
-    we would have to obtain machine readable specifications for attachment ranges
-    for groupings that a taxonomist has labeled as \emph{incertae sedis}
-Obtaining these specifications would be difficult or impossible in many cases.
-However,  not all \emph{incertae sedis} taxa in our taxonomy are directly
-labeled \emph{incertae sedis} by taxonomists.
-\emph{Incertae sedis}
-taxa can also result from automatic merging of taxonomies to create
-the OpenTree taxonomy.
-For example, in Figure 3 of
-\citet{rees2017automated}, cases \#4 and \#6 illustrate examples where
-merging of two taxonomies leads to a taxonomy with a taxon of
-uncertain placement.
+Our method also assumes that the \emph{incertae sedis} status of a taxon
+consists solely of a flag on that taxon.  In order to consider more precise
+attachment ranges for \emph{incertae sedis} taxa, we would have to obtain
+machine readable specifications for attachment ranges for groupings that a
+taxonomist has labeled as \emph{incertae sedis}.  Obtaining these specifications
+would be difficult or impossible in many cases. However, not all \emph{incertae
+sedis} taxa in our taxonomy are directly labeled \emph{incertae sedis} by
+taxonomists. \emph{Incertae sedis} taxa can also result from automatic merging
+of taxonomies to create the OpenTree taxonomy. For example, in Figure 3 of
+\citet{rees2017automated}, cases \#4 and \#6 illustrate examples where merging
+of two taxonomies leads to a taxonomy with a taxon of uncertain placement.
 
-Taxonomy merging generates a automated \emph{incertae sedis} annotation
-    in a number of ways.
-Perhaps, the easiest cause to contemplate is if
-one input taxonomy,
-$\taxonomy_{1}$, contains more levels of hierarchy than a second
-input taxonomy,
-$\taxonomy_{2}$.
-When the merger adds must add internal nodes that are unique to $\taxonomy_{2}$,
-it is unclear where these
-extra leaves should be nested be placed in the richer hierarchy of $\taxonomy_1$.
-In such a case, it is feasible to imagine the taxonomy merging procedure outputting
+Taxonomy merging generates an automated \emph{incertae sedis} annotation
+in a number of ways. Perhaps, the easiest cause to contemplate is if
+one input taxonomy, $\taxonomy_{1}$, contains more levels of hierarchy than a second
+input taxonomy, $\taxonomy_{2}$.
+When the merger adds internal nodes that are unique to $\taxonomy_{2}$,
+it is unclear how these
+extra leaves should be nested or placed in the richer hierarchy of $\taxonomy_1$.
+In such a case, it is feasible to imagine the taxonomy-merging procedure outputting
     a list of plausible attachment points for each generated \emph{incertae sedis}
     label.
-Case in which the \emph{incertae sedis} label is present in an input taxonomy,
+For the case in which the \emph{incertae sedis} label is present in an input taxonomy,
     restricting the range of attachment points would need to be treated as
-    some manually curated statements. 
+    manually curated statements. 
 
 
 
