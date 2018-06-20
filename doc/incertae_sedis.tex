@@ -807,37 +807,59 @@ of the other members of $T$, as pictured in (d).
 
 \end{figure}
 
-\subsection{Ambiguity of imputed taxonomic characters}
-It is tempting to view the matrix representation of the taxonomic tree
-    as an encoding of the presence, absence, and uncertainty about
-    suites of synapomorphies which allow us to diagnose a taxon.
-Clearly by simply representing the taxonomic tree, we will not be
-    able to recover the identity or even the number of characters that
-    a taxonomist might have used when classifying the organisms in question.
-Nevertheless, one might hope that a matrix representation of a taxonomy (such
-    as the matrix in Figure \ref{fig:Handling-incertae-sedis-mrp} as a 
-    representation of Figure \ref{fig:Handling-incertae-sedis}b) has a unique, uncontroversial 
-    association with the taxonomic tree.
+\subsection{Ambiguity of split representation for \emph{incertae sedis} taxa}
+Equation (\ref{eq:exsetformonea}) introduces a method for encoding a
+taxonomy with \emph{incertae sedis} taxa into a set of partial splits.
+These partial splits have a unique represention as a matrix of
+0-1 characters with missing data indicated by '?'.  Clearly, we will
+not be able to recover the identity, or even the number, of characters
+that a taxonomist might have used when classifying a set of organisms,
+simply by looking at the character matrix that represents a taxonomy
+(as Figure \ref{fig:Handling-incertae-sedis-mrp} represents Figure
+\ref{fig:Handling-incertae-sedis}b). Nevertheless, one might hope that 
+equation (\ref{eq:exsetformonea}) is a unique an uncontroversial
+way to encode any taxonomic tree as a set of splits.
 
-The rules for associated leaves in $\mathcal{I}(n)$ with state 1, leaves
-     in $\mathcal{E}(n)$, and other leaves with the missing data symbol 
-     do allow to encode the taxon $n$ in a taxonomic tree unambiguously.
-However, these are not the only set of rules for generating a character matrix
-    representation that would cause the taxonomic tree allows the characters to
-    be mapped without homoplasy.
-For example consider the case of the taxonomy shown in Figure \ref{fig:Placing-one-incertae}a.
-Either of the two matrices shown in \ref{fig:Placing-one-incertae-MRP} could encode this
-    taxonomy along with its \emph{incertae sedis} interpretation.
-The matrix in Figure \ref{fig:Placing-one-incertae-MRP}a would result in the 
-    taxon $V$ not being named in the supertree shown in Figure \ref{fig:Placing-one-incertae}b,
-    while the matrix shown in Figure \ref{fig:Placing-one-incertae-MRP}b would lead
-    to $V$ being named.
-Thus, to honor the input taxonomic content accurately,
-   we need more taxonomic information
-    than simply a hierarchy and knowledge of which taxa can float more tipward.
+However, equation (\ref{eq:exsetformonea}) is not the only set of rules 
+for generating a split representation for a taxonomy. For example
+consider the case of the taxonomy shown in Figure
+\ref{fig:Placing-one-incertae}a. Either of the two matrices shown in
+\ref{fig:Placing-one-incertae-MRP}a or
+\ref{fig:Placing-one-incertae-MRP}b could represent this taxonomy 
+along with its \emph{incertae sedis} interpretation.  The matrix in
+Figure \ref{fig:Placing-one-incertae-MRP}a, which corresponds to
+equation (\ref{eq:exsetformonea}), assumes that \emph{incertae sedis}
+taxa may only intrude into taxa that are siblings in the taxonomy.
+The placement of $W$ within $V$ leads to taxon $V$ not being named in
+the supertree shown in Figure \ref{fig:Placing-one-incertae}c under
+the encoding in \ref{fig:Placing-one-incertae-MRP}a because
+$V$ is not a sibling of $W$ in Figure \ref{fig:Placing-one-incertae}a.
 
-Note that this example also presents a challenge for iterative supertree building and refinement
-    of the taxonomy without retention of additional information.
+The matrix shown in Figure \ref{fig:Placing-one-incertae-MRP}b allows
+$V$ to be named in the supertree shown in Figure
+\ref{fig:Placing-one-incertae}c because it removes the assumption that
+\emph{incertae sedis} taxa can only be placed within siblings.
+However, as a side-effect, if taxon $WX$ is found to be
+non-monophyletic, the matrix from Figure \ref{fig:Placing-one-incertae-MRP}b
+allows $W$ to be placed within $V$.  In general, this approach would
+allow incertae sedis children of any taxon $\Gamma_1$ to be placed
+arbitrary deep into group $\Gamma_2$ if group $\Gamma_1$ is broken. This
+behavior can lead to surprising and non-intuitive results. Additionally, our unpruner currently assumes
+that \emph{incertae sedis} taxa 
+can only be placed within siblings, and therefore does not know what
+to do in this situation.  Thus, it is not clear that either Figure
+\ref{fig:Placing-one-incertae-MRP}a or Figure
+\ref{fig:Placing-one-incertae-MRP}b comprise a unique, best
+encoding of the taxonomy.  Thus, to honor the input taxonomic content
+accurately, we may need more taxonomic information than simply a
+hierarchy and knowledge of which taxa can float more tipward. 
+
+Note that this example also exposes a lack of consistency in
+Equation (\ref{eq:exsetformonea}) that rears its head when attempting to
+iteratively revise placement of \emph{incertae sedis} taxa in the taxonomy
+on successive supertree builds.
+% without retention of additional information.
+
 Consider the case, in which there are two phylogenetic inputs along with the taxonomy from
     tree Figure \ref{fig:Placing-one-incertae}b with the first phylogeny, $T_1$, providing the single
     rooted split: $V1\,X \mid \bullet\,U$ and the second phylogeny, $T_2$ providing the 
@@ -870,8 +892,16 @@ Perhaps, unexpected is the fact that storing the revised taxonomy with an \emph{
 }
 
 \caption{\label{fig:Placing-one-incertae}
-One \emph{incertae sedis} group ($W$) being placed within another ($V$), with possible
-loss of the taxon $V$.}
+  Placement of incertae sedis taxa within non-siblings could occur if
+  taxa become siblings by placement.  Given the taxonomy (a),
+  placement of $V$ within $WX$ is shown in (b), followed by placement
+  of $W$ within $V$ as shown in (c).  Since $W$ is not a sibling of
+  $V$ in (a), the method proposed in this paper and illustrated in Figure
+  \ref{fig:Placing-one-incertae-MRP}a does not preserve the taxon name
+  for $V$.  However, with an alternative method for computing reduced
+  exclude sets that is shown in \ref{fig:Placing-one-incertae-MRP}b,
+  the name $V$ would be preserved.
+  }
 \end{figure}
 
 \begin{figure}
