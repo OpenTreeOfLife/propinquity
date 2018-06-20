@@ -854,33 +854,46 @@ encoding of the taxonomy.  Thus, to honor the input taxonomic content
 accurately, we may need more taxonomic information than simply a
 hierarchy and knowledge of which taxa can float more tipward. 
 
-Note that this example also exposes a lack of consistency in
-Equation (\ref{eq:exsetformonea}) that rears its head when attempting to
-iteratively revise placement of \emph{incertae sedis} taxa in the taxonomy
-on successive supertree builds.
-% without retention of additional information.
+Note that equation (\ref{eq:exsetformonea}) allows \emph{incertae sedis}
+taxa to intrude only into siblings in the original taxonomy, and not
+into taxa that become siblings through solution to the supertree
+problem. This can lead to cases where computing a supertree from two
+input trees $T_1$ and $T_2$ and an original taxonomy $\taxonomy$ can
+lead to a different outcome than if we compute a supertree from $T_1$
+and $\taxonomy$, and then compute a supertree from $T_2$ and a revised
+taxonomy $\taxonomy^\prime$. Consider a case in which the taxonomy
+$\taxonomy$ is given in Figure \ref{fig:Placing-one-incertae}a (with
+matrix representation given by \ref{fig:Placing-one-incertae-MRP}a)
+and $T_1$ and $T_2$ each provide the single rooted splits $V1\,X \mid \bullet\,U$ and $W\, V1 \mid
+\bullet\,V2$ respectively. 
+Running the supertree pipeline on $T_1$  and $\taxonomy$ yields the tree in
+Figure \ref{fig:Placing-one-incertae}b.  We use this tree as the revised
+taxonomy $\taxonomy^\prime$, and its matrix representation appears in
+Figure \ref{fig:Placing-one-incertae-MRP}c.  Running the supertree
+pipeline on $T_2$  and $\taxonomy^\prime$ then
+results in the tree in Figure \ref{fig:Placing-one-incertae}c.
 
-Consider the case, in which there are two phylogenetic inputs along with the taxonomy from
-    tree Figure \ref{fig:Placing-one-incertae}b with the first phylogeny, $T_1$, providing the single
-    rooted split: $V1\,X \mid \bullet\,U$ and the second phylogeny, $T_2$ providing the 
-    rooted split: $W\, V1 \mid \bullet\,V2$.
-If the supertree pipeline were run with just the taxonomy and and $T_1$ as inputs, then the supertree
-    would be the tree shown in Figure \ref{fig:Placing-one-incertae}c.
-One might hope that using that tree as the revised taxonomy and then adding the split from $T_2$ in
-    a subsequent analysis would result in the same tree as if $T_1$ and $T_2$ to the original taxonomy.
-While the topology for the final tree in either order of analyses would indeed be the tree shown in 
-    Figure \ref{fig:Placing-one-incertae}b, the decision about whether or not to name $V$ would differ.
-Our handling of \emph{incertae sedis} in the original taxonomy via rooted partial splits
-    would encode the taxonomic definitions in the manner depicted in Figure \ref{fig:Placing-one-incertae-MRP}a,
-    but the encoding of the revised taxonomy in Figure \ref{fig:Placing-one-incertae}c would result
-    in an altered definition of taxon $V$, as shown in \ref{fig:Placing-one-incertae-MRP}c.
-As expected,  the definition of $WX$ has been altered to reflect the
-    fact $T_1$ placed $V$ inside $WX$
-    when we encode the revised taxonomy.
-Perhaps, unexpected is the fact that storing the revised taxonomy with an \emph{incertae sedis} annotation
-    and then reprocessing the taxonomy using our rooted partial splits approach would also shift
-    the definition of $V$ from a taxon that must exclude $W$ to one that may include $W$.
-
+One might therefore hope that running the supertree pipeline on $T_1$,
+$T_2$, and $\taxonomy$ simultaneously would yield the same result.
+While the topology for the final tree would indeed be the tree shown in 
+    Figure \ref{fig:Placing-one-incertae}c, the decision about whether
+    or not to name $V$ differs.  As expected,  the definition of $WX$
+    in $\taxonomy^\prime$ has been altered to reflect the fact $T_1$
+    placed $V$ inside $WX$.  Perhaps unexpected is the fact that
+    storing the revised taxonomy with an \emph{incertae sedis}
+    annotation and then reprocessing the taxonomy using our rooted
+    partial splits approach would also shift the definition of $V$
+    from a taxon that must exclude $W$ to one that may include $W$. 
+    This results from the fact that equation (\ref{eq:exsetformonea})
+    only allows \emph{incertae sedis} taxa to intrude into taxa that
+    are their
+    sisters in the taxonomy.  Outcomes differ because $W$ is a sister of $V$ in
+    $\taxonomy^\prime$ but not $\taxonomy$.  Use of the alternate
+    representation of $\taxonomy$ in Figure \ref{fig:Placing-one-incertae-MRP}b
+    allows $V$ to be named in Figure \ref{fig:Placing-one-incertae}c,
+    which solves the seeming inconsistency.  However, this has some
+    surprising side-effects as mentioned above, and is therefore not
+    the approach that we present in this paper.
 
 \begin{figure}
 %\subfloat[Input tree \#1]{\includegraphics[scale=0.5]{Figures/is-within-is/tree1\lyxdot tre}}
@@ -954,7 +967,7 @@ $X$  & 0 & 1 \\
 \caption{\label{fig:Placing-one-incertae-MRP}
 Panels (a) and (b) show two possible encodings that would support the $V$ and $WX$ branches and \emph{incertae sedis}
 annotation shown in the taxonomy from in Figure \ref{fig:Placing-one-incertae}a.
-The representations only vary in the scoring of leaf $W$ for character $V$. Panel (c) shows the information encoded by the tree in \ref{fig:Placing-one-incertae}c. }
+The representations only vary in the scoring of leaf $W$ for character $V$. Panel (c) shows the information encoded by the tree in \ref{fig:Placing-one-incertae}b. }
 \end{figure}
 
 
