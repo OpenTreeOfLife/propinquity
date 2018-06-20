@@ -825,7 +825,7 @@ for generating a split representation for a taxonomy. For example
 consider the case of the taxonomy shown in Figure
 \ref{fig:Placing-one-incertae}a. Either of the two matrices shown in
 \ref{fig:Placing-one-incertae-MRP}a or
-\ref{fig:Placing-one-incertae-MRP}b could represent this taxonomy 
+\ref{fig:Placing-one-incertae-MRP}c could represent this taxonomy 
 along with its \emph{incertae sedis} interpretation.  The matrix in
 Figure \ref{fig:Placing-one-incertae-MRP}a, which corresponds to
 equation (\ref{eq:exsetformonea}), assumes that \emph{incertae sedis}
@@ -835,12 +835,12 @@ the supertree shown in Figure \ref{fig:Placing-one-incertae}c under
 the encoding in \ref{fig:Placing-one-incertae-MRP}a because
 $V$ is not a sibling of $W$ in Figure \ref{fig:Placing-one-incertae}a.
 
-The matrix shown in Figure \ref{fig:Placing-one-incertae-MRP}b allows
+The matrix shown in Figure \ref{fig:Placing-one-incertae-MRP}c allows
 $V$ to be named in the supertree shown in Figure
 \ref{fig:Placing-one-incertae}c because it removes the assumption that
 \emph{incertae sedis} taxa can only be placed within siblings.
 However, as a side-effect, if taxon $WX$ is found to be
-non-monophyletic, the matrix from Figure \ref{fig:Placing-one-incertae-MRP}b
+non-monophyletic, the matrix from Figure \ref{fig:Placing-one-incertae-MRP}c
 allows $W$ to be placed within $V$.  In general, this approach would
 allow incertae sedis children of any taxon $\Gamma_1$ to be placed
 arbitrary deep into group $\Gamma_2$ if group $\Gamma_1$ is broken. This
@@ -849,7 +849,7 @@ that \emph{incertae sedis} taxa
 can only be placed within siblings, and therefore does not know what
 to do in this situation.  Thus, it is not clear that either Figure
 \ref{fig:Placing-one-incertae-MRP}a or Figure
-\ref{fig:Placing-one-incertae-MRP}b comprise a unique, best
+\ref{fig:Placing-one-incertae-MRP}c comprise a unique, best
 encoding of the taxonomy.  Thus, to honor the input taxonomic content
 accurately, we may need more taxonomic information than simply a
 hierarchy and knowledge of which taxa can float more tipward. 
@@ -869,7 +869,7 @@ and $T_1$ and $T_2$ each provide the single rooted splits $V1\,X \mid \bullet\,U
 Running the supertree pipeline on $T_1$  and $\taxonomy$ yields the tree in
 Figure \ref{fig:Placing-one-incertae}b.  We use this tree as the revised
 taxonomy $\taxonomy^\prime$, and its matrix representation appears in
-Figure \ref{fig:Placing-one-incertae-MRP}c.  Running the supertree
+Figure \ref{fig:Placing-one-incertae-MRP}b.  Running the supertree
 pipeline on $T_2$  and $\taxonomy^\prime$ then
 results in the tree in Figure \ref{fig:Placing-one-incertae}c.
 
@@ -889,7 +889,7 @@ While the topology for the final tree would indeed be the tree shown in
     are their
     sisters in the taxonomy.  Outcomes differ because $W$ is a sister of $V$ in
     $\taxonomy^\prime$ but not $\taxonomy$.  Use of the alternate
-    representation of $\taxonomy$ in Figure \ref{fig:Placing-one-incertae-MRP}b
+    representation of $\taxonomy$ in Figure \ref{fig:Placing-one-incertae-MRP}c
     allows $V$ to be named in Figure \ref{fig:Placing-one-incertae}c,
     which solves the seeming inconsistency.  However, this has some
     surprising side-effects as mentioned above, and is therefore not
@@ -912,14 +912,14 @@ While the topology for the final tree would indeed be the tree shown in
   $V$ in (a), the method proposed in this paper and illustrated in Figure
   \ref{fig:Placing-one-incertae-MRP}a does not preserve the taxon name
   for $V$.  However, with an alternative method for computing reduced
-  exclude sets that is shown in \ref{fig:Placing-one-incertae-MRP}b,
+  exclude sets that is shown in \ref{fig:Placing-one-incertae-MRP}c,
   the name $V$ would be preserved.
   }
 \end{figure}
 
 \begin{figure}
 %\subfloat[Input tree \#1]{\includegraphics[scale=0.5]{Figures/is-within-is/tree1\lyxdot tre}}
-\subfloat[maximally scored]{
+\subfloat[from original taxonomy]{
     \begin{tabular}{|r|p{2em}|p{2em}|}
 \hline
 & \multicolumn{2}{|c|}{Character} \\
@@ -934,21 +934,6 @@ $X$  & 0 & 1 \\
 \hline
 \end{tabular}
 }\hfill{}
-\subfloat[less informative]{
-    \begin{tabular}{|r|p{2em}|p{2em}|}
-\hline
-& \multicolumn{2}{|c|}{Character} \\
-taxa & $V$ & $WX$  \\
-\hline
-$U$  & 0 & 0 \\
-$V1$ & 1 & ? \\
-$V2$ & 1 & ? \\
-$W$  & ? & 1 \\
-$X$  & 0 & 1 \\
-(root) & 0 & 0 \\
-\hline
-\end{tabular}
-}\hfill
 \subfloat[from revised taxonomy]{
     \begin{tabular}{|r|p{2em}|p{2em}|}
 \hline
@@ -963,11 +948,26 @@ $X$  & 0 & 1 \\
 (root) & 0 & 0 \\
 \hline
 \end{tabular}
+}\hfill
+\subfloat[alternative encoding]{
+    \begin{tabular}{|r|p{2em}|p{2em}|}
+\hline
+& \multicolumn{2}{|c|}{Character} \\
+taxa & $V$ & $WX$  \\
+\hline
+$U$  & 0 & 0 \\
+$V1$ & 1 & ? \\
+$V2$ & 1 & ? \\
+$W$  & ? & 1 \\
+$X$  & 0 & 1 \\
+(root) & 0 & 0 \\
+\hline
+\end{tabular}
 }
 \caption{\label{fig:Placing-one-incertae-MRP}
-Panels (a) and (b) show two possible encodings that would support the $V$ and $WX$ branches and \emph{incertae sedis}
+Panels (a) and (c) show two possible encodings that would support the $V$ and $WX$ branches and \emph{incertae sedis}
 annotation shown in the taxonomy from in Figure \ref{fig:Placing-one-incertae}a.
-The representations only vary in the scoring of leaf $W$ for character $V$. Panel (c) shows the information encoded by the tree in \ref{fig:Placing-one-incertae}b. }
+The representations only vary in the scoring of leaf $W$ for character $V$. Panel (b) shows the information encoded by the tree in \ref{fig:Placing-one-incertae}b. }
 \end{figure}
 
 
