@@ -817,7 +817,7 @@ that a taxonomist might have used when classifying a set of organisms,
 simply by looking at the character matrix that represents a taxonomy
 (as Figure \ref{fig:Handling-incertae-sedis-mrp} represents Figure
 \ref{fig:Handling-incertae-sedis}b). Nevertheless, one might hope that 
-equation (\ref{eq:exsetformonea}) is a unique an uncontroversial
+equation (\ref{eq:exsetformonea}) is a unique and uncontroversial
 way to encode any taxonomic tree as a set of splits.
 
 However, equation (\ref{eq:exsetformonea}) is not the only set of rules 
@@ -842,7 +842,7 @@ $V$ to be named in the supertree shown in Figure
 However, as a side-effect, if taxon $WX$ is found to be
 non-monophyletic, the matrix from Figure \ref{fig:Placing-one-incertae-MRP}c
 allows $W$ to be placed within $V$.  In general, this approach would
-allow incertae sedis children of any taxon $\Gamma_1$ to be placed
+allow \emph{incertae sedis} children of any taxon $\Gamma_1$ to be placed
 arbitrary deep into group $\Gamma_2$ if group $\Gamma_1$ is broken. This
 behavior can lead to surprising and non-intuitive results. Additionally, our unpruner currently assumes
 that \emph{incertae sedis} taxa 
@@ -893,7 +893,7 @@ While the topology for the final tree would indeed be the tree shown in
     allows $V$ to be named in Figure \ref{fig:Placing-one-incertae}c,
     which solves the seeming inconsistency.  However, this has some
     surprising side-effects as mentioned above, and is therefore not
-    the approach that we present in this paper.
+    the approach that we focus on here.
 
 \begin{figure}
 %\subfloat[Input tree \#1]{\includegraphics[scale=0.5]{Figures/is-within-is/tree1\lyxdot tre}}
@@ -1202,9 +1202,10 @@ provide a simple and efficient recursion for computing these splits.
 
 Despite the simplicity of our approach, some complexities and conceptual difficulties
 remain.
-While the correspondence of nodes and names is a simple one-to-one and onto
-relationship without \emph{incertae sedis} taxa, when \emph{incertae sedis} taxa are
-introduced, the relationship might be neither one-to-one (Figures \ref{fig:Multiple-names-can},\ref{fig:interdigitation}) nor onto (Figure \ref{fig:One-name-can}).
+While the correspondence of nodes and names is a simple one-to-one function
+without \emph{incertae sedis} taxa, when \emph{incertae sedis} taxa are
+introduced, the relationship might be neither one-to-one (Figures
+\ref{fig:Multiple-names-can},\ref{fig:interdigitation}) nor a function (Figure \ref{fig:One-name-can}).
 This necessitates putting more thought into the semantics of taxon names, including
 whether names might become synonyms.  This may be considered a ``complexity''.
 
