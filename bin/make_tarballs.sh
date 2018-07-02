@@ -17,10 +17,10 @@ then
   echo "expecting first argument to be an output directory"
   exit 1
 fi
-outputdir="$1"
-if ! test -d $outputdir
+preoutputdir="$1"
+if ! test -d $preoutputdir
 then
-    echo "$outputdir does not exist"
+    echo "$preoutputdir does not exist"
     exit 1
 fi
 
@@ -37,6 +37,15 @@ then
     exit 1
 fi
 version="$3"
+
+outputdir=opentree${version}
+if [ "${preoutputdir}" != "${outputdir}" ] ; then
+    if [ -e ${outputdir} ] ; then
+	echo "Directory ${outputdir} already exists!"
+	exit 1
+    fi
+    cp -a ${preoutputdir} ${outputdir}
+fi
 
 # first (smaller) tarball
 tar_dir1="${treeid}_tree"
@@ -70,3 +79,19 @@ tar -czf $tar_dir1.tgz $tar_dir1
 echo 'creating tree-only archive'
 # all synthesis outputs
 tar -czf ${outputdir}_output.tgz $outputdir
+
+exit 0
+
+OUTPUT=opentree${version}_output.tgz
+TREE=opentree${version}_tree.tgz
+
+FILES=files.opentreeoflife.org
+HOST=opentree@${FILES}
+DIR="${FILES}/synthesis/opentree${version}"
+
+ssh ${HOST} "mkdir ${DIR}"
+scp ${OUTPUT} ${HOST}:${DIR}/
+scp ${TREE}   ${HOST}:${DIR}/
+ssh ${HOST} "cd ${DIR} ; tar -zxf ${OUTPUT}"
+ssh ${HOST} "cd ${DIR} ; tar -zxf ${TREE}"
+ssh ${HOST} "cd ${DIR} ; ln -s opentree${version} output" 
