@@ -1,13 +1,15 @@
+#!/usr/bin/env python3
 # Given two directories of synthesis outputs, compares them
 # Assumes that docs have been generated for each run using `make html`
 # Has options for quick checks, as well as formatted output for use in
 #  release notes
 
-import simplejson as json
+import json
 import argparse
 import glob,os,re,csv
 import requests
 import peyotl.ott as ott
+from collections import defaultdict
 
 def broken_taxa_diffs(bt1,bt2,verbose):
     compare_lists("Broken taxa",bt1,bt2,verbose)
@@ -20,15 +22,19 @@ def newly_broken_taxa_report(run1,run2):
     id2names = taxonomy.ott_id_to_names
     id2ranks = taxonomy.ott_id_to_ranks
     # print details of names in 2 but not in 1 (the 'newly broken names')
-    bt1=set(run1)
-    bt2=set(run2)
+    bt1=set(run1.broken_taxa)
+    bt2=set(run2.broken_taxa)
     diff = bt2.difference(bt1)
     broken_taxa_filename = 'broken_taxa_report.csv'
-    print "printing details of {x} broken taxa to {f}".format(
+    print("printing details of {x} broken taxa to {f}".format(
         x=len(diff),
         f=broken_taxa_filename
-        )
-    print "using OTT version {v}".format(v=taxonomy.version)
+        ))
+    print("using OTT version {v}".format(v=taxonomy.version))
+
+    # BDR - I'd like to do this also by rank, to see which trees break the highest taxa
+    victims = defaultdict(int)
+    victims_rank = defaultdict(lambda: defaultdict(int))
     with open(broken_taxa_filename, 'w') as f:
         for ottID in diff:
             # strip off the 'ott' part
@@ -43,7 +49,20 @@ def newly_broken_taxa_report(run1,run2):
                 if int_id in id2ranks:
                     rank = id2ranks[int_id]
             f.write("{i},{n},{r}\n".format(i=int_id,n=name,r=rank))
+
+            if ottID not in run2.contested:
+                print("{}: not contested\n".format(ottID))
+            else:
+                for tree in run2.contested[ottID]:
+                    victims[tree] += 1
+                    victims_rank[tree][rank] += 1
+
     f.close()
+    print("Trees that broken taxa, starting with the most victims:\n")
+    for tree in sorted(victims, key=victims.get, reverse=True):
+        print(tree, victims[tree])
+        for rank, n in victims_rank[tree].items():
+            print("   {}: {}".format(rank,n))
 
 # generic function to compare two lists: number of items in each,
 # items in first but not second and items in second but not first
@@ -52,30 +71,30 @@ def compare_lists(type,list1,list2,verbose=False):
     s1 = set(list1)
     s2 = set(list2)
     if s1 != s2:
-        print "{t}: ".format(t=type)
+        print("{t}: ".format(t=type))
         # simple length check
         if len(s1) != len(s2):
-            print " {l1} in run1; {l2} in run2".format(
+            print(" {l1} in run1; {l2} in run2".format(
                 l1=len(s1),l2=len(s2)
-                )
+                ))
         common = s1.intersection(s2)
         if len(common) > 0:
-            print " in common = {l}".format(t=type,l=len(common))
+            print(" in common = {l}".format(t=type,l=len(common)))
         diff1 = s1.difference(s2)
         if len(diff1) > 0:
-            print " in run1 but not run2 = {l}".format(l=len(diff1))
+            print(" in run1 but not run2 = {l}".format(l=len(diff1)))
             if (verbose):
-                print " {t} in run1 but not run2:".format(t=type)
-                print ', '.join(diff1)
+                print(" {t} in run1 but not run2:".format(t=type))
+                print(', '.join(diff1))
         diff2 = s2.difference(s1)
         if len(diff2) > 0:
-            print " in run2 but not run1 = {l}".format(l=len(diff2))
+            print(" in run2 but not run1 = {l}".format(l=len(diff2)))
             if (verbose):
-                print " {t} in run2 but not run1:".format(t=type)
-                print ', '.join(diff2)
+                print(" {t} in run2 but not run1:".format(t=type))
+                print(', '.join(diff2))
         return 1
     else:
-        print "{t}: no differences".format(t=type)
+        print("{t}: no differences".format(t=type))
         return 0
 
 # list of collections, list of trees, compare SHAs
@@ -85,13 +104,13 @@ def config_diffs(jsondata1,jsondata2,verbose):
     ott1 = jsondata1['ott_version']
     ott2 = jsondata2['ott_version']
     if (ott1 != ott2):
-        print "run1 ott ({v1}) != run2 ott ({v2})".format(v1=ott1,v2=ott2)
+        print("run1 ott ({v1}) != run2 ott ({v2})".format(v1=ott1,v2=ott2))
 
     # do roots match
     root1 = int(jsondata1["root_ott_id"])
     root2 = int(jsondata2["root_ott_id"])
     if root1 != root2:
-        print "root id1 ({r1}) != root id2 ({r2})".format(r1=root1,r2=root2)
+        print("root id1 ({r1}) != root id2 ({r2})".format(r1=root1,r2=root2))
 
     # do collections match
     collections1 = jsondata1["collections"]
@@ -116,7 +135,7 @@ def get_taxon_details(ottid):
         rank = r.json()["rank"]
         return (taxon_name,rank)
     except KeyError:
-        print "no name returned for {id}".format(id=ottid)
+        print("no name returned for {id}".format(id=ottid))
     #print '{i}:{n}'.format(i=ottid,n=taxon_name)
 
 # check the lists of input trees
@@ -145,9 +164,9 @@ def compare_subproblems(subp1,subp2,verbose):
         verbose)
     # compare sizes of subproblems
     limits = [3,20,500]
-    print "Subproblem size summary:"
-    print " run,trivial,small,med,large"
-    print " ---------------------------"
+    print("Subproblem size summary:")
+    print(" run,trivial,small,med,large")
+    print(" ---------------------------")
     size_summary("run1",limits,subp1['subproblem_dist'])
     size_summary("run2",limits,subp2['subproblem_dist'])
 
@@ -170,25 +189,25 @@ def size_summary(label,limits,data):
         c=summary['med'],
         d=summary['large']
     )
-    print summary_str
+    print(summary_str)
 
 def print_table_row(cells):
-    print "<tr>"
-    print "   <th>{first}</th>".format(first=cells.pop(0))
+    print("<tr>")
+    print("   <th>{first}</th>".format(first=cells.pop(0)))
     for i in cells:
-        print "   <td>{value}</td>".format(value=i)
-    print "</tr>"
+        print("   <td>{value}</td>".format(value=i))
+    print("</tr>")
 
 # outputs the table for the release notes, given input_output_stats and
 # subproblem info
 def summary_table(io_stats1,io_stats2, subp1, subp2):
     # print header; uses <th> for each cell
-    print '<table class="table table-condensed">'
-    print '<tr>'
-    print '<th><!--statistic-->&nbsp;</th>'
-    print '<th>version7.0</th>'
-    print '<th>version8.0</th>'
-    print '<th>change</th>'
+    print('<table class="table table-condensed">')
+    print('<tr>')
+    print('<th><!--statistic-->&nbsp;</th>')
+    print('<th>version7.0</th>')
+    print('<th>version8.0</th>')
+    print('<th>change</th>')
 
     # read summary files
     # jsonfile = "{d}/labelled_supertree/input_output_stats.json".format(d=run1)
@@ -230,41 +249,41 @@ def summary_table(io_stats1,io_stats2, subp1, subp2):
     d2=len(subp2['subproblem_list'])
     print_table_row(['subproblems',d1,d2,d2-d1])
 
-    print '</table>'
+    print('</table>')
 
 # given dicts of stats from input_output_stats.json, compare
 def synthesis_tree_diffs(io_stats1,io_stats2):
-    print "statistic,run1,run2,difference"
-    print "-------------------------------"
+    print("statistic,run1,run2,difference")
+    print("-------------------------------")
     # total tips
     tips1 = io_stats1['input']['num_taxonomy_leaves']
     tips2 = io_stats2['input']['num_taxonomy_leaves']
     diff = int(tips2-tips1)
-    print "total tips,{n1},{n2},{d}".format(n1=tips1,n2=tips2, d=diff)
+    print("total tips,{n1},{n2},{d}".format(n1=tips1,n2=tips2, d=diff))
 
     # number of taxonomy tips
     tips1 = io_stats1['output']['num_leaves_added']
     tips2 = io_stats2['output']['num_leaves_added']
     diff = int(tips2-tips1)
-    print "taxonomy tips,{n1},{n2},{d}".format(n1=tips1,n2=tips2, d=diff)
+    print("taxonomy tips,{n1},{n2},{d}".format(n1=tips1,n2=tips2, d=diff))
 
     # number of phylogeny leaves
     tips1 = io_stats1['input']['num_solution_leaves']
     tips2 = io_stats2['input']['num_solution_leaves']
     diff = int(tips2-tips1)
-    print "phylogeny tips,{n1},{n2},{d}".format(n1=tips1,n2=tips2, d=diff)
+    print("phylogeny tips,{n1},{n2},{d}".format(n1=tips1,n2=tips2, d=diff))
 
     # resolved nodes
     nodes1 = io_stats1['input']['num_solution_splits']
     nodes2 = io_stats2['input']['num_solution_splits']
     diff = int(nodes2-nodes1)
-    print "forking nodes,{n1},{n2},{d}".format(n1=nodes1,n2=nodes2,d=diff)
+    print("forking nodes,{n1},{n2},{d}".format(n1=nodes1,n2=nodes2,d=diff))
 
     # broken taxa
     taxa1 = io_stats1['output']['num_taxa_rejected']
     taxa2 = io_stats2['output']['num_taxa_rejected']
     diff = int(taxa2-taxa1)
-    print "broken taxa,{n1},{n2},{d}".format(n1=taxa1,n2=taxa2,d=diff)
+    print("broken taxa,{n1},{n2},{d}".format(n1=taxa1,n2=taxa2,d=diff))
 
 # object that holds various stats for a synthesis run
 class runStatistics(object):
@@ -275,6 +294,7 @@ class runStatistics(object):
         self.input_trees = self.read_input_trees()
         self.broken_taxa = self.read_broken_taxa()
         self.subproblems = self.read_subproblems()
+        self.contested = self.read_contested()
     def read_broken_taxa(self):
         d = os.path.join(self.output_dir, 'labelled_supertree')
         jsonfile = os.path.join(d,'broken_taxa.json')
@@ -338,6 +358,9 @@ class runStatistics(object):
         distribution = self.read_subproblem_file(subpdistfile)
         subproblemblob['subproblem_dist'] = distribution
         return subproblemblob
+    def read_contested(self):
+        contested_file = os.path.join(self.output_dir,'subproblems/contesting-trees.json')
+        return json.load(open(contested_file, 'r'))
 
 if __name__ == "__main__":
     # get command line arguments (the two directories to compare)
@@ -364,30 +387,30 @@ if __name__ == "__main__":
         help='print details on diffs; default false'
         )
     args = parser.parse_args()
-    print "run 1 output: {d}".format(d=args.run1)
-    print "run 2 output: {d}".format(d=args.run2)
+    print("run 1 output: {d}".format(d=args.run1))
+    print("run 2 output: {d}".format(d=args.run2))
 
     # get stats object for each run
     run1 = runStatistics(args.run1)
     run2 = runStatistics(args.run2)
 
-    print "\n# Comparing inputs"
+    print("\n# Comparing inputs")
     config_diffs(run1.config,run2.config,args.verbose)
     phylo_input_diffs(run1.input_trees,run2.input_trees,args.verbose)
 
-    print "\n# Comparing subproblems"
+    print("\n# Comparing subproblems")
     compare_subproblems(run1.subproblems,run2.subproblems,args.verbose)
 
-    print "\n# Comparing broken taxa"
+    print("\n# Comparing broken taxa")
     broken_taxa_diffs(run1.broken_taxa,run2.broken_taxa,args.verbose)
     if args.print_broken_taxa:
-        newly_broken_taxa_report(run1.broken_taxa,run2.broken_taxa)
+        newly_broken_taxa_report(run1, run2)
 
-    print "\n# Synthetic tree summary"
+    print("\n# Synthetic tree summary")
     #synthesis_tree_diffs(args.run1,args.run2)
     synthesis_tree_diffs(run1.input_output_stats,run2.input_output_stats)
     if args.print_summary_table:
-        print "\n#Summary table for release notes"
+        print("\n#Summary table for release notes")
         summary_table(
             run1.input_output_stats,
             run2.input_output_stats,
