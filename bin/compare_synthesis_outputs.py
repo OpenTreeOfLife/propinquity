@@ -84,8 +84,12 @@ def newly_broken_taxa_report(run1,run2):
     print("done.");
     id2names = taxonomy.ott_id_to_names
     id2ranks = taxonomy.ott_id_to_ranks
-    preorder=[]
+
+    # NOTE: This section gets a rank for unranked nodes by looking at their descendants
+    #       If we don't do this, then we don't see Fungi being broken, since Nucletmycea
+    #         stands in for Fungi, and Nucletmycea has no rank.
     print("Getting minimal ranks for unranked nodes...");
+    preorder=[]
     for key,value in taxonomy.preorder2ott_id.items():
         if isinstance(key,int):
             preorder.append(value)
@@ -98,6 +102,7 @@ def newly_broken_taxa_report(run1,run2):
         if id2ranks[parent] == "no rank" or (rank_of_rank[id2ranks[parent]] > rank_of_rank[id2ranks[ottID]]):
             id2ranks[parent] = id2ranks[ottID]
     print("done.");
+
 
     # print details of names in 2 but not in 1 (the 'newly broken names')
     bt1=set(run1.broken_taxa)
@@ -112,6 +117,8 @@ def newly_broken_taxa_report(run1,run2):
 
     victims = defaultdict(int)
     victims_rank = defaultdict(lambda: defaultdict(int))
+    sole_victims = defaultdict(int)
+    sole_victims_rank = defaultdict(lambda: defaultdict(int))
     with open(broken_taxa_filename, 'w') as f:
         for ottID in diff:
             # strip off the 'ott' part
@@ -133,16 +140,20 @@ def newly_broken_taxa_report(run1,run2):
                 for tree in run2.contested[ottID]:
                     victims[tree] += 1
                     victims_rank[tree][rank] += 1
+                    if len(run2.contested[ottID]) == 1:
+                        sole_victims[tree] +=1
+                        sole_victims_rank[tree][rank] += 1
 
     f.close()
     print("Here are the {} trees that broke taxa, starting with the most victims:\n".format(len(victims)))
-    for tree in sorted(victims, key=victims.get, reverse=True):
-        print(tree, victims[tree])
-        for rank, n in victims_rank[tree].items():
+    for tree in sorted(sole_victims, key=sole_victims.get, reverse=True):
+        print("{}: {} ( {} )".format(tree, sole_victims[tree], victims[tree]))
+
+        for rank in sorted(victims_rank[tree], key=lambda key:rank_of_rank[key]):
             if rank_of_rank[rank] < rank_of_rank["genus"]:
-                print("\u001b[31m   {}\u001b[0m: {}".format(rank,n))
+                print("\u001b[31m   {}\u001b[0m: {} ( {} )".format(rank,sole_victims_rank[tree][rank],victims_rank[tree][rank]))
             else:
-                print("   {}: {}".format(rank,n))
+                print("   {}: {} / ( {} )".format(rank, sole_victims_rank[tree][rank],victims_rank[tree][rank]))
 
 # generic function to compare two lists: number of items in each,
 # items in first but not second and items in second but not first
