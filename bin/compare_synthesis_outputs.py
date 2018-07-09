@@ -139,7 +139,10 @@ def newly_broken_taxa_report(run1,run2):
     for tree in sorted(victims, key=victims.get, reverse=True):
         print(tree, victims[tree])
         for rank, n in victims_rank[tree].items():
-            print("   {}: {}".format(rank,n))
+            if rank_of_rank[rank] < rank_of_rank["genus"]:
+                print("\u001b[31m   {}\u001b[0m: {}".format(rank,n))
+            else:
+                print("   {}: {}".format(rank,n))
 
 # generic function to compare two lists: number of items in each,
 # items in first but not second and items in second but not first
