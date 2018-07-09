@@ -11,6 +11,67 @@ import requests
 import peyotl.ott as ott
 from collections import defaultdict
 
+
+# From reference-taxonomy:org/opentreeoflife/taxa/Rank.java
+
+_ranks = ["domain",
+         "superkingdom",
+         "kingdom",
+         "subkingdom",
+         "division",            # h2007
+         "infrakingdom",        # worms
+         "superphylum",
+         "phylum",
+         "subphylum",
+         "infraphylum",         # worms
+         "subdivision",         # worms
+         "superclass",
+         "class",
+         "subclass",
+         "infraclass",
+         "subterclass",         # worms Colobognatha
+         "cohort",              # NCBI Polyneoptera
+         "superorder",
+         "order",
+         "suborder",
+         "infraorder",
+         "parvorder",
+         "section",             # worms
+         "subsection",          # worms
+         "superfamily",
+         "family",
+         "subfamily",
+         "supertribe",          # worms
+         "tribe",
+         "subtribe",
+         "genus",
+         "subgenus",
+         "species group",
+         "species subgroup",
+         "species",
+         "infraspecificname",
+         "subspecies",
+         "natio",               # worms
+         "variety",
+         "varietas",
+         "subvariety",
+         "form",                # 2016 GBIF
+         "forma",
+         "subform",
+         "cluster",
+          "no rank - terminal"
+        ];
+
+def rank_2_num_dict(ranks):
+    i=0
+    rank_dict = {}
+    for rank in _ranks:
+        rank_dict[rank] = i
+        i += 1
+    return rank_dict
+
+rank_of_rank = rank_2_num_dict(_ranks);
+
 def broken_taxa_diffs(bt1,bt2,verbose):
     compare_lists("Broken taxa",bt1,bt2,verbose)
 
@@ -18,9 +79,26 @@ def broken_taxa_diffs(bt1,bt2,verbose):
 # report_on_broken_taxa.py
 def newly_broken_taxa_report(run1,run2):
     # load local copy of OTT
+    print("Loading OTT...");
     taxonomy = ott.OTT()
+    print("done.");
     id2names = taxonomy.ott_id_to_names
     id2ranks = taxonomy.ott_id_to_ranks
+    preorder=[]
+    print("Getting minimal ranks for unranked nodes...");
+    for key,value in taxonomy.preorder2ott_id.items():
+        if isinstance(key,int):
+            preorder.append(value)
+    ott_id2par_ott_id = taxonomy.ott_id2par_ott_id
+
+    for ottID in reversed(preorder):
+        parent = ott_id2par_ott_id[ottID]
+        if parent is None:
+            continue
+        if id2ranks[parent] == "no rank" or (rank_of_rank[id2ranks[parent]] > rank_of_rank[id2ranks[ottID]]):
+            id2ranks[parent] = id2ranks[ottID]
+    print("done.");
+
     # print details of names in 2 but not in 1 (the 'newly broken names')
     bt1=set(run1.broken_taxa)
     bt2=set(run2.broken_taxa)
@@ -32,7 +110,6 @@ def newly_broken_taxa_report(run1,run2):
         ))
     print("using OTT version {v}".format(v=taxonomy.version))
 
-    # BDR - I'd like to do this also by rank, to see which trees break the highest taxa
     victims = defaultdict(int)
     victims_rank = defaultdict(lambda: defaultdict(int))
     with open(broken_taxa_filename, 'w') as f:
@@ -58,7 +135,7 @@ def newly_broken_taxa_report(run1,run2):
                     victims_rank[tree][rank] += 1
 
     f.close()
-    print("Trees that broken taxa, starting with the most victims:\n")
+    print("Here are the {} trees that broke taxa, starting with the most victims:\n".format(len(victims)))
     for tree in sorted(victims, key=victims.get, reverse=True):
         print(tree, victims[tree])
         for rank, n in victims_rank[tree].items():
