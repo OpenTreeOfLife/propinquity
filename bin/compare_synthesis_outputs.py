@@ -76,6 +76,31 @@ rank_of_rank = rank_2_num_dict(_ranks);
 def broken_taxa_diffs(bt1,bt2,verbose):
     compare_lists("Broken taxa",bt1,bt2,verbose)
 
+_red = "\u001b[31m"
+_reset = "\u001b[0m"
+_black = "\u001b[30m"
+_green = "\u001b[32m"
+_yellow = "\u001b[33m"
+_blue = "\u001b[34m"
+_magenta = "\u001b[35m"
+_cyan = "\u001b[36m"
+_white = "\u001b[37m"
+
+def red(x):
+    return _red + str(x) + _reset
+
+def blue(x):
+    return _blue + str(x) + _reset
+
+def cyan(x):
+    return _cyan + str(x) + _reset
+
+def green(x):
+    return _green + str(x) + _reset
+
+def yellow(x):
+    return _yellow + str(x) + _reset
+
 # writes details of the broken taxa to a file that can be input by
 # report_on_broken_taxa.py
 def newly_broken_taxa_report(run1,run2):
@@ -139,6 +164,7 @@ def newly_broken_taxa_report(run1,run2):
                 print("{}: not contested\n".format(ottID))
             else:
                 for tree in run2.contested[ottID]:
+                    tree = tree[:-4]
                     victims[tree] += 1
                     victims_rank[tree][rank] += 1
                     if len(run2.contested[ottID]) == 1:
@@ -149,11 +175,31 @@ def newly_broken_taxa_report(run1,run2):
     print("Running otc-annotate-synth to get fuller conflict info on trees and broken taxa...",end='',flush=True)
     conflict = run2.get_taxon_conflict_info()
     print("done")
+    tree_conflict = defaultdict(lambda:defaultdict(int))
+    for ott_node,node_conflict in conflict.items():
+        for rel,tree_nodes in node_conflict.items():
+            for tree, nodes in tree_nodes.items():
+                if rel == "conflicts_with":
+                    tree_conflict[tree]["conflicts_with"] += 1;
+                elif rel == "supported_by" or rel == "partial_path_of":
+                    tree_conflict[tree]["aligns_to"] += 1;
+                elif rel == "resolved_by":
+                    tree_conflict[tree]["resolves"] += len(nodes)
 
     print("Here are the {} trees that broke taxa, starting with the most victims:\n".format(len(victims)))
-    for tree in sorted(sole_victims, key=sole_victims.get, reverse=True):
-        print("{}: {} ( {} )".format(tree, sole_victims[tree], victims[tree]))
+    print("\n\n{}: {} / {} / {} ".format("tree",
+                                         yellow("conflicts_with"),
+                                         cyan("aligns_to"),
+                                         green("resolves")))
 
+    print("{}: {} ( {} )".format("tree", "sole_victims", "victims"))
+    for tree in sorted(sole_victims, key=sole_victims.get, reverse=True):
+        print("\n\n{}: {} / {} / {} ".format(tree,
+                                          yellow(tree_conflict[tree]["conflicts_with"]),
+                                          cyan(tree_conflict[tree]["aligns_to"]),
+                                          green(tree_conflict[tree]["resolves"])))
+
+        print("{}: {} ( {} )".format(tree, sole_victims[tree], victims[tree]))
         for rank in sorted(victims_rank[tree], key=lambda key:rank_of_rank[key]):
             if rank_of_rank[rank] < rank_of_rank["genus"]:
                 print("\u001b[31m   {}\u001b[0m: {} ( {} )".format(rank,sole_victims_rank[tree][rank],victims_rank[tree][rank]))
