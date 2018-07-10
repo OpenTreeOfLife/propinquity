@@ -146,6 +146,10 @@ def newly_broken_taxa_report(run1,run2):
                         sole_victims_rank[tree][rank] += 1
 
     f.close()
+    print("Running otc-annotate-synth to get fuller conflict info on trees and broken taxa...",end='',flush=True)
+    conflict = run2.get_taxon_conflict_info()
+    print("done")
+
     print("Here are the {} trees that broke taxa, starting with the most victims:\n".format(len(victims)))
     for tree in sorted(sole_victims, key=sole_victims.get, reverse=True):
         print("{}: {} ( {} )".format(tree, sole_victims[tree], victims[tree]))
