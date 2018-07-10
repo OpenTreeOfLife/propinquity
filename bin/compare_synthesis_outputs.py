@@ -80,16 +80,16 @@ def broken_taxa_diffs(bt1,bt2,verbose):
 # report_on_broken_taxa.py
 def newly_broken_taxa_report(run1,run2):
     # load local copy of OTT
-    print("Loading OTT...");
+    print("Loading OTT...", end='',flush=True);
     taxonomy = ott.OTT()
-    print("done.");
     id2names = taxonomy.ott_id_to_names
     id2ranks = taxonomy.ott_id_to_ranks
+    print("done.");
 
     # NOTE: This section gets a rank for unranked nodes by looking at their descendants
     #       If we don't do this, then we don't see Fungi being broken, since Nucletmycea
     #         stands in for Fungi, and Nucletmycea has no rank.
-    print("Getting minimal ranks for unranked nodes...");
+    print("Getting minimal ranks for unranked nodes...",end='',flush=True);
     preorder=[]
     for key,value in taxonomy.preorder2ott_id.items():
         if isinstance(key,int):
