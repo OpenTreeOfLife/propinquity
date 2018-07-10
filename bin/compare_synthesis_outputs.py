@@ -9,6 +9,7 @@ import argparse
 import glob,os,re,csv
 import requests
 import peyotl.ott as ott
+import subprocess
 from collections import defaultdict
 
 
@@ -452,6 +453,24 @@ class runStatistics(object):
     def read_contested(self):
         contested_file = os.path.join(self.output_dir,'subproblems/contesting-trees.json')
         return json.load(open(contested_file, 'r'))
+    def get_taxon_conflict_info(self):
+        exemplified_phylo_dir = os.path.join(self.output_dir,'exemplified_phylo')
+        taxonomy = os.path.join(exemplified_phylo_dir,'regraft_cleaned_ott.tre')
+        path = os.path.join(exemplified_phylo_dir,'*_*@*.tre')
+        trees = glob.glob(os.path.join(exemplified_phylo_dir,'*_*@*.tre'))
+        from subprocess import DEVNULL
+        output = subprocess.check_output(['otc-annotate-synth'] + [taxonomy] + trees, stderr=DEVNULL)
+        j = json.loads(output)['nodes']
+        j2 = {}
+        pattern = re.compile(r'.*(ott.*)$')
+        for key in j:
+            m = re.search(pattern, key)
+            if m is not None:
+                key2 = m.group(1)
+                j2[key2] = j[key]
+            else:
+                raise ValueError("Key {} doesn't match!".format(key))
+        return j2
 
 if __name__ == "__main__":
     # get command line arguments (the two directories to compare)
