@@ -60,7 +60,8 @@ _ranks = ["domain",
          "forma",
          "subform",
          "cluster",
-          "no rank - terminal"
+          "no rank - terminal",
+          "no rank"
         ];
 
 def rank_2_num_dict(ranks):
