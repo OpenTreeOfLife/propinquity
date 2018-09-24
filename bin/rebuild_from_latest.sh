@@ -114,15 +114,6 @@ then
     exit 1
 fi
 
-echo -n 'make check ' >> "${PROPINQUITY_OUT_DIR}/logs/timestamps" ; date >> "${PROPINQUITY_OUT_DIR}/logs/timestamps"
-if ! make check 2>${PROPINQUITY_OUT_DIR}/logs/log-of-make-check-err.txt \
-    > ${PROPINQUITY_OUT_DIR}/logs/log-of-make-check.txt
-then
-    cat ${PROPINQUITY_OUT_DIR}/logs/log-of-make-check-err.txt
-    echo "Failed make check step"
-    exit 1
-fi 
-
 echo -n 'html ' >> "${PROPINQUITY_OUT_DIR}/logs/timestamps" ; date >> "${PROPINQUITY_OUT_DIR}/logs/timestamps"
 echo 'creating documentation of the outputs...'
 rm -f ${PROPINQUITY_OUT_DIR}/logs/log-of-html.txt
@@ -135,6 +126,15 @@ then
     echo "Failed building of html step"
     exit 1
 fi
+
+echo -n 'make check ' >> "${PROPINQUITY_OUT_DIR}/logs/timestamps" ; date >> "${PROPINQUITY_OUT_DIR}/logs/timestamps"
+if ! make check 2>${PROPINQUITY_OUT_DIR}/logs/log-of-make-check-err.txt \
+    > ${PROPINQUITY_OUT_DIR}/logs/log-of-make-check.txt
+then
+    cat ${PROPINQUITY_OUT_DIR}/logs/log-of-make-check-err.txt
+    echo "Failed make check step"
+    exit 1
+fi 
 
 echo 'Done'
 echo -n 'done ' >> "${PROPINQUITY_OUT_DIR}/logs/timestamps" ; date >> "${PROPINQUITY_OUT_DIR}/logs/timestamps"
