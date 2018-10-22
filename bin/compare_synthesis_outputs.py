@@ -200,11 +200,11 @@ def newly_broken_taxa_report(run1,run2):
                                          green("resolves")))
 
     print("{}: {} ( {} )".format("tree", "sole_victims", "victims"))
-    for tree in sorted(sole_victims, key=sole_victims.get, reverse=True):
+    for tree in sorted(victims, key=lambda x:victims.get(x), reverse=True):
         print("\n\n{}: {} / {} / {} ".format(tree,
-                                          yellow(tree_conflict[tree]["conflicts_with"]),
-                                          cyan(tree_conflict[tree]["aligns_to"]),
-                                          green(tree_conflict[tree]["resolves"])))
+                                             yellow(tree_conflict[tree]["conflicts_with"]),
+                                             cyan(tree_conflict[tree]["aligns_to"]),
+                                             green(tree_conflict[tree]["resolves"])))
 
         print("{}: {} ( {} )".format(tree, sole_victims[tree], victims[tree]))
         for rank in sorted(victims_rank[tree], key=lambda key:rank_of_rank[key]):
