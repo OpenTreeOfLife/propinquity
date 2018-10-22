@@ -148,10 +148,11 @@ def newly_broken_taxa_report(run1,run2):
         ))
     print("using OTT version {v}".format(v=taxonomy.version))
 
-    victims = defaultdict(int)
-    victims_rank = defaultdict(lambda: defaultdict(int))
-    sole_victims = defaultdict(int)
-    sole_victims_rank = defaultdict(lambda: defaultdict(int))
+    victims = defaultdict(set)
+    victims_rank = defaultdict(lambda: defaultdict(set))
+    # with sole_victims, perhaps I shouldn't count multiple trees per study??
+    sole_victims = defaultdict(set)
+    sole_victims_rank = defaultdict(lambda: defaultdict(set))
     with open(broken_taxa_filename, 'w') as f:
         for ottID in diff:
             # strip off the 'ott' part
@@ -172,26 +173,26 @@ def newly_broken_taxa_report(run1,run2):
             else:
                 for tree in run2.contested[ottID]:
                     tree = tree[:-4]
-                    victims[tree] += 1
-                    victims_rank[tree][rank] += 1
+                    victims[tree].add(name)
+                    victims_rank[tree][rank].add(name)
                     if len(run2.contested[ottID]) == 1:
-                        sole_victims[tree] +=1
-                        sole_victims_rank[tree][rank] += 1
+                        sole_victims[tree].add(name)
+                        sole_victims_rank[tree][rank].add(name)
 
     f.close()
 
     conflict = run2.get_taxon_conflict_info()
 
-    tree_conflict = defaultdict(lambda:defaultdict(int))
+    tree_conflict = defaultdict(lambda:defaultdict(set))
     for ott_node,node_conflict in conflict.items():
         for rel,tree_nodes in node_conflict.items():
             for tree, nodes in tree_nodes.items():
                 if rel == "conflicts_with":
-                    tree_conflict[tree]["conflicts_with"] += 1;
+                    tree_conflict[tree]["conflicts_with"].add(ott_node)
                 elif rel == "supported_by" or rel == "partial_path_of":
-                    tree_conflict[tree]["aligns_to"] += 1;
+                    tree_conflict[tree]["aligns_to"].add(ott_node)
                 elif rel == "resolved_by":
-                    tree_conflict[tree]["resolves"] += len(nodes)
+                    tree_conflict[tree]["resolves"].add(ott_node)
 
     print("Here are the {} trees that broke taxa, starting with the most victims:\n".format(len(victims)))
     print("\n\n{}: {} / {} / {} ".format("tree",
@@ -200,18 +201,18 @@ def newly_broken_taxa_report(run1,run2):
                                          green("resolves")))
 
     print("{}: {} ( {} )".format("tree", "sole_victims", "victims"))
-    for tree in sorted(victims, key=lambda x:victims.get(x), reverse=True):
+    for tree in sorted(victims, key=lambda x:len(victims.get(x)), reverse=True):
         print("\n\n{}: {} / {} / {} ".format(tree,
-                                             yellow(tree_conflict[tree]["conflicts_with"]),
-                                             cyan(tree_conflict[tree]["aligns_to"]),
-                                             green(tree_conflict[tree]["resolves"])))
+                                             yellow(len(tree_conflict[tree]["conflicts_with"])),
+                                             cyan(len(tree_conflict[tree]["aligns_to"])),
+                                             green(len(tree_conflict[tree]["resolves"]))))
 
-        print("{}: {} ( {} )".format(tree, sole_victims[tree], victims[tree]))
+        print("{}: {} ( {} )".format(tree, len(sole_victims[tree]), len(victims[tree])))
         for rank in sorted(victims_rank[tree], key=lambda key:rank_of_rank[key]):
             if rank_of_rank[rank] < rank_of_rank["genus"]:
-                print("\u001b[31m   {}\u001b[0m: {} ( {} )".format(rank,sole_victims_rank[tree][rank],victims_rank[tree][rank]))
+                print("\u001b[31m   {}\u001b[0m: {} ( {} )".format(rank,len(sole_victims_rank[tree][rank]),len(victims_rank[tree][rank])))
             else:
-                print("   {}: {} / ( {} )".format(rank, sole_victims_rank[tree][rank],victims_rank[tree][rank]))
+                print("   {}: {} / ( {} )".format(rank, len(sole_victims_rank[tree][rank]),len(victims_rank[tree][rank])))
 
 # generic function to compare two lists: number of items in each,
 # items in first but not second and items in second but not first
