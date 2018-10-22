@@ -179,9 +179,9 @@ def newly_broken_taxa_report(run1,run2):
                         sole_victims_rank[tree][rank] += 1
 
     f.close()
-    print("Running otc-annotate-synth to get fuller conflict info on trees and broken taxa...",end='',flush=True)
+
     conflict = run2.get_taxon_conflict_info()
-    print("done")
+
     tree_conflict = defaultdict(lambda:defaultdict(int))
     for ott_node,node_conflict in conflict.items():
         for rel,tree_nodes in node_conflict.items():
