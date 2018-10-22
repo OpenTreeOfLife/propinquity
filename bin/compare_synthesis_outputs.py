@@ -155,7 +155,7 @@ def newly_broken_taxa_report(run1,run2):
     sole_victims_rank = defaultdict(lambda: defaultdict(set))
     with open(broken_taxa_filename, 'w') as f:
         for ottID in diff:
-            # strip off the 'ott' part
+            # 1. Get name and rank for ottID
             pattern = re.compile(r'ott')
             int_id = int(re.sub(pattern,'',ottID))
             name = "no name"
@@ -209,10 +209,16 @@ def newly_broken_taxa_report(run1,run2):
 
         print("{}: {} ( {} )".format(tree, len(sole_victims[tree]), len(victims[tree])))
         for rank in sorted(victims_rank[tree], key=lambda key:rank_of_rank[key]):
+            color_rank = rank
+            examples=''
             if rank_of_rank[rank] < rank_of_rank["genus"]:
-                print("\u001b[31m   {}\u001b[0m: {} ( {} )".format(rank,len(sole_victims_rank[tree][rank]),len(victims_rank[tree][rank])))
-            else:
-                print("   {}: {} / ( {} )".format(rank, len(sole_victims_rank[tree][rank]),len(victims_rank[tree][rank])))
+                color_rank = red(color_rank)
+                examples = '   {}'.format(victims_rank[tree][rank])
+            if rank_of_rank[rank] <= rank_of_rank["infrakingdom"]:
+                color_rank = bold(color_rank)
+            print("   {}: {} ( {} ){}".format(color_rank,
+                                              len(sole_victims_rank[tree][rank]),
+                                              len(victims_rank[tree][rank]),examples))
 
 # generic function to compare two lists: number of items in each,
 # items in first but not second and items in second but not first
