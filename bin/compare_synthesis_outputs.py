@@ -77,6 +77,8 @@ rank_of_rank = rank_2_num_dict(_ranks);
 def broken_taxa_diffs(bt1,bt2,verbose):
     compare_lists("Broken taxa",bt1,bt2,verbose)
 
+_bold = "\u001b[1m"
+_bold_off = "\u001b[21m"
 _red = "\u001b[31m"
 _reset = "\u001b[0m"
 _black = "\u001b[30m"
@@ -86,6 +88,10 @@ _blue = "\u001b[34m"
 _magenta = "\u001b[35m"
 _cyan = "\u001b[36m"
 _white = "\u001b[37m"
+
+
+def bold(x):
+    return _bold + str(x) + _reset
 
 def red(x):
     return _red + str(x) + _reset
