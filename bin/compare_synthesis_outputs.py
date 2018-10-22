@@ -153,6 +153,9 @@ def newly_broken_taxa_report(run1,run2):
     # with sole_victims, perhaps I shouldn't count multiple trees per study??
     sole_victims = defaultdict(set)
     sole_victims_rank = defaultdict(lambda: defaultdict(set))
+
+    conflict_status = run2.get_taxon_conflict_info()
+
     with open(broken_taxa_filename, 'w') as f:
         for ottID in diff:
             # 1. Get name and rank for ottID
@@ -168,23 +171,26 @@ def newly_broken_taxa_report(run1,run2):
                     rank = id2ranks[int_id]
             f.write("{i},{n},{r}\n".format(i=int_id,n=name,r=rank))
 
-            if ottID not in run2.contested:
-                print("{}: not contested\n".format(ottID))
-            else:
-                for tree in run2.contested[ottID]:
-                    tree = tree[:-4]
-                    victims[tree].add(name)
-                    victims_rank[tree][rank].add(name)
-                    if len(run2.contested[ottID]) == 1:
-                        sole_victims[tree].add(name)
-                        sole_victims_rank[tree][rank].add(name)
+            # 2. Find trees that conflict with 
+            if ottID not in conflict_status:
+                print("{} {}: not found in conflict status!\n".format(ottID,name))
+                continue
 
-    f.close()
+            if "conflicts_with" not in conflict_status[ottID]:
+                print("{} {}: taxon broken, but nothing conflicts!\n".format(ottID,name))
+                continue
 
-    conflict = run2.get_taxon_conflict_info()
+            for tree in conflict_status[ottID]["conflicts_with"]:
+                #tree = tree[:-4]
+                victims[tree].add(name)
+                victims_rank[tree][rank].add(name)
+
+                if len(conflict_status[ottID]["conflicts_with"]) == 1:
+                    sole_victims[tree].add(name)
+                    sole_victims_rank[tree][rank].add(name)
 
     tree_conflict = defaultdict(lambda:defaultdict(set))
-    for ott_node,node_conflict in conflict.items():
+    for ott_node,node_conflict in conflict_status.items():
         for rel,tree_nodes in node_conflict.items():
             for tree, nodes in tree_nodes.items():
                 if rel == "conflicts_with":
