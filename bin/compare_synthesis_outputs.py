@@ -516,6 +516,10 @@ class runStatistics(object):
         path = os.path.join(exemplified_phylo_dir,'*_*@*.tre')
         trees = glob.glob(os.path.join(exemplified_phylo_dir,'*_*@*.tre'))
         from subprocess import DEVNULL
+        cmdline = ['otc-annotate-synth'] + [taxonomy] + trees
+        print("Running otc-annotate-synth to get fuller conflict info on trees and broken taxa...",end='',flush=True)
+        print('\ncmdline = {}'.format('otc-annotate-synth {} {}'.format(taxonomy,os.path.join(exemplified_phylo_dir,'*_*@*.tre'))))
+        print("done")
         output = subprocess.check_output(['otc-annotate-synth'] + [taxonomy] + trees, stderr=DEVNULL)
         j = json.loads(output)['nodes']
         j2 = {}
