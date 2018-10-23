@@ -266,7 +266,7 @@ def newly_broken_taxa_report(run1,run2):
 
             n_conflicts_with = len(conflict["conflicts_with"])
             if (n_conflicts_with > 0):
-                n_conflict_with = yellow(n_conflicts_with)
+                n_conflicts_with = yellow(n_conflicts_with)
 
             n_aligns_to = len(conflict["aligns_to"])
             if (n_aligns_to > 0):
@@ -282,8 +282,6 @@ def newly_broken_taxa_report(run1,run2):
                                                           n_aligns_to,
                                                           n_resolves,
                                                           examples))
-
-    print('diff = {}'.format(diff))
 
 # generic function to compare two lists: number of items in each,
 # items in first but not second and items in second but not first
@@ -589,10 +587,10 @@ class runStatistics(object):
         trees = glob.glob(os.path.join(exemplified_phylo_dir,'*_*@*.tre'))
         from subprocess import DEVNULL
         cmdline = ['otc-annotate-synth'] + [taxonomy] + trees
-        print("Running otc-annotate-synth to get fuller conflict info on trees and broken taxa...",end='',flush=True)
-        print('\ncmdline = {}'.format('otc-annotate-synth {} {}'.format(taxonomy,os.path.join(exemplified_phylo_dir,'*_*@*.tre'))))
-        print("done")
-        output = subprocess.check_output(['otc-annotate-synth'] + [taxonomy] + trees, stderr=DEVNULL)
+        print('cmdline = {}'.format('otc-annotate-synth {} {}'.format(taxonomy,os.path.join(exemplified_phylo_dir,'*_*@*.tre'))))
+        print("  * Running otc-annotate-synth to get fuller conflict info on trees and broken taxa ... ",end='',flush=True)
+        output = subprocess.check_output(cmdline, stderr=DEVNULL)
+        print("done.")
         j = json.loads(output)['nodes']
         j2 = {}
         pattern = re.compile(r'.*(ott.*)$')
