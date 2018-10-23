@@ -224,7 +224,6 @@ def newly_broken_taxa_report(run1,run2):
 
 
 
-# FIXME: maybe zeros shouldn't be colored at all!
 # FIXME: why is there still 'no rank'?
 # FIXME: write out number of duplicate trees per study
 # NEW: allow looking at all trees, with ones that newly break taxa first!
@@ -246,31 +245,44 @@ def newly_broken_taxa_report(run1,run2):
                                                   green(len(tree_conflict[tree]["resolves"]))))
 
         for rank in sorted(tree_conflict_at_rank[tree], key=lambda key:rank_of_rank[key]):
+
+            conflict = tree_conflict_at_rank[tree][rank]
             examples=''
             if rank_of_rank[rank] < rank_of_rank["genus"]:
                 examples2 = set()
-                for example_id in tree_conflict_at_rank[tree][rank]["newly_broken"]:
+                for example_id in conflict["newly_broken"]:
                     examples2.add(id2names[example_id])
                 if (len(examples2) > 0):
                     examples = '{}'.format(examples2)
                 
-
-            n_newly_broken = len(tree_conflict_at_rank[tree][rank]["newly_broken"])
+            n_newly_broken = len(conflict["newly_broken"])
 
             if (n_newly_broken > 0):
-                newly_broken = bold(yellow(len(tree_conflict_at_rank[tree][rank]["newly_broken"])))
+                n_newly_broken = bold(yellow(len(conflict["newly_broken"])))
                 crank = get_color_rank(rank)
             else:
-                newly_broken = yellow('0')
+                n_newly_broken = '0'
                 crank = rank
 
+            n_conflicts_with = len(conflict["conflicts_with"])
+            if (n_conflicts_with > 0):
+                n_conflict_with = yellow(n_conflicts_with)
+
+            n_aligns_to = len(conflict["aligns_to"])
+            if (n_aligns_to > 0):
+                n_aligns_to = cyan(n_aligns_to)
+
+            n_resolves = len(conflict["resolves"])
+            if (n_resolves > 0):
+                n_resolves = green(n_resolves)
 
             print("   {}: ({}) {} / {} / {}    {}".format(crank,
-                                                        newly_broken,
-                                                        yellow(len(tree_conflict_at_rank[tree][rank]["conflicts_with"])),
-                                                        cyan(len(tree_conflict_at_rank[tree][rank]["aligns_to"])),
-                                                        green(len(tree_conflict_at_rank[tree][rank]["resolves"])),
-                                                        examples))
+                                                          n_newly_broken,
+                                                          n_conflicts_with,
+                                                          n_aligns_to,
+                                                          n_resolves,
+                                                          examples))
+
     print('diff = {}'.format(diff))
 
 # generic function to compare two lists: number of items in each,
