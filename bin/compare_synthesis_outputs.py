@@ -165,7 +165,7 @@ def newly_broken_taxa_report(run1,run2):
     bt2=set(run2.broken_taxa)
     diff = bt2.difference(bt1)
     broken_taxa_filename = 'broken_taxa_report.csv'
-    print("  * printing details of {x} broken taxa to {f}".format(
+    print("  * Printing details of {x} broken taxa to {f}".format(
         x=len(diff),
         f=broken_taxa_filename
         ))
@@ -199,7 +199,7 @@ def newly_broken_taxa_report(run1,run2):
     #   genus:  (newly broken) conflicts / resolves / aligns
 
     victims = defaultdict(set)
-    victims_rank = defaultdict(lambda: defaultdict(set))
+    new_victims = defaultdict(set)
 
     tree_conflict = defaultdict(lambda:defaultdict(set))
     tree_conflict_at_rank = defaultdict(lambda:defaultdict(lambda:defaultdict(set)))
@@ -211,8 +211,9 @@ def newly_broken_taxa_report(run1,run2):
                 if rel == "conflicts_with":
                     tree_conflict[tree]["conflicts_with"].add(int_id)
                     tree_conflict_at_rank[tree][rank]["conflicts_with"].add(int_id)
+                    victims[tree].add(int_id)
                     if ott_node in diff:
-                        victims[tree].add(int_id)
+                        new_victims[tree].add(int_id)
                         tree_conflict[tree]["newly_broken"].add(int_id)
                         tree_conflict_at_rank[tree][rank]["newly_broken"].add(int_id)
                 elif rel == "supported_by" or rel == "partial_path_of":
@@ -224,21 +225,21 @@ def newly_broken_taxa_report(run1,run2):
 
 
 
-# FIXME: why is there still 'no rank'?
 # FIXME: write out number of duplicate trees per study
-# NEW: allow looking at all trees, with ones that newly break taxa first!
 # NEW: show aligns_to last
     
-    print("Here are the {} trees that broke taxa, starting with the most newly-broken taxa:\n".format(len(victims)))
+    print("Here are the {} trees that broke NEW taxa, starting with the most newly-broken taxa:\n".format(len(new_victims)))
     print("\n\n{}: ({}) {} / {} / {} ".format("tree",
                                               bold(yellow("newly_broken")),
                                               yellow("conflicts_with"),
                                               cyan("aligns_to"),
                                               green("resolves")))
 
-    print("{}:".format("tree"))
-    for tree in sorted(victims, key=lambda x:len(victims.get(x)), reverse=True):
-        print("\n\n{}: ({}) {} / {} / {} ".format(tree,
+    for tree in sorted(new_victims, key=lambda x:len(new_victims.get(x)), reverse=True):
+        ctree=tree
+        if len(tree_conflict[tree]["conflicts_with"]) > len(tree_conflict[tree]["aligns_to"]):
+            ctree=bold(red(tree))
+        print("\n\n{}: ({}) {} / {} / {} ".format(ctree,
                                                   bold(yellow(len(tree_conflict[tree]["newly_broken"]))),
                                                   yellow(len(tree_conflict[tree]["conflicts_with"])),
                                                   cyan(len(tree_conflict[tree]["aligns_to"])),
@@ -282,6 +283,51 @@ def newly_broken_taxa_report(run1,run2):
                                                           n_aligns_to,
                                                           n_resolves,
                                                           examples))
+
+    print("\n\n\nHere are the other {} trees that broke taxa, starting with the most newly-broken taxa:\n".format(len(victims) - len(new_victims)))
+    for tree in sorted(victims, key=lambda x:len(victims.get(x)), reverse=True):
+        if tree in new_victims:
+            continue
+
+        ctree=tree
+        if len(tree_conflict[tree]["conflicts_with"]) > len(tree_conflict[tree]["aligns_to"]):
+            ctree=bold(red(tree))
+        print("\n\n{}: {} / {} / {} ".format(ctree,
+                                             yellow(len(tree_conflict[tree]["conflicts_with"])),
+                                             cyan(len(tree_conflict[tree]["aligns_to"])),
+                                             green(len(tree_conflict[tree]["resolves"]))))
+
+        for rank in sorted(tree_conflict_at_rank[tree], key=lambda key:rank_of_rank[key]):
+
+            conflict = tree_conflict_at_rank[tree][rank]
+            examples=''
+            if rank_of_rank[rank] < rank_of_rank["genus"]:
+                examples2 = set()
+                for example_id in conflict["conflicts_with"]:
+                    examples2.add(id2names[example_id])
+                if (len(examples2) > 0):
+                    examples = '{}'.format(examples2)
+                
+            n_conflicts_with = len(conflict["conflicts_with"])
+            if (n_conflicts_with > 0):
+                n_conflicts_with = yellow(n_conflicts_with)
+                crank = get_color_rank(rank)
+            else:
+                crank = rank
+
+            n_aligns_to = len(conflict["aligns_to"])
+            if (n_aligns_to > 0):
+                n_aligns_to = cyan(n_aligns_to)
+
+            n_resolves = len(conflict["resolves"])
+            if (n_resolves > 0):
+                n_resolves = green(n_resolves)
+
+            print("   {}: {} / {} / {}    {}".format(crank,
+                                                     n_conflicts_with,
+                                                     n_aligns_to,
+                                                     n_resolves,
+                                                     examples))
 
 # generic function to compare two lists: number of items in each,
 # items in first but not second and items in second but not first
@@ -587,7 +633,7 @@ class runStatistics(object):
         trees = glob.glob(os.path.join(exemplified_phylo_dir,'*_*@*.tre'))
         from subprocess import DEVNULL
         cmdline = ['otc-annotate-synth'] + [taxonomy] + trees
-        print('cmdline = {}'.format('otc-annotate-synth {} {}'.format(taxonomy,os.path.join(exemplified_phylo_dir,'*_*@*.tre'))))
+#        print('cmdline = {}'.format('otc-annotate-synth {} {}'.format(taxonomy,os.path.join(exemplified_phylo_dir,'*_*@*.tre'))))
         print("  * Running otc-annotate-synth to get fuller conflict info on trees and broken taxa ... ",end='',flush=True)
         output = subprocess.check_output(cmdline, stderr=DEVNULL)
         print("done.")
