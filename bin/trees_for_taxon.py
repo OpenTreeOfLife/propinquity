@@ -11,6 +11,7 @@ import requests
 import peyotl.ott as ott
 import subprocess
 from collections import defaultdict
+import sys
 
 
 # From reference-taxonomy:org/opentreeoflife/taxa/Rank.java
@@ -152,10 +153,10 @@ def get_color_rank(rank):
 # report_on_broken_taxa.py
 def newly_broken_taxa_report(run1,run2):
     # load local copy of OTT
-    print("\nAnalyzing broken taxa:")
-    print("  * Loading OTT ... ", end='',flush=True);
+    print("\nAnalyzing broken taxa:", file=sys.stderr)
+    print("  * Loading OTT ... ", end='',flush=True, file=sys.stderr);
     taxonomy = ott.OTT()
-    print("done. (Using version {})".format(taxonomy.version), flush=True);
+    print("done. (Using version {})".format(taxonomy.version), flush=True,file=sys.stderr);
 
     id2names = taxonomy.ott_id_to_names
     for id in id2names:
@@ -647,9 +648,9 @@ class runStatistics(object):
         from subprocess import DEVNULL
         cmdline = ['otc-annotate-synth'] + [taxonomy] + trees
 #        print('cmdline = {}'.format('otc-annotate-synth {} {}'.format(taxonomy,os.path.join(exemplified_phylo_dir,'*_*@*.tre'))))
-        print("  * Running otc-annotate-synth to get conflict info on trees and broken taxa ... ",end='',flush=True)
+        print("  * Running otc-annotate-synth to get conflict info on trees and broken taxa ... ",end='',flush=True, file=sys.stderr)
         output = subprocess.check_output(cmdline, stderr=DEVNULL)
-        print("done.")
+        print("done.",file=sys.stderr)
         j = json.loads(output)['nodes']
         j2 = {}
         pattern = re.compile(r'.*(ott.*)$')
@@ -695,21 +696,21 @@ def parse_cmdline():
 
 if __name__ == "__main__":
     args = parse_cmdline()
-    print("synth output: {d}".format(d=args.synth))
+    print("  * Synth output: {d}".format(d=args.synth), file=sys.stderr)
 
     taxon = args.taxon
     taxon_id = get_id_from_ottnum(taxon)
 
-    print("  * Loading OTT ... ", end='',flush=True);
+    print("  * Loading OTT ... ", end='',flush=True, file=sys.stderr);
     taxonomy = ott.OTT()
-    print("done. (Using version {})".format(taxonomy.version), flush=True);
+    print("done. (Using version {})".format(taxonomy.version), flush=True, file=sys.stderr);
 
     # get stats object for each run
     synth = runStatistics(args.synth)
 
-    print("  * Finding nodes for taxon {}, id={}".format(args.taxon,taxon_id))
+    print("  * Finding nodes for taxon {}, id={}".format(args.taxon,taxon_id), file=sys.stderr)
     desc = get_all_descendants(taxonomy, taxon_id)
-    print("     - Found {} descendants, including original taxon".format(len(desc)))
+    print("    - Found {} descendants, including original taxon".format(len(desc)), file=sys.stderr)
     
     conflict = synth.get_taxon_conflict_info()
 
@@ -720,6 +721,6 @@ if __name__ == "__main__":
             for tree, nodes in tree_nodes.items():
                 overlapping_trees.add(tree)
 
-    print("Found {} overlapping trees:".format(len(overlapping_trees)))
+    print("    - Found {} overlapping trees.".format(len(overlapping_trees)), file=sys.stderr)
     for tree in overlapping_trees:
         print(tree)
