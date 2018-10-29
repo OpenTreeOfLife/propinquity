@@ -717,9 +717,10 @@ if __name__ == "__main__":
     overlapping_trees = set()
     for ott_node,node_conflict in conflict.items():
         int_id = get_id_from_ottnum(ott_node)
-        for rel, tree_nodes in node_conflict.items():
-            for tree, nodes in tree_nodes.items():
-                overlapping_trees.add(tree)
+        if int_id in desc:
+            for rel, tree_nodes in node_conflict.items():
+                for tree, nodes in tree_nodes.items():
+                    overlapping_trees.add(tree)
 
     print("    - Found {} overlapping trees.".format(len(overlapping_trees)), file=sys.stderr)
     for tree in overlapping_trees:
