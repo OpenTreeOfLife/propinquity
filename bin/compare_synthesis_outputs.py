@@ -144,6 +144,79 @@ def get_color_rank(rank):
         color_rank = bold(color_rank)
     return color_rank
 
+# Make dicts that index conflict info by [tree] and by [tree][rank]
+def get_conflict_info_by_tree(conflict_info, id2ranks):
+    tree_conflict = defaultdict(lambda:defaultdict(set))
+    tree_conflict_at_rank = defaultdict(lambda:defaultdict(lambda:defaultdict(set)))
+    for ott_node,node_conflict in conflict_info.items():
+        int_id = get_id_from_ottnum(ott_node)
+        rank = id2ranks[int_id]
+        for rel, tree_nodes in node_conflict.items():
+            for tree, nodes in tree_nodes.items():
+                if rel == "conflicts_with":
+                    tree_conflict[tree]["conflicts_with"].add(int_id)
+                    tree_conflict_at_rank[tree][rank]["conflicts_with"].add(int_id)
+                elif rel == "supported_by" or rel == "partial_path_of":
+                    tree_conflict[tree]["aligns_to"].add(int_id)
+                    tree_conflict_at_rank[tree][rank]["aligns_to"].add(int_id)
+                elif rel == "resolved_by":
+                    tree_conflict[tree]["resolves"].add(int_id)
+                    tree_conflict_at_rank[tree][rank]["resolves"].add(int_id)
+    return (tree_conflict, tree_conflict_at_rank)
+
+def union_over_trees(tree_conflict, tree_conflict_at_rank):
+
+    conflict = defaultdict(set)
+    for tree in tree_conflict:
+        for rel in tree_conflict[tree]:
+            conflict[rel].update(tree_conflict[tree][rel])
+
+    conflict_at_rank = defaultdict(lambda:defaultdict(set))
+    for tree in tree_conflict_at_rank:
+        for rank in tree_conflict_at_rank[tree]:
+            for rel in tree_conflict_at_rank[tree][rank]:
+                conflict_at_rank[rank][rel].update(tree_conflict_at_rank[tree][rank][rel])
+
+    return (conflict, conflict_at_rank)
+
+
+def conflict_summary_line(conflict1, conflict2):
+    # This asks the wrong question!  I want the second term to be things that ANY tree has conflicted with
+    n_newly_broken = len(conflict2["conflicts_with"] - conflict1["conflicts_with"])
+
+    if (n_newly_broken > 0):
+        n_newly_broken = bold(yellow(n_newly_broken))
+
+    n_conflicts_with = len(conflict2["conflicts_with"])
+    if (n_conflicts_with > 0):
+        n_conflicts_with = yellow(n_conflicts_with)
+
+    n_newly_aligns_to = len(conflict2["aligns_to"] - conflict1["aligns_to"])
+    if (n_newly_aligns_to > 0):
+        n_newly_aligns_to = bold(cyan(n_newly_aligns_to))
+
+    n_aligns_to = len(conflict2["aligns_to"])
+    if (n_aligns_to > 0):
+        n_aligns_to = cyan(n_aligns_to)
+
+    n_newly_resolves = len(conflict2["resolves"] - conflict1["resolves"])
+    if (n_newly_resolves > 0):
+        n_newly_resolves = bold(green(n_newly_resolves))
+
+    n_resolves = len(conflict2["resolves"])
+    if (n_resolves > 0):
+        n_resolves = green(n_resolves)
+
+    return "({}) {} / ({}) {} / ({}) {}".format(n_newly_broken,
+                                                n_conflicts_with,
+
+                                                n_newly_aligns_to,
+                                                n_aligns_to,
+
+                                                n_newly_resolves,
+                                                n_resolves)
+
+
 # writes details of the broken taxa to a file that can be input by
 # report_on_broken_taxa.py
 def newly_broken_taxa_report(run1,run2):
@@ -170,8 +243,10 @@ def newly_broken_taxa_report(run1,run2):
         f=broken_taxa_filename
         ))
 
+    conflict_status1 = run1.get_taxon_conflict_info()
     conflict_status2 = run2.get_taxon_conflict_info()
-
+#    print(conflict_status1)
+#    exit(0)
     with open(broken_taxa_filename, 'w') as f:
         for ottID in diff:
             # 1. Get name and rank for ottID
@@ -198,136 +273,65 @@ def newly_broken_taxa_report(run1,run2):
     #   rank2:  (newly broken) conflicts / resolves / aligns: newly-broken names
     #   genus:  (newly broken) conflicts / resolves / aligns
 
-    victims = defaultdict(set)
-    new_victims = defaultdict(set)
-
-    tree_conflict = defaultdict(lambda:defaultdict(set))
-    tree_conflict_at_rank = defaultdict(lambda:defaultdict(lambda:defaultdict(set)))
-    for ott_node,node_conflict in conflict_status2.items():
-        int_id = get_id_from_ottnum(ott_node)
-        rank = id2ranks[int_id]
-        for rel, tree_nodes in node_conflict.items():
-            for tree, nodes in tree_nodes.items():
-                if rel == "conflicts_with":
-                    tree_conflict[tree]["conflicts_with"].add(int_id)
-                    tree_conflict_at_rank[tree][rank]["conflicts_with"].add(int_id)
-                    victims[tree].add(int_id)
-                    if ott_node in diff:
-                        new_victims[tree].add(int_id)
-                        tree_conflict[tree]["newly_broken"].add(int_id)
-                        tree_conflict_at_rank[tree][rank]["newly_broken"].add(int_id)
-                elif rel == "supported_by" or rel == "partial_path_of":
-                    tree_conflict[tree]["aligns_to"].add(int_id)
-                    tree_conflict_at_rank[tree][rank]["aligns_to"].add(int_id)
-                elif rel == "resolved_by":
-                    tree_conflict[tree]["resolves"].add(int_id)
-                    tree_conflict_at_rank[tree][rank]["resolves"].add(int_id)
-
-
+    (tree_conflict1,tree_conflict_at_rank1) = get_conflict_info_by_tree(conflict_status1, id2ranks)
+    (conflict1,conflict_at_rank1) = union_over_trees(tree_conflict1, tree_conflict_at_rank1)
+    (tree_conflict2,tree_conflict_at_rank2) = get_conflict_info_by_tree(conflict_status2, id2ranks)
 
 # FIXME: write out number of duplicate trees per study
 # NEW: show aligns_to last
     
-    print("Here are the {} trees that broke NEW taxa, starting with the most newly-broken taxa:\n".format(len(new_victims)))
-    print("\n\n{}: ({}) {} / {} / {} ".format("tree",
-                                              bold(yellow("newly_broken")),
+    print("Here are the trees in order of NEW broken taxa, then all broken taxa:\n")
+    print("\n\n{}: ({}) {} / ({}) {} / ({}) {} ".format("tree",
+                                              bold(yellow("change")),
                                               yellow("conflicts_with"),
+                                              bold(cyan("change")),
                                               cyan("aligns_to"),
+                                              bold(green("change")),
                                               green("resolves")))
 
-    for tree in sorted(new_victims, key=lambda x:len(new_victims.get(x)), reverse=True):
+    for tree in sorted(tree_conflict2,
+                       key=lambda tree:( len(tree_conflict2[tree]["conflicts_with"] - conflict1["conflicts_with"]),
+                                         len(tree_conflict2[tree]["conflicts_with"]) ),
+                       reverse=True):
         ctree=tree
-        if len(tree_conflict[tree]["conflicts_with"]) > len(tree_conflict[tree]["aligns_to"]):
+        if len(tree_conflict2[tree]["conflicts_with"]) > len(tree_conflict2[tree]["aligns_to"]):
             ctree=bold(red(tree))
-        print("\n\n{}: ({}) {} / {} / {} ".format(ctree,
-                                                  bold(yellow(len(tree_conflict[tree]["newly_broken"]))),
-                                                  yellow(len(tree_conflict[tree]["conflicts_with"])),
-                                                  cyan(len(tree_conflict[tree]["aligns_to"])),
-                                                  green(len(tree_conflict[tree]["resolves"]))))
+        print("\n\n{}: {}".format(ctree, conflict_summary_line(conflict1, tree_conflict2[tree])))
 
-        for rank in sorted(tree_conflict_at_rank[tree], key=lambda key:rank_of_rank[key]):
+        for rank in sorted(tree_conflict_at_rank2[tree], key=lambda key:rank_of_rank[key]):
 
-            conflict = tree_conflict_at_rank[tree][rank]
+            c1 = conflict_at_rank1[rank]
+            c2 = tree_conflict_at_rank2[tree][rank]
+
             examples=''
             if rank_of_rank[rank] < rank_of_rank["genus"]:
                 examples2 = set()
-                for example_id in conflict["newly_broken"]:
+                for example_id in c2["conflicts_with"] - c1["conflicts_with"]:
                     examples2.add(id2names[example_id])
                 if (len(examples2) > 0):
                     examples = '{}'.format(examples2)
                 
-            n_newly_broken = len(conflict["newly_broken"])
+            n_newly_broken = len(c2["conflicts_with"] - c1["conflicts_with"])
 
             if (n_newly_broken > 0):
-                n_newly_broken = bold(yellow(len(conflict["newly_broken"])))
-                crank = get_color_rank(rank)
-            else:
-                n_newly_broken = '0'
-                crank = rank
-
-            n_conflicts_with = len(conflict["conflicts_with"])
-            if (n_conflicts_with > 0):
-                n_conflicts_with = yellow(n_conflicts_with)
-
-            n_aligns_to = len(conflict["aligns_to"])
-            if (n_aligns_to > 0):
-                n_aligns_to = cyan(n_aligns_to)
-
-            n_resolves = len(conflict["resolves"])
-            if (n_resolves > 0):
-                n_resolves = green(n_resolves)
-
-            print("   {}: ({}) {} / {} / {}    {}".format(crank,
-                                                          n_newly_broken,
-                                                          n_conflicts_with,
-                                                          n_aligns_to,
-                                                          n_resolves,
-                                                          examples))
-
-    print("\n\n\nHere are the other {} trees that broke taxa, starting with the most newly-broken taxa:\n".format(len(victims) - len(new_victims)))
-    for tree in sorted(victims, key=lambda x:len(victims.get(x)), reverse=True):
-        if tree in new_victims:
-            continue
-
-        ctree=tree
-        if len(tree_conflict[tree]["conflicts_with"]) > len(tree_conflict[tree]["aligns_to"]):
-            ctree=bold(red(tree))
-        print("\n\n{}: {} / {} / {} ".format(ctree,
-                                             yellow(len(tree_conflict[tree]["conflicts_with"])),
-                                             cyan(len(tree_conflict[tree]["aligns_to"])),
-                                             green(len(tree_conflict[tree]["resolves"]))))
-
-        for rank in sorted(tree_conflict_at_rank[tree], key=lambda key:rank_of_rank[key]):
-
-            conflict = tree_conflict_at_rank[tree][rank]
-            examples=''
-            if rank_of_rank[rank] < rank_of_rank["genus"]:
-                examples2 = set()
-                for example_id in conflict["conflicts_with"]:
-                    examples2.add(id2names[example_id])
-                if (len(examples2) > 0):
-                    examples = '{}'.format(examples2)
-                
-            n_conflicts_with = len(conflict["conflicts_with"])
-            if (n_conflicts_with > 0):
-                n_conflicts_with = yellow(n_conflicts_with)
                 crank = get_color_rank(rank)
             else:
                 crank = rank
 
-            n_aligns_to = len(conflict["aligns_to"])
-            if (n_aligns_to > 0):
-                n_aligns_to = cyan(n_aligns_to)
+            print("   {}: {}    {}".format(crank,
+                                           conflict_summary_line(c1, c2),
+                                           examples))
 
-            n_resolves = len(conflict["resolves"])
-            if (n_resolves > 0):
-                n_resolves = green(n_resolves)
+    # Find duplicate trees per study
+    print ("Studies with duplicate trees:\n\n")
+    trees_for_study = defaultdict(set)
+    for study_tree in run2.read_input_trees()['input_trees']:
+        (study,tree) = study_tree.split('@')
+        trees_for_study[study].add(tree)
+    for study,trees in trees_for_study.items():
+        if len(trees) > 1:
+            print("{} : {} : {}".format(study,len(trees),trees))
 
-            print("   {}: {} / {} / {}    {}".format(crank,
-                                                     n_conflicts_with,
-                                                     n_aligns_to,
-                                                     n_resolves,
-                                                     examples))
 
 # generic function to compare two lists: number of items in each,
 # items in first but not second and items in second but not first
