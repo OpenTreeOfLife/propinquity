@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+from __future__ import absolute_import, division, print_function, unicode_literals
+
 # Given two directories of synthesis outputs, compares them
 # Assumes that docs have been generated for each run using `make html`
 # Has options for quick checks, as well as formatted output for use in
@@ -323,7 +325,7 @@ def newly_broken_taxa_report(run1,run2):
                                            examples))
 
     # Find duplicate trees per study
-    print ("Studies with duplicate trees:\n\n")
+    print("Studies with duplicate trees:\n\n")
     trees_for_study = defaultdict(set)
     for study_tree in run2.read_input_trees()['input_trees']:
         (study,tree) = study_tree.split('@')
@@ -405,7 +407,6 @@ def get_taxon_details(ottid):
         return (taxon_name,rank)
     except KeyError:
         print("no name returned for {id}".format(id=ottid))
-    #print '{i}:{n}'.format(i=ottid,n=taxon_name)
 
 # check the lists of input trees
 # does not check SHAs, just study@tree lists

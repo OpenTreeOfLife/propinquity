@@ -61,7 +61,7 @@ def get_property(configs, section, name):
 def get_property_required(configs, section, name):
     value = get_property(configs, section, name)
     if value is None:
-        print >> sys.stderr , 'Could not find a [{}] section with a valid "{}" setting.'.format(section,name)
+        sys.stderr.write('Could not find a [{}] section with a valid "{}" setting.\n'.format(section,name))
         sys.exit(0)
     return value
 
@@ -198,4 +198,4 @@ if __name__ == '__main__':
     document["num_source_trees"] = num_trees()
     document["num_source_studies"] = num_studies()
 
-    print json.dumps(document,indent=4)
+    print(json.dumps(document,indent=4))

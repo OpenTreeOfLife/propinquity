@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+from __future__ import absolute_import, division, print_function, unicode_literals
 import json
 import sys
 import os
@@ -33,5 +34,5 @@ if __name__ == '__main__':
                 "queries": [],
                 "url": ""};
     document["decisions"] = get_decisions();
-    print json.dumps(document, indent=4);
+    print(json.dumps(document, indent=4))
 

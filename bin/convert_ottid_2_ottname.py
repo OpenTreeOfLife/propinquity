@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+from __future__ import absolute_import, division, print_function, unicode_literals
 import re, sys, argparse, codecs
 from peyotl.ott import OTT
 from peyotl.nexson_syntax import quote_newick_name
@@ -21,12 +23,12 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
 
-    print "converting {f}".format(f=args.newick_file)
-    print "using ott in {d}".format(d=args.ott_dir)
+    print("converting {f}".format(f=args.newick_file))
+    print("using ott in {d}".format(d=args.ott_dir))
     if (args.keep_ottids):
-        print "keeping OTT IDs in addition to names"
+        print("keeping OTT IDs in addition to names")
     else:
-        print "replacing OTT IDs with names"
+        print("replacing OTT IDs with names")
 
     # read pruned labelled synthesis tree
     ottpattern = re.compile(r"([(,)])(ott)(\d+)")
@@ -39,13 +41,12 @@ if __name__ == "__main__":
     with open(args.newick_file,'r') as f:
         newick = f.read()
         for m in re.finditer(ottpattern,newick):
-            #print m.group(1),m.group(2),m.group(3)
             ottid=int(m.group(3))
             ottresults = d[ottid]
             ottname=ottresults
             if isinstance(ottresults,tuple):
                 ottname = ottresults[0]
-            print m.group(3),ottname
+            print(m.group(3), ottname)
             skippedchars = newick[pos:m.start()]
             outfile.write(skippedchars)
             outfile.write(m.group(1))

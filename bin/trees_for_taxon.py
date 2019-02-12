@@ -406,7 +406,6 @@ def get_taxon_details(ottid):
         return (taxon_name,rank)
     except KeyError:
         print("no name returned for {id}".format(id=ottid))
-    #print '{i}:{n}'.format(i=ottid,n=taxon_name)
 
 # check the lists of input trees
 # does not check SHAs, just study@tree lists

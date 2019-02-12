@@ -1,4 +1,6 @@
 #!/usr/bin/env python
+from __future__ import absolute_import, division, print_function, unicode_literals
+
 try:
     import configparser  # pylint: disable=F0401
 except ImportError:
@@ -54,7 +56,7 @@ if __name__ == '__main__':
 
         try:
             value = p.get(props[0], props[1]).strip()
-            print value
+            print(value)
             sys.exit(0)
         except SystemExit:
             sys.exit(0)
@@ -63,7 +65,7 @@ if __name__ == '__main__':
 
     # If none of the files have the property, return the default, if any
     if args.default is not None:
-        print args.default
+        print(args.default)
         sys.exit(0)
         
     # If no default complain that none of the files have it
