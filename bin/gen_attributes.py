@@ -71,7 +71,7 @@ def get_root_ott_id(args, ott_dir):
     if root_ott_id is None:
        FNULL = open(os.devnull, 'w')
        proc = subprocess.Popen(["otc-taxonomy-parser", ott_dir,"-R"], stdout=subprocess.PIPE, stderr=FNULL)
-       root_ott_id = proc.communicate()[0].strip()
+       root_ott_id = proc.communicate()[0].strip().decode('utf-8')
     return root_ott_id
 
 def root_taxon_name(args, ott_dir):
@@ -82,7 +82,7 @@ def root_taxon_name(args, ott_dir):
 #    root_name = os.system("otc-taxonomy-parser -N",str(root_ott_id)])
     FNULL = open(os.devnull, 'w')
     proc = subprocess.Popen(["otc-taxonomy-parser", ott_dir,"-N",str(root_ott_id)], stdout=subprocess.PIPE, stderr=FNULL)
-    root_name = proc.communicate()[0].strip()
+    root_name = proc.communicate()[0].strip().decode('utf-8')
     return root_name
 
 def get_git_sha_from_dir(d):
@@ -198,4 +198,4 @@ if __name__ == '__main__':
     document["num_source_trees"] = num_trees()
     document["num_source_studies"] = num_studies()
 
-    print(json.dumps(document,indent=4))
+    print(json.dumps(document, indent=4, ensure_ascii=True))

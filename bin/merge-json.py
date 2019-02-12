@@ -70,10 +70,10 @@ else:
     next_key = dest_address.pop()
     dest_obj[next_key] = src_obj
 
+
 # string dump of the merged dict
-json.dump(merged_dict,
-          out,
+print(json.dumps(merged_dict,
           indent=1,
           sort_keys=True,
-          separators=(',', ': '))
-out.write('\n')
+          separators=(',', ': '),
+          ensure_ascii=True))
