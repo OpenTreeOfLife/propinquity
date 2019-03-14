@@ -5,11 +5,12 @@ SUPPRESS_FLAG_ARTIFACTS= $(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaned_ott.json \
 	$(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaned_ott_pruned_nonflagged.json \
 	$(PROPINQUITY_OUT_DIR)/cleaned_ott/ott_version.txt \
 	$(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaned_ott_with_hiddenbarren.tre \
+	$(PROPINQUITY_OUT_DIR)/cleaned_ott/extinct_in_cleaned.json \
 	$(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaning_flags.txt
 
-# use find + xargs for wildcard expansion to guard against arg list too long
 cleanottproducts:
 	rm -f $(SUPPRESS_FLAG_ARTIFACTS)
+	rm -f $(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaned_not_updated_ott.tre
 	rm -f $(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaned_ott.tre
 	rm -f $(PROPINQUITY_OUT_DIR)/cleaned_ott/root_ott_id.txt
 
@@ -39,16 +40,18 @@ $(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaned_ott_with_hiddenbarren.tre: $(OTT_FILE
 	    --output=$(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaned_ott_with_hiddenbarren.tre \
 	    --log=$(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaned_ott_1.json \
 	    --flags="$(shell cat $(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaning_flags.txt)" \
-	    --root="$(shell cat $(PROPINQUITY_OUT_DIR)/cleaned_ott/root_ott_id.txt)"
-#	Maybe replace python program with C++ program below after we can generate the necessary log files.
-#	otc-taxonomy-parser $(OTT_DIR) --config=$(CONFIG_FILENAME) -T > cleaned_ott/.raw_cleaned_ott.tre
+	    --root="$(shell cat $(PROPINQUITY_OUT_DIR)/cleaned_ott/root_ott_id.txt)" \
+	    --extinct-taxa-out=$(PROPINQUITY_OUT_DIR)/cleaned_ott/extinct_in_cleaned.json
 
-$(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaned_ott.tre: $(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaned_ott_with_hiddenbarren.tre
+$(PROPINQUITY_OUT_DIR)/cleaned_ott/extinct_in_cleaned.json: $(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaned_ott_with_hiddenbarren.tre
+
+
+$(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaned_not_updated_ott.tre: $(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaned_ott_with_hiddenbarren.tre
 	otc-relabel-tree \
 		$(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaned_ott_with_hiddenbarren.tre \
 		--del-higher-taxon-tips \
 		-j$(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaned_ott_pruned_nonflagged.json \
-		--taxonomy $(OTT_DIR) > $(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaned_ott.tre
+		--taxonomy $(OTT_DIR) > $(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaned_not_updated_ott.tre
 
 $(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaned_ott.json: $(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaned_ott_1.json $(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaned_ott_pruned_nonflagged.json
 	./bin/combine_ott_cleaning_logs.py \
@@ -56,7 +59,7 @@ $(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaned_ott.json: $(PROPINQUITY_OUT_DIR)/clea
 		$(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaned_ott_pruned_nonflagged.json \
 		$(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaned_ott.json
 
-$(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaned_ott_pruned_nonflagged.json: $(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaned_ott.tre
+$(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaned_ott_pruned_nonflagged.json: $(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaned_not_updated_ott.tre
 	echo "cleaned_ott/cleaned_ott_pruned_nonflagged.json created as a side effect."
 
 $(PROPINQUITY_OUT_DIR)/cleaned_ott/incertae_sedis.txt: $(CONFIG_FILENAME)
