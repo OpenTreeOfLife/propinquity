@@ -5,7 +5,7 @@ SUPPRESS_FLAG_ARTIFACTS= $(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaned_ott.json \
 	$(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaned_ott_pruned_nonflagged.json \
 	$(PROPINQUITY_OUT_DIR)/cleaned_ott/ott_version.txt \
 	$(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaned_ott_with_hiddenbarren.tre \
-	$(PROPINQUITY_OUT_DIR)/cleaned_ott/extinct_in_cleaned.json \
+	$(PROPINQUITY_OUT_DIR)/cleaned_ott/flagged_in_cleaned.json \
 	$(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaning_flags.txt
 
 cleanottproducts:
@@ -41,9 +41,9 @@ $(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaned_ott_with_hiddenbarren.tre: $(OTT_FILE
 	    --log=$(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaned_ott_1.json \
 	    --flags="$(shell cat $(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaning_flags.txt)" \
 	    --root="$(shell cat $(PROPINQUITY_OUT_DIR)/cleaned_ott/root_ott_id.txt)" \
-	    --extinct-taxa-out=$(PROPINQUITY_OUT_DIR)/cleaned_ott/extinct_in_cleaned.json
+	    --flagged-taxa-out=$(PROPINQUITY_OUT_DIR)/cleaned_ott/flagged_in_cleaned.json
 
-$(PROPINQUITY_OUT_DIR)/cleaned_ott/extinct_in_cleaned.json: $(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaned_ott_with_hiddenbarren.tre
+$(PROPINQUITY_OUT_DIR)/cleaned_ott/flagged_in_cleaned.json: $(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaned_ott_with_hiddenbarren.tre
 
 
 $(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaned_not_updated_ott.tre: $(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaned_ott_with_hiddenbarren.tre
