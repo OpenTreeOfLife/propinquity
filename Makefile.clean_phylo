@@ -77,7 +77,9 @@ $(PROPINQUITY_OUT_DIR)/exemplified_phylo/nonempty_trees.txt : $(PROPINQUITY_OUT_
 	  $(PROPINQUITY_OUT_DIR)/exemplified_phylo/.nonempty_trees.txt \
 	  $(PROPINQUITY_OUT_DIR)/exemplified_phylo/nonempty_trees.txt
 
-$(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaned_ott.tre : $(PROPINQUITY_OUT_DIR)/exemplified_phylo/args.txt \
+
+
+$(PROPINQUITY_OUT_DIR)/cleaned_ott/move_extinct_higher_log.json : $(PROPINQUITY_OUT_DIR)/exemplified_phylo/args.txt \
 													 $(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaned_not_updated_ott.tre \
 													 $(PROPINQUITY_OUT_DIR)/cleaned_phylo/phylo_inputs_cleaned.txt \
 													 $(PROPINQUITY_OUT_DIR)/cleaned_ott/flagged_in_cleaned.json
@@ -85,9 +87,14 @@ $(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaned_ott.tre : $(PROPINQUITY_OUT_DIR)/exem
 	  $(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaned_not_updated_ott.tre \
 	  -f$(PROPINQUITY_OUT_DIR)/exemplified_phylo/args.txt \
 	  -t$(PROPINQUITY_OUT_DIR)/cleaned_ott/flagged_in_cleaned.json \
-	  -j$(PROPINQUITY_OUT_DIR)/cleaned_ott/move_extinct_higher_log.json && \
-	! grep '"edits"' $(PROPINQUITY_OUT_DIR)/cleaned_ott/move_extinct_higher_log.json
-	  
+	  -j$(PROPINQUITY_OUT_DIR)/cleaned_ott/move_extinct_higher_log.json
+
+$(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaned_ott.tre : $(PROPINQUITY_OUT_DIR)/cleaned_ott/move_extinct_higher_log.json \
+													 $(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaned_not_updated_ott.tre
+	./bin/verify_taxon_edits_not_needed.py \
+	   $(PROPINQUITY_OUT_DIR)/cleaned_ott/move_extinct_higher_log.json \
+	   $(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaned_not_updated_ott.tre \
+	   $(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaned_ott.tre 
 
 $(PROPINQUITY_OUT_DIR)/exemplified_phylo/taxonomy.tre: $(PROPINQUITY_OUT_DIR)/exemplified_phylo/nonempty_trees.txt
 
@@ -112,4 +119,5 @@ $(PROPINQUITY_OUT_DIR)/exemplified_phylo/incertae_sedis.txt: $(CONFIG_FILENAME) 
 		--any-flag=incertae_sedis,major_rank_conflict,unplaced,unclassified \
 		--format="%I" \
 		> $(PROPINQUITY_OUT_DIR)/exemplified_phylo/incertae_sedis.txt
+
 
