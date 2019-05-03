@@ -23,6 +23,7 @@ def write_modified_taxonomy_tsv(inf, outf, uid_id_to_new_parent):
         m[uid] = {'old_parent': old_par, 'new_parent': new_par}
         outf.write('\t'.join(ls))
     return m
+
 def main(ott_dir, move_json_filepath, out_dir):
     assert os.path.isdir(ott_dir)
     with codecs.open(move_json_filepath, mode='r', encoding='utf-8') as jinp:
@@ -48,7 +49,6 @@ def main(ott_dir, move_json_filepath, out_dir):
                 m = write_modified_taxonomy_tsv(inp, outp, fossil_id_to_parent)
         outfp = os.path.join(out_dir, 'patched_by_bumping.json')
         write_as_json(m, outfp)
-    return
     for fn in OTT.FILENAMES:
         if (not needs_taxonomy) and fn == 'taxonomy.tsv':
             continue
