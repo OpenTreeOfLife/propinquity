@@ -121,7 +121,7 @@ rm -f ${PROPINQUITY_OUT_DIR}/logs/log-of-html.txt
 rm -f ${PROPINQUITY_OUT_DIR}/logs/log-of-html-err.txt
 if ! make html \
     2>${PROPINQUITY_OUT_DIR}/logs/log-of-html-err.txt \
-    > ${PROPINQUITY_OUT_DIR}/logs/log-of-html.txt || exit
+    > ${PROPINQUITY_OUT_DIR}/logs/log-of-html.txt
 then
     cat ${PROPINQUITY_OUT_DIR}/logs/log-of-html-err.txt
     echo "Failed building of html step"
