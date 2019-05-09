@@ -106,7 +106,7 @@ $(PROPINQUITY_OUT_DIR)/annotated_supertree/annotations.json: $(PROPINQUITY_OUT_D
 		$(PROPINQUITY_OUT_DIR)/annotated_supertree/preannotations1.json \
 		$(PROPINQUITY_OUT_DIR)/annotated_supertree/annotations1.json
 	@rm $(PROPINQUITY_OUT_DIR)/annotated_supertree/preannotations1.json
-	bin/gen_attributes.py $(CONFIG_FILENAME) --out-dir=$(PROPINQUITY_OUT_DIR) \
+	bin/gen_attributes.py $(CONFIG_FILENAME) --user --out-dir=$(PROPINQUITY_OUT_DIR) \
 		> $(PROPINQUITY_OUT_DIR)/annotated_supertree/preannotations2.json
 	bin/merge-json.py \
 		$(PROPINQUITY_OUT_DIR)/annotated_supertree/num_phylo_tips.json \

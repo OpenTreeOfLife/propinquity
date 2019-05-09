@@ -147,12 +147,20 @@ if __name__ == '__main__':
                         nargs = '*',
                         type=str,
                         help='filepaths for a series of config files (default is ["config", "${OTC_CONFIG:-~/.opentree}"])')
+    parser.add_argument('--user',
+                        default=False,
+                        action='store_true',
+                        help='append ~/.opentree or ${OTC_CONFIG} to list of configs')
     parser.add_argument('--out-dir',
                         default='.',
                         type=str,
                         help='prefix for inputs')
     args = parser.parse_args(sys.argv[1:])
 
+    configs = list(args.configs)
+    if args.user:
+        configs.append(DEFAULT_CONFIG_LOCATION)
+    args.configs = configs
     ott_dir = get_property_required(args.configs, 'opentree', 'ott')
     out_dir = args.out_dir
 
