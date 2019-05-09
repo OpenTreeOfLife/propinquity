@@ -12,4 +12,4 @@ then
 fi
 master="${d}/opentree_rebuild_from_latest.sh"
 echo "Calling ${master} ..."
-"${master}"
+bash "${master}" || exit 1

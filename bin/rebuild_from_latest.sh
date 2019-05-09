@@ -11,24 +11,24 @@ echo -n 'pulling ' > "${PROPINQUITY_OUT_DIR}/logs/timestamps" ; date >> "${PROPI
 orig_dir="$(pwd)"
 echo 'pulling the latest studies from the phylesystem shards'
 
-cd $(python bin/config_checker.py opentree.phylesystem config "${OTC_CONFIG:-~/.opentree}")
-cd shards
+cd $(python bin/config_checker.py opentree.phylesystem config "${OTC_CONFIG:-~/.opentree}")  || exit
+cd shards || exit
 for d in phylesystem-*
 do
-    cd $d
-    git pull origin --no-commit
-    cd - 2>/dev/null
+    cd $d || exit
+    git pull origin --no-commit || exit
+    cd - 2>/dev/null || exit
 done
 cd "${orig_dir}"
 
 echo 'pulling the latest collections from the collections shards'
-cd $(python bin/config_checker.py opentree.collections config "${OTC_CONFIG:-~/.opentree}")
-cd shards
+cd $(python bin/config_checker.py opentree.collections config "${OTC_CONFIG:-~/.opentree}") || exit
+cd shards || exit
 for d in collections-*
 do
-    cd $d
-    git pull origin --no-commit
-    cd - 2>/dev/null
+    cd $d || exit
+    git pull origin --no-commit || exit
+    cd - 2>/dev/null || exit
 done
 cd "${orig_dir}"
 
@@ -46,12 +46,12 @@ fi
 
 echo "Building the supertree"
 set -x
-rm -f ${PROPINQUITY_OUT_DIR}/logs/myeasylog.log
+rm -f ${PROPINQUITY_OUT_DIR}/logs/myeasylog.log || exit
 
 echo 'cleaning the inputs...'
 echo -n 'inputcleaning ' >> "${PROPINQUITY_OUT_DIR}/logs/timestamps" ; date >> "${PROPINQUITY_OUT_DIR}/logs/timestamps"
-rm -f ${PROPINQUITY_OUT_DIR}/logs/log-of-input-cleaning.txt
-rm -f ${PROPINQUITY_OUT_DIR}/logs/log-of-input-cleaning-err.txt
+rm -f ${PROPINQUITY_OUT_DIR}/logs/log-of-input-cleaning.txt || exit
+rm -f ${PROPINQUITY_OUT_DIR}/logs/log-of-input-cleaning-err.txt || exit
 if ! make ${PROPINQUITY_OUT_DIR}/exemplified_phylo/regraft_cleaned_ott.tre \
     2>${PROPINQUITY_OUT_DIR}/logs/log-of-input-cleaning-err.txt \
     > ${PROPINQUITY_OUT_DIR}/logs/log-of-input-cleaning.txt
@@ -64,8 +64,8 @@ fi
 
 echo 'creating the supertree...'
 echo -n 'supertree ' >> "${PROPINQUITY_OUT_DIR}/logs/timestamps" ; date >> "${PROPINQUITY_OUT_DIR}/logs/timestamps"
-rm -f ${PROPINQUITY_OUT_DIR}/logs/log-of-supertree.txt
-rm -f ${PROPINQUITY_OUT_DIR}/logs/log-of-supertree-err.txt
+rm -f ${PROPINQUITY_OUT_DIR}/logs/log-of-supertree.txt || exit
+rm -f ${PROPINQUITY_OUT_DIR}/logs/log-of-supertree-err.txt || exit
 if ! make ${PROPINQUITY_OUT_DIR}/labelled_supertree/labelled_supertree.tre \
     2>${PROPINQUITY_OUT_DIR}/logs/log-of-supertree-err.txt \
     >${PROPINQUITY_OUT_DIR}/logs/log-of-supertree.txt
