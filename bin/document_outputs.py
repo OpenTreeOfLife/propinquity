@@ -60,6 +60,7 @@ def parse_config(config_filepath):
         raise
     config = Extensible()
     DEFAULT_CONFIG_LOCATION = os.path.expanduser('~/.opentree')
+    DEFAULT_CONFIG_LOCATION = os.environ.get('OTC_CONFIG', DEFAULT_CONFIG_LOCATION)
     config.config_filepath = os.path.abspath(config_filepath)
     config_filepaths = [config.config_filepath, DEFAULT_CONFIG_LOCATION]
     config.taxonomy_cleaning_flags = [i.strip() for i in get_property(config_filepaths, 'taxonomy', 'cleaning_flags').split(',')]

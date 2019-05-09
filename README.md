@@ -30,10 +30,11 @@ These scripts are:
 
 ### Global Configuration file
 
-#### The `~/.opentree` file
+#### The $OTC_CONFIG or `~/.opentree` file
 Before you set up other prequisite software, you'll need to initialize
 the global config file. The global config file should be placed in your home
-directory and called `.opentree`.
+directory and called `.opentree`, or in some other filepath with the $OTC_CONFIG
+environmental variable holding the filepath.
 
 The global config file contains sections, each of which contain a list of
 variables (See [INI file format](https://en.wikipedia.org/wiki/INI_file)).  The

@@ -2,7 +2,7 @@
 
 orig_dir="$(pwd)"
 echo 'Pulling the latest studies from the phylesystem shards:'
-cd $(python bin/config_checker.py opentree.phylesystem config ~/.opentree)
+cd $(python bin/config_checker.py opentree.phylesystem config "${OTC_CONFIG:-~/.opentree}")
 cd shards
 for d in phylesystem-*
 do
@@ -14,7 +14,7 @@ cd "${orig_dir}"
 
 echo
 echo 'Pulling the latest collections from the collections shards:'
-cd $(python bin/config_checker.py opentree.collections config ~/.opentree)
+cd $(python bin/config_checker.py opentree.collections config "${OTC_CONFIG:-~/.opentree}")
 cd shards
 for d in collections-*
 do

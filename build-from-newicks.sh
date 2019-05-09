@@ -23,10 +23,12 @@ then
     mkdir "${PROPINQUITY_OUT_DIR}" || exit
 fi
 ottdir="${OTT_DIR}"
-if test -z "${ottdir}" && test -f "$HOME/.opentree"
+home_config_fp
+config_fp="${OTC_CONFIG:-$HOME/.opentree}"
+if test -z "${ottdir}" && test -f "${config_fp}"
 then 
-    ottdir=$(bin/config_checker.py opentree.ott ~/.opentree)
-    echo "OTT_DIR set toot set, using '${ottdir}' from ~/.opentree"
+    ottdir=$(bin/config_checker.py opentree.ott "${config_fp}")
+    echo "OTT_DIR set toot set, using '${ottdir}' from ${config_fp}"
 fi
 if test -z "${ottdir}"; then
     echo "OTT directory not set, quitting."
@@ -49,10 +51,10 @@ then
     exit 1
 fi
 if test -z "$PEYOTL_ROOT" ; then
-    PEYOTL_ROOT=$(bin/config_checker.py opentree.peyotl ~/.opentree)
+    PEYOTL_ROOT=$(bin/config_checker.py opentree.peyotl "${config_fp}")
     if test -z "$PEYOTL_ROOT" ; then
         echo "Currently you need to have PEYOTL_ROOT in your env set to your local clone of https://github.com/mtholder/peyotl.git"
-        echo "Alternatively you can set 'peyotl=...' in section [opentree] in ~/.opentree"
+        echo "Alternatively you can set 'peyotl=...' in section [opentree] in ${config_fp}"
         exit 1
     fi
 fi

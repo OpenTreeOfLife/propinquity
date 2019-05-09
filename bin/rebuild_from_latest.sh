@@ -10,7 +10,8 @@ mkdir -p "${PROPINQUITY_OUT_DIR}/logs" || exit
 echo -n 'pulling ' > "${PROPINQUITY_OUT_DIR}/logs/timestamps" ; date >> "${PROPINQUITY_OUT_DIR}/logs/timestamps"
 orig_dir="$(pwd)"
 echo 'pulling the latest studies from the phylesystem shards'
-cd $(python bin/config_checker.py opentree.phylesystem config ~/.opentree)
+
+cd $(python bin/config_checker.py opentree.phylesystem config "${OTC_CONFIG:-~/.opentree}")
 cd shards
 for d in phylesystem-*
 do
@@ -21,7 +22,7 @@ done
 cd "${orig_dir}"
 
 echo 'pulling the latest collections from the collections shards'
-cd $(python bin/config_checker.py opentree.collections config ~/.opentree)
+cd $(python bin/config_checker.py opentree.collections config "${OTC_CONFIG:-~/.opentree}")
 cd shards
 for d in collections-*
 do

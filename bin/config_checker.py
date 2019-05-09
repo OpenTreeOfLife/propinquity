@@ -17,6 +17,7 @@ if __name__ == '__main__':
     import argparse
     import os
     DEFAULT_CONFIG_LOCATION = os.path.expanduser('~/.opentree')
+    DEFAULT_CONFIG_LOCATION = os.environ.get('OTC_CONFIG', DEFAULT_CONFIG_LOCATION)
     description = 'Reports the value of a option from the first config file that contains it'
     parser = argparse.ArgumentParser(prog='config_checker.py', description=description)
     parser.add_argument('property',

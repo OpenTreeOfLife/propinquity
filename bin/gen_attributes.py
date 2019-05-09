@@ -140,11 +140,13 @@ if __name__ == '__main__':
     import os
     description = 'Write a JSON file with some of synthesis tree attributes'
     parser = argparse.ArgumentParser(prog='gen_attributes', description=description)
+    DEFAULT_CONFIG_LOCATION = os.path.expanduser('~/.opentree')
+    DEFAULT_CONFIG_LOCATION = os.environ.get('OTC_CONFIG', DEFAULT_CONFIG_LOCATION)
     parser.add_argument('configs',
-                        default=['config',os.path.join(os.environ['HOME'],'.opentree')],
+                        default=['config', DEFAULT_CONFIG_LOCATION],
                         nargs = '*',
                         type=str,
-                        help='filepaths for a series of config files (default is ["config","~/.opentree"])')
+                        help='filepaths for a series of config files (default is ["config", "${OTC_CONFIG:-~/.opentree}"])')
     parser.add_argument('--out-dir',
                         default='.',
                         type=str,
