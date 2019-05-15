@@ -277,9 +277,9 @@ def node_label2obj(nl):
     return el
 
 # add OTT metadata to the monophyletic taxa blob
-def add_taxonomy_metadata(non_monophyletic_taxa):
+def add_taxonomy_metadata(non_monophyletic_taxa, ott_dir):
     broken_taxa = non_monophyletic_taxa['non_monophyletic_taxa']
-    taxonomy = ott.OTT()
+    taxonomy = ott.OTT(ott_dir=ott_dir)
     id2names = taxonomy.ott_id_to_names
     id2ranks = taxonomy.ott_id_to_ranks
 
@@ -346,7 +346,8 @@ class DocGen(object):
         blob.non_monophyletic_taxa = read_as_json(os.path.join(d, 'broken_taxa.json'))
         if blob.non_monophyletic_taxa['non_monophyletic_taxa'] is None:
             blob.non_monophyletic_taxa['non_monophyletic_taxa'] = {}
-        blob.non_monophyletic_taxa = add_taxonomy_metadata(blob.non_monophyletic_taxa)
+        blob.non_monophyletic_taxa = add_taxonomy_metadata(blob.non_monophyletic_taxa,
+                                                           ott_dir=self.config.ott_root)
         return blob
     def read_subproblem_solutions(self):
         d = os.path.join(self.top_output_dir, 'subproblem_solutions')
