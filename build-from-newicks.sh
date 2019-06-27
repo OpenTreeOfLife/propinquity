@@ -67,7 +67,9 @@ echo "[synthesis]" >> $CONFIG
 echo "collections = " >> $CONFIG
 echo >> $CONFIG
 echo "[taxonomy]" >> $CONFIG
-echo "cleaning_flags = major_rank_conflict,major_rank_conflict_inherited,environmental,unclassified_inherited,unclassified,viral,barren,not_otu,incertae_sedis,incertae_sedis_inherited,extinct_inherited,extinct,hidden,unplaced,unplaced_inherited,was_container,inconsistent,hybrid,merged" >> $CONFIG
+echo "cleaning_flags = major_rank_conflict,major_rank_conflict_inherited,environmental,viral,barren,not_otu,hidden,was_container,inconsistent,hybrid,merged" >> $CONFIG
+echo "additional_regrafting_flags = unclassified_inherited,unclassified,incertae_sedis,incertae_sedis_inherited,extinct_inherited,extinct,unplaced,unplaced_inherited" >> $CONFIG
+ >> $CONFIG
 echo "done."
 
 mkdir -p "$PROPINQUITY_OUT_DIR/phylo_snapshot"
