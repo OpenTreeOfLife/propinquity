@@ -45,10 +45,10 @@ if __name__ == '__main__':
     if os.path.exists(DEFAULT_CONFIG_LOCATION):
         cf = list(args.configs) + [DEFAULT_CONFIG_LOCATION]
     else:
-        cf = arg.configs
+        cf = args.configs
     # Look through the listed files for the the property
     for config in cf:
-        p = configparser.SafeConfigParser()
+        p = configparser.ConfigParser()
         try:
             p.read(config)
         except:
