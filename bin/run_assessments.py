@@ -94,7 +94,9 @@ if __name__ == '__main__':
         if not bt_dict:
             bt_dict = {}
 
-        aliased_in_tree = bt_blob.get('taxa_matching_multiple_ott_ids', {})
+        aliased_in_tree = bt_blob.get('taxa_matching_multiple_ott_ids')
+        if not aliased_in_tree:
+            aliased_in_tree = {}
         aliased_in_broken = {}
         for key_in_tree, v in aliased_in_tree.items():
             for in_broken in v:
