@@ -36,8 +36,8 @@ else:
 out = codecs.getwriter('utf-8')(sys.stdout)
 
 
-dict1 = json.load(codecs.open(filename1, 'rU', encoding='utf-8'))
-merged_dict = json.load(codecs.open(filename2, 'rU', encoding='utf-8'))
+dict1 = json.load(codecs.open(filename1, 'r', encoding='utf-8'))
+merged_dict = json.load(codecs.open(filename2, 'r', encoding='utf-8'))
 if src_prop is None:
     merged_dict.update(dict1)
 else:

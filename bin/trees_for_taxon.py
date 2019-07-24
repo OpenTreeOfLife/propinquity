@@ -610,7 +610,7 @@ class runStatistics(object):
         found_tree = False
         data = {}
         currentTree = ""
-        with open(fn, 'rU') as inp:
+        with open(fn, 'r') as inp:
             for line in inp:
                 line = line.strip()
                 if line.endswith('tre'):

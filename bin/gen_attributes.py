@@ -87,9 +87,9 @@ def root_taxon_name(args, ott_dir):
 
 def get_git_sha_from_dir(d):
     head = os.path.join(d, '.git', 'HEAD')
-    head_branch_ref_frag = open(head, 'rU').read().split()[1]
+    head_branch_ref_frag = open(head, 'r').read().split()[1]
     head_branch_ref = os.path.join(d, '.git', head_branch_ref_frag)
-    return open(head_branch_ref, 'rU').read().strip()
+    return open(head_branch_ref, 'r').read().strip()
 
 
 def get_peyotl_version(peyotl_dir):

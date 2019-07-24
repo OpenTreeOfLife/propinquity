@@ -5,12 +5,12 @@ import sys
 import os
 import re
 
-ott_id_from_str = re.compile('^ott(\d+)')
+ott_id_from_str = re.compile(r'^ott(\d+)')
 
 def parse_degree_dist(fn):
     header_pat = re.compile(r'Out-degree\S+Count')
     dd = []
-    with open(fn, 'rU') as inp:
+    with open(fn, 'r') as inp:
         expecting_header = True
         for n, line in enumerate(inp):
             ls = line.strip()
@@ -89,9 +89,16 @@ if __name__ == '__main__':
         bt_file = os.path.join(top_dir, 'labelled_supertree', 'broken_taxa.json')
         bt_name = 'otc-unprune-solution-and-name-unnamed-nodes broken_taxa.json'
         bt_pair  = [bt_file, bt_name]
-        bt_dict = read_as_json(bt_file)['non_monophyletic_taxa']
+        bt_blob = read_as_json(bt_file)
+        bt_dict = bt_blob['non_monophyletic_taxa']
         if not bt_dict:
             bt_dict = {}
+
+        aliased_in_tree = bt_blob.get('taxa_matching_multiple_ott_ids', {})
+        aliased_in_broken = {}
+        for key_in_tree, v in aliased_in_tree.items():
+            for in_broken in v:
+                aliased_in_broken[str(in_broken)] = key_in_tree
         cleaned_ott_json_pruned = read_as_json(cleaned_taxonomy_json).get('pruned', {})
         # pruned because they became empty
         httip_key = 'higher-taxon-tip'
@@ -104,13 +111,15 @@ if __name__ == '__main__':
         lte = {}
         for ott_id in lt_set:
             ott_id_str = 'ott{}'.format(ott_id)
-            if (ott_id_str not in bt_dict) and (ott_id not in htpruned_ids):
-                err('{} was in {} but not {}'.format(ott_id_str, lt_name, bt_name))
+            if (ott_id_str not in bt_dict) \
+               and (ott_id not in htpruned_ids) \
+               and (ott_id_str not in aliased_in_broken.keys()):
+                err('{} was in {} but not {}'.format(repr(ott_id_str), lt_name, bt_name))
                 lte[ott_id_str] = {'listed': lt_pair, 'absent': bt_pair}
         if bool(lte) or len(lt_set) != len(bt_dict):
             for ott_id_str in bt_dict.keys():
                 ott_id = int(ott_id_from_str.match(ott_id_str).group(1))
-                if ott_id not in lt_set:
+                if (ott_id not in lt_set) and (ott_id_str not in aliased_in_tree):
                     err('{} was in {} but not {}'.format(ott_id_str, bt_name, lt_name))
                     lte[ott_id_str] = {'listed': bt_pair, 'absent': lt_pair}
         if lte:

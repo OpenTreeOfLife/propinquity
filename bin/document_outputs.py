@@ -73,7 +73,7 @@ def parse_config(config_filepath):
     config.collections_root = get_property(config_filepaths, 'opentree', 'collections')
     config.ott_root = get_property(config_filepaths, 'opentree', 'ott')
     ott_version_file = os.path.join(config.ott_root, 'version.txt')
-    config.ott_version = codecs.open(ott_version_file, 'rU', encoding='utf-8').read().strip()
+    config.ott_version = codecs.open(ott_version_file, 'r', encoding='utf-8').read().strip()
     ott_major_pat = re.compile('^([0-9.]+)[a-z]?.*')
     m = ott_major_pat.match(config.ott_version)
     if m:
@@ -104,9 +104,9 @@ def get_otc_version():
 
 def get_git_sha_from_dir(d):
     head = os.path.join(d, '.git', 'HEAD')
-    head_branch_ref_frag = open(head, 'rU').read().split()[1]
+    head_branch_ref_frag = open(head, 'r').read().split()[1]
     head_branch_ref = os.path.join(d, '.git', head_branch_ref_frag)
-    return open(head_branch_ref, 'rU').read().strip()
+    return open(head_branch_ref, 'r').read().strip()
 
 
 def get_peyotl_version(peyotl_dir):
@@ -132,7 +132,7 @@ def get_runtime_configuration(config_filepath):
 
 def stripped_nonempty_lines(fn):
     x = []
-    with open(fn, 'rU') as inp:
+    with open(fn, 'r') as inp:
         for line in inp:
             ls = line.strip()
             if ls:
@@ -156,7 +156,7 @@ def parse_subproblem_solutions_degree_dist(fn):
 
 def gen_degree_dist(fn):
     header_pat = re.compile(r'Out-degree\S+Count')
-    with open(fn, 'rU') as inp:
+    with open(fn, 'r') as inp:
         lines = stripped_nonempty_lines(fn)
         rfn = None
         expecting_header = False

@@ -44,7 +44,7 @@ def main(ott_dir, move_json_filepath, out_dir):
         infp = os.path.join(ott_dir, 'taxonomy.tsv')
         outfp = os.path.join(out_dir, 'taxonomy.tsv')
         needs_taxonomy = False
-        with codecs.open(infp, 'rU', encoding='utf-8') as inp:
+        with codecs.open(infp, 'r', encoding='utf-8') as inp:
             with codecs.open(outfp, 'w', encoding='utf-8') as outp:
                 m = write_modified_taxonomy_tsv(inp, outp, fossil_id_to_parent)
         outfp = os.path.join(out_dir, 'patched_by_bumping.json')

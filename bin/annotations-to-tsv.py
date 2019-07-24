@@ -15,7 +15,7 @@ except:
 This script will create a tab separated view of the annotations file.
 ''')
 
-with open(annotations_fn, 'rU') as inp:
+with open(annotations_fn, 'r') as inp:
     d = json.load(inp)
     source_id_map = d['source_id_map']
     n = d['nodes']
