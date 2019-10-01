@@ -54,11 +54,14 @@ def main(ott_dir, move_json_filepath, out_dir):
             continue
         infp = os.path.join(ott_dir, fn)
         outfp = os.path.join(out_dir, fn)
-        copyfile(infp, outfp)
+        if os.path.isfile(infp):
+            copyfile(infp, outfp)
+        else:
+            sys.stderr.write('patch_taxonomy_by_bumping.py: skipping copy of "{}" because {} does not exist'.format(fn, infp))
 
 if __name__ == '__main__':
     try:
         main(sys.argv[1], sys.argv[2], sys.argv[3])
     except:
-        sys.stderr.write('exiting due to an exception...\n')
+        sys.stderr.write('patch_taxonomy_by_bumping.py: exiting due to an exception...\n')
         raise
