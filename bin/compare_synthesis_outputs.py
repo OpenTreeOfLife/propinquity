@@ -616,6 +616,7 @@ class runStatistics(object):
                         data[currentTree] = row[1]
                         currentTree = False
         return data
+
     def read_subproblems(self):
         subproblemblob = { 'subproblem_list' : [], 'subproblem_dist': {} }
         d = os.path.join(self.output_dir, 'subproblems')
@@ -627,9 +628,11 @@ class runStatistics(object):
         distribution = self.read_subproblem_file(subpdistfile)
         subproblemblob['subproblem_dist'] = distribution
         return subproblemblob
+
     def read_contested(self):
         contested_file = os.path.join(self.output_dir,'subproblems/contesting-trees.json')
         return json.load(open(contested_file, 'r'))
+
     def get_taxon_conflict_info(self):
         exemplified_phylo_dir = os.path.join(self.output_dir,'exemplified_phylo')
         taxonomy = os.path.join(exemplified_phylo_dir,'regraft_cleaned_ott.tre')
