@@ -65,4 +65,5 @@ printf "\n   * \`grafted_solution_ottnames.tre\` - synthetic tree without taxono
 
 # tar these babies up
 echo 'creating full archive'
-# tar -czf $tar_dir1.tgz $tar_dir1 || exit
+tar -czf $tar_dir1.tgz $tar_dir1 || exit
+
