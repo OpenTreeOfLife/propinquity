@@ -16,6 +16,7 @@ def get_decisions():
             exit(1)
         study = m.group(1)
         tree = m.group(2)
+        sha += 1
         decisions.append({"studyID": study,
                           "treeID": tree,
                           "SHA": str(sha),
