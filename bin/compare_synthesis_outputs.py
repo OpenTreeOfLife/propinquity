@@ -617,6 +617,7 @@ class runStatistics(object):
                         data[currentTree] = row[1]
                         currentTree = False
         return data
+
     def read_subproblems(self):
         subproblemblob = { 'subproblem_list' : [], 'subproblem_dist': {} }
         d = os.path.join(self.output_dir, 'subproblems')
@@ -628,9 +629,11 @@ class runStatistics(object):
         distribution = self.read_subproblem_file(subpdistfile)
         subproblemblob['subproblem_dist'] = distribution
         return subproblemblob
+
     def read_contested(self):
         contested_file = os.path.join(self.output_dir,'subproblems/contesting-trees.json')
         return json.load(open(contested_file, 'r'))
+
     def get_taxon_conflict_info(self):
         exemplified_phylo_dir = os.path.join(self.output_dir,'exemplified_phylo')
         taxonomy = os.path.join(exemplified_phylo_dir,'regraft_cleaned_ott.tre')
@@ -645,13 +648,23 @@ class runStatistics(object):
         j = json.loads(output)['nodes']
         j2 = {}
         pattern = re.compile(r'.*(ott.*)$')
-        for key in j:
+
+        # otc-annotate-synth doesn't handle incertae sedis yet.  Therefore some input trees appear to conflict
+        # with taxa when they actually don't conflict.  The current solution is to only list conflicts for
+        # taxa that are actually broken.
+        not_really_broken = set()
+
+        for key,annotations in j.items():
             m = re.search(pattern, key)
-            if m is not None:
-                key2 = m.group(1)
-                j2[key2] = j[key]
-            else:
+
+            if m is None:
                 raise ValueError("Key {} doesn't match!".format(key))
+            else:
+                taxon = m.group(1)
+
+            if taxon not in self.broken_taxa:
+                annotations.pop('conflicts_with',None)
+            j2[taxon] = annotations
         return j2
 
 if __name__ == "__main__":
