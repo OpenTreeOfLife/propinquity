@@ -22,9 +22,7 @@ export OTT_DIR
 
 # This list of files for each OTT release are used below to create the
 #	full paths to the OTT inputs
-OTT_FILENAMES=about.json \
-	conflicts.tsv \
-	deprecated.tsv \
+OTT_FILENAMES=forwards.tsv \
 	synonyms.tsv \
 	taxonomy.tsv \
 	version.txt
