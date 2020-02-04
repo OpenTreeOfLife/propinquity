@@ -45,8 +45,9 @@ file `config.global.example`:
     home = /home/USER/OpenTree
     peyotl = %(home)s/peyotl
     phylesystem = %(home)s/phylesystem
-    ott = %(home)s/ott/ott2.9draft12/
+    ott = %(home)s/ott/ott3.2
     collections = %(home)s/collections
+    script-managed-trees = %(home)s/script-managed-trees
 
 #### The `home` variable in section `[opentree]`
 If you do install multiple packages under the same parent directory

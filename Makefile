@@ -6,12 +6,12 @@ export PROPINQUITY_OUT_DIR
 CONFIG_FILENAME=$(PROPINQUITY_OUT_DIR)/config
 
 # The directory holding a shards directory with the collections repo(s)
-#   obtained from the union of the user-wide config and the run config
+#   Obtained from the union of the user-wide config and the run config
 COLLECTIONS_ROOT := $(shell bin/config_checker.py opentree.collections $(CONFIG_FILENAME))
 export COLLECTIONS_ROOT
 
 # Reads the filepath to a clone of the peyotl repo
-#   obtained from the union of the user-wide config and the run config
+#   Obtained from the union of the user-wide config and the run config
 PEYOTL_ROOT := $(shell bin/config_checker.py opentree.peyotl $(CONFIG_FILENAME))
 export PEYOTL_ROOT
 
@@ -19,6 +19,12 @@ export PEYOTL_ROOT
 #   obtained from the union of the user-wide config and the run config
 OTT_DIR := $(shell bin/config_checker.py opentree.ott $(CONFIG_FILENAME))
 export OTT_DIR
+
+# The value [opentree]/script-managed-trees specifies the location of the script-managed-trees
+# repo.  This repo contains trees newick trees that have ottids in their tip labels.
+# We could convert these trees to nexson, and import them directly, but we do not.
+SCRIPT_MANAGED_TREES := $(shell bin/config_checker.py opentree.script-managed-trees $(CONFIG_FILENAME))
+export SCRIPT_MANAGED_TREES
 
 # This list of files for each OTT release are used below to create the
 #	full paths to the OTT inputs
@@ -36,9 +42,9 @@ export OTT_FILEPATHS
 PHYLESYSTEM_ROOT := $(shell bin/config_checker.py opentree.phylesystem $(CONFIG_FILENAME))
 export PHYLESYSTEM_ROOT
 
-# The value [synthesis]/collections var which collections (owner/name format) should be
-#   used to create the synthesis. The order of these collections determines the ranking
-#   obtained from the union of the user-wide config and the run config
+# The [synthesis]/collections var specifies WHICH collections (format: owner/name) should be
+#   used to create the synthesis. The order of these collections determines the ranking.
+#   Obtained from the union of the run config and the user-wide config.
 SYNTHESIS_COLLECTIONS := $(shell bin/config_checker.py synthesis.collections $(CONFIG_FILENAME))
 export SYNTHESIS_COLLECTIONS
 
