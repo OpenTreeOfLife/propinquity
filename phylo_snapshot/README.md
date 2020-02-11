@@ -8,7 +8,7 @@ Note that the Makefile does **not** trigger a `git pull` operation. The SHA of y
 master branch at the time of taking this snapshot will be used as the commit SHA
 for any tree that is included in the collection but not pinned to a particular SHA.
 
-`$(PEYOTL_ROOT)/scripts/phylesystem/export_studies_from_collection.py` is the tool
+`bin/export_studies_from_collection.py` is the tool
 that generates the study JSON files. Note that this tool only touches the snapshot
 file if the existing file differs from the previous content of that file. So building
 this snapshot does not necessarily touch all of the studies.

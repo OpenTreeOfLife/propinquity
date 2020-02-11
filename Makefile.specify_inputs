@@ -53,7 +53,7 @@ $(PROPINQUITY_OUT_DIR)/phylo_snapshot/collections_git_shas.txt:
 $(PROPINQUITY_OUT_DIR)/phylo_snapshot/concrete_rank_collection.json: $(PROPINQUITY_OUT_DIR)/phylo_snapshot/git_shas.txt \
 								     $(PROPINQUITY_OUT_DIR)/phylo_input/rank_collection.json
 	@if ! test -d $(PROPINQUITY_OUT_DIR)/phylo_snapshot ; then mkdir -p $(PROPINQUITY_OUT_DIR)/phylo_snapshot ; fi
-	$(PEYOTL_ROOT)/scripts/phylesystem/export_studies_from_collection.py \
+	bin/export_studies_from_collection.py \
 	  --phylesystem-par=$(PHYLESYSTEM_ROOT)/shards \
 	  --output-dir=$(PROPINQUITY_OUT_DIR)/phylo_snapshot \
 	  $(PROPINQUITY_OUT_DIR)/phylo_input/rank_collection.json \
