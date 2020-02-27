@@ -23,7 +23,6 @@ then
     mkdir "${PROPINQUITY_OUT_DIR}" || exit
 fi
 ottdir="${OTT_DIR}"
-home_config_fp
 config_fp="${OTC_CONFIG:-$HOME/.opentree}"
 if test -z "${ottdir}" && test -f "${config_fp}"
 then 
