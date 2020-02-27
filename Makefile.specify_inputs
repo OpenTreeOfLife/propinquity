@@ -53,10 +53,11 @@ $(PROPINQUITY_OUT_DIR)/phylo_snapshot/collections_git_shas.txt:
 $(PROPINQUITY_OUT_DIR)/phylo_snapshot/concrete_rank_collection.json: $(PROPINQUITY_OUT_DIR)/phylo_snapshot/git_shas.txt \
 								     $(PROPINQUITY_OUT_DIR)/phylo_input/rank_collection.json
 	@if ! test -d $(PROPINQUITY_OUT_DIR)/phylo_snapshot ; then mkdir -p $(PROPINQUITY_OUT_DIR)/phylo_snapshot ; fi
-	$(PEYOTL_ROOT)/scripts/phylesystem/export_studies_from_collection.py \
+	bin/export_studies_from_collection.py \
 	  --phylesystem-par=$(PHYLESYSTEM_ROOT)/shards \
 	  --output-dir=$(PROPINQUITY_OUT_DIR)/phylo_snapshot \
 	  $(PROPINQUITY_OUT_DIR)/phylo_input/rank_collection.json \
+          "--script-managed-trees=$(SCRIPT_MANAGED_TREES)"
 	  -v 2>&1 | tee $(PROPINQUITY_OUT_DIR)/phylo_snapshot/stdouterr.txt
 
 # phylo_input holds the lists of study+tree pairs to be used during the supertree construction

@@ -1,7 +1,7 @@
 # cleaned_phylo
 This directory holds the newick trees for the phylogenetic inputs after problematically
 mapped tips have been removed.
-`$(PEYOTL_ROOT)/scripts/nexson/prune_to_clean_mapped.py` uses the OTT pruning flags,
+`bin/prune_to_clean_mapped.py` uses the OTT pruning flags,
 OTT itself, and the [`phylo_snapshot`](../phylo_snapshot/README.md) files to populate
 this directory.
 

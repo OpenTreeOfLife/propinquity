@@ -5,7 +5,7 @@ then
     exit 1
 fi
 study_tree="$1"
-"${PEYOTL_ROOT}"/scripts/nexson/prune_to_clean_mapped.py \
+bin/prune_to_clean_mapped.py \
   --ott-dir="${OTT_DIR}" \
   --out-dir=cleaned_phylo \
   --ott-prune-flags=major_rank_conflict,major_rank_conflict_direct,major_rank_conflict_inherited,environmental,viral,nootu,barren,not_otu,extinct_inherited,extinct_direct,hidden,tattered \

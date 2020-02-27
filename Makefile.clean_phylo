@@ -50,7 +50,7 @@ $(PROPINQUITY_OUT_DIR)/cleaned_phylo/phylo_inputs_cleaned.txt: $(PROPINQUITY_OUT
 															   $(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaned_ott_pruned_nonflagged.json \
 															   $(OTT_FILEPATHS)
 	@if ! test -d $(PROPINQUITY_OUT_DIR)/cleaned_phylo ; then mkdir -p $(PROPINQUITY_OUT_DIR)/cleaned_phylo ; fi
-	$(PEYOTL_ROOT)/scripts/nexson/prune_to_clean_mapped.py \
+	bin/prune_to_clean_mapped.py \
 	  --ott-dir=$(OTT_DIR) \
 	  --input-files-list=$(PROPINQUITY_OUT_DIR)/cleaned_phylo/needs_updating.txt \
 	  --out-dir=$(PROPINQUITY_OUT_DIR)/cleaned_phylo \
@@ -76,8 +76,6 @@ $(PROPINQUITY_OUT_DIR)/exemplified_phylo/nonempty_trees.txt : $(PROPINQUITY_OUT_
 	  -n$(PROPINQUITY_OUT_DIR)/exemplified_phylo/.nonempty_trees.txt && mv \
 	  $(PROPINQUITY_OUT_DIR)/exemplified_phylo/.nonempty_trees.txt \
 	  $(PROPINQUITY_OUT_DIR)/exemplified_phylo/nonempty_trees.txt
-
-
 
 $(PROPINQUITY_OUT_DIR)/cleaned_ott/move_extinct_higher_log.json : $(PROPINQUITY_OUT_DIR)/exemplified_phylo/args.txt \
 													 $(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaned_not_updated_ott.tre \
