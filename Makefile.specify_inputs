@@ -57,8 +57,8 @@ $(PROPINQUITY_OUT_DIR)/phylo_snapshot/concrete_rank_collection.json: $(PROPINQUI
 	  --phylesystem-par=$(PHYLESYSTEM_ROOT)/shards \
 	  --output-dir=$(PROPINQUITY_OUT_DIR)/phylo_snapshot \
 	  $(PROPINQUITY_OUT_DIR)/phylo_input/rank_collection.json \
-          "--script-managed-trees=$(SCRIPT_MANAGED_TREES)"
-	  -v 2>&1 | tee $(PROPINQUITY_OUT_DIR)/phylo_snapshot/stdouterr.txt
+          "--script-managed-trees=$(SCRIPT_MANAGED_TREES)" \
+          -v 2>&1 | tee $(PROPINQUITY_OUT_DIR)/phylo_snapshot/stdouterr.txt
 
 # phylo_input holds the lists of study+tree pairs to be used during the supertree construction
 $(PROPINQUITY_OUT_DIR)/phylo_input/collections.txt: $(CONFIG_FILENAME)
