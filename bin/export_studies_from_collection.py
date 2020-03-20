@@ -131,8 +131,6 @@ if __name__ == '__main__':
 
     # Remove included trees for studies that have been removed from phylesystem
     included_and_exists = []
-#    with ga.lock():
-#        ga.checkout_master()
     for inc in included:
         study_id = inc['studyID']
         ga = ps.create_git_action(study_id)
@@ -168,7 +166,6 @@ if __name__ == '__main__':
             study_id = inc['studyID']
             ga = ps.create_git_action(study_id)
             with ga.lock():
-                ga.checkout_master()
                 if copy_phylesystem_file_if_differing(ga,
                                                       sha,
                                                       inc,
@@ -180,7 +177,6 @@ if __name__ == '__main__':
             for inc in from_this_sha_inc:
                 ga = ps.create_git_action(study_id)
                 with ga.lock():
-                    ga.checkout_master()
                     if copy_phylesystem_file_if_differing(ga,
                                                           sha, inc,
                                                           out_dir,
@@ -201,7 +197,6 @@ if __name__ == '__main__':
                     continue
             ga = ps.create_git_action(study_id)
             with ga.lock():
-                ga.checkout(sha)
                 if copy_phylesystem_file_if_differing(ga,
                                                       sha,
                                                       inc,
@@ -210,7 +205,6 @@ if __name__ == '__main__':
                     num_moved += 1
                 else:
                     num_deleted += 1
-                ga.checkout_master()
     debug('{} total trees'.format(len(included) - num_deleted))
     debug('{} JSON files copied'.format(num_moved))
     debug('{} trees in collections, but with missing studies'.format(num_deleted))
