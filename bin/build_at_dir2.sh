@@ -17,7 +17,7 @@ set -x
 
 # This overrides ~/.opentree
 # This should use a taxonomy that results from `otc-taxonomy-parser ott3.2 -E --write-taxonomy=ott3.2-extinct-flagged`
-export OTC_CONFIG=~/.flag-mod-opentree
+export OTC_CONFIG=$HOME/.flag-mod-opentree
 
 dir1="${dir}-stage1"
 dir2="${dir}"
