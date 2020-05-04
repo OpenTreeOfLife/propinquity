@@ -56,7 +56,8 @@ $(PROPINQUITY_OUT_DIR)/cleaned_phylo/phylo_inputs_cleaned.txt: $(PROPINQUITY_OUT
 	  --out-dir=$(PROPINQUITY_OUT_DIR)/cleaned_phylo \
 	  --ott-prune-flags="$(shell cat $(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaning_flags.txt)" \
 	  --ott-prune-nonflagged-json=$(PROPINQUITY_OUT_DIR)/cleaned_ott/cleaned_ott_pruned_nonflagged.json \
-	  --root="$(shell cat $(PROPINQUITY_OUT_DIR)/cleaned_ott/root_ott_id.txt)"
+	  --root="$(shell cat $(PROPINQUITY_OUT_DIR)/cleaned_ott/root_ott_id.txt)" \
+	  --script-managed-trees="$(SCRIPT_MANAGED_TREES)"
 	touch $(PROPINQUITY_OUT_DIR)/cleaned_phylo/phylo_inputs_cleaned.txt
 
 $(PROPINQUITY_OUT_DIR)/exemplified_phylo/args.txt : $(PROPINQUITY_OUT_DIR)/phylo_input/study_tree_pairs.txt

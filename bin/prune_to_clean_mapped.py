@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 from peyotl.nexson_syntax import (extract_tree_nexson,
                                   get_nexml_el,
                                   nexson_frag_write_newick)
@@ -11,6 +11,7 @@ from peyotl import get_logger
 from collections import defaultdict
 import sys
 import os
+import subprocess
 
 _SCRIPT_NAME = os.path.split(sys.argv[0])[-1]
 _LOG = get_logger(__name__)
@@ -393,6 +394,28 @@ class NexsonTreeWrapper(object):
         return self
 
 
+
+def generate_newicks_for_external_trees(external_trees, ott_dir, root, clean_flags, out_dir, script_managed_trees_path):
+
+    # Generate the newick for the external trees here!
+    if not external_trees:
+        return
+
+    assert script_managed_trees_path, "Path for script-managed-trees not set!"
+
+    cmd = ['otc-prune-clean', '--taxonomy={}'.format(ott_dir), '--root={}'.format(root), '--clean={}'.format(clean_flags), '--out-dir={}'.format(out_dir)]
+
+    for (study_tree, path) in external_trees:
+        path = os.path.join(script_managed_trees_path,path)
+        cmd.append(f"{path}:{study_tree}")
+
+    try:
+        subprocess.run(cmd, check=True, capture_output=True)
+    except subprocess.CalledProcessError as e:
+        _LOG.warning(e.stdout.decode('UTF-8'))
+        _LOG.warning(e.stderr.decode('UTF-8'))
+        raise e
+
 if __name__ == '__main__':
     import argparse
     import codecs
@@ -444,6 +467,11 @@ if __name__ == '__main__':
                         type=str,
                         required=False,
                         help='A list of input NexSON filenames.')
+    parser.add_argument('--script-managed-trees',
+                        default=None,
+                        type=str,
+                        required=False,
+                        help='filepath to the top of the script-managed-trees repository')
     args = parser.parse_args(sys.argv[1:])
     ott_dir, out_dir, root = args.ott_dir, args.out_dir, args.root
     to_prune_for_reasons = {}
@@ -467,10 +495,10 @@ if __name__ == '__main__':
         inp_files = list(args.nexson)
     else:
         if args.nexson_file_tags:
-            with open(os.path.expanduser(args.nexson_file_tags), 'rU') as tf:
+            with open(os.path.expanduser(args.nexson_file_tags), encoding='UTF-8') as tf:
                 inp_files = ['{}.json'.format(i.strip()) for i in tf if i.strip()]
         elif args.input_files_list:
-            with open(os.path.expanduser(args.input_files_list), 'rU') as tf:
+            with open(os.path.expanduser(args.input_files_list), encoding='UTF-8') as tf:
                 inp_files = [i.strip() for i in tf if i.strip()]
         else:
             error(
@@ -488,6 +516,8 @@ if __name__ == '__main__':
         flags = flags_str.split(',')
     ott = OTT(ott_dir=args.ott_dir)
     to_prune_fsi_set = ott.convert_flag_string_set_to_union(flags)
+
+    external_trees = []
     for inp in inp_files:
         _LOG.debug('{}'.format(inp))
         log_obj = {}
@@ -495,6 +525,13 @@ if __name__ == '__main__':
         study_tree = '.'.join(inp_fn.split('.')[:-1])  # strip extension
         study_id, tree_id = propinquity_fn_to_study_tree(inp_fn)
         nexson_blob = read_as_json(inp)
+
+        if "externalTree" in nexson_blob["nexml"]:
+            path = nexson_blob["nexml"]["externalTree"]["path"]
+            print(f'{study_tree} at {path}')
+            external_trees.append( (study_tree,path) )
+            continue
+
         ntw = NexsonTreeWrapper(nexson_blob, tree_id, log_obj=log_obj)
         assert ntw.root_node_id
         taxonomy_treefile = os.path.join(args.out_dir, study_tree + '-taxonomy.tre')
@@ -533,3 +570,5 @@ if __name__ == '__main__':
                                          bracket_ingroup=False,
                                          with_edge_lengths=False)
                 outp.write('\n')
+
+    generate_newicks_for_external_trees(external_trees, ott_dir, root, flags_str, out_dir, args.script_managed_trees)
