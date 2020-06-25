@@ -525,11 +525,26 @@ if __name__ == '__main__':
         study_tree = '.'.join(inp_fn.split('.')[:-1])  # strip extension
         study_id, tree_id = propinquity_fn_to_study_tree(inp_fn)
         nexson_blob = read_as_json(inp)
-
-        if "externalTree" in nexson_blob["nexml"]:
-            path = nexson_blob["nexml"]["externalTree"]["path"]
+        ex_tree_list = nexson_blob["nexml"].get("externalTrees")
+        if ex_tree_list:
+            assert_msg = 'expecting "externalTrees" element in nexson {} to hold a list'.format(inp)
+            assert isinstance(ex_tree_list, list), assert_msg
+            ex_tree_blob = []
+            try:
+                ex_tree_blob = [i for i in ex_tree_list if i.get('treeId', '') == tree_id]
+            except:
+                raise RuntimeError('Expecting elements in externalTrees to be dicts (in {})'.format(inp))
+            if len(ex_tree_blob) != 1:
+                m = 'Found {} elements in externalTrees with id={} (in {})'
+                m = m.format(len(ex_tree_blob), tree_id, inp)
+                raise RuntimeError(m)
+            path = ex_tree_blob[0].get('pathFromScriptManagedRepo')
+            if not path:
+                m = 'Expecting "pathFromScriptManagedRepo" in externalTrees element with treeId={} (in {})'
+                m = m.format(tree_id, inp)
+                raise RuntimeError(m)
             print(f'{study_tree} at {path}')
-            external_trees.append( (study_tree,path) )
+            external_trees.append( (study_tree, path) )
             continue
 
         ntw = NexsonTreeWrapper(nexson_blob, tree_id, log_obj=log_obj)
