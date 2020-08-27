@@ -7,6 +7,7 @@ import re
 
 def get_decisions():
     decisions = []
+    sha = 0
     for x in sys.stdin:
         name = os.path.basename(x)
         study_tree = re.compile(r'([^_]+_[0-9]+)@([^@]+)\.tre')
@@ -16,9 +17,10 @@ def get_decisions():
             exit(1)
         study = m.group(1)
         tree = m.group(2)
+        sha += 1
         decisions.append({"studyID": study,
                           "treeID": tree,
-                          "SHA": 'unknown',
+                          "SHA": str(sha),
                           "name": name,
                           "decision": "INCLUDED"
                           })
