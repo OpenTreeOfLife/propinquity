@@ -5,3 +5,4 @@ config.local
 test-output
 mth-*
 girard
+custom*.bash
