@@ -44,6 +44,7 @@ def copy_phylesystem_file_if_differing(git_action,
     # create a new "decision" entry that is bound to this SHA
     concrete_coll_decision = copy.deepcopy(coll_decision)
     concrete_coll_decision['SHA'] = sha
+    concrete_coll_decision['object_SHA'] = git_action.object_SHA(study_id, sha)
     cd_to_new_map[id(coll_decision)] = concrete_coll_decision
     # copy the file, if necessary
     if (not os.path.exists(np)) or (not filecmp.cmp(fp, np)):
