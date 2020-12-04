@@ -6,3 +6,5 @@ test-output
 mth-*
 girard
 custom*.bash
+.snakemake
+machine.json

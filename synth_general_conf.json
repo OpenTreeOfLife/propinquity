@@ -1,0 +1,5 @@
+{
+	"collections": "pcart/cnidaria,mwestneat/reef-fishes,josephwb/hypocreales,kcranston/catfish,kcranston/barnacles,opentreeoflife/plants,josephwb/aves,opentreeoflife/metazoa,opentreeoflife/fungi,opentreeoflife/safe-microbes,opentreeoflife/default",
+	"cleaning_flags": "major_rank_conflict,major_rank_conflict_inherited,environmental,viral,barren,not_otu,hidden,was_container,inconsistent,hybrid,merged",
+	"additional_regrafting_flags": "extinct_inherited,extinct"
+}
