@@ -16,7 +16,6 @@ rule all:
     input: "phylo_snapshot/ps_shard_shas.txt"
     log: "logs/config"
 
-
 rule config:
     """Uses snakemake config to creat a config file for synthesis settings"""
     output: "config"
@@ -24,7 +23,6 @@ rule config:
     run:
         with open(output[0], "w") as outp:
             write_config_content(outp)
-
 
 rule otc_config:
     """Uses snakemake config to creat a config file for otcetera tools"""
@@ -43,8 +41,6 @@ rule phylesystem_pull:
         shas = pull_git_subdirs(ps_shards_dir, prefix='phylesystem-')
         if not write_if_needed(output[0], "\n".join(shas)):
             logger.info("phylesystem shards have not changed.")
-
-
 
 rule clean_config:
     """Clean up the config and otc-config that are created automatically"""
