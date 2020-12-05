@@ -5,7 +5,8 @@ min_version("5.30.1")
 propinquity_dir = os.path.abspath(config.get("propinquity_dir", os.curdir))
 if not os.path.isdir(propinquity_dir):
     sys.exit("propinquity_dir from config {pd} does not an existing directory.\n".format(pd=propinquity_dir))
-include: os.path.join(propinquity_dir, "propinq_util.snakemake")
+
+include: os.path.join(propinquity_dir, "propinq_util.snakefile")
 
 
 if not os.path.isdir("logs"):
@@ -13,7 +14,12 @@ if not os.path.isdir("logs"):
 
 if not os.path.isfile("config"):
     with open("config", "w") as outp:
-      outp.write("hello\n")
+        write_config_content(outp)
+
+if not os.path.isfile("otc-config"):
+    with open("otc-config", "w") as outp:
+        write_otc_config_content(outp)
+
 
 rule all:
     log: "logs/config"
