@@ -75,3 +75,34 @@ synth_id = {s}
            r=root_ott_id,
            s=synth_id))
 
+def pull_git_subdirs(par_dir, prefix):
+    """Git pull on every dir matching `par_dir`/`prefix`-*
+
+    returns the SHA of the HEAD of every matching dir
+    (in order determined by string sort of subdir names).
+    """
+    shas = []
+    subl = list(os.listdir(par_dir))
+    subl.sort()
+    for fn in subl:
+        if fn.startswith(prefix):
+            wd = os.path.join(par_dir, fn)
+            subprocess.run(["git", "pull", "origin", "--no-commit"],
+                           cwd=wd,
+                           check=True)
+            x = subprocess.check_output(['git','rev-parse', 'HEAD'],
+                                        cwd=wd).decode('utf-8')
+            shas.append(x)
+    return shas
+
+def write_if_needed(fp, content):
+    """Writes `content` to `fp` if the content of that filepath is empty or different.
+
+    Returns True if a write was done, False if the file already had that content.
+    """
+    if os.path.exists(fp):
+        prev_content = open(output[0], "r").read()
+        if prev_content == content:
+            return False
+    with open(fp, "w") as outp:
+        outp.write(content)

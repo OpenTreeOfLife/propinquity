@@ -33,7 +33,6 @@ rule otc_config:
     run:
         write_otc_config_file(output[0])
 
-
 rule phylesystem_pull:
     """Pulls all phylesystem shards from their origin and writes HEAD shas in output"""
     input: "config"
@@ -41,27 +40,10 @@ rule phylesystem_pull:
     output: "phylo_snapshot/ps_shard_shas.txt"
     run:
         ps_shards_dir = os.path.join(phylesystem_dir, "shards")
-        shas = []
-        subl = list(os.listdir(ps_shards_dir))
-        subl.sort()
-        for fn in subl:
-            if fn.startswith('phylesystem-'):
-                wd = os.path.join(ps_shards_dir, fn)
-                subprocess.run(["git", "pull", "origin", "--no-commit"],
-                               cwd=wd,
-                               check=True)
-                x = subprocess.check_output(['git','rev-parse', 'HEAD'],
-                                            cwd=wd).decode('utf-8')
-                shas.append(x)
-        needs_write = True
-        if os.path.exists(output[0]):
-            prev_shas = open(output[0], "r").readlines()
-            if prev_shas == shas:
-                needs_write = False
-                logger.info("phylesystem shards have not changed.")
-        if needs_write:
-            with open(output[0], "w") as outp:
-                outp.write("\n".join(shas))
+        shas = pull_git_subdirs(ps_shards_dir, prefix='phylesystem-')
+        if not write_if_needed(output[0], "\n".join(shas)):
+            logger.info("phylesystem shards have not changed.")
+
 
 
 rule clean_config:
