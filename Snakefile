@@ -13,7 +13,10 @@ include: os.path.join(propinquity_dir, "propinq_util.smk")
 
 
 rule all:
-    input: "phylo_snapshot/ps_shard_shas.txt"
+    input:
+        ("phylo_snapshot/ps_shard_shas.txt",
+        "phylo_snapshot/collections_shard_shas.txt",
+        )
     log: "logs/config"
 
 rule config:
@@ -41,6 +44,17 @@ rule phylesystem_pull:
         shas = pull_git_subdirs(ps_shards_dir, prefix='phylesystem-')
         if not write_if_needed(output[0], "\n".join(shas)):
             logger.info("phylesystem shards have not changed.")
+
+rule collections_pull:
+    """Pulls all collections shards from their origin and writes HEAD shas in output"""
+    input: "config"
+    log: "logs/collections_pull"
+    output: "phylo_snapshot/collections_shard_shas.txt"
+    run:
+        coll_shards_dir = os.path.join(collections_dir, "shards")
+        shas = pull_git_subdirs(coll_shards_dir, prefix='collections-')
+        if not write_if_needed(output[0], "\n".join(shas)):
+            logger.info("collections shards have not changed.")
 
 rule clean_config:
     """Clean up the config and otc-config that are created automatically"""
