@@ -27,7 +27,12 @@ else:
         logger.error("OTC_CONFIG setting {} does not point to a file.".format(_ocfp))
         exit(1)
     logger.warning("Using existing value for OTC_CONFIG environment variable.")
-    
+
+if 'OTCETERA_LOGFILE' not in os.environ:
+    os.environ['OTCETERA_LOGFILE'] = os.path.join(out_dir, "logs", "myeasylog.log")
+else:
+    _ocfp = os.environ['OTCETERA_LOGFILE']
+    logger.warning("Using existing value for OTCETERA_LOGFILE {}.".format(_ocfp))
 
 if not os.path.isdir("logs"):
     os.makedirs("logs")
@@ -39,8 +44,13 @@ else:
     logger.warning("Using existing config file.")
 
 
-
 rule all:
     log: "logs/config"
-    output: "config"
+    output: "x"
     shell: "echo hi > {output}"
+
+rule clean_config:
+    """Clean up the config and otc-config that are created automatically"""
+    shell:
+        "rm config otc-config"
+
