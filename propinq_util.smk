@@ -27,6 +27,22 @@ if not os.path.isdir(os.path.join(phylesystem_dir, "shards", "phylesystem-1")):
 if not os.path.isdir(os.path.join(collections_dir, "shards", "collections-1")):
     sys.exit(expand('collections_dir {collections_dir} is expeceted to have "shards/collections-1" subdirectory.\n'))
 
+
+out_dir = os.path.abspath(os.curdir)
+logger.info('Writing output to "{o}"'.format(o=out_dir))
+
+if 'OTC_CONFIG' not in os.environ:
+    _ocfp = os.path.join(out_dir, "otc-config")
+    os.environ['OTC_CONFIG'] = _ocfp
+    logger.debug('Setting OTC_CONFIG environment variable to "{}"'.format(_ocfp))
+
+
+if 'OTCETERA_LOGFILE' not in os.environ:
+    os.environ['OTCETERA_LOGFILE'] = os.path.join(out_dir, "logs", "myeasylog.log")
+else:
+    _ocfp = os.environ['OTCETERA_LOGFILE']
+    logger.warning("Using existing value for OTCETERA_LOGFILE {}.".format(_ocfp))
+
 def write_otc_config_content(outstream):
     outstream.write("""
 [opentree]
@@ -38,6 +54,10 @@ script-managed-trees = {s}
 """.format(ph=phylesystem_dir, pe=peyotl_dir,
            o=ott_dir, c=collections_dir,
            s=script_managed_trees_dir))
+
+def write_otc_config_file(fp):
+    with open(fp, "w") as outp:
+        write_otc_config_content(outp)
 
 def write_config_content(outstream):
     outstream.write("""
@@ -54,3 +74,4 @@ synth_id = {s}
            c=collections,
            r=root_ott_id,
            s=synth_id))
+
