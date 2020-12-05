@@ -14,9 +14,7 @@ include: os.path.join(propinquity_dir, "propinq_util.smk")
 
 rule all:
     input:
-        ("phylo_snapshot/ps_shard_shas.txt",
-        "phylo_snapshot/collections_shard_shas.txt",
-        )
+        ("exemplified_phylo/regraft_cleaned_ott.tre",)
     log: "logs/config"
 
 rule config:
@@ -55,6 +53,23 @@ rule collections_pull:
         shas = pull_git_subdirs(coll_shards_dir, prefix='collections-')
         if not write_if_needed(output[0], "\n".join(shas)):
             logger.info("collections shards have not changed.")
+
+rule exemplify:
+    input: "otc-config", \
+           "phylo_snapshot/ps_shard_shas.txt", \
+           "phylo_snapshot/collections_shard_shas.txt", \
+           config="config", \
+           taxa="exemplified_phylo/taxonomy.tre"
+    output: exott="exemplified_phylo/regraft_cleaned_ott.tre", \
+            exjson="exemplified_phylo/pruned_for_regraft_cleaned_ott.json"
+    shell:
+        """otc-regraft-taxonomy-generator \
+            --in-tree={input.taxa} \
+            --config={input.config} \
+            {ott_dir} \
+            --json={output.exjson} \
+            >{output.exott}
+        """
 
 rule clean_config:
     """Clean up the config and otc-config that are created automatically"""
