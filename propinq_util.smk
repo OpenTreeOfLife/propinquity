@@ -106,3 +106,23 @@ def write_if_needed(fp, content):
             return False
     with open(fp, "w") as outp:
         outp.write(content)
+
+
+def verify_taxon_edits_not_needed(json_fp, unclean_ott, out_ott):
+    with codecs.open(json_fp, mode='r', encoding='utf-8') as jinp:
+        jout = json.load(jinp)
+    if "edits" in jout:
+        sys.exit('''Taxonomic changes need to be made in your version of OTT to move extinct taxa higher in the taxonomy!
+
+Use:
+    {}/bin/patch_taxonomy_by_bumping.py [PATH TO YOUR OTT DIR] {} [OUTPUT PATH FOR A PATCHED OTT DIR]
+to create a modified version of OTT, then set that to be your OTT path for propinquity and rerun.
+
+'''.format(os.path.abspath(os.curdir), os.path.abspath(jfp)))
+if len(sys.argv) > 2:
+    try:
+        from shutil import copyfile
+        copyfile(sys.argv[2], sys.argv[3])
+    except:
+        sys.stderr.write(usage)
+        raise

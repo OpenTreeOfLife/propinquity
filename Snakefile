@@ -54,21 +54,43 @@ rule collections_pull:
         if not write_if_needed(output[0], "\n".join(shas)):
             logger.info("collections shards have not changed.")
 
+rule edit_or_clean_ott:
+    input: 
+    output: "cleaned_edited_ott/cleaned_not_updated_ott.tre"
+    run: os.symlink("../cleaned_edited_ott/cleaned_not_updated_ott.tre", output)
+
+rule clean_ott:
+    input: "cleaned_edited_ott/cleaned_not_updated_ott.tre"
+    output: "cleaned_ott/cleaned_ott.tre"
+    run: os.symlink("../cleaned_edited_ott/cleaned_not_updated_ott.tre", output)
+
 rule exemplify:
+    input: "otc-config", \
+           args="exemplified_phylo/args.txt", \
+           cott="cleaned_ott/cleaned_ott.tre"
+    output: extaxa="exemplified_phylo/taxonomy.tre", \
+            nonempty="exemplified_phylo/nonempty_trees.txt", \
+            jsonout="exemplified_phylo/exemplified_log.json"
+    shell:
+        """otc-nonterminals-to-exemplars \
+            -e{out_dir}/exemplified_phylo {input.cott} -f{input.args} \
+            -j{output.jsonout} -n{output.nonempty}"""
+
+rule exemplify_for_regraft:
     input: "otc-config", \
            "phylo_snapshot/ps_shard_shas.txt", \
            "phylo_snapshot/collections_shard_shas.txt", \
            config="config", \
-           taxa="exemplified_phylo/taxonomy.tre"
-    output: exott="exemplified_phylo/regraft_cleaned_ott.tre", \
-            exjson="exemplified_phylo/pruned_for_regraft_cleaned_ott.json"
+           extaxa="exemplified_phylo/taxonomy.tre"
+    output: regott="exemplified_phylo/regraft_cleaned_ott.tre", \
+            regjson="exemplified_phylo/pruned_for_regraft_cleaned_ott.json"
     shell:
         """otc-regraft-taxonomy-generator \
-            --in-tree={input.taxa} \
+            --in-tree={input.extaxa} \
             --config={input.config} \
             {ott_dir} \
-            --json={output.exjson} \
-            >{output.exott}
+            --json={output.regjson} \
+            >{output.regott}
         """
 
 rule clean_config:
