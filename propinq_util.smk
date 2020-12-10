@@ -2,12 +2,20 @@ import sys
 import os
 
 ### Validating config
+
+def canonicalize_sep_string(v, sep=","):
+    """Sorts and strips whitespace from sep-separated string"""
+    vl = [i.strip() for i in v.split(sep) if i.strip()]
+    vl.sort()
+    return sep.join(vl)
+
 _config_dirs = ("collections_dir",
                 "ott_dir",
                 "peyotl_dir", 
                 "phylesystem_dir",
                 "script_managed_trees_dir",
                 )
+
 try:
     for _ds in _config_dirs:
         _v = config[_ds]
@@ -15,8 +23,8 @@ try:
         if not os.path.isdir(_v):
             sys.exit('{p} "{v}"" does not exist.\n'.format(p=_ds, v=_v))
     collections = config["collections"]
-    cleaning_flags = config["cleaning_flags"]
-    additional_regrafting_flags = config.get("additional_regrafting_flags", "")
+    cleaning_flags = canonicalize_sep_string(config["cleaning_flags"])
+    additional_regrafting_flags = canonicalize_sep_string(config.get("additional_regrafting_flags", ""))
     root_ott_id = config["root_ott_id"]
     synth_id = config["synth_id"]
 except KeyError as x:
@@ -107,22 +115,18 @@ def write_if_needed(fp, content):
     with open(fp, "w") as outp:
         outp.write(content)
 
+def suppress_by_flag(ott_dir, flags, root, out_tree_fp, log_fp, flagged_fp):
+    raise NotImplementedError("$(PEYOTL_ROOT)/scripts/ott/suppress_by_flag.py")
 
-def verify_taxon_edits_not_needed(json_fp, unclean_ott, out_ott):
-    with codecs.open(json_fp, mode='r', encoding='utf-8') as jinp:
-        jout = json.load(jinp)
-    if "edits" in jout:
-        sys.exit('''Taxonomic changes need to be made in your version of OTT to move extinct taxa higher in the taxonomy!
-
-Use:
-    {}/bin/patch_taxonomy_by_bumping.py [PATH TO YOUR OTT DIR] {} [OUTPUT PATH FOR A PATCHED OTT DIR]
-to create a modified version of OTT, then set that to be your OTT path for propinquity and rerun.
-
-'''.format(os.path.abspath(os.curdir), os.path.abspath(jfp)))
-if len(sys.argv) > 2:
-    try:
-        from shutil import copyfile
-        copyfile(sys.argv[2], sys.argv[3])
-    except:
-        sys.stderr.write(usage)
-        raise
+# def verify_taxon_edits_not_needed(json_fp, unclean_ott, out_ott):
+#     with codecs.open(json_fp, mode='r', encoding='utf-8') as jinp:
+#         jout = json.load(jinp)
+#     if "edits" in jout:
+#         return False
+#     if len(sys.argv) > 2:
+#     try:
+#         from shutil import copyfile
+#         copyfile(sys.argv[2], sys.argv[3])
+#     except:
+#         sys.stderr.write(usage)
+#         raise
