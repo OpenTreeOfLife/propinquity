@@ -8,3 +8,4 @@ girard
 custom*.bash
 .snakemake
 machine.json
+logs
