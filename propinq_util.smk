@@ -166,6 +166,13 @@ def pull_git_subdirs(par_dir, prefix):
             shas.append(x)
     return shas
 
+def gen_tree_tags(study_tree_pair_fp):
+    with open(study_tree_pair_fp, "r") as inp:
+        for line in inp:
+            ls = line.strip()
+            if ls:
+                yield ls
+
 # end helpers
 ################################################################################
 # major actions
@@ -183,6 +190,17 @@ def export_studies_from_collection(ranked_coll,
 
 def reaggregate_synth_collections(inp_fp_list, out_fp):
     raise NotImplementedError("bin/reaggregate-synth-collections.sh")
+
+
+def clean_phylo_input(ott_dir,
+                      study_tree_pairs,
+                      tree_filepaths,
+                      output_dir,
+                      cleaning_flags,
+                      pruned_from_ott_json_fp,
+                      root_ott_id):
+    raise NotImplementedError("$(PEYOTL_ROOT)/scripts/nexson/prune_to_clean_mapped.py ")
+
 
 
 # def verify_taxon_edits_not_needed(json_fp, unclean_ott, out_ott):

@@ -58,6 +58,10 @@ rule collections_pull:
         shas = pull_git_subdirs(coll_shards_dir, prefix='collections-')
         write_if_needed(output[0], "\n".join(shas), "collections shards")
 
+# End sync with GitHub
+################################################################################
+# snapshot inputs
+
 # create a pattern for the collections to be used in the input of copy_collections
 _coll_json_pattern = os.path.join(collections_dir, "shards", "collections-1", "collections-by-owner", "{syncoll}.json")
 
@@ -67,7 +71,7 @@ rule copy_collections:
     NOTE: assume "coll_dir/shards/collections-1/collections-by-owner/*.json" pattern.
     """
     input: shas="phylo_snapshot/collections_shard_shas.txt", \
-           json_fp=expand(_coll_json_pattern, syncoll=collections)
+           json_fp=expand(_coll_json_pattern, syncoll=collections.split(','))
     output: "phylo_input/rank_collection.json"
     run:
         reaggregate_synth_collections(input.json_fp, output[0])
@@ -100,8 +104,7 @@ rule concrete_tree_list:
                            out_fp=output.pairs,
                            obj_blob_shas_fp=output.blob_shas)
 
-
-# End sync with GitHub
+# End snapshot inputs
 ################################################################################
 # OTT cleaning
 OTT_FILENAMES = ("forwards.tsv", 
@@ -167,6 +170,43 @@ rule clean_ott:
 # End OTT cleaning
 ################################################################################
 # Phylo cleaning
+_st_pairs_fp = os.path.join(out_dir, "phylo_input", "study_tree_pairs.txt")
+
+rule snapshot_phylo:
+    input: "phylo_input/study_tree_pairs.txt", "phylo_input/blob_shas.txt"
+    output: trees=dynamic("phylo_snapshot/{tag}.json")
+    run:
+        write_full_path_for_inputs(input[0],
+                                   phylesystem_dir,
+                                   os.path.join(out_dir, "phylo_snapshot"))
+
+
+rule clean_phylo_tre:
+    """Clean phylogenetic inputs from snapshot to cleaned_phylo"""
+    input: trees="phylo_snapshot/{tag}.json", \
+           config="config", \
+           ott_pruned="cleaned_ott/cleaned_ott_pruned_nonflagged.json", \
+           stp="phylo_input/study_tree_pairs.txt"
+    output: trees="cleaned_phylo/{tag}.tre"
+    run:
+        od = os.path.join(out_dir, "cleaned_phylo")
+        clean_phylo_input(ott_dir,
+                          study_tree_pairs=input.stp,
+                          tree_filepaths=input.trees,
+                          output_dir=od,
+                          cleaning_flags=cleaning_flags,
+                          pruned_from_ott_json_fp=input.ott_pruned,
+                          root_ott_id=root_ott_id)
+
+rule create_exemplify_full_path_args:
+    input: pairs="phylo_input/study_tree_pairs.txt", trees=dynamic("cleaned_phylo/{tag}.tre")
+    output: "exemplified_phylo/args.txt"
+    run:
+        clean_phy = os.path.join(out_dir, "cleaned_phylo", '{tag}.tre')
+        tags = [i.strip() for i in open(input.pairs, "r").readlines() if i.strip()]
+        paths = [cleaned_phylo.format(tag=i) for i in tags] 
+        c = '\n'.join(paths)
+        write_if_needed(output[0], c, "cleaned phylo filepaths")
 
 # End Phylo cleaning
 ################################################################################
