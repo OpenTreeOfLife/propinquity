@@ -46,8 +46,7 @@ rule phylesystem_pull:
     run:
         ps_shards_dir = os.path.join(phylesystem_dir, "shards")
         shas = pull_git_subdirs(ps_shards_dir, prefix='phylesystem-')
-        if not write_if_needed(output[0], "\n".join(shas)):
-            logger.info("phylesystem shards have not changed.")
+        write_if_needed(output[0], "\n".join(shas), "phylesystem shards")
 
 rule collections_pull:
     """Pulls all collections shards from their origin and writes HEAD shas in output"""
@@ -57,14 +56,47 @@ rule collections_pull:
     run:
         coll_shards_dir = os.path.join(collections_dir, "shards")
         shas = pull_git_subdirs(coll_shards_dir, prefix='collections-')
-        if not write_if_needed(output[0], "\n".join(shas)):
-            logger.info("collections shards have not changed.")
+        write_if_needed(output[0], "\n".join(shas), "collections shards")
+
+rule copy_collections:
+    """Copy each collection to the output dir.
+
+    NOTE: assume "coll_dir/shards/collections-1/collections-by-owner/*.json" pattern.
+    """
+    input: shas="phylo_snapshot/collections_shard_shas.txt"
+           json_fp=expand(os.path.join(collections_dir, "shards", "collections-1", "collections-by-owner", "{syncoll}.json"),
+                          syncoll=collections)
+    output: "phylo_input/rank_collection.json"
+    run:
+        reaggregate_synth_collections(input.json_fp, output[0])
+
+rule concrete_ranked_collection:
+    """Concatenate all input collections in order into one "concrete" copy.
+    """
+    input: "phylo_snapshot/collections_shard_shas.txt", \
+           rank_coll="phylo_input/rank_collection.json"
+    output: "phylo_snapshot/concrete_rank_collection.json"
+    run:
+        ps_shards_dir = os.path.join(phylesystem_dir, "shards")
+        snap_dir = os.path.join(out_dir, "phylo_snapshot")
+        export_studies_from_collection(ranked_coll=input.rank_coll,
+                                       phylesystem_par=ps_shards_dir,
+                                       out_par=snap_dir)
 
 rule concrete_tree_list:
+    """Extracts the study_tree pairs from the concrete collection.
+
+    Writes that file in a one-per-line format, and writes the git
+    object SHAs for each study in the same order.
+    """
     input: "phylo_snapshot/concrete_rank_collection.json"
-    output: "phylo_input/study_tree_pairs.txt"
+    output: pairs="phylo_input/study_tree_pairs.txt",
+            blob_shas="phylo_input/blob_shas.txt"
     run:
-        export_collections("studyID_treeID", input[0], output[0])
+        export_collections("studyID_treeID",
+                           concrete_coll_json_fp=input[0],
+                           out_fp=output.pairs,
+                           obj_blob_shas_fp=output.blob_shas)
 
 
 # End sync with GitHub
@@ -101,7 +133,7 @@ rule write_ott_version:
         if not write_if_needed(output[0], ott_version):
             logger.info("ott version has not changed.")
 
-rule clean_based_on_flags:
+rule clean_ott_based_on_flags:
     """Writes a pruned version of OTT based on cleaning flags."""
     input: expand(ott_dir + "/{filename}", filename=OTT_FILENAMES), \
            version="cleaned_ott/ott_version.txt", \

@@ -85,14 +85,18 @@ else:
 ################################################################################
 # helper functions
 
-def write_if_needed(fp, content):
+def write_if_needed(fp, content, name=None):
     """Writes `content` to `fp` if the content of that filepath is empty or different.
 
     Returns True if a write was done, False if the file already had that content.
+    if `name` is not None, and the filepath has not changed, then
+        a logger.info "{name} has not changed" message will be emitted.
     """
     if os.path.exists(fp):
         prev_content = open(output[0], "r").read()
         if prev_content == content:
+            if name is not None:
+                logger.info("{n} has not changed".format(n=name))
             return False
     with open(fp, "w") as outp:
         outp.write(content)
@@ -169,8 +173,16 @@ def pull_git_subdirs(par_dir, prefix):
 def suppress_by_flag(ott_dir, flags, root, out_tree_fp, log_fp, flagged_fp):
     raise NotImplementedError("$(PEYOTL_ROOT)/scripts/ott/suppress_by_flag.py")
 
-def export_collections(export, concrete_coll_json_fp, out_fp):
+def export_collections(export, concrete_coll_json_fp, out_fp, obj_blob_shas_fp):
     raise NotImplementedError("$(PEYOTL_ROOT)/scripts/collection_export.py")
+
+def export_studies_from_collection(ranked_coll,
+                                   phylesystem_par
+                                   out_par):
+    raise NotImplementedError("$(PEYOTL_ROOT)/scripts/phylesystem/export_studies_from_collection.py -v")
+
+def reaggregate_synth_collections(inp_fp_list, out_fp):
+    raise NotImplementedError("bin/reaggregate-synth-collections.sh")
 
 
 # def verify_taxon_edits_not_needed(json_fp, unclean_ott, out_ott):
