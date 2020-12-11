@@ -58,14 +58,16 @@ rule collections_pull:
         shas = pull_git_subdirs(coll_shards_dir, prefix='collections-')
         write_if_needed(output[0], "\n".join(shas), "collections shards")
 
+# create a pattern for the collections to be used in the input of copy_collections
+_coll_json_pattern = os.path.join(collections_dir, "shards", "collections-1", "collections-by-owner", "{syncoll}.json")
+
 rule copy_collections:
     """Copy each collection to the output dir.
 
     NOTE: assume "coll_dir/shards/collections-1/collections-by-owner/*.json" pattern.
     """
-    input: shas="phylo_snapshot/collections_shard_shas.txt"
-           json_fp=expand(os.path.join(collections_dir, "shards", "collections-1", "collections-by-owner", "{syncoll}.json"),
-                          syncoll=collections)
+    input: shas="phylo_snapshot/collections_shard_shas.txt", \
+           json_fp=expand(_coll_json_pattern, syncoll=collections)
     output: "phylo_input/rank_collection.json"
     run:
         reaggregate_synth_collections(input.json_fp, output[0])

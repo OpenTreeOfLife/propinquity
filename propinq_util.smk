@@ -177,7 +177,7 @@ def export_collections(export, concrete_coll_json_fp, out_fp, obj_blob_shas_fp):
     raise NotImplementedError("$(PEYOTL_ROOT)/scripts/collection_export.py")
 
 def export_studies_from_collection(ranked_coll,
-                                   phylesystem_par
+                                   phylesystem_par,
                                    out_par):
     raise NotImplementedError("$(PEYOTL_ROOT)/scripts/phylesystem/export_studies_from_collection.py -v")
 
