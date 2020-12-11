@@ -17,20 +17,26 @@ rule all:
         ("exemplified_phylo/regraft_cleaned_ott.tre",)
     log: "logs/config"
 
+################################################################################
+# configure
+
 rule config:
     """Uses snakemake config to creat a config file for synthesis settings"""
     output: "config"
     log: "logs/config"
     run:
-        with open(output[0], "w") as outp:
-            write_config_content(outp)
+        write_if_needed(output[0], gen_config_content())
 
 rule otc_config:
     """Uses snakemake config to creat a config file for otcetera tools"""
     output: "otc-config"
     log: "logs/config"
     run:
-        write_otc_config_file(output[0])
+        write_if_needed(output[0], gen_otc_config_content())
+
+# End configure
+################################################################################
+# sync with GitHub
 
 rule phylesystem_pull:
     """Pulls all phylesystem shards from their origin and writes HEAD shas in output"""
@@ -54,6 +60,14 @@ rule collections_pull:
         if not write_if_needed(output[0], "\n".join(shas)):
             logger.info("collections shards have not changed.")
 
+rule concrete_tree_list:
+    input: "phylo_snapshot/concrete_rank_collection.json"
+    output: "phylo_input/study_tree_pairs.txt"
+    run:
+        export_collections("studyID_treeID", input[0], output[0])
+
+
+# End sync with GitHub
 ################################################################################
 # OTT cleaning
 OTT_FILENAMES = ("forwards.tsv", 
@@ -118,6 +132,11 @@ rule clean_ott:
 
 # End OTT cleaning
 ################################################################################
+# Phylo cleaning
+
+# End Phylo cleaning
+################################################################################
+
 rule exemplify:
     input: "otc-config", \
            args="exemplified_phylo/args.txt", \

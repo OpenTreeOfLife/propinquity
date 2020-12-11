@@ -1,13 +1,43 @@
 import sys
 import os
 
-### Validating config
 
-def canonicalize_sep_string(v, sep=","):
-    """Sorts and strips whitespace from sep-separated string"""
+################################################################################
+# simple helper functions
+
+def canon_sep_string(v, sep=",", sort=True):
+    """Return a canonical form of a delimited string.
+
+    Strips whitespace from sep-separated string, (optionally)
+    sorts the list, and then returns the delimited form.
+    """
     vl = [i.strip() for i in v.split(sep) if i.strip()]
-    vl.sort()
+    if sort:
+        vl.sort()
     return sep.join(vl)
+
+################################################################################
+# Validatng config and setting global variables:
+# Executed on startup.
+# Defines the following globals based on config,
+#   lists as a comma-separated string:
+#       additional_regrafting_flags (e.g. "extinct_inherited,extinct")
+#       cleaning_flags (e.g "major_rank_conflict,barren")
+#       collections (e.g. "kcranston/catfish,kcranston/barnacles")
+#   Paths to directories
+#       collections_dir - parent of shards
+#       ott_dir
+#       out_dir - set by the --directory arg to snakemake
+#       peyotl_dir
+#       phylesystem_dir - parent of shards
+#       script_managed_trees_dir
+#   Run-specific IDs:
+#       root_ott_id
+#       synth_id
+#
+# Validation also sets environmental variables:
+#   OTC_CONFIG and OTCETERA_LOGFILE
+
 
 _config_dirs = ("collections_dir",
                 "ott_dir",
@@ -22,9 +52,9 @@ try:
         locals()[_ds] = _v
         if not os.path.isdir(_v):
             sys.exit('{p} "{v}"" does not exist.\n'.format(p=_ds, v=_v))
-    collections = config["collections"]
-    cleaning_flags = canonicalize_sep_string(config["cleaning_flags"])
-    additional_regrafting_flags = canonicalize_sep_string(config.get("additional_regrafting_flags", ""))
+    collections = canon_sep_string(config["collections"], sort=False)
+    cleaning_flags = canon_sep_string(config["cleaning_flags"])
+    additional_regrafting_flags = canon_sep_string(config.get("additional_regrafting_flags", ""))
     root_ott_id = config["root_ott_id"]
     synth_id = config["synth_id"]
 except KeyError as x:
@@ -51,24 +81,44 @@ else:
     _ocfp = os.environ['OTCETERA_LOGFILE']
     logger.warning("Using existing value for OTCETERA_LOGFILE {}.".format(_ocfp))
 
-def write_otc_config_content(outstream):
-    outstream.write("""
+# end config validation and global setting
+################################################################################
+# helper functions
+
+def write_if_needed(fp, content):
+    """Writes `content` to `fp` if the content of that filepath is empty or different.
+
+    Returns True if a write was done, False if the file already had that content.
+    """
+    if os.path.exists(fp):
+        prev_content = open(output[0], "r").read()
+        if prev_content == content:
+            return False
+    with open(fp, "w") as outp:
+        outp.write(content)
+    return True
+
+_OTC_CONF_TEMPLATE = """
 [opentree]
 phylesystem = {ph}
 peyotl = {pe}
 ott = {o}
 collections = {c}
 script-managed-trees = {s}
-""".format(ph=phylesystem_dir, pe=peyotl_dir,
-           o=ott_dir, c=collections_dir,
-           s=script_managed_trees_dir))
+"""
 
-def write_otc_config_file(fp):
-    with open(fp, "w") as outp:
-        write_otc_config_content(outp)
+def gen_otc_config_content():
+    """Composes a config file for the otcetera run
 
-def write_config_content(outstream):
-    outstream.write("""
+    Serializes global variables from this Snakemake run.
+    """
+    return _OTC_CONF_TEMPLATE.format(ph=phylesystem_dir,
+                                     pe=peyotl_dir,
+                                     o=ott_dir,
+                                     c=collections_dir,
+                                     s=script_managed_trees_dir)
+
+_CONF_TEMPLATE = """
 [taxonomy]
 cleaning_flags = {cf}
 additional_regrafting_flags = {arf}
@@ -77,11 +127,20 @@ additional_regrafting_flags = {arf}
 collections = {c}
 root_ott_id = {r}
 synth_id = {s}
-""".format(cf=cleaning_flags,
-           arf=additional_regrafting_flags,
-           c=collections,
-           r=root_ott_id,
-           s=synth_id))
+"""
+
+def gen_config_content():
+    """Composes a config file for the propinquity
+
+    Serializes global variables in a backward-compatible manner
+    for the pre-snakemake propinquity.
+    """
+    return _CONF_TEMPLATE.format(cf=cleaning_flags,
+                                 arf=additional_regrafting_flags,
+                                 c=collections,
+                                 r=root_ott_id,
+                                 s=synth_id)
+
 
 def pull_git_subdirs(par_dir, prefix):
     """Git pull on every dir matching `par_dir`/`prefix`-*
@@ -103,20 +162,16 @@ def pull_git_subdirs(par_dir, prefix):
             shas.append(x)
     return shas
 
-def write_if_needed(fp, content):
-    """Writes `content` to `fp` if the content of that filepath is empty or different.
-
-    Returns True if a write was done, False if the file already had that content.
-    """
-    if os.path.exists(fp):
-        prev_content = open(output[0], "r").read()
-        if prev_content == content:
-            return False
-    with open(fp, "w") as outp:
-        outp.write(content)
+# end helpers
+################################################################################
+# major actions
 
 def suppress_by_flag(ott_dir, flags, root, out_tree_fp, log_fp, flagged_fp):
     raise NotImplementedError("$(PEYOTL_ROOT)/scripts/ott/suppress_by_flag.py")
+
+def export_collections(export, concrete_coll_json_fp, out_fp):
+    raise NotImplementedError("$(PEYOTL_ROOT)/scripts/collection_export.py")
+
 
 # def verify_taxon_edits_not_needed(json_fp, unclean_ott, out_ott):
 #     with codecs.open(json_fp, mode='r', encoding='utf-8') as jinp:
