@@ -95,6 +95,18 @@ rule snapshot_trees_and_collection_items:
                                        script_managed_trees=script_managed_trees_dir,
                                        out_par=snap_dir)
 
+rule merge_concrete_coll:
+    """Concatenate all input collections in order into one "concrete" copy.
+    """
+    input: rank_coll="phylo_input/rank_collection.json", \
+           conc_coll=dynamic("phylo_snapshot/concrete_rank_collection-{tag}.json")
+    output: "phylo_snapshot/concrete_rank_collection.json"
+    run:
+        merge_concrete_collection(ranked_coll_fp=input.rank_coll,
+                                  concrete_coll=input.conc_coll,
+                                  out_json_fp=output[0])
+
+
 rule concrete_tree_list:
     """Extracts the study_tree pairs from the concrete collection.
 
@@ -178,21 +190,21 @@ _st_pairs_fp = os.path.join(out_dir, "phylo_input", "study_tree_pairs.txt")
 def write_full_path_for_inputs(x, y, z):
     pass
 
-rule snapshot_phylo:
-    input: "phylo_input/study_tree_pairs.txt", "phylo_input/blob_shas.txt"
-    output: trees=dynamic("phylo_snapshot/tree_{tag}.json")
-    run:
-        write_full_path_for_inputs(input[0],
-                                   phylesystem_dir,
-                                   os.path.join(out_dir, "phylo_snapshot"))
+# rule snapshot_phylo:
+#     input: "phylo_input/study_tree_pairs.txt", "phylo_input/blob_shas.txt"
+#     output: trees=dynamic("phylo_snapshot/tree_{tag}.json")
+#     run:
+#         write_full_path_for_inputs(input[0],
+#                                    phylesystem_dir,
+#                                    os.path.join(out_dir, "phylo_snapshot"))
 
 
 rule clean_phylo_tre:
     """Clean phylogenetic inputs from snapshot to cleaned_phylo"""
-    input: trees="phylo_snapshot/tree_{tag}.json", \
-           config="config", \
+    input: config="config", \
            ott_pruned="cleaned_ott/cleaned_ott_pruned_nonflagged.json", \
-           stp="phylo_input/study_tree_pairs.txt"
+           stp="phylo_input/study_tree_pairs.txt", \
+           trees="phylo_snapshot/tree_{tag}.json"
     output: trees="cleaned_phylo/{tag}.tre"
     run:
         od = os.path.join(out_dir, "cleaned_phylo")
@@ -205,7 +217,7 @@ rule clean_phylo_tre:
                           root_ott_id=root_ott_id)
 
 rule create_exemplify_full_path_args:
-    input: pairs="phylo_input/study_tree_pairs.txt", trees=dynamic("cleaned_phylo/{tag}.tre")
+    input: pairs="phylo_input/study_tree_pairs.txt", trees="cleaned_phylo/{tag}.tre"
     output: "exemplified_phylo/args.txt"
     run:
         clean_phy = os.path.join(out_dir, "cleaned_phylo", '{tag}.tre')

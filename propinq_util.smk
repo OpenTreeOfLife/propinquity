@@ -444,3 +444,6 @@ def export_studies_from_collection(ranked_coll_fp,
             m = 'Concrete form of collection "{}" {}'.format(coll_name, new_name)
             concrete_fn = os.path.join(out_par, 'concrete_' + coll_tag + new_name)
             write_as_json(concrete_collection, concrete_fn)
+
+def merge_concrete_collection(ranked_coll_fp, concrete_coll, out_json_fp):
+    raise ValueError('\n'.join([str(i) for i in (ranked_coll_fp, concrete_coll, out_json_fp)]))
