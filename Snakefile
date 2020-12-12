@@ -80,13 +80,13 @@ rule copy_collections:
     run:
         reaggregate_synth_collections(input.json_fp, output[0])
 
-rule concrete_ranked_collection:
+rule snapshot_trees_and_collection_items:
     """Concatenate all input collections in order into one "concrete" copy.
     """
     input: "phylo_snapshot/collections_shard_shas.txt", \
            rank_coll="phylo_input/rank_collection.json"
     output: conc_coll="phylo_snapshot/concrete_rank_collection-{tag}.json", \
-            trees="phylo_snapshot/{tag}.json"
+            trees="phylo_snapshot/tree_{tag}.json"
     run:
         ps_shards_dir = os.path.join(phylesystem_dir, "shards")
         snap_dir = os.path.join(out_dir, "phylo_snapshot")
@@ -178,18 +178,18 @@ _st_pairs_fp = os.path.join(out_dir, "phylo_input", "study_tree_pairs.txt")
 def write_full_path_for_inputs(x, y, z):
     pass
 
-# rule snapshot_phylo:
-#     input: "phylo_input/study_tree_pairs.txt", "phylo_input/blob_shas.txt"
-#     output: trees=dynamic("phylo_snapshot/{tag}.json")
-#     run:
-#         write_full_path_for_inputs(input[0],
-#                                    phylesystem_dir,
-#                                    os.path.join(out_dir, "phylo_snapshot"))
+rule snapshot_phylo:
+    input: "phylo_input/study_tree_pairs.txt", "phylo_input/blob_shas.txt"
+    output: trees=dynamic("phylo_snapshot/tree_{tag}.json")
+    run:
+        write_full_path_for_inputs(input[0],
+                                   phylesystem_dir,
+                                   os.path.join(out_dir, "phylo_snapshot"))
 
 
 rule clean_phylo_tre:
     """Clean phylogenetic inputs from snapshot to cleaned_phylo"""
-    input: trees="phylo_snapshot/{tag}.json", \
+    input: trees="phylo_snapshot/tree_{tag}.json", \
            config="config", \
            ott_pruned="cleaned_ott/cleaned_ott_pruned_nonflagged.json", \
            stp="phylo_input/study_tree_pairs.txt"

@@ -354,7 +354,7 @@ def copy_phylesystem_file_if_differing(git_action,
     study_id = coll_decision['studyID']
     tree_id = coll_decision['treeID']
     fp = git_action.path_for_doc(study_id)
-    new_name = '{}@{}.json'.format(study_id, tree_id)
+    new_name = 'tree_{}@{}.json'.format(study_id, tree_id)
     np = os.path.join(out_dir, new_name)
     if not os.path.isfile(fp):
         warn('Study file "{}" does not exist. Assuming that this study has been deleted'.format(fp))
