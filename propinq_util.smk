@@ -1,5 +1,7 @@
 import sys
 import os
+import codecs
+import json
 
 
 ################################################################################
@@ -15,6 +17,35 @@ def canon_sep_string(v, sep=",", sort=True):
     if sort:
         vl.sort()
     return sep.join(vl)
+
+################################################################################
+# @TODO: from peyutil import read_as_json, write_as_json
+
+def read_as_json(in_filename, encoding='utf-8'):
+    with codecs.open(in_filename, 'r', encoding=encoding) as inpf:
+        return json.load(inpf)
+
+
+def write_as_json(blob, dest, indent=0, sort_keys=True):
+    """Writes `blob` as JSON to the filepath or outstream `dest`.
+
+    If `dest` is a string, it is assumed to be object with .write().
+    Uses utf-8 encoding if the filepath is given (does *not* change
+    the encoding if dest is already open).
+    """
+    opened_out = False
+    if is_str_type(dest):
+        out = codecs.open(dest, mode='w', encoding='utf-8')
+        opened_out = True
+    else:
+        out = dest
+    try:
+        json.dump(blob, out, indent=indent, sort_keys=sort_keys)
+        out.write('\n')
+    finally:
+        out.flush()
+        if opened_out:
+            out.close()
 
 ################################################################################
 # Validatng config and setting global variables:
@@ -195,8 +226,58 @@ def export_studies_from_collection(ranked_coll,
                                    out_par):
     raise NotImplementedError("$(PEYOTL_ROOT)/scripts/phylesystem/export_studies_from_collection.py -v")
 
+def get_empty_collection():
+    collection = {
+        "url": "",
+        "name": "",
+        "description": "",
+        "creator": {"login": "", "name": ""},
+        "contributors": [],
+        "decisions": [],
+        "queries": []
+    }
+    return collection
+
+def concatenate_collections(collection_list):
+    r = get_empty_collection()
+    r_decisions = r['decisions']
+    r_contributors = r['contributors']
+    r_queries = r['queries']
+    contrib_set = set()
+    inc_set = set()
+    not_inc_set = set()
+    for n, coll in enumerate(collection_list):
+        r_queries.extend(coll['queries'])
+        for contrib in coll['contributors']:
+            l = contrib['login']
+            if l not in contrib_set:
+                r_contributors.append(contrib)
+                contrib_set.add(l)
+        for d in coll['decisions']:
+            key = '{}_{}'.format(d['studyID'], d['treeID'])
+            inc_d = d['decision'].upper() == 'INCLUDED'
+            if key in inc_set:
+                if not inc_d:
+                    raise ValueError('Collections disagree on inclusion of study_tree = "{}"'.format(key))
+            elif key in not_inc_set:
+                if inc_d:
+                    raise ValueError('Collections disagree on inclusion of study_tree = "{}"'.format(key))
+            else:
+                if inc_d:
+                    inc_set.add(key)
+                else:
+                    not_inc_set.add(key)
+                r_decisions.append(d)
+    return r
+
 def reaggregate_synth_collections(inp_fp_list, out_fp):
-    raise NotImplementedError("bin/reaggregate-synth-collections.sh")
+    """Writes the contents of `inp_fp_list` as one collection at `out_fp`."""
+    inp = [read_as_json(i) for i in inp_fp_list]
+    blob = concatenate_collections(inp)
+    content = json.dumps(blob, indent=0, sort_keys=True) + '\n'
+    return write_if_needed(fp=out_fp,
+                           content=content,
+                           name="concatenated collections")
 
 
 def clean_phylo_input(ott_dir,

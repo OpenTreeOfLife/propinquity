@@ -25,14 +25,14 @@ rule config:
     output: "config"
     log: "logs/config"
     run:
-        write_if_needed(output[0], gen_config_content())
+        write_if_needed(fp=output[0], content=gen_config_content())
 
 rule otc_config:
     """Uses snakemake config to creat a config file for otcetera tools"""
     output: "otc-config"
     log: "logs/config"
     run:
-        write_if_needed(output[0], gen_otc_config_content())
+        write_if_needed(fp=output[0], content=gen_otc_config_content())
 
 # End configure
 ################################################################################
@@ -46,7 +46,9 @@ rule phylesystem_pull:
     run:
         ps_shards_dir = os.path.join(phylesystem_dir, "shards")
         shas = pull_git_subdirs(ps_shards_dir, prefix='phylesystem-')
-        write_if_needed(output[0], "\n".join(shas), "phylesystem shards")
+        write_if_needed(fp=output[0],
+                        content="\n".join(shas),
+                        name="phylesystem shards")
 
 rule collections_pull:
     """Pulls all collections shards from their origin and writes HEAD shas in output"""
@@ -56,7 +58,9 @@ rule collections_pull:
     run:
         coll_shards_dir = os.path.join(collections_dir, "shards")
         shas = pull_git_subdirs(coll_shards_dir, prefix='collections-')
-        write_if_needed(output[0], "\n".join(shas), "collections shards")
+        write_if_needed(fp=output[0],
+                        content="\n".join(shas),
+                        name="collections shards")
 
 # End sync with GitHub
 ################################################################################
@@ -118,7 +122,7 @@ rule write_ott_root:
     input: "config"
     output: "cleaned_ott/root_ott_id.txt"
     run:
-        if not write_if_needed(output[0], root_ott_id):
+        if not write_if_needed(fp=output[0], content=root_ott_id):
             logger.info("root id has not changed.")
 
 rule write_ott_cleaning_flags:
@@ -126,7 +130,7 @@ rule write_ott_cleaning_flags:
     input: "config"
     output: "cleaned_ott/cleaning_flags.txt"
     run:
-        if not write_if_needed(output[0], cleaning_flags):
+        if not write_if_needed(fp=output[0], content=cleaning_flags):
             logger.info("cleaning_flags have not changed.")
 
 rule write_ott_version:
@@ -135,7 +139,7 @@ rule write_ott_version:
     output: "cleaned_ott/ott_version.txt"
     run:
         ott_version = open(input[0], "r").read().strip() + "\n"
-        if not write_if_needed(output[0], ott_version):
+        if not write_if_needed(fp=output[0], content=ott_version):
             logger.info("ott version has not changed.")
 
 rule clean_ott_based_on_flags:
@@ -204,7 +208,9 @@ rule create_exemplify_full_path_args:
         tags = [i.strip() for i in open(input.pairs, "r").readlines() if i.strip()]
         paths = [cleaned_phylo.format(tag=i) for i in tags] 
         c = '\n'.join(paths)
-        write_if_needed(output[0], c, "cleaned phylo filepaths")
+        write_if_needed(fp=output[0],
+                        content=c,
+                        name="cleaned phylo filepaths")
 
 # End Phylo cleaning
 ################################################################################
