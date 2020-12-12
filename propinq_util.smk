@@ -4,6 +4,8 @@ import codecs
 import json
 import copy
 from peyotl import Phylesystem, is_str_type
+import filecmp
+import shutil
 from collections import defaultdict
 
 ################################################################################
@@ -127,6 +129,14 @@ else:
 # end config validation and global setting
 ################################################################################
 # helper functions
+
+def cp_if_needed(src, dest, name=None):
+    if (not os.path.exists(dest)) or (not filecmp.cmp(src, dest)):
+        shutil.copy(src, dest)
+        warn('cp "{}" "{}"'.format(src, dest))
+        return True
+    warn('copy of {n} not needed'.format(n=name))
+    return False
 
 def write_if_needed(fp, content, name=None):
     """Writes `content` to `fp` if the content of that filepath is empty or different.
@@ -343,11 +353,7 @@ def copy_phylesystem_file_if_differing(git_action,
     concrete_coll_decision['SHA'] = sha
     concrete_coll_decision['object_SHA'] = git_action.object_SHA(study_id, sha)
     cd_to_new_map[id(coll_decision)] = concrete_coll_decision
-    content = open(fp, "r", encoding="utf-8").read()
-    wrote = write_if_needed(fp=np, content=content, name=study_id)
-    if wrote:
-        warn('cp "{}" "{}"'.format(fp, np))
-    return wrote
+    return cp_if_needed(fp, np, study_id)
 
 
 def export_studies_from_collection(ranked_coll_fp,
