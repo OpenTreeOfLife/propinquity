@@ -426,14 +426,21 @@ def export_studies_from_collection(ranked_coll_fp,
 
     # now we write a "concrete" version of this snapshot
     coll_name = os.path.split(ranked_coll_fp)[-1]
-    concrete_collection = get_empty_collection()
-    concrete_collection['description'] = 'Concrete form of collection "{}"'.format(coll_name)
-    cd_list = concrete_collection['decisions']
+    coll_tag = '.'.join(coll_name.split('.')[:-1])
     for inc in included:
+        concrete_collection = get_empty_collection()
+        cd_list = concrete_collection['decisions']
+        
         try:
             concrete = generic2concrete[id(inc)]
             cd_list.append(concrete)
         except KeyError:
             pass
-    concrete_fn = os.path.join(out_par, 'concrete_' + coll_name)
-    write_as_json(concrete_collection, concrete_fn)
+        else:
+            concrete_collection['description'] = m
+            study_id = concrete['studyID']
+            tree_id = concrete['treeID']
+            new_name = '{}@{}.json'.format(study_id, tree_id)
+            m = 'Concrete form of collection "{}" {}'.format(coll_name, new_name)
+            concrete_fn = os.path.join(out_par, 'concrete_' + coll_tag + new_name)
+            write_as_json(concrete_collection, concrete_fn)

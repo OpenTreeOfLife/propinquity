@@ -85,7 +85,8 @@ rule concrete_ranked_collection:
     """
     input: "phylo_snapshot/collections_shard_shas.txt", \
            rank_coll="phylo_input/rank_collection.json"
-    output: "phylo_snapshot/concrete_rank_collection.json"
+    output: conc_coll="phylo_snapshot/concrete_rank_collection-{tag}.json", \
+            trees="phylo_snapshot/{tag}.json"
     run:
         ps_shards_dir = os.path.join(phylesystem_dir, "shards")
         snap_dir = os.path.join(out_dir, "phylo_snapshot")
@@ -174,13 +175,16 @@ rule edit_or_clean_ott:
 # Phylo cleaning
 _st_pairs_fp = os.path.join(out_dir, "phylo_input", "study_tree_pairs.txt")
 
-rule snapshot_phylo:
-    input: "phylo_input/study_tree_pairs.txt", "phylo_input/blob_shas.txt"
-    output: trees=dynamic("phylo_snapshot/{tag}.json")
-    run:
-        write_full_path_for_inputs(input[0],
-                                   phylesystem_dir,
-                                   os.path.join(out_dir, "phylo_snapshot"))
+def write_full_path_for_inputs(x, y, z):
+    pass
+
+# rule snapshot_phylo:
+#     input: "phylo_input/study_tree_pairs.txt", "phylo_input/blob_shas.txt"
+#     output: trees=dynamic("phylo_snapshot/{tag}.json")
+#     run:
+#         write_full_path_for_inputs(input[0],
+#                                    phylesystem_dir,
+#                                    os.path.join(out_dir, "phylo_snapshot"))
 
 
 rule clean_phylo_tre:
