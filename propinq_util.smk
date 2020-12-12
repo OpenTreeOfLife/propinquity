@@ -250,8 +250,21 @@ def suppress_by_flag(ott_dir,
                      flagged_fp):
     raise NotImplementedError("$(PEYOTL_ROOT)/scripts/ott/suppress_by_flag.py")
 
-def export_collections(export, concrete_coll_json_fp, out_fp, obj_blob_shas_fp):
-    raise NotImplementedError("$(PEYOTL_ROOT)/scripts/collection_export.py")
+def export_trees_list_and_shas(concrete_coll_json_fp, out_fp, obj_blob_shas_fp):
+    included = collection_to_included_trees(collection=None, fp=concrete_coll_json_fp)
+    obj_blob_shas_lines = []
+    study_tree_pair_lines = []
+    for i in included:
+        study_tree_pair_lines.append('@'.join([i['studyID'], i['treeID']]))
+        obj_blob_shas_lines.append(i["object_SHA"])
+    obs_content = '{}\n'.format('\n'.join(obj_blob_shas_lines))
+    stp_content = '{}\n'.format('\n'.join(study_tree_pair_lines))
+    a = write_if_needed(fp=out_fp, content=stp_content,
+                        name="study@tree pairs")
+    b = write_if_needed(fp=obj_blob_shas_fp, content=obs_content,
+                        name="tree git object SHAs")
+    return a or b
+
 
 def get_empty_collection():
     collection = {

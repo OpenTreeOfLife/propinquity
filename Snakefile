@@ -104,10 +104,9 @@ rule concrete_tree_list:
     output: pairs="phylo_input/study_tree_pairs.txt",
             blob_shas="phylo_input/blob_shas.txt"
     run:
-        export_collections("studyID_treeID",
-                           concrete_coll_json_fp=input[0],
-                           out_fp=output.pairs,
-                           obj_blob_shas_fp=output.blob_shas)
+        export_trees_list_and_shas(concrete_coll_json_fp=input[0],
+                                   out_fp=output.pairs,
+                                   obj_blob_shas_fp=output.blob_shas)
 
 # End snapshot inputs
 ################################################################################
