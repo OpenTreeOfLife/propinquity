@@ -144,26 +144,24 @@ rule clean_ott_based_on_flags:
            version="cleaned_ott/ott_version.txt", \
            cleaning_flags="cleaned_ott/cleaning_flags.txt", \
            root="cleaned_ott/root_ott_id.txt"
-    output: tree="cleaned_ott/cleaned_ott_with_hiddenbarren.tre", \
+    output: with_deg_2_tree="cleaned_ott/cleaned_ott_with_hiddenbarren.tre", \
+            nonredundant_tree="cleaned_ott/cleaned_ott.tre", \
             log="cleaned_ott/cleaned_ott_1.json", \
+            prune_log="cleaned_ott/cleaned_ott_pruned_nonflagged.json", \
             flagged="cleaned_ott/flagged_in_cleaned.json"
     run:
         suppress_by_flag(ott_dir=ott_dir,
                          flags=cleaning_flags,
                          root=root_ott_id,
-                         out_tree_fp=output.tree,
+                         out_nonredundanttree_fp=output.nonredundant_tree,
+                         out_with_deg2_tree_fp=output.with_deg_2_tree,
                          log_fp=output.log,
+                         prune_log=output.prune_log,
                          flagged_fp=output.flagged)
 
 rule edit_or_clean_ott:
     input: 
     output: "cleaned_edited_ott/cleaned_not_updated_ott.tre"
-    run:
-        os.symlink("../cleaned_edited_ott/cleaned_not_updated_ott.tre", output)
-
-rule clean_ott:
-    input: "cleaned_edited_ott/cleaned_not_updated_ott.tre"
-    output: "cleaned_ott/cleaned_ott.tre"
     run:
         os.symlink("../cleaned_edited_ott/cleaned_not_updated_ott.tre", output)
 

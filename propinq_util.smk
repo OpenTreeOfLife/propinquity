@@ -177,7 +177,14 @@ def gen_tree_tags(study_tree_pair_fp):
 ################################################################################
 # major actions
 
-def suppress_by_flag(ott_dir, flags, root, out_tree_fp, log_fp, flagged_fp):
+def suppress_by_flag(ott_dir,
+                     flags,
+                     root,
+                     out_nonredundanttree_fp,
+                     out_with_deg2_tree_fp,
+                     log_fp,
+                     prune_log,
+                     flagged_fp):
     raise NotImplementedError("$(PEYOTL_ROOT)/scripts/ott/suppress_by_flag.py")
 
 def export_collections(export, concrete_coll_json_fp, out_fp, obj_blob_shas_fp):
