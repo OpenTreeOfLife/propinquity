@@ -89,8 +89,9 @@ rule concrete_ranked_collection:
     run:
         ps_shards_dir = os.path.join(phylesystem_dir, "shards")
         snap_dir = os.path.join(out_dir, "phylo_snapshot")
-        export_studies_from_collection(ranked_coll=input.rank_coll,
+        export_studies_from_collection(ranked_coll_fp=input.rank_coll,
                                        phylesystem_par=ps_shards_dir,
+                                       script_managed_trees=script_managed_trees_dir,
                                        out_par=snap_dir)
 
 rule concrete_tree_list:
