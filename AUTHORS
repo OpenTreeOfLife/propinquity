@@ -1,42 +1,5 @@
-otcetera has been written by:
-  Mark T. Holder http://orcid.org/0000-0001-5575-0536
+propinquity has been written by:
   Ben D. Redelings http://ben-redelings.org
+  Mark T. Holder https://orcid.org/0000-0001-5575-0536
 
-otceteraincludes: http://github.com/easylogging
-
-otcetera depends on https://github.com/miloyip/rapidjson
-
-otcetera has borrowed many ideas/snippets from NCL (see author list for NCL below)
-
-NCL AUTHORS -- the author of the NEXUS Class Library (NCL) version 2.0 is
-
-  Paul O. Lewis, Ph.D.
-  Assistant Professor
-  Department of Ecology and Evolutionary Biology
-  The University of Connecticut
-  75 North Eagleville Road, Unit 3043
-  Storrs, CT 06269-3043
-  U.S.A.
-
-  WWW: http://lewis.eeb.uconn.edu/lewishome
-  Email: paul.lewis@uconn.edu
-
-
-Versions after 2.0 contain changes primarily made by:
-  Mark T. Holder  mholder@users.sourceforge.net
-
-Other contributors to these versions include:
-  Derrick Zwickl
-  Brian O'Meara
-  Brandon Chisham
-  François Michonneau
-  Jeet Sukumaran
-
-The code in examples/phylobase... was written by Brian O'Meara and Derrick Zwickl
-for phylobase.
-
-David Suárez Pascal contributed SWIG bindings which heavily influenced those
-   found in branches/v2.2 
-
-Michael Elliot contributed some code to the branches/xml branch.
 
