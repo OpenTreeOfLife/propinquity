@@ -35,7 +35,7 @@ EXTRA_KWARGS = {"include_package_data": True,
                 "zip_safe": True,
                 "scripts":  [],
                }
-
+ENTRY_POINTS = {}
 
 ###############################################################################
 # setuptools/distuils command extensions
@@ -52,12 +52,15 @@ setup(
     name='propinquity',
     version='2.0.dev1',  # sync with __version__ in peyotl/__init__.py
     description='Workflow for building synthetic phylogenetic trees for the Open Tree of Life project',
-    long_description=(open('README.rst').read()),
+    long_description=(open('README.md').read()),
     url='https://github.com/OpenTreeOfLife/propinquity',
     license='BSD',
     author='Ben D. Redelings and Mark T. Holder',
     py_modules=['propinquity'],
-    install_requires=['peyutil>=0.0.1'],
+    install_requires=["peyutil>=0.0.1",
+                      "nexson>=0.0.1",
+                      "peyotl>=1.0.0dev",
+                      ],
     packages=PACKAGES,
     entry_points=ENTRY_POINTS,
     classifiers=[

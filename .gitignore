@@ -10,3 +10,4 @@ custom*.bash
 machine.json
 logs
 mod_snakemake_env
+propinquity.egg-info
