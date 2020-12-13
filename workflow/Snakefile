@@ -82,16 +82,16 @@ min_version("5.30.1")
 
 print("top config:", config)
 
-subworkflow configure:
-    snakefile:
-        "rules/config.smk"
+subworkflow tool_config:
+    snakefile: "rules/tool_config.smk"
+    configfile: "config/config.json"
 
 subworkflow snapshot:
     snakefile:
         "rules/snapshot.smk"
 
 rule all:
-    input: configure("config"), configure("otc-config"),
+    input: tool_config("config"), tool_config("otc-config"),
            snapshot("phylo_input/blob_shas.txt")
 
 # ################################################################################
