@@ -198,13 +198,20 @@ def write_full_path_for_inputs(x, y, z):
 #                                    phylesystem_dir,
 #                                    os.path.join(out_dir, "phylo_snapshot"))
 
+def set_tag_to_study_tree_pair(wildcards):
+    sp = os.path.join(out_dir, "phylo_input", "study_tree_pairs.txt")
+    if os.path.exists(sp):
+        print(open(sp, "r").read())
+    else:
+        print(sp + "does not exist.")
+    wildcards.tag = "hi"
 
 rule clean_phylo_tre:
     """Clean phylogenetic inputs from snapshot to cleaned_phylo"""
     input: config="config", \
            ott_pruned="cleaned_ott/cleaned_ott_pruned_nonflagged.json", \
            stp="phylo_input/study_tree_pairs.txt", \
-           trees="phylo_snapshot/tree_{tag}.json"
+           trees=set_tag_to_study_tree_pair
     output: trees="cleaned_phylo/{tag}.tre"
     run:
         od = os.path.join(out_dir, "cleaned_phylo")
@@ -217,7 +224,8 @@ rule clean_phylo_tre:
                           root_ott_id=root_ott_id)
 
 rule create_exemplify_full_path_args:
-    input: pairs="phylo_input/study_tree_pairs.txt", trees="cleaned_phylo/{tag}.tre"
+    input: pairs="phylo_input/study_tree_pairs.txt",
+           trees=set_tag_to_study_tree_pair
     output: "exemplified_phylo/args.txt"
     run:
         clean_phy = os.path.join(out_dir, "cleaned_phylo", '{tag}.tre')
