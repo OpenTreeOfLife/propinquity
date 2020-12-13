@@ -152,22 +152,20 @@ def write_if_needed(fp, content, name=None):
 _OTC_CONF_TEMPLATE = """
 [opentree]
 phylesystem = {ph}
-peyotl = {pe}
 ott = {o}
 collections = {c}
 script-managed-trees = {s}
 """
 
-def gen_otc_config_content():
+def gen_otc_config_content(cfg):
     """Composes a config file for the otcetera run
 
     Serializes global variables from this Snakemake run.
     """
-    return _OTC_CONF_TEMPLATE.format(ph=phylesystem_dir,
-                                     pe=peyotl_dir,
-                                     o=ott_dir,
-                                     c=collections_dir,
-                                     s=script_managed_trees_dir)
+    return _OTC_CONF_TEMPLATE.format(ph=cfg.phylesystem_dir,
+                                     o=cfg.ott_dir,
+                                     c=cfg.collections_dir,
+                                     s=cfg.script_managed_trees_dir)
 
 _CONF_TEMPLATE = """
 [taxonomy]
@@ -180,17 +178,17 @@ root_ott_id = {r}
 synth_id = {s}
 """
 
-def gen_config_content():
+def gen_config_content(cfg):
     """Composes a config file for the propinquity
 
     Serializes global variables in a backward-compatible manner
     for the pre-snakemake propinquity.
     """
-    return _CONF_TEMPLATE.format(cf=cleaning_flags,
-                                 arf=additional_regrafting_flags,
-                                 c=collections,
-                                 r=root_ott_id,
-                                 s=synth_id)
+    return _CONF_TEMPLATE.format(cf=cfg.cleaning_flags,
+                                 arf=cfg.additional_regrafting_flags,
+                                 c=cfg.collections,
+                                 r=cfg.root_ott_id,
+                                 s=cfg.synth_id)
 
 
 def pull_git_subdirs(par_dir, prefix):

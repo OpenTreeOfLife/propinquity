@@ -1,4 +1,7 @@
-from propinquity import validate_config
+from propinquity import (gen_config_content,
+                         gen_otc_config_content,
+                         validate_config,
+                         write_if_needed)
 from snakemake.utils import min_version
 from snakemake.logging import logger
 import subprocess
@@ -19,14 +22,14 @@ rule config:
     output: "config"
     log: "logs/config"
     run:
-        write_if_needed(fp=output[0], content=gen_config_content())
+        write_if_needed(fp=output[0], content=gen_config_content(CFG))
 
 rule otc_config:
     """Uses snakemake config to creat a config file for otcetera tools"""
     output: "otc-config"
     log: "logs/config"
     run:
-        write_if_needed(fp=output[0], content=gen_otc_config_content())
+        write_if_needed(fp=output[0], content=gen_otc_config_content(CFG))
 
 
 rule clean_config:
