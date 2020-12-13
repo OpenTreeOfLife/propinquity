@@ -1,15 +1,111 @@
-import sys
-import os
+#!/usr/bin/env python3
+
+from collections import defaultdict
 import codecs
-import json
-import copy
-from peyutil import (is_str_type, read_as_json, write_as_json)
-from peyotl import Phylesystem
 import filecmp
 import shutil
-from collections import defaultdict
+import json
+import copy
+import sys
+import os
+
+from peyutil import (is_str_type, read_as_json, write_as_json)
+from peyotl import Phylesystem
 
 __version__ = '2.0.dev1'
+
+
+class PropinquityConfig(object):
+    def __init__(self, config, logger):
+        self.log = logger
+        print(config)
+
+        propinquity_dir = os.path.abspath(config.get("propinquity_dir", os.curdir))
+        if not os.path.isdir(propinquity_dir):
+            raise RuntimeError("propinquity_dir from config {pd} does not an existing directory.\n".format(pd=propinquity_dir))
+
+        ################################################################################
+        # Validatng config and setting global variables:
+        # Executed on startup.
+        # Defines the following globals based on config,
+        #   lists as a comma-separated string:
+        #       additional_regrafting_flags (e.g. "extinct_inherited,extinct")
+        #       cleaning_flags (e.g "major_rank_conflict,barren")
+        #       collections (e.g. "kcranston/catfish,kcranston/barnacles")
+        #   Paths to directories
+        #       collections_dir - parent of shards
+        #       ott_dir
+        #       out_dir - set by the --directory arg to snakemake
+        #       peyotl_dir
+        #       phylesystem_dir - parent of shards
+        #       script_managed_trees_dir
+        #   Run-specific IDs:
+        #       root_ott_id
+        #       synth_id
+        #
+        # Validation also sets environmental variables:
+        #   OTC_CONFIG and OTCETERA_LOGFILE
+
+
+        _config_dirs = ("collections_dir",
+                        "ott_dir",
+                        "peyotl_dir", 
+                        "phylesystem_dir",
+                        "script_managed_trees_dir",
+                        )
+
+        try:
+            for _ds in _config_dirs:
+                _v = config[_ds]
+                locals()[_ds] = _v
+                if not os.path.isdir(_v):
+                    sys.exit('{p} "{v}"" does not exist.\n'.format(p=_ds, v=_v))
+            collections = canon_sep_string(config["collections"], sort=False)
+            cleaning_flags = canon_sep_string(config["cleaning_flags"])
+            additional_regrafting_flags = canon_sep_string(config.get("additional_regrafting_flags", ""))
+            root_ott_id = config["root_ott_id"]
+            synth_id = config["synth_id"]
+        except KeyError as x:
+            raise RuntimeError(expand("Missing config variable {x}", x=str(x))[0])
+
+        if not os.path.isdir(os.path.join(phylesystem_dir, "shards", "phylesystem-1")):
+            raise RuntimeError(expand('phylesystem_dir {phylesystem_dir} is expeceted to have "shards/phylesystem-1" subdirectory.\n'))
+        if not os.path.isdir(os.path.join(collections_dir, "shards", "collections-1")):
+            raise RuntimeError(expand('collections_dir {collections_dir} is expeceted to have "shards/collections-1" subdirectory.\n'))
+
+
+        out_dir = os.path.abspath(os.curdir)
+        logger.info('Writing output to "{o}"'.format(o=out_dir))
+
+        if 'OTC_CONFIG' not in os.environ:
+            _ocfp = os.path.join(out_dir, "otc-config")
+            os.environ['OTC_CONFIG'] = _ocfp
+            logger.debug('Setting OTC_CONFIG environment variable to "{}"'.format(_ocfp))
+
+
+        if 'OTCETERA_LOGFILE' not in os.environ:
+            os.environ['OTCETERA_LOGFILE'] = os.path.join(out_dir, "logs", "myeasylog.log")
+        else:
+            _ocfp = os.environ['OTCETERA_LOGFILE']
+            logger.warning("Using existing value for OTCETERA_LOGFILE {}.".format(_ocfp))
+
+        # end config validation and global setting
+        ################################################################################
+
+
+    def debug(self, msg):
+        self.logger.debug(msg)
+
+    def warn(self, msg):
+        self.log.warning(msg)
+
+    def error(self, msg):
+        self.log.error(msg)
+
+
+def validate_config(config, logger):
+    return PropinquityConfig(config, logger)
+
 ################################################################################
 # simple helper functions
 
@@ -23,15 +119,6 @@ def canon_sep_string(v, sep=",", sort=True):
     if sort:
         vl.sort()
     return sep.join(vl)
-
-def debug(msg):
-    logger.debug(msg)
-
-def warn(msg):
-    logger.warning(msg)
-
-def error(msg):
-    logger.error(msg)
 
 
 ################################################################################
