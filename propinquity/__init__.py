@@ -3,11 +3,13 @@ import os
 import codecs
 import json
 import copy
-from peyotl import Phylesystem, is_str_type
+from peyutil import (is_str_type, read_as_json, write_as_json)
+from peyotl import Phylesystem
 import filecmp
 import shutil
 from collections import defaultdict
 
+__version__ = '2.0.dev1'
 ################################################################################
 # simple helper functions
 
@@ -33,35 +35,6 @@ def error(msg):
 
 
 ################################################################################
-# @TODO: from peyutil import read_as_json, write_as_json
-
-def read_as_json(in_filename, encoding='utf-8'):
-    with codecs.open(in_filename, 'r', encoding=encoding) as inpf:
-        return json.load(inpf)
-
-
-def write_as_json(blob, dest, indent=0, sort_keys=True):
-    """Writes `blob` as JSON to the filepath or outstream `dest`.
-
-    If `dest` is a string, it is assumed to be object with .write().
-    Uses utf-8 encoding if the filepath is given (does *not* change
-    the encoding if dest is already open).
-    """
-    opened_out = False
-    if is_str_type(dest):
-        out = codecs.open(dest, mode='w', encoding='utf-8')
-        opened_out = True
-    else:
-        out = dest
-    try:
-        json.dump(blob, out, indent=indent, sort_keys=sort_keys)
-        out.write('\n')
-    finally:
-        out.flush()
-        if opened_out:
-            out.close()
-
-
 # helper functions
 
 def cp_if_needed(src, dest, name=None):
