@@ -2,11 +2,7 @@ from propinquity import (gen_config_content,
                          gen_otc_config_content,
                          validate_config,
                          write_if_needed)
-from snakemake.utils import min_version
 from snakemake.logging import logger
-import subprocess
-import sys
-import os
 
 
 CFG = validate_config(config, logger)
