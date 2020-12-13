@@ -20,8 +20,9 @@ subworkflow tool_config:
     configfile: "config.json"
 
 subworkflow snapshot:
-    snakefile:
-        "rules/snapshot.smk"
+    workdir: CFG.out_dir
+    snakefile: "rules/snapshot.smk"
+    configfile: "config.json"
 
 rule all:
     input: tool_config("config"), tool_config("otc-config"),

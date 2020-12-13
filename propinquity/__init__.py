@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 
 from collections import defaultdict
-import codecs
+import subprocess
 import filecmp
+import codecs
 import shutil
 import json
 import copy
