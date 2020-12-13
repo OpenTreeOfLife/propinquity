@@ -24,9 +24,15 @@ subworkflow snapshot:
     snakefile: "rules/snapshot.smk"
     configfile: "config.json"
 
+subworkflow clean_ott:
+    workdir: CFG.out_dir
+    snakefile: "rules/clean_ott.smk"
+    configfile: "config.json"
+
 rule all:
     input: tool_config("config"), tool_config("otc-config"),
-           snapshot("phylo_input/blob_shas.txt")
+           snapshot("phylo_input/blob_shas.txt"), 
+           clean_ott("cleaned_ott/cleaned_ott.tre")
 
 # ################################################################################
 # # sync with GitHub
