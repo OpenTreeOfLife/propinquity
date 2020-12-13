@@ -3,15 +3,21 @@ from snakemake.logging import logger
 import subprocess
 import sys
 import os
-from propinquity import validate_config
+from propinquity import validate_config, write_if_needed
+import json
+from peyutil import write_as_json
+
 
 min_version("5.30.1")
 
 CFG = validate_config(config, logger)
+content = json.dumps(config, sort_keys=True, indent=2) + '\n'
+write_if_needed(content=content, fp="config.json")
 
 subworkflow tool_config:
+    workdir: CFG.out_dir
     snakefile: "rules/tool_config.smk"
-    configfile: "config/config.json"
+    configfile: "config.json"
 
 subworkflow snapshot:
     snakefile:
