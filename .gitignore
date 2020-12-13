@@ -9,3 +9,4 @@ custom*.bash
 .snakemake
 machine.json
 logs
+mod_snakemake_env
