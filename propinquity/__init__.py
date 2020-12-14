@@ -12,6 +12,9 @@ import os
 
 from peyutil import (is_str_type, read_as_json, write_as_json)
 from peyotl import Phylesystem
+# TODO: move these up to top-level peyotl imports, when that is supported
+from peyotl.ott import OTT
+from peyotl.phylo.entities import OTULabelStyleEnum
 
 __version__ = '2.0.dev1'
 
@@ -238,16 +241,6 @@ def collection_to_included_trees(collection=None, fp=None):
 ################################################################################
 # major actions
 
-def suppress_by_flag(ott_dir,
-                     flags,
-                     root,
-                     out_nonredundanttree_fp,
-                     out_with_deg2_tree_fp,
-                     log_fp,
-                     prune_log,
-                     flagged_fp):
-    raise NotImplementedError("$(PEYOTL_ROOT)/scripts/ott/suppress_by_flag.py")
-
 def export_trees_list_and_shas(concrete_coll_json_fp, out_fp, obj_blob_shas_fp):
     included = collection_to_included_trees(collection=None, fp=concrete_coll_json_fp)
     obj_blob_shas_lines = []
@@ -445,3 +438,43 @@ def export_studies_from_collection(ranked_coll_fp,
 
 def merge_concrete_collection(ranked_coll_fp, concrete_coll, out_json_fp):
     raise ValueError('\n'.join([str(i) for i in (ranked_coll_fp, concrete_coll, out_json_fp)]))
+
+
+def suppress_by_flag(ott_dir,
+                     flags,
+                     root,
+                     out_nonredundanttree_fp,
+                     out_with_deg2_tree_fp,
+                     log_fp,
+                     prune_log,
+                     flagged_fp):
+    if not isinstance(flags, list):
+        flags = flags.split(',')
+    ott = OTT(ott_dir=ott_dir)
+    create_log = (log_fp is not None) and (flagged_fp is not None)
+    with codecs.open(out_with_deg2_tree_fp, 'w', encoding='utf-8') as outp:
+        log = ott.write_newick(outp,
+                               label_style=OTULabelStyleEnum.CURRENT_LABEL_OTT_ID,
+                               root_ott_id=int(root),
+                               prune_flags=flags,
+                               create_log_dict=create_log)
+        outp.write('\n')
+    if flagged_fp is not None:
+        d = {'extinct': log.get('extinct_unpruned_ids',[]),
+             'incertae_sedis': log.get('incertae_sedis_unpruned_ids', [])
+            }
+        write_as_json(d, flagged_fp)
+    if log_fp is not None:
+        write_as_json(log, log_fp)
+    if out_nonredundanttree_fp is None:
+        return
+    invocation = ["otc-relabel-tree",
+                  out_with_deg2_tree_fp,
+                  "--del-higher-taxon-tips",
+                  "-j{}".format(prune_log),
+                  "--taxonomy",
+                  ott_dir,
+                  ]
+    with open(out_nonredundanttree_fp, "w") as outp:
+        rp = subprocess.run(invocation, stdout=outp)
+    rp.check_returncode()
