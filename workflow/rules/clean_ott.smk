@@ -1,4 +1,5 @@
-from propinquity import (suppress_by_flag,
+from propinquity import (OTT_FILENAMES,
+                         suppress_by_flag,
                          validate_config,
                          write_if_needed)
 from snakemake.logging import logger
@@ -17,11 +18,6 @@ rule all:
 # End snapshot inputs
 ################################################################################
 # OTT cleaning
-OTT_FILENAMES = ("forwards.tsv", 
-                 "synonyms.tsv", 
-                 "taxonomy.tsv", 
-                 "version.txt", 
-                 )
 
 rule write_ott_root:
     """Serialize root_ott_id to "cleaned_ott/root_ott_id.txt", if changed."""

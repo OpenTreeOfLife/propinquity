@@ -15,6 +15,11 @@ from peyotl import Phylesystem
 
 __version__ = '2.0.dev1'
 
+OTT_FILENAMES = ("forwards.tsv", 
+                 "synonyms.tsv", 
+                 "taxonomy.tsv", 
+                 "version.txt", 
+                 )
 
 class PropinquityConfig(object):
     """
