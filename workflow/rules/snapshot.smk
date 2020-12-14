@@ -1,4 +1,5 @@
-from propinquity import (pull_git_subdirs,
+from propinquity import (export_studies_from_collection,
+                         pull_git_subdirs,
                          reaggregate_synth_collections,
                          validate_config,
                          write_if_needed)
@@ -29,7 +30,7 @@ rule phylesystem_pull:
         shas = pull_git_subdirs(ps_shards_dir, prefix='phylesystem-')
         write_if_needed(fp=output[0],
                         content="\n".join(shas),
-                        name="phylesystem shards")
+                        name="phylesystem shards", CFG=CFG)
 
 rule collections_pull:
     """Pulls all collections shards from their origin and writes HEAD shas in output"""
@@ -41,7 +42,7 @@ rule collections_pull:
         shas = pull_git_subdirs(coll_shards_dir, prefix='collections-')
         write_if_needed(fp=output[0],
                         content="\n".join(shas),
-                        name="collections shards")
+                        name="collections shards", CFG=CFG)
 
 # End sync with GitHub
 ################################################################################
@@ -66,27 +67,16 @@ rule snapshot_trees_and_collection_items:
     """
     input: "phylo_snapshot/collections_shard_shas.txt", \
            rank_coll="phylo_input/rank_collection.json"
-    output: conc_coll="phylo_snapshot/concrete_rank_collection-{tag}.json", \
-            trees="phylo_snapshot/tree_{tag}.json"
+    output: conc_coll="phylo_snapshot/concrete_rank_collection.json"
     run:
         ps_shards_dir = os.path.join(CFG.phylesystem_dir, "shards")
         snap_dir = os.path.join(CFG.out_dir, "phylo_snapshot")
         export_studies_from_collection(ranked_coll_fp=input.rank_coll,
                                        phylesystem_par=ps_shards_dir,
                                        script_managed_trees=CFG.script_managed_trees_dir,
-                                       out_par=snap_dir)
-
-rule merge_concrete_coll:
-    """Concatenate all input collections in order into one "concrete" copy.
-    """
-    input: rank_coll="phylo_input/rank_collection.json", \
-           conc_coll=dynamic("phylo_snapshot/concrete_rank_collection-{tag}.json")
-    output: "phylo_snapshot/concrete_rank_collection.json"
-    run:
-        merge_concrete_collection(ranked_coll_fp=input.rank_coll,
-                                  concrete_coll=input.conc_coll,
-                                  out_json_fp=output[0])
-
+                                       out_par=snap_dir,
+                                       concrete_coll_out_fp=output.conc_coll,
+                                       CFG=CFG)
 
 rule concrete_tree_list:
     """Extracts the study_tree pairs from the concrete collection.
@@ -95,7 +85,7 @@ rule concrete_tree_list:
     object SHAs for each study in the same order.
     """
     input: "phylo_snapshot/concrete_rank_collection.json"
-    output: pairs="phylo_input/study_tree_pairs.txt",
+    output: pairs="phylo_input/study_tree_pairs.txt", \
             blob_shas="phylo_input/blob_shas.txt"
     run:
         export_trees_list_and_shas(concrete_coll_json_fp=input[0],

@@ -18,14 +18,14 @@ rule config:
     output: "config"
     log: "logs/config"
     run:
-        write_if_needed(fp=output[0], content=gen_config_content(CFG))
+        write_if_needed(fp=output[0], content=gen_config_content(CFG), CFG=CFG)
 
 rule otc_config:
     """Uses snakemake config to creat a config file for otcetera tools"""
     output: "otc-config"
     log: "logs/config"
     run:
-        write_if_needed(fp=output[0], content=gen_otc_config_content(CFG))
+        write_if_needed(fp=output[0], content=gen_otc_config_content(CFG), CFG=CFG)
 
 
 rule clean_config:

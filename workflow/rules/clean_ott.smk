@@ -24,7 +24,7 @@ rule write_ott_root:
     input: "config"
     output: "cleaned_ott/root_ott_id.txt"
     run:
-        if not write_if_needed(fp=output[0], content=CFG.root_ott_id):
+        if not write_if_needed(fp=output[0], content=CFG.root_ott_id, CFG=CFG):
             logger.info("root id has not changed.")
 
 rule write_ott_cleaning_flags:
@@ -32,7 +32,7 @@ rule write_ott_cleaning_flags:
     input: "config"
     output: "cleaned_ott/cleaning_flags.txt"
     run:
-        if not write_if_needed(fp=output[0], content=CFG.cleaning_flags):
+        if not write_if_needed(fp=output[0], content=CFG.cleaning_flags, CFG=CFG):
             logger.info("cleaning_flags have not changed.")
 
 rule write_ott_version:
@@ -41,7 +41,7 @@ rule write_ott_version:
     output: "cleaned_ott/ott_version.txt"
     run:
         ott_version = open(input[0], "r").read().strip() + "\n"
-        if not write_if_needed(fp=output[0], content=ott_version):
+        if not write_if_needed(fp=output[0], content=ott_version, CFG=CFG):
             logger.info("ott version has not changed.")
 
 rule clean_ott_based_on_flags:

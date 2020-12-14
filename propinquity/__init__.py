@@ -9,6 +9,7 @@ import json
 import copy
 import sys
 import os
+import re
 
 from peyutil import (is_str_type, read_as_json, write_as_json)
 from peyotl import Phylesystem
@@ -50,7 +51,6 @@ class PropinquityConfig(object):
 
     def __init__(self, config, logger):
         self.log = logger
-        print(config)
         self.propinquity_dir = os.path.abspath(config.get("propinquity_dir", os.curdir))
         if not os.path.isdir(self.propinquity_dir):
             m = "propinquity_dir from config {pd} does not an existing directory.\n".format(pd=propinquity_dir)
@@ -90,23 +90,29 @@ class PropinquityConfig(object):
             m = 'collections_dir {c} is expeceted to have "shards/collections-1" subdirectory.'
             raise RuntimeError(m.format(c=self.collections_dir))
         self.out_dir = os.path.abspath(os.curdir)
-        logger.info('Writing output to "{o}"'.format(o=self.out_dir))
         if 'OTC_CONFIG' not in os.environ:
             _ocfp = os.path.join(self.out_dir, "otc-config") 
             os.environ['OTC_CONFIG'] = _ocfp
             logger.debug('Setting OTC_CONFIG environment variable to "{}"'.format(_ocfp))
+        implied_otc_logfile = os.path.join(self.out_dir, "logs", "myeasylog.log")
         if 'OTCETERA_LOGFILE' not in os.environ:
-            os.environ['OTCETERA_LOGFILE'] = os.path.join(self.out_dir, "logs", "myeasylog.log")
+            os.environ['OTCETERA_LOGFILE'] = implied_otc_logfile
+            m = 'Setting OTCETERA_LOGFILE environment variable to "{}"'.format(implied_otc_logfile)
+            logger.debug(m)
         else:
             _ocfp = os.environ['OTCETERA_LOGFILE']
-            logger.warning("Using existing value for OTCETERA_LOGFILE {}.".format(_ocfp))
-        print(self.__dict__ )
+            if _ocfp != implied_otc_logfile:
+                m = "Using existing value for OTCETERA_LOGFILE {}.".format(_ocfp)
+                logger.warning(m)
 
     def debug(self, msg):
-        self.logger.debug(msg)
+        self.log.debug(msg)
 
     def warn(self, msg):
         self.log.warning(msg)
+
+    def info(self, msg):
+        self.log.info(msg)
 
     def error(self, msg):
         self.log.error(msg)
@@ -133,15 +139,17 @@ def canon_sep_string(v, sep=",", sort=True):
 ################################################################################
 # helper functions
 
-def cp_if_needed(src, dest, name=None):
+def cp_if_needed(src, dest, name=None, CFG=None):
     if (not os.path.exists(dest)) or (not filecmp.cmp(src, dest)):
         shutil.copy(src, dest)
-        warn('cp "{}" "{}"'.format(src, dest))
+        if CFG is not None:
+            CFG.warn('cp "{}" "{}"'.format(src, dest))
         return True
-    warn('copy of {n} not needed'.format(n=name))
+    if CFG is not None:
+        CFG.warn('copy of {n} not needed'.format(n=name))
     return False
 
-def write_if_needed(fp, content, name=None):
+def write_if_needed(fp, content, name=None, CFG=None):
     """Writes `content` to `fp` if the content of that filepath is empty or different.
 
     Returns True if a write was done, False if the file already had that content.
@@ -152,7 +160,8 @@ def write_if_needed(fp, content, name=None):
         prev_content = open(fp, "r").read()
         if prev_content == content:
             if name is not None:
-                warn("{n} has not changed".format(n=name))
+                if CFG is not None:
+                    CFG.warn("{n} has not changed".format(n=name))
             return False
     with open(fp, "w") as outp:
         outp.write(content)
@@ -242,6 +251,7 @@ def collection_to_included_trees(collection=None, fp=None):
 # major actions
 
 def export_trees_list_and_shas(concrete_coll_json_fp, out_fp, obj_blob_shas_fp):
+    raise ValueError("obj_blob_shas_fp={}".format(obj_blob_shas_fp))
     included = collection_to_included_trees(collection=None, fp=concrete_coll_json_fp)
     obj_blob_shas_lines = []
     study_tree_pair_lines = []
@@ -251,9 +261,9 @@ def export_trees_list_and_shas(concrete_coll_json_fp, out_fp, obj_blob_shas_fp):
     obs_content = '{}\n'.format('\n'.join(obj_blob_shas_lines))
     stp_content = '{}\n'.format('\n'.join(study_tree_pair_lines))
     a = write_if_needed(fp=out_fp, content=stp_content,
-                        name="study@tree pairs")
+                        name="study@tree pairs", CFG=CFG)
     b = write_if_needed(fp=obj_blob_shas_fp, content=obs_content,
-                        name="tree git object SHAs")
+                        name="tree git object SHAs", CFG=CFG)
     return a or b
 
 
@@ -301,26 +311,14 @@ def concatenate_collections(collection_list):
                 r_decisions.append(d)
     return r
 
-def reaggregate_synth_collections(inp_fp_list, out_fp):
+def reaggregate_synth_collections(inp_fp_list, out_fp, CFG):
     """Writes the contents of `inp_fp_list` as one collection at `out_fp`."""
     inp = [read_as_json(i) for i in inp_fp_list]
     blob = concatenate_collections(inp)
     content = json.dumps(blob, indent=0, sort_keys=True) + '\n'
     return write_if_needed(fp=out_fp,
                            content=content,
-                           name="concatenated collections")
-
-
-def clean_phylo_input(ott_dir,
-                      study_tree_pairs,
-                      tree_filepaths,
-                      output_dir,
-                      cleaning_flags,
-                      pruned_from_ott_json_fp,
-                      root_ott_id):
-    raise NotImplementedError("$(PEYOTL_ROOT)/scripts/nexson/prune_to_clean_mapped.py ")
-
-
+                           name="concatenated collections", CFG=CFG)
 
 # def verify_taxon_edits_not_needed(json_fp, unclean_ott, out_ott):
 #     with codecs.open(json_fp, mode='r', encoding='utf-8') as jinp:
@@ -335,40 +333,53 @@ def clean_phylo_input(ott_dir,
 #         sys.stderr.write(usage)
 #         raise
 
+def copy_ps_file_if_needed(git_action,
+                           sha,
+                           coll_decision,
+                           out_dir,
+                           cd_to_new_map,
+                           CFG):
+    """Copies the tree from `coll_decision` to `out_dir` if needed.
 
-
-def copy_phylesystem_file_if_differing(git_action,
-                                       sha,
-                                       coll_decision,
-                                       out_dir,
-                                       cd_to_new_map):
+    Returns tuple (file_exists, file_was_touche, dest_fp)
+    `git_action` is a git_action wrapper from Phylesystem
+    `sha` is a commit SHA for the commit (or '' for the default branch)
+    `cd_to_new_map` dict mapping `id(coll_decision)` to a concrete
+        decision.
+    """ 
     study_id = coll_decision['studyID']
     tree_id = coll_decision['treeID']
     fp = git_action.path_for_doc(study_id)
     new_name = 'tree_{}@{}.json'.format(study_id, tree_id)
     np = os.path.join(out_dir, new_name)
     if not os.path.isfile(fp):
-        warn('Study file "{}" does not exist. Assuming that this study has been deleted'.format(fp))
+        if CFG is not None:
+            CFG.warn('Study file "{}" does not exist. Assuming that this study has been deleted'.format(fp))
         if os.path.isfile(np):
             os.remove(np)
-        return False
+        return False, False, None
     # create a new "decision" entry that is bound to this SHA
     concrete_coll_decision = copy.deepcopy(coll_decision)
     concrete_coll_decision['SHA'] = sha
     concrete_coll_decision['object_SHA'] = git_action.object_SHA(study_id, sha)
     cd_to_new_map[id(coll_decision)] = concrete_coll_decision
-    return cp_if_needed(fp, np, study_id)
+    if not cp_if_needed(fp, np, study_id, CFG=CFG):
+        return False, True, np
+    return True, True, np
 
 
 def export_studies_from_collection(ranked_coll_fp,
                                    phylesystem_par,
                                    script_managed_trees,
-                                   out_par):
+                                   out_par,
+                                   concrete_coll_out_fp,
+                                   CFG=None):
     # Get the list of included trees
     try:
         included = collection_to_included_trees(fp=ranked_coll_fp)
     except:
-        error('Error: JSON parse error when reading collection "{}".\n'.format(ranked_coll_fp))
+        if CFG is not None:
+            CFG.error('Error: JSON parse error when reading collection "{}".\n'.format(ranked_coll_fp))
         raise
     ps = Phylesystem(repos_par=phylesystem_par)
     if not os.path.isdir(out_par):
@@ -380,7 +391,8 @@ def export_studies_from_collection(ranked_coll_fp,
         ga = ps.create_git_action(study_id)
         fp = ga.path_for_doc(study_id)
         if not os.path.isfile(fp):
-            warn(fp + ' does not exist: removing from collection on the assumption that the study has been deleted.')
+            if CFG is not None:
+                CFG.warn(fp + ' does not exist: removing from collection on the assumption that the study has been deleted.')
         else:
             included_and_exists.append(inc)
     included = included_and_exists
@@ -392,10 +404,12 @@ def export_studies_from_collection(ranked_coll_fp,
     num_moved, num_deleted = 0, 0
 
     needs_reset_to_master = False
+    file_names_copied = set()
     for sha, from_this_sha_inc in included_by_sha.items():
         for inc in from_this_sha_inc:
             study_id = inc['studyID']
-            logger.info('study_id={s} from SHA={h}'.format(s=study_id, h=sha))
+            if CFG is not None:
+                CFG.info('study_id={s} from SHA={h}'.format(s=study_id, h=sha))
             ga = ps.create_git_action(study_id)
             with ga.lock():
                 if sha == '':
@@ -404,37 +418,53 @@ def export_studies_from_collection(ranked_coll_fp,
                 else:
                     ga.checkout(sha)
                     needs_reset_to_master = True
-                if copy_phylesystem_file_if_differing(ga, sha, inc,
-                                                      out_par, generic2concrete):
+                x = copy_ps_file_if_needed(ga, sha, inc,
+                                           out_par, generic2concrete, CFG=CFG)
+                if x[0]:
+                    file_name = os.path.split(x[-1])[-1]
+                    file_names_copied.add(file_name)
                     num_moved += 1
                 else:
                     num_deleted += 1
     if needs_reset_to_master:
         ga.checkout_master()
-    debug('{} total trees'.format(len(included) - num_deleted))
-    debug('{} JSON files copied'.format(num_moved))
-    debug('{} trees in collections, but with missing studies'.format(num_deleted))
+    if CFG:
+        CFG.debug('{} total trees'.format(len(included) - num_deleted))
+        CFG.debug('{} JSON files copied'.format(num_moved))
+        CFG.debug('{} trees in collections, but with missing studies'.format(num_deleted))
+
+    tree_file_name_pattern = re.compile(r'tree_{[a-z_A-Z0-9]+}[@]{[a-z_A-Z0-9]+}.json')
+    for i in os.listdir(out_par):
+        if CFG is not None:
+            CFG.warn('checking "{}"'.format(i))
+        if tree_file_name_pattern.match(i):
+            if i in file_names_copied:
+                pass #if CFG is not None:
+                    # CFG.warn('keeping {}'.format(i))
+            else:
+                if CFG is not None:
+                    CFG.warn('need to delete {}'.format(i))
+                #os.remove(i)
+        else:
+            if CFG is not None:
+                CFG.warn('no pattern match for "{}"'.format(i))
 
     # now we write a "concrete" version of this snapshot
     coll_name = os.path.split(ranked_coll_fp)[-1]
     coll_tag = '.'.join(coll_name.split('.')[:-1])
+    concrete_collection = get_empty_collection()
+    cd_list = concrete_collection['decisions']
+    ifn = os.path.split(ranked_coll_fp)[-1]
+    m = 'Concrete form of collection "{}"'.format(ifn)
+    concrete_collection['description'] = m
     for inc in included:
-        concrete_collection = get_empty_collection()
-        cd_list = concrete_collection['decisions']
-        
         try:
             concrete = generic2concrete[id(inc)]
             cd_list.append(concrete)
         except KeyError:
             pass
-        else:
-            concrete_collection['description'] = m
-            study_id = concrete['studyID']
-            tree_id = concrete['treeID']
-            new_name = '{}@{}.json'.format(study_id, tree_id)
-            m = 'Concrete form of collection "{}" {}'.format(coll_name, new_name)
-            concrete_fn = os.path.join(out_par, 'concrete_' + coll_tag + new_name)
-            write_as_json(concrete_collection, concrete_fn)
+    ccc = json.dumps(concrete_collection, indent=0, sort_keys=True) + '\n'
+    write_if_needed(content=ccc, fp=concrete_coll_out_fp, CFG=CFG)
 
 def merge_concrete_collection(ranked_coll_fp, concrete_coll, out_json_fp):
     raise ValueError('\n'.join([str(i) for i in (ranked_coll_fp, concrete_coll, out_json_fp)]))
@@ -478,3 +508,16 @@ def suppress_by_flag(ott_dir,
     with open(out_nonredundanttree_fp, "w") as outp:
         rp = subprocess.run(invocation, stdout=outp)
     rp.check_returncode()
+
+
+
+
+def clean_phylo_input(ott_dir,
+                      study_tree_pairs,
+                      tree_filepaths,
+                      output_dir,
+                      cleaning_flags,
+                      pruned_from_ott_json_fp,
+                      root_ott_id):
+    raise NotImplementedError("$(PEYOTL_ROOT)/scripts/nexson/prune_to_clean_mapped.py ")
+

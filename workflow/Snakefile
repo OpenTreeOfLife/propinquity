@@ -12,7 +12,7 @@ min_version("5.30.1")
 
 CFG = validate_config(config, logger)
 content = json.dumps(config, sort_keys=True, indent=2) + '\n'
-write_if_needed(content=content, fp="config.json")
+write_if_needed(content=content, fp="config.json", CFG=CFG)
 
 subworkflow tool_config:
     workdir: CFG.out_dir
@@ -29,10 +29,16 @@ subworkflow clean_ott:
     snakefile: "rules/clean_ott.smk"
     configfile: "config.json"
 
+subworkflow clean_phylo:
+    workdir: CFG.out_dir
+    snakefile: "rules/clean_phylo.smk"
+    configfile: "config.json"
+
 rule all:
     input: tool_config("config"), tool_config("otc-config"),
            snapshot("phylo_input/blob_shas.txt"), 
-           clean_ott("cleaned_ott/cleaned_ott.tre")
+           clean_ott("cleaned_ott/cleaned_ott.tre"),
+#           clean_phylo("")
 
 # # End Phylo cleaning
 # ################################################################################

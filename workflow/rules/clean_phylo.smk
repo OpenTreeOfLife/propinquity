@@ -64,5 +64,5 @@ rule create_exemplify_full_path_args:
         c = '\n'.join(paths)
         write_if_needed(fp=output[0],
                         content=c,
-                        name="cleaned phylo filepaths")
+                        name="cleaned phylo filepaths", CFG=CFG)
 
