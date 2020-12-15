@@ -250,8 +250,10 @@ def collection_to_included_trees(collection=None, fp=None):
 ################################################################################
 # major actions
 
-def export_trees_list_and_shas(concrete_coll_json_fp, out_fp, obj_blob_shas_fp):
-    raise ValueError("obj_blob_shas_fp={}".format(obj_blob_shas_fp))
+def export_trees_list_and_shas(concrete_coll_json_fp,
+                               out_fp,
+                               obj_blob_shas_fp,
+                               CFG):
     included = collection_to_included_trees(collection=None, fp=concrete_coll_json_fp)
     obj_blob_shas_lines = []
     study_tree_pair_lines = []

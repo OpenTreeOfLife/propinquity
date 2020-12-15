@@ -1,4 +1,5 @@
 from propinquity import (export_studies_from_collection,
+                         export_trees_list_and_shas,
                          pull_git_subdirs,
                          reaggregate_synth_collections,
                          validate_config,
@@ -90,4 +91,5 @@ rule concrete_tree_list:
     run:
         export_trees_list_and_shas(concrete_coll_json_fp=input[0],
                                    out_fp=output.pairs,
-                                   obj_blob_shas_fp=output.blob_shas)
+                                   obj_blob_shas_fp=output.blob_shas,
+                                   CFG=CFG)
