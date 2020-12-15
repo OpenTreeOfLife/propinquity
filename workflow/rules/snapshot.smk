@@ -60,7 +60,7 @@ rule copy_collections:
            json_fp=expand(_coll_json_pattern, syncoll=CFG.collections.split(','))
     output: "phylo_input/rank_collection.json"
     run:
-        reaggregate_synth_collections(input.json_fp, output[0])
+        reaggregate_synth_collections(input.json_fp, output[0], CFG=CFG)
 
 rule snapshot_trees_and_collection_items:
     """Concatenate all input collections in order into one "concrete" copy.

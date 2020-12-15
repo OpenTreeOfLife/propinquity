@@ -364,7 +364,7 @@ def copy_ps_file_if_needed(git_action,
     concrete_coll_decision['object_SHA'] = git_action.object_SHA(study_id, sha)
     cd_to_new_map[id(coll_decision)] = concrete_coll_decision
     if not cp_if_needed(fp, np, study_id, CFG=CFG):
-        return False, True, np
+        return True, False, np
     return True, True, np
 
 
@@ -433,21 +433,13 @@ def export_studies_from_collection(ranked_coll_fp,
         CFG.debug('{} JSON files copied'.format(num_moved))
         CFG.debug('{} trees in collections, but with missing studies'.format(num_deleted))
 
-    tree_file_name_pattern = re.compile(r'tree_{[a-z_A-Z0-9]+}[@]{[a-z_A-Z0-9]+}.json')
+    tree_file_name_pattern = re.compile(r'tree_[a-z_A-Z0-9]+@[a-z_A-Z0-9]+\.json') # {[a-z_A-Z0-9]+}.*{+}.json')
     for i in os.listdir(out_par):
-        if CFG is not None:
-            CFG.warn('checking "{}"'.format(i))
         if tree_file_name_pattern.match(i):
-            if i in file_names_copied:
-                pass #if CFG is not None:
-                    # CFG.warn('keeping {}'.format(i))
-            else:
+            if i not in file_names_copied:
                 if CFG is not None:
                     CFG.warn('need to delete {}'.format(i))
-                #os.remove(i)
-        else:
-            if CFG is not None:
-                CFG.warn('no pattern match for "{}"'.format(i))
+                os.remove(os.path.join(out_par, i))
 
     # now we write a "concrete" version of this snapshot
     coll_name = os.path.split(ranked_coll_fp)[-1]
