@@ -38,7 +38,7 @@ rule all:
     input: tool_config("config"), tool_config("otc-config"),
            snapshot("phylo_input/blob_shas.txt"), 
            clean_ott("cleaned_ott/cleaned_ott.tre"),
-#           clean_phylo("")
+           clean_phylo("exemplified_phylo/args.txt")
 
 # # End Phylo cleaning
 # ################################################################################
