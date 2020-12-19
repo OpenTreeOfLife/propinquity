@@ -55,14 +55,14 @@ rule clean_phylo_tre:
     """Clean phylogenetic inputs from snapshot to cleaned_phylo"""
     input: config="config", \
            ott_pruned="cleaned_ott/cleaned_ott_pruned_nonflagged.json", \
-           stp="phylo_input/study_tree_pairs.txt", \
-           trees=set_tag_to_study_tree_pair
-    output: trees="cleaned_phylo/{tag}.tre"
+           stp="phylo_input/study_tree_pairs.txt"
+    output: trees=dynamic("cleaned_phylo/{tag}.tre")
     run:
         od = os.path.join(CFG.out_dir, "cleaned_phylo")
+        trees=set_tag_to_study_tree_pair(None)
         clean_phylo_input(CFG.ott_dir,
                           study_tree_pairs=input.stp,
-                          tree_filepaths=input.trees,
+                          tree_filepaths=trees,
                           output_dir=od,
                           cleaning_flags=CFG.cleaning_flags,
                           pruned_from_ott_json_fp=input.ott_pruned,
