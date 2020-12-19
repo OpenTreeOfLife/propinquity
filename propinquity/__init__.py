@@ -10,6 +10,7 @@ import copy
 import sys
 import os
 import re
+import io
 from pathlib import Path
 
 
@@ -880,17 +881,20 @@ def generate_newicks_for_external_trees(external_trees,
                                         out_dir,
                                         script_managed_trees_path,
                                         CFG=None):
-
+    """Returns True if any files are written."""
     # Generate the newick for the external trees here!
     if not external_trees:
-        return
-
+        return False
     assert script_managed_trees_path, "Path for script-managed-trees not set!"
 
-    cmd = ['otc-prune-clean', '--taxonomy={}'.format(ott_dir), '--root={}'.format(root), '--clean={}'.format(clean_flags), '--out-dir={}'.format(out_dir)]
+    cmd = ['otc-prune-clean',
+           '--taxonomy={}'.format(ott_dir),
+           '--root={}'.format(root),
+           '--clean={}'.format(clean_flags),
+           '--out-dir={}'.format(out_dir)]
 
     for (study_tree, path) in external_trees:
-        path = os.path.join(script_managed_trees_path,path)
+        path = os.path.join(script_managed_trees_path, path)
         cmd.append(f"{path}:{study_tree}")
 
     try:
@@ -899,6 +903,7 @@ def generate_newicks_for_external_trees(external_trees,
         CFG.warning(e.stdout.decode('UTF-8'))
         CFG.warning(e.stderr.decode('UTF-8'))
         raise e
+    return True
 
 def clean_phylo_input(ott_dir,
                       study_tree_pairs,
@@ -909,6 +914,7 @@ def clean_phylo_input(ott_dir,
                       root_ott_id,
                       script_managed_dir,
                       CFG=None):
+    """Returns True if any files are written or deleted."""
     par_inp = os.path.split(output_dir)[0]
     inp_files = [os.path.join(par_inp, i) for i in tree_filepaths]
     print(f"""
@@ -940,6 +946,7 @@ script_managed_trees_dir={script_managed_dir}
     to_prune_fsi_set = ott.convert_flag_string_set_to_union(flags)
 
     external_trees = []
+    touched = False
     for inp in inp_files:
         if CFG is not None:
             CFG.debug('{}'.format(inp))
@@ -980,28 +987,36 @@ script_managed_trees_dir={script_managed_dir}
                 # internal nodes may lack otu's but we still want the node Ids
                 return '_{}_'.format(str(node_id))
 
-
-        with codecs.open(newick_fp, 'w', encoding='utf-8') as outp:
-            if not ntw.is_empty:
-                nexson_frag_write_newick(outp,
-                                         ntw._edge_by_source,
-                                         ntw._node_by_id,
-                                         ntw.otus,
-                                         label_key=compose_label,
-                                         leaf_labels=None,
-                                         root_id=ntw.root_node_id,
-                                         ingroup_id=None,
-                                         bracket_ingroup=False,
-                                         with_edge_lengths=False)
-                outp.write('\n')
-
-    generate_newicks_for_external_trees(external_trees,
-                                        ott_dir,
-                                        root_ott_id,
-                                        cleaning_flags,
-                                        output_dir,
-                                        script_managed_dir,
-                                        CFG=CFG)
+        if ntw.is_empty:
+            if os.path.isfile(newick_fp):
+                os.unlink(newick_fp)
+                touched = True
+            continue
+        outp = io.StringIO()
+        nexson_frag_write_newick(outp,
+                                 ntw._edge_by_source,
+                                 ntw._node_by_id,
+                                 ntw.otus,
+                                 label_key=compose_label,
+                                 leaf_labels=None,
+                                 root_id=ntw.root_node_id,
+                                 ingroup_id=None,
+                                 bracket_ingroup=False,
+                                 with_edge_lengths=False)
+        outp.write('\n')
+        content = outp.getvalue()
+        if write_if_needed(content=content, fp=newick_fp):
+            touched = True
+        
+    if generate_newicks_for_external_trees(external_trees,
+                                           ott_dir,
+                                           root_ott_id,
+                                           cleaning_flags,
+                                           output_dir,
+                                           script_managed_dir,
+                                           CFG=CFG):
+        touched = True
+    return touched
 
 def touch_file(fn):
     Path(fn).touch()

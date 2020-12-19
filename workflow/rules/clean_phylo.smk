@@ -56,30 +56,24 @@ rule clean_phylo_tre:
     input: config="config", \
            ott_pruned="cleaned_ott/cleaned_ott_pruned_nonflagged.json", \
            stp="phylo_input/study_tree_pairs.txt"
-    output: trees=dynamic("cleaned_phylo/{tag}.tre")
+    output: signal="cleaned_phylo/phylo_inputs_cleaned.txt"
     run:
         od = os.path.join(CFG.out_dir, "cleaned_phylo")
         trees=set_tag_to_study_tree_pair(None)
-        clean_phylo_input(CFG.ott_dir,
-                          study_tree_pairs=input.stp,
-                          tree_filepaths=trees,
-                          output_dir=od,
-                          cleaning_flags=CFG.cleaning_flags,
-                          pruned_from_ott_json_fp=input.ott_pruned,
-                          root_ott_id=CFG.root_ott_id,
-                          script_managed_dir=CFG.script_managed_trees_dir,
-                          CFG=CFG)
+        if clean_phylo_input(CFG.ott_dir,
+                              study_tree_pairs=input.stp,
+                              tree_filepaths=trees,
+                              output_dir=od,
+                              cleaning_flags=CFG.cleaning_flags,
+                              pruned_from_ott_json_fp=input.ott_pruned,
+                              root_ott_id=CFG.root_ott_id,
+                              script_managed_dir=CFG.script_managed_trees_dir,
+                              CFG=CFG):
+            touch_file(output.signal)
 
-rule signal_phylo_cleaned:
-    input: stp="phylo_input/study_tree_pairs.txt", \
-           trees=set_tag_to_cleaned_study_tree_pair
-    output: signal="cleaned_phylo/phylo_inputs_cleaned.txt"
-    run:
-        touch_file(output.signal)
 
 rule create_exemplify_full_path_args:
     input: pairs="phylo_input/study_tree_pairs.txt", \
-           trees=set_tag_to_cleaned_study_tree_pair, \
            signal="cleaned_phylo/phylo_inputs_cleaned.txt"
     output: "exemplified_phylo/args.txt"
     run:
