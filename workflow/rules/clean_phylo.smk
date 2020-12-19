@@ -1,6 +1,7 @@
 from propinquity import (clean_phylo_input,
                          gen_config_content,
                          gen_otc_config_content,
+                         touch_file,
                          validate_config,
                          write_if_needed)
 from snakemake.logging import logger
@@ -35,7 +36,7 @@ def set_tag_to_study_tree_pair(wildcards, snapshot=True):
         if snapshot:
             template = "phylo_snapshot/tree_{tag}.json"
         else:
-            template = "cleaned_phylo/{tag}.tre"
+            template = "cleaned_phylo/tree_{tag}.tre"
         paths = []
         with open(sp, "r") as inp:
             for line in inp:
@@ -66,14 +67,15 @@ rule clean_phylo_tre:
                           cleaning_flags=CFG.cleaning_flags,
                           pruned_from_ott_json_fp=input.ott_pruned,
                           root_ott_id=CFG.root_ott_id,
-                          script_managed_dir=CFG.script_managed_trees_dir)
+                          script_managed_dir=CFG.script_managed_trees_dir,
+                          CFG=CFG)
 
 rule signal_phylo_cleaned:
     input: stp="phylo_input/study_tree_pairs.txt", \
            trees=set_tag_to_cleaned_study_tree_pair
     output: signal="cleaned_phylo/phylo_inputs_cleaned.txt"
     run:
-        touch(output.signal)
+        touch_file(output.signal)
 
 rule create_exemplify_full_path_args:
     input: pairs="phylo_input/study_tree_pairs.txt", \
