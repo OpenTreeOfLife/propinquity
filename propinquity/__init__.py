@@ -515,17 +515,106 @@ def clean_phylo_input(ott_dir,
                       root_ott_id,
                       script_managed_dir):
     par_inp = os.path.split(output_dir)[0]
-    full_inp = [os.path.join(par_inp, i) for i in tree_filepaths]
+    inp_files = [os.path.join(par_inp, i) for i in tree_filepaths]
     print(f"""
 ott_dir={ott_dir}
 study_tree_pairs={study_tree_pairs}
-full_inp={full_inp}
+inp_files={inp_files}
 output_dir={output_dir}
 cleaning_flags={cleaning_flags}
 pruned_from_ott_json_fp={pruned_from_ott_json_fp}
 root_ott_id={root_ott_id}
 script_managed_trees_dir={script_managed_dir}
                       """)
+    parser.add_argument('--input-files-list',
+                        default=None,
+                        type=str,
+                        required=False,
+                        help='A list of input NexSON filenames.')
+    parser.add_argument('--script-managed-trees',
+                        default=None,
+                        type=str,
+                        required=False,
+                        help='filepath to the top of the script-managed-trees repository')
+    to_prune_for_reasons = {}
+    if pruned_from_ott_json_fp is not None:
+        try:
+            nonflagged_blob = read_as_json(pruned_from_ott_json_fp)
+        except:
+            nonflagged_blob = None
+        if nonflagged_blob:
+            for reason, id_list in nonflagged_blob.items():
+                for ott_id in id_list:
+                    to_prune_for_reasons[ott_id] = reason
+    if not os.path.isdir(args.ott_dir):
+        raise RuntimeError('Expecting ott-dir argument to be a directory. Got "{}"'.format(ott_dir))
+    if (root_ott_id is not None) and (not is_int_type(root_ott_id)):
+        root_ott_id = int(root_ott_id)
+    if cleaning_flags is None:
+        cleaning_flags = OTT.TREEMACHINE_SUPPRESS_FLAGS
+    flags = [i.strip() for i in cleaning_flags.split(',') if i.strip()]
+    ott = OTT(ott_dir=args.ott_dir)
+    to_prune_fsi_set = ott.convert_flag_string_set_to_union(flags)
 
+    external_trees = []
+    for inp in inp_files:
+        _LOG.debug('{}'.format(inp))
+        log_obj = {}
+        inp_fn = os.path.split(inp)[-1]
+        study_tree = '.'.join(inp_fn.split('.')[:-1])  # strip extension
+        study_id, tree_id = propinquity_fn_to_study_tree(inp_fn)
+        nexson_blob = read_as_json(inp)
+
+        if "externalTree" in nexson_blob["nexml"]:
+            path = nexson_blob["nexml"]["externalTree"]["path"]
+            print(f'{study_tree} at {path}')
+            external_trees.append( (study_tree,path) )
+            continue
+
+        ntw = NexsonTreeWrapper(nexson_blob, tree_id, log_obj=log_obj)
+        assert ntw.root_node_id
+        taxonomy_treefile = os.path.join(output_dir, study_tree + '-taxonomy.tre')
+        try:
+            ntw.prune_tree_for_supertree(ott=ott,
+                                         to_prune_fsi_set=to_prune_fsi_set,
+                                         root_ott_id=root_ott_id,
+                                         taxonomy_treefile=taxonomy_treefile,
+                                         id_to_other_prune_reason=to_prune_for_reasons)
+        except EmptyTreeError:
+            log_obj['EMPTY_TREE'] = True
+        out_log = os.path.join(output_dir, study_tree + '.json')
+        write_as_json(log_obj, out_log)
+        newick_fp = os.path.join(output_dir, study_tree + '.tre')
+
+
+
+        def compose_label(node_id, node, otu):
+            try:
+                return '_'.join([otu['^ot:ottTaxonName'], str(node_id), 'ott' + str(otu['^ot:ottId'])])
+            except:
+                # internal nodes may lack otu's but we still want the node Ids
+                return '_{}_'.format(str(node_id))
+
+
+        with codecs.open(newick_fp, 'w', encoding='utf-8') as outp:
+            if not ntw.is_empty:
+                nexson_frag_write_newick(outp,
+                                         ntw._edge_by_source,
+                                         ntw._node_by_id,
+                                         ntw.otus,
+                                         label_key=compose_label,
+                                         leaf_labels=None,
+                                         root_id=ntw.root_node_id,
+                                         ingroup_id=None,
+                                         bracket_ingroup=False,
+                                         with_edge_lengths=False)
+                outp.write('\n')
+
+    generate_newicks_for_external_trees(external_trees,
+                                        ott_dir,
+                                        root_ott_id,
+                                        cleaning_flags,
+                                        output_dir,
+                                        args.script_managed_trees)
     raise NotImplementedError("$(PEYOTL_ROOT)/scripts/nexson/prune_to_clean_mapped.py ")
 
