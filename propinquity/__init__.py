@@ -512,6 +512,20 @@ def clean_phylo_input(ott_dir,
                       output_dir,
                       cleaning_flags,
                       pruned_from_ott_json_fp,
-                      root_ott_id):
+                      root_ott_id,
+                      script_managed_dir):
+    par_inp = os.path.split(output_dir)[0]
+    full_inp = [os.path.join(par_inp, i) for i in tree_filepaths]
+    print(f"""
+ott_dir={ott_dir}
+study_tree_pairs={study_tree_pairs}
+full_inp={full_inp}
+output_dir={output_dir}
+cleaning_flags={cleaning_flags}
+pruned_from_ott_json_fp={pruned_from_ott_json_fp}
+root_ott_id={root_ott_id}
+script_managed_trees_dir={script_managed_dir}
+                      """)
+
     raise NotImplementedError("$(PEYOTL_ROOT)/scripts/nexson/prune_to_clean_mapped.py ")
 

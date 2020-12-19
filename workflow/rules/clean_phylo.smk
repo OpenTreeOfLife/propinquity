@@ -1,4 +1,5 @@
-from propinquity import (gen_config_content,
+from propinquity import (clean_phylo_input,
+                         gen_config_content,
                          gen_otc_config_content,
                          validate_config,
                          write_if_needed)
@@ -28,10 +29,13 @@ def write_full_path_for_inputs(x, y, z):
 #                                    phylesystem_dir,
 #                                    os.path.join(out_dir, "phylo_snapshot"))
 
-def set_tag_to_study_tree_pair(wildcards):
+def set_tag_to_study_tree_pair(wildcards, snapshot=True):
     sp = os.path.join(CFG.out_dir, "phylo_input", "study_tree_pairs.txt")
     if os.path.exists(sp):
-        template = "phylo_snapshot/tree_{tag}.json"
+        if snapshot:
+            template = "phylo_snapshot/tree_{tag}.json"
+        else:
+            template = "cleaned_phylo/{tag}.tre"
         paths = []
         with open(sp, "r") as inp:
             for line in inp:
@@ -43,6 +47,9 @@ def set_tag_to_study_tree_pair(wildcards):
     CFG.error(sp + "does not exist!")
     raise RuntimeError(sp + "does not exist!")
 
+def set_tag_to_cleaned_study_tree_pair(wildcards):
+    return set_tag_to_study_tree_pair(wildcards, snapshot=False)
+
 rule clean_phylo_tre:
     """Clean phylogenetic inputs from snapshot to cleaned_phylo"""
     input: config="config", \
@@ -52,22 +59,31 @@ rule clean_phylo_tre:
     output: trees="cleaned_phylo/{tag}.tre"
     run:
         od = os.path.join(CFG.out_dir, "cleaned_phylo")
-        clean_phylo_input(ott_dir,
+        clean_phylo_input(CFG.ott_dir,
                           study_tree_pairs=input.stp,
                           tree_filepaths=input.trees,
                           output_dir=od,
                           cleaning_flags=CFG.cleaning_flags,
                           pruned_from_ott_json_fp=input.ott_pruned,
-                          root_ott_id=CFG.root_ott_id)
+                          root_ott_id=CFG.root_ott_id,
+                          script_managed_dir=CFG.script_managed_trees_dir)
+
+rule signal_phylo_cleaned:
+    input: stp="phylo_input/study_tree_pairs.txt", \
+           trees=set_tag_to_cleaned_study_tree_pair
+    output: signal="cleaned_phylo/phylo_inputs_cleaned.txt"
+    run:
+        touch(output.signal)
 
 rule create_exemplify_full_path_args:
     input: pairs="phylo_input/study_tree_pairs.txt", \
-           trees=set_tag_to_study_tree_pair
+           trees=set_tag_to_cleaned_study_tree_pair, \
+           signal="cleaned_phylo/phylo_inputs_cleaned.txt"
     output: "exemplified_phylo/args.txt"
     run:
-        clean_phy = os.path.join(out_dir, "cleaned_phylo", '{tag}.tre')
+        clean_phy = os.path.join(CFG.out_dir, "cleaned_phylo", '{tag}.tre')
         tags = [i.strip() for i in open(input.pairs, "r").readlines() if i.strip()]
-        paths = [cleaned_phylo.format(tag=i) for i in tags] 
+        paths = [clean_phy.format(tag=i) for i in tags] 
         c = '\n'.join(paths)
         write_if_needed(fp=output[0],
                         content=c,
