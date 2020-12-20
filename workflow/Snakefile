@@ -34,11 +34,18 @@ subworkflow clean_phylo:
     snakefile: "rules/clean_phylo.smk"
     configfile: "config.json"
 
+subworkflow exemplify:
+    workdir: CFG.out_dir
+    snakefile: "rules/exemplify_raw_ott.smk"
+    configfile: "config.json"
+
 rule all:
     input: tool_config("config"), tool_config("otc-config"),
            snapshot("phylo_input/blob_shas.txt"), 
-           clean_ott("cleaned_ott/cleaned_ott.tre"),
-           clean_phylo("exemplified_phylo/args.txt")
+           clean_ott("cleaned_ott/cleaned_not_updated_ott.tre"),
+           clean_phylo("exemplified_phylo/args.txt"),
+           clean_phylo("cleaned_phylo/phylo_inputs_cleaned.txt"),
+           exemplify("cleaned_ott/move_extinct_higher_log.json")
 
 # # End Phylo cleaning
 # ################################################################################

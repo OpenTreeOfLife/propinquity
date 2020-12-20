@@ -1020,3 +1020,19 @@ script_managed_trees_dir={script_managed_dir}
 
 def touch_file(fn):
     Path(fn).touch()
+
+
+
+def detect_extinct_taxa_to_bump(ott_tree,
+                                phylo_input_fp,
+                                ott_flagged,
+                                out,
+                                CFG=None):
+    invocation = ["otc-move-extinct-higher-to-avoid-contesting-taxa",
+                  ott_tree,
+                  "-f{}".format(phylo_input_fp),
+                  "-t{}".format(ott_flagged),
+                  "-j{}".format(out),
+                  ]
+    rp = subprocess.run(invocation)
+    rp.check_returncode()

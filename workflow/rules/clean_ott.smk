@@ -12,7 +12,7 @@ min_version("5.30.1")
 CFG = validate_config(config, logger)
 
 rule all:
-    input: "cleaned_ott/cleaned_ott.tre"
+    input: "cleaned_ott/cleaned_not_updated_ott.tre"
     log: "logs/snapshot"
 
 # End snapshot inputs
@@ -51,7 +51,7 @@ rule clean_ott_based_on_flags:
            cleaning_flags="cleaned_ott/cleaning_flags.txt", \
            root="cleaned_ott/root_ott_id.txt"
     output: with_deg_2_tree="cleaned_ott/cleaned_ott_with_hiddenbarren.tre", \
-            nonredundant_tree="cleaned_ott/cleaned_ott.tre", \
+            nonredundant_tree="cleaned_ott/cleaned_not_updated_ott.tre", \
             log="cleaned_ott/cleaned_ott_1.json", \
             prune_log="cleaned_ott/cleaned_ott_pruned_nonflagged.json", \
             flagged="cleaned_ott/flagged_in_cleaned.json"

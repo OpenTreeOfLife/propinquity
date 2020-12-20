@@ -77,7 +77,7 @@ rule create_exemplify_full_path_args:
            signal="cleaned_phylo/phylo_inputs_cleaned.txt"
     output: "exemplified_phylo/args.txt"
     run:
-        clean_phy = os.path.join(CFG.out_dir, "cleaned_phylo", '{tag}.tre')
+        clean_phy = os.path.join(CFG.out_dir, "cleaned_phylo", 'tree_{tag}.tre')
         tags = [i.strip() for i in open(input.pairs, "r").readlines() if i.strip()]
         paths = [clean_phy.format(tag=i) for i in tags] 
         c = '\n'.join(paths)
