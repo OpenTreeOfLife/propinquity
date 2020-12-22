@@ -880,6 +880,7 @@ def generate_newicks_for_external_trees(external_trees,
                                         clean_flags,
                                         out_dir,
                                         script_managed_trees_path,
+                                        nonempty_out_fp,
                                         CFG=None):
     """Returns True if any files are written."""
     # Generate the newick for the external trees here!
@@ -896,6 +897,7 @@ def generate_newicks_for_external_trees(external_trees,
     for (study_tree, path) in external_trees:
         path = os.path.join(script_managed_trees_path, path)
         cmd.append(f"{path}:{study_tree}")
+        nonempty_out_fp.append(study_tree)
 
     try:
         subprocess.run(cmd, check=True, capture_output=True)
@@ -913,6 +915,7 @@ def clean_phylo_input(ott_dir,
                       pruned_from_ott_json_fp,
                       root_ott_id,
                       script_managed_dir,
+                      nonempty_out_fp,
                       CFG=None):
     """Returns True if any files are written or deleted."""
     par_inp = os.path.split(output_dir)[0]
@@ -947,6 +950,7 @@ script_managed_trees_dir={script_managed_dir}
 
     external_trees = []
     touched = False
+    all_newick_fps = []
     for inp in inp_files:
         if CFG is not None:
             CFG.debug('{}'.format(inp))
@@ -1007,6 +1011,7 @@ script_managed_trees_dir={script_managed_dir}
         content = outp.getvalue()
         if write_if_needed(content=content, fp=newick_fp):
             touched = True
+        all_newick_fps.append(newick_fp)
         
     if generate_newicks_for_external_trees(external_trees,
                                            ott_dir,
@@ -1014,9 +1019,24 @@ script_managed_trees_dir={script_managed_dir}
                                            cleaning_flags,
                                            output_dir,
                                            script_managed_dir,
+                                           all_newick_fps,
                                            CFG=CFG):
         touched = True
+    with open(nonempty_out_fp, "w") as neop:
+        neop.write('{}\n'.format('\n'.join(all_newick_fps)))
     return touched
+
+def force_or_touch_file(fn, touch=True):
+    """Touches fn if touch is True. If touch is False, it will create fn
+    if fn does not exist. However, it will not update the timestamp
+    of fn if fn already existed.
+
+    This is useful if you need `fn` to exist when an operation is completed,
+        but you don't want to touch it unnecessarily if it has not changed.
+    Thus, the caller would pass in False if the content is unchanged.
+    """
+    if touch or not os.path.exists(fn):
+        touch_file(fn)
 
 def touch_file(fn):
     Path(fn).touch()
