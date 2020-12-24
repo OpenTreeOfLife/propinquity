@@ -60,7 +60,7 @@ rule clean_phylo_tre:
             nonempty_out_fp="exemplified_phylo/args.txt"
     run:
         od = os.path.join(CFG.out_dir, "cleaned_phylo")
-        trees=set_tag_to_study_tree_pair(None)
+        trees = set_tag_to_study_tree_pair(None)
         c = clean_phylo_input(CFG.ott_dir,
                               study_tree_pairs=input.stp,
                               tree_filepaths=trees,

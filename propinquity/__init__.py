@@ -959,11 +959,13 @@ script_managed_trees_dir={script_managed_dir}
         study_tree = '.'.join(inp_fn.split('.')[:-1])  # strip extension
         study_id, tree_id = propinquity_fn_to_study_tree(inp_fn)
         nexson_blob = read_as_json(inp)
-
-        if "externalTree" in nexson_blob["nexml"]:
-            path = nexson_blob["nexml"]["externalTree"]["path"]
-            print(f'{study_tree} at {path}')
-            external_trees.append( (study_tree,path) )
+        nexml_blob = nexson_blob["nexml"]
+        if "externalTrees" in nexml_blob or ():
+            etlist = nexson_blob["nexml"]["externalTrees"]
+            for et in etlist:
+                path = et["pathFromScriptManagedRepo"]
+                print(f'{study_tree} at {path}')
+                external_trees.append( (study_tree,path) )
             continue
 
         ntw = NexsonTreeWrapper(nexson_blob, tree_id, log_obj=log_obj,
