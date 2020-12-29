@@ -893,11 +893,11 @@ def generate_newicks_for_external_trees(external_trees,
            '--root={}'.format(root),
            '--clean={}'.format(clean_flags),
            '--out-dir={}'.format(out_dir)]
-
+    to_add = []
     for (study_tree, path) in external_trees:
         path = os.path.join(script_managed_trees_path, path)
         cmd.append(f"{path}:{study_tree}")
-        nonempty_out_fp.append(study_tree)
+        to_add.append(os.path.join(out_dir, study_tree + ".tre"))
 
     try:
         subprocess.run(cmd, check=True, capture_output=True)
@@ -905,6 +905,7 @@ def generate_newicks_for_external_trees(external_trees,
         CFG.warning(e.stdout.decode('UTF-8'))
         CFG.warning(e.stderr.decode('UTF-8'))
         raise e
+    nonempty_out_fp.extend(to_add)
     return True
 
 def clean_phylo_input(ott_dir,
@@ -1014,7 +1015,6 @@ script_managed_trees_dir={script_managed_dir}
         if write_if_needed(content=content, fp=newick_fp):
             touched = True
         all_newick_fps.append(newick_fp)
-        
     if generate_newicks_for_external_trees(external_trees,
                                            ott_dir,
                                            root_ott_id,
