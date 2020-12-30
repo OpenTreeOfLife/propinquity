@@ -485,7 +485,7 @@ def suppress_by_flag(ott_dir,
     if not isinstance(flags, list):
         flags = flags.split(',')
     ott = OTT(ott_dir=ott_dir)
-    create_log = (log_fp is not None) and (flagged_fp is not None)
+    create_log = (log_fp is not None) or (flagged_fp is not None)
     with codecs.open(out_with_deg2_tree_fp, 'w', encoding='utf-8') as outp:
         log = ott.write_newick(outp,
                                label_style=OTULabelStyleEnum.CURRENT_LABEL_OTT_ID,
@@ -1058,3 +1058,78 @@ def detect_extinct_taxa_to_bump(ott_tree,
                   ]
     rp = subprocess.run(invocation)
     rp.check_returncode()
+
+
+def write_modified_taxonomy_tsv(inf, outf, uid_id_to_new_parent):
+    m = {}
+    for line in inf:
+        ls = line.split('\t')
+        uid = ls[0]
+        new_par = uid_id_to_new_parent.get(uid)
+        if new_par is None:
+            outf.write(line)
+            continue
+        assert ls[1] == '|'
+        old_par = ls[2]
+        ls[2] = new_par
+        m[uid] = {'old_parent': old_par, 'new_parent': new_par}
+        outf.write('\t'.join(ls))
+    return m
+
+def _write_bumped_taxonomy(src_ott_dir, bump_json_fp, out_dir, CFG=None):
+    with codecs.open(bump_json_fp, mode='r', encoding='utf-8') as jinp:
+        jout = json.load(jinp)
+    move_edit_dict = jout["edits"]
+    fossil_id_to_parent = {}
+    for mk, mv in move_edit_dict.items():
+        if not mk.startswith('ott'):
+            m = "Key in {} 'edits' dict element of {} does not start with ott"
+            raise ValueError(m.format(mk, move_json_filepath))
+        k = mk[3:].strip()
+        np = mv["new_parent"]
+        if not np.startswith('ott'):
+            m = "new_parent in {} 'edits' dict element of {} does not start with ott"
+            raise ValueError(m.format(mk, move_json_filepath))
+        v = np[3:].strip()
+        fossil_id_to_parent[k] = v
+    if not os.path.isdir(out_dir):
+        os.makedirs(out_dir)
+    needs_taxonomy = True
+    if fossil_id_to_parent:
+        infp = os.path.join(src_ott_dir, 'taxonomy.tsv')
+        outfp = os.path.join(out_dir, 'taxonomy.tsv')
+        needs_taxonomy = False
+        with codecs.open(infp, 'r', encoding='utf-8') as inp:
+            with codecs.open(outfp, 'w', encoding='utf-8') as outp:
+                m = write_modified_taxonomy_tsv(inp, outp, fossil_id_to_parent)
+        outfp = os.path.join(out_dir, 'patched_by_bumping.json')
+        write_as_json(m, outfp)
+    _cp_taxonomy(src_ott_dir,
+                 out_dir,
+                 cp_taxonomy_tsv=needs_taxonomy,
+                 CFG=CFG)
+
+def _cp_taxonomy(src_ott_dir, out_dir, cp_taxonomy_tsv=True, CFG=None):
+    if not os.path.exists(out_dir):
+        os.makedirs(out_dir)
+    for fn in OTT.FILENAMES:
+        if (not cp_taxonomy_tsv) and fn == 'taxonomy.tsv':
+            continue
+        src = os.path.join(src_ott_dir, fn)
+        dest = os.path.join(out_dir, fn)
+        if not os.path.exists(src):
+            if CFG:
+                CFG.warning('taxonomy file "{}" does not exist, skipping...'.format(src))
+            continue
+        cp_if_needed(src=src, dest=dest, name=fn, CFG=CFG)
+
+def bump_or_link(src_ott_dir,
+                 bump_json_fp,
+                 out_dir,
+                 CFG=None):
+    with open(bump_json_fp, mode='r', encoding='utf-8') as jinp:
+        bump_dict = json.load(jinp)
+    if "edits" in bump_dict:
+        _write_bumped_taxonomy(src_ott_dir, bump_json_fp, out_dir, CFG=CFG)
+        return True
+    _cp_taxonomy(src_ott_dir, out_dir, cp_taxonomy_tsv=True, CFG=CFG)
