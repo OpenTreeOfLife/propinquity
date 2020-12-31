@@ -1,4 +1,4 @@
-from propinquity import (cp_if_needed, exemplify_taxa, validate_config)
+from propinquity import (exemplify_taxa, validate_config)
 from snakemake.logging import logger
 from snakemake.utils import min_version
 import subprocess
@@ -19,7 +19,8 @@ rule exemplify:
            phylo_fp = "exemplified_phylo/args.txt", \
            taxo = "bumped_ott/cleaned_ott.tre"
     output: nonempty = "exemplified_phylo/nonempty_trees.txt", \
-            exlog = "exemplified_phylo/exemplified_log.json"
+            exlog = "exemplified_phylo/exemplified_log.json",
+            taxonomy = "exemplified_phylo/taxonomy.tre"
     run:
         exemplify_taxa(in_tax_tree_fp=input.taxo,
                        in_phylo_fp=input.phylo_fp,

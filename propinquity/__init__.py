@@ -1210,3 +1210,27 @@ def exemplify_taxa(in_tax_tree_fp,
         mv_if_needed(src=src,
                      dest=dest,
                      CFG=CFG)
+
+def decompose_into_subproblems(tax_tree_fp,
+                               phylo_list_fp,
+                               out_dir,
+                               out_subprob_id_fp,
+                               out_contesting,
+                               CFG):
+    tmp_subpr_id = "{}.hide".format(out_subprob_id_fp)
+    tmp_contesting = "{}.hide".format(out_contesting)
+    invocation = ["otc-uncontested-decompose",
+                  "-e{}".format(out_dir),
+                  "-x{}".format(tmp_subpr_id),
+                  "-c{}".format(tmp_contesting),
+                  tax_tree_fp,
+                  "-f{}".format(phylo_list_fp)
+                  ]
+    rp = subprocess.run(invocation)
+    rp.check_returncode()
+    unhide = [(tmp_subpr_id, out_subprob_id_fp),
+              (tmp_contesting, out_contesting),]
+    for src, dest in unhide:
+        mv_if_needed(src=src,
+                     dest=dest,
+                     CFG=CFG)
