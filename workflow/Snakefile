@@ -45,7 +45,7 @@ rule all:
            clean_ott("cleaned_ott/cleaned_not_updated_ott.tre"),
            clean_phylo("exemplified_phylo/args.txt"),
            clean_phylo("cleaned_phylo/phylo_inputs_cleaned.txt"),
-           exemplify("bumped_ott/taxonomy.tsv")
+           exemplify("bumped_ott/cleaned_not_updated_ott.tre")
 
 # # End Phylo cleaning
 # ################################################################################

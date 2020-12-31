@@ -65,8 +65,3 @@ rule clean_ott_based_on_flags:
                          prune_log=output.prune_log,
                          flagged_fp=output.flagged)
 
-# rule edit_or_clean_ott:
-#     input: 
-#     output: "cleaned_edited_ott/cleaned_not_updated_ott.tre"
-#     run:
-#         os.symlink("../cleaned_edited_ott/cleaned_not_updated_ott.tre", output)

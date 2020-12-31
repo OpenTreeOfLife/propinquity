@@ -332,19 +332,6 @@ def reaggregate_synth_collections(inp_fp_list, out_fp, CFG):
                            content=content,
                            name="concatenated collections", CFG=CFG)
 
-# def verify_taxon_edits_not_needed(json_fp, unclean_ott, out_ott):
-#     with codecs.open(json_fp, mode='r', encoding='utf-8') as jinp:
-#         jout = json.load(jinp)
-#     if "edits" in jout:
-#         return False
-#     if len(sys.argv) > 2:
-#     try:
-#         from shutil import copyfile
-#         copyfile(sys.argv[2], sys.argv[3])
-#     except:
-#         sys.stderr.write(usage)
-#         raise
-
 def copy_ps_file_if_needed(git_action,
                            sha,
                            coll_decision,
@@ -1076,6 +1063,8 @@ def write_modified_taxonomy_tsv(inf, outf, uid_id_to_new_parent):
         outf.write('\t'.join(ls))
     return m
 
+_OTT_VERS_FN = 'ott_version.txt'
+
 def _write_bumped_taxonomy(src_ott_dir, bump_json_fp, out_dir, CFG=None):
     with codecs.open(bump_json_fp, mode='r', encoding='utf-8') as jinp:
         jout = json.load(jinp)
@@ -1108,6 +1097,12 @@ def _write_bumped_taxonomy(src_ott_dir, bump_json_fp, out_dir, CFG=None):
                  out_dir,
                  cp_taxonomy_tsv=needs_taxonomy,
                  CFG=CFG)
+    vt = os.path.join(out_dir, 'version.txt')
+    vers_text = open(vt, "r").read().strip()
+    synth_id = getattr(CFG, 'synth_id', 'synth-?')
+    ott_vers_text = '{}-extinct-bumped-{}\n'.format(vers_text, synth_id)
+    fp = os.path.join(out_dir, _OTT_VERS_FN)
+    write_if_needed(fp, ott_vers_text, name=_OTT_VERS_FN, CFG=CFG)
 
 def _cp_taxonomy(src_ott_dir, out_dir, cp_taxonomy_tsv=True, CFG=None):
     if not os.path.exists(out_dir):
@@ -1123,13 +1118,56 @@ def _cp_taxonomy(src_ott_dir, out_dir, cp_taxonomy_tsv=True, CFG=None):
             continue
         cp_if_needed(src=src, dest=dest, name=fn, CFG=CFG)
 
+def bumping_of_extinct_req(bump_json_fp):
+    with open(bump_json_fp, mode='r', encoding='utf-8') as jinp:
+        bump_dict = json.load(jinp)
+    return "edits" in bump_dict
+
 def bump_or_link(src_ott_dir,
                  bump_json_fp,
                  out_dir,
                  CFG=None):
-    with open(bump_json_fp, mode='r', encoding='utf-8') as jinp:
-        bump_dict = json.load(jinp)
-    if "edits" in bump_dict:
+    if bumping_of_extinct_req(bump_json_fp):
         _write_bumped_taxonomy(src_ott_dir, bump_json_fp, out_dir, CFG=CFG)
         return True
     _cp_taxonomy(src_ott_dir, out_dir, cp_taxonomy_tsv=True, CFG=CFG)
+    cp_if_needed(os.path.join(src_ott_dir, 'version.txt'),
+                 os.path.join(out_dir, _OTT_VERS_FN),
+                 _OTT_VERS_FN,
+                 CFG=CFG)
+
+def cp_or_suppress_by_flag(ott_dir,
+                           flags,
+                           root,
+                           bump_json_fp,
+                           in_nonredundanttree_fp,
+                           in_with_deg2_tree_fp,
+                           in_log_fp,
+                           in_prune_log,
+                           in_flagged_fp,
+                           out_nonredundanttree_fp,
+                           out_with_deg2_tree_fp,
+                           out_log_fp,
+                           out_prune_log,
+                           out_flagged_fp,
+                           CFG=None):
+    if bumping_of_extinct_req(bump_json_fp):
+        suppress_by_flag(ott_dir=ott_dir,
+                         flags=flags,
+                         root=root,
+                         out_nonredundanttree_fp=out_nonredundanttree_fp,
+                         out_with_deg2_tree_fp=out_with_deg2_tree_fp,
+                         log_fp=out_log_fp,
+                         prune_log=out_prune_log,
+                         flagged_fp=out_flagged_fp)
+        return
+    cp_list = [(in_nonredundanttree_fp, out_nonredundanttree_fp),
+               (in_with_deg2_tree_fp, out_with_deg2_tree_fp),
+               (in_log_fp, out_log_fp),
+               (in_prune_log, out_prune_log),
+               (in_flagged_fp, out_flagged_fp),
+              ]
+    for src, dest in cp_list:
+        cp_if_needed(src, dest, os.path.split(src)[-1], CFG=CFG)
+
+
