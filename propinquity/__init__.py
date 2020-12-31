@@ -159,6 +159,17 @@ def cp_if_needed(src, dest, name=None, CFG=None):
         CFG.warn('copy of {n} not needed'.format(n=name))
     return False
 
+def mv_if_needed(src, dest, name=None, CFG=None):
+    if (not os.path.exists(dest)) or (not filecmp.cmp(src, dest)):
+        if CFG is not None:
+            CFG.warn('mv "{}" "{}"'.format(src, dest))
+        os.rename(src, dest)
+        return True
+    if CFG is not None:
+        CFG.warn('{n} unchanged. Removing src copy'.format(n=name))
+    os.unlink(src)
+    return False
+
 def write_if_needed(fp, content, name=None, CFG=None):
     """Writes `content` to `fp` if the content of that filepath is empty or different.
 
@@ -1175,3 +1186,27 @@ def subset_ott(orig_ott_dir, sub_ott_dir, root_id, CFG):
                  ofp,
                  cp_taxonomy_tsv=False,
                  CFG=CFG)
+
+def exemplify_taxa(in_tax_tree_fp,
+                   in_phylo_fp,
+                   out_nonempty_tree_fp,
+                   out_log_fp,
+                   CFG):
+    ep_dir = os.path.split(out_nonempty_tree_fp)[0]
+    tmp_nonempty = "{}.hide".format(out_nonempty_tree_fp)
+    tmp_log = "{}.hide".format(out_log_fp)
+    invocation = ["otc-nonterminals-to-exemplars",
+                  "-e{}".format(ep_dir),
+                  in_tax_tree_fp,
+                  "-f{}".format(in_phylo_fp),
+                  "-j{}".format(tmp_log),
+                  "-n{}".format(tmp_nonempty)
+                  ]
+    rp = subprocess.run(invocation)
+    rp.check_returncode()
+    unhide = [(tmp_nonempty, out_nonempty_tree_fp),
+              (tmp_log, out_log_fp),]
+    for src, dest in unhide:
+        mv_if_needed(src=src,
+                     dest=dest,
+                     CFG=CFG)

@@ -1,10 +1,4 @@
-from propinquity import (bump_or_link,
-                         cp_if_needed,
-                         cp_or_suppress_by_flag, 
-                         detect_extinct_taxa_to_bump,
-                         OTT_FILENAMES,
-                         validate_config,
-                         write_if_needed)
+from propinquity import (cp_if_needed, exemplify_taxa, validate_config)
 from snakemake.logging import logger
 from snakemake.utils import min_version
 import subprocess
@@ -27,16 +21,8 @@ rule exemplify:
     output: nonempty = "exemplified_phylo/nonempty_trees.txt", \
             exlog = "exemplified_phylo/exemplified_log.json"
     run:
-        ep_dir = os.path.split(output.nonempty)[0]
-        invocation = ["otc-nonterminals-to-exemplars",
-                      "-e{}".format(ep_dir),
-                      input.taxo,
-                      "-f{}".format(input.phylo_fp),
-                      "-j{}".format(output.exlog),
-                      "-n{}.hide".format(output.nonempty)
-                      ]
-        rp = subprocess.run(invocation)
-        rp.check_returncode()
-        cp_if_needed(src="{}.hide".format(output.nonempty),
-                     dest=output.nonempty,
-                     CFG=CFG)
+        exemplify_taxa(in_tax_tree_fp=input.taxo,
+                       in_phylo_fp=input.phylo_fp,
+                       out_nonempty_tree_fp=output.nonempty,
+                       out_log_fp=output.exlog,
+                       CFG=CFG)
