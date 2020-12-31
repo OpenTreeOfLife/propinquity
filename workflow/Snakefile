@@ -51,7 +51,7 @@ rule all:
            s02_clean_ott("cleaned_ott/cleaned_not_updated_ott.tre"),
            s03_clean_phylo("exemplified_phylo/args.txt"),
            s03_clean_phylo("cleaned_phylo/phylo_inputs_cleaned.txt"),
-           s04_modify_taxonomy("bumped_ott/cleaned_not_updated_ott.tre"),
+           s04_modify_taxonomy("bumped_ott/cleaned_ott.tre"),
            s05_exemplify("exemplified_phylo/nonempty_trees.txt")
 
 # # End Phylo cleaning
