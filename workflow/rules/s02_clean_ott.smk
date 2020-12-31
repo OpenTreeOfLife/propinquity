@@ -1,6 +1,7 @@
 from propinquity import (OTT_FILENAMES,
                          suppress_by_flag,
                          validate_config,
+                         subset_ott,
                          write_if_needed)
 from snakemake.logging import logger
 from snakemake.utils import min_version
@@ -18,6 +19,12 @@ rule all:
 # End snapshot inputs
 ################################################################################
 # OTT cleaning
+rule subset_ott:
+    input: "config"
+    output: expand("subott_dir/{filename}", filename=OTT_FILENAMES), \
+            subott_dir=directory("subott_dir")
+    run:
+        subset_ott(CFG.ott_dir, output.subott_dir, CFG.root_ott_id, CFG)
 
 rule write_ott_root:
     """Serialize root_ott_id to "cleaned_ott/root_ott_id.txt", if changed."""
@@ -36,8 +43,8 @@ rule write_ott_cleaning_flags:
             logger.info("cleaning_flags have not changed.")
 
 rule write_ott_version:
-    """Copy "${ott_dir}/version.txt" to "cleaned_ott/ott_version.txt", if changed."""
-    input: os.path.join(CFG.ott_dir, "version.txt")
+    """Copy "$subott_dir/version.txt" to "cleaned_ott/ott_version.txt", if changed."""
+    input: "subott_dir/version.txt"
     output: "cleaned_ott/ott_version.txt"
     run:
         ott_version = open(input[0], "r").read().strip() + "\n"
@@ -46,7 +53,7 @@ rule write_ott_version:
 
 rule clean_ott_based_on_flags:
     """Writes a pruned version of OTT based on cleaning flags."""
-    input: expand(CFG.ott_dir + "/{filename}", filename=OTT_FILENAMES), \
+    input: expand("subott_dir/{filename}", filename=OTT_FILENAMES), \
            version="cleaned_ott/ott_version.txt", \
            cleaning_flags="cleaned_ott/cleaning_flags.txt", \
            root="cleaned_ott/root_ott_id.txt"
@@ -56,7 +63,7 @@ rule clean_ott_based_on_flags:
             prune_log="cleaned_ott/cleaned_ott_pruned_nonflagged.json", \
             flagged="cleaned_ott/flagged_in_cleaned.json"
     run:
-        suppress_by_flag(ott_dir=CFG.ott_dir,
+        suppress_by_flag(ott_dir="subott_dir",
                          flags=CFG.cleaning_flags,
                          root=CFG.root_ott_id,
                          out_nonredundanttree_fp=output.nonredundant_tree,

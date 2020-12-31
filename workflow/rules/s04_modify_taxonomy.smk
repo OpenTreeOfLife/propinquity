@@ -37,14 +37,19 @@ rule create_extinct_bump_file:
 rule create_cleaned_bump_taxonomy:
     input: config = "config", \
            otcconfig = "otc-config", \
-           bump = "cleaned_ott/move_extinct_higher_log.json"
+           bump = "cleaned_ott/move_extinct_higher_log.json", \
+           taxonomy = "subott_dir/taxonomy.tsv", \
+           synonyms = "subott_dir/synonyms.tsv", \
+           forwards = "subott_dir/forwards.tsv", \
+           version = "subott_dir/version.txt", \
+           ott_version = "subott_dir/version.txt"
     output: taxonomy = "bumped_ott/taxonomy.tsv", \
             synonyms = "bumped_ott/synonyms.tsv", \
             forwards = "bumped_ott/forwards.tsv", \
             version = "bumped_ott/version.txt", \
             ott_version = "bumped_ott/ott_version.txt"
     run:
-        bump_or_link(src_ott_dir=CFG.ott_dir,
+        bump_or_link(src_ott_dir="subott_dir",
                      bump_json_fp=input.bump,
                      out_dir=os.path.split(output.taxonomy)[0],
                      CFG=CFG)

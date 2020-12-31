@@ -61,7 +61,7 @@ rule clean_phylo_tre:
     run:
         od = os.path.join(CFG.out_dir, "cleaned_phylo")
         trees = set_tag_to_study_tree_pair(None)
-        c = clean_phylo_input(CFG.ott_dir,
+        c = clean_phylo_input(ott_dir=directory("subott_dir"),
                               study_tree_pairs=input.stp,
                               tree_filepaths=trees,
                               output_dir=od,

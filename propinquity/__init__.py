@@ -758,6 +758,7 @@ class NexsonTreeWrapper(object):
             edge = list(ebs_el.values())[0]
             new_root = edge['@target']
             self._del_tip(new_root)
+
     def prune_ott_problem_leaves_by_id(self, ott_id, reason):
         self.prune_ott_problem_leaves(self.by_ott_id[ott_id], reason)
         del self.by_ott_id[ott_id]
@@ -908,16 +909,6 @@ def clean_phylo_input(ott_dir,
     """Returns True if any files are written or deleted."""
     par_inp = os.path.split(output_dir)[0]
     inp_files = [os.path.join(par_inp, i) for i in tree_filepaths]
-    print(f"""
-ott_dir={ott_dir}
-study_tree_pairs={study_tree_pairs}
-inp_files={inp_files}
-output_dir={output_dir}
-cleaning_flags={cleaning_flags}
-pruned_from_ott_json_fp={pruned_from_ott_json_fp}
-root_ott_id={root_ott_id}
-script_managed_trees_dir={script_managed_dir}
-                      """)
     to_prune_for_reasons = {}
     if pruned_from_ott_json_fp is not None:
         try:
@@ -1171,3 +1162,16 @@ def cp_or_suppress_by_flag(ott_dir,
         cp_if_needed(src, dest, os.path.split(src)[-1], CFG=CFG)
 
 
+def subset_ott(orig_ott_dir, sub_ott_dir, root_id, CFG):
+    ofp = os.path.abspath(sub_ott_dir)
+    invocation = ["otc-taxonomy-parser",
+                  os.path.abspath(orig_ott_dir),
+                  "-x{}".format(root_id), # -x requires allow-subtree-of-taxonomy branch of otc
+                  "--write-taxonomy={}".format(ofp)
+                 ]
+    rp = subprocess.run(invocation)
+    rp.check_returncode()
+    _cp_taxonomy(orig_ott_dir,
+                 ofp,
+                 cp_taxonomy_tsv=False,
+                 CFG=CFG)
