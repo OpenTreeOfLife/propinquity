@@ -49,6 +49,11 @@ subworkflow s06_subproblems:
     snakefile: "rules/s06_subproblems.smk"
     configfile: "config.json"
 
+subworkflow s07_subproblem_solutions:
+    workdir: CFG.out_dir
+    snakefile: "rules/s07_subproblem_solutions.smk"
+    configfile: "config.json"
+
 rule all:
     input: s00_tool_config("config"), 
            s00_tool_config("otc-config"),
@@ -57,8 +62,9 @@ rule all:
            s03_clean_phylo("exemplified_phylo/args.txt"),
            s03_clean_phylo("cleaned_phylo/phylo_inputs_cleaned.txt"),
            s04_modify_taxonomy("bumped_ott/cleaned_ott.tre"),
-           s05_exemplify("exemplified_phylo/nonempty_trees.txt"),
-           s06_subproblems("subproblems/dumped_subproblem_ids.txt")
+           s05_exemplify("exemplified_phylo/incertae_sedis.txt"),
+           s06_subproblems("subproblems/dumped_subproblem_ids.txt"),
+           s07_subproblem_solutions("subproblem_solutions/solution-ids.txt")
 
 # # End Phylo cleaning
 # ################################################################################

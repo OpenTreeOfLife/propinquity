@@ -1187,6 +1187,28 @@ def subset_ott(orig_ott_dir, sub_ott_dir, root_id, CFG):
                  cp_taxonomy_tsv=False,
                  CFG=CFG)
 
+def run_unhide_if_worked(invocation,
+                         unhide_list,
+                         CFG=None,
+                         stdout_capture=None):
+    """Runs `invocation`. If that does not fail, moves src to dest
+    for every element in `unhide_list = [(src1, dest1), ...]
+    """
+    if stdout_capture is None:
+        rp = subprocess.run(invocation)
+        rp.check_returncode()
+    else:
+        par = os.path.split(stdout_capture)[0]
+        if not os.path.exists(par):
+            os.makedirs(par)
+        with open(stdout_capture, "w") as outp:
+            if subprocess.call(invocation, stdout=outp) != 0:
+                raise RuntimeError('Call failed:\n"{}"\n'.format('" "'.join(invocation)))
+    
+    for src, dest in unhide_list:
+        mv_if_needed(src=src, dest=dest, CFG=CFG)
+
+
 def exemplify_taxa(in_tax_tree_fp,
                    in_phylo_fp,
                    out_nonempty_tree_fp,
@@ -1202,21 +1224,16 @@ def exemplify_taxa(in_tax_tree_fp,
                   "-j{}".format(tmp_log),
                   "-n{}".format(tmp_nonempty)
                   ]
-    rp = subprocess.run(invocation)
-    rp.check_returncode()
     unhide = [(tmp_nonempty, out_nonempty_tree_fp),
               (tmp_log, out_log_fp),]
-    for src, dest in unhide:
-        mv_if_needed(src=src,
-                     dest=dest,
-                     CFG=CFG)
+    run_unhide_if_worked(invocation, unhide, CFG=CFG)
 
 def decompose_into_subproblems(tax_tree_fp,
                                phylo_list_fp,
                                out_dir,
                                out_subprob_id_fp,
                                out_contesting,
-                               CFG):
+                               CFG=None):
     tmp_subpr_id = "{}.hide".format(out_subprob_id_fp)
     tmp_contesting = "{}.hide".format(out_contesting)
     invocation = ["otc-uncontested-decompose",
@@ -1226,11 +1243,33 @@ def decompose_into_subproblems(tax_tree_fp,
                   tax_tree_fp,
                   "-f{}".format(phylo_list_fp)
                   ]
-    rp = subprocess.run(invocation)
-    rp.check_returncode()
     unhide = [(tmp_subpr_id, out_subprob_id_fp),
               (tmp_contesting, out_contesting),]
-    for src, dest in unhide:
-        mv_if_needed(src=src,
-                     dest=dest,
-                     CFG=CFG)
+    run_unhide_if_worked(invocation, unhide, CFG=CFG)
+
+def solve_subproblem(incert_sed_fp, subprob_fp, out_fp, CFG=None):
+    print(f"""{incert_sed_fp}
+{subprob_fp}
+{out_fp}
+""")
+
+
+def write_inc_sed_ids(tax_tree,
+                      ott_dir,
+                      config_fp,
+                      out_inc_sed_id_fp,
+                      CFG=None):
+    out_fp = out_inc_sed_id_fp + ".hide"
+    invocation = ["otc-taxonomy-parser",
+                  ott_dir,
+                  "--config={}".format(config_fp),
+                  "--in-tree={}".format(tax_tree),
+                  "--any-flag=incertae_sedis,major_rank_conflict,unplaced,unclassified",
+                  '--format="%I"',
+                 ]
+    unhide = [(out_fp, out_inc_sed_id_fp), ]
+    run_unhide_if_worked(invocation,
+                         unhide,
+                         CFG=CFG,
+                         stdout_capture=out_fp)
+
