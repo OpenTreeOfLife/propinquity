@@ -14,39 +14,45 @@ CFG = validate_config(config, logger)
 content = json.dumps(config, sort_keys=True, indent=2) + '\n'
 write_if_needed(content=content, fp="config.json", CFG=CFG)
 
-subworkflow tool_config:
+subworkflow s00_tool_config:
     workdir: CFG.out_dir
-    snakefile: "rules/tool_config.smk"
+    snakefile: "rules/s00_tool_config.smk"
     configfile: "config.json"
 
-subworkflow snapshot:
+subworkflow s01_snapshot:
     workdir: CFG.out_dir
-    snakefile: "rules/snapshot.smk"
+    snakefile: "rules/s01_snapshot.smk"
     configfile: "config.json"
 
-subworkflow clean_ott:
+subworkflow s02_clean_ott:
     workdir: CFG.out_dir
-    snakefile: "rules/clean_ott.smk"
+    snakefile: "rules/s02_clean_ott.smk"
     configfile: "config.json"
 
-subworkflow clean_phylo:
+subworkflow s03_clean_phylo:
     workdir: CFG.out_dir
-    snakefile: "rules/clean_phylo.smk"
+    snakefile: "rules/s03_clean_phylo.smk"
     configfile: "config.json"
 
-subworkflow exemplify:
+subworkflow s04_modify_taxonomy:
     workdir: CFG.out_dir
-    snakefile: "rules/exemplify_raw_ott.smk"
+    snakefile: "rules/s04_modify_taxonomy.smk"
+    configfile: "config.json"
+
+subworkflow s05_exemplify:
+    workdir: CFG.out_dir
+    snakefile: "rules/s05_exemplify.smk"
     configfile: "config.json"
 
 rule all:
-    input: tool_config("config"), tool_config("otc-config"),
-           snapshot("phylo_input/blob_shas.txt"), 
-           clean_ott("cleaned_ott/cleaned_not_updated_ott.tre"),
-           clean_phylo("exemplified_phylo/args.txt"),
-           clean_phylo("cleaned_phylo/phylo_inputs_cleaned.txt"),
-           exemplify("bumped_ott/cleaned_not_updated_ott.tre"),
-           exemplify("exemplified_phylo/nonempty_trees.txt")
+    input: s00_tool_config("config"), 
+           s00_tool_config("otc-config"),
+           s01_snapshot("phylo_input/blob_shas.txt"), 
+           s02_clean_ott("cleaned_ott/cleaned_not_updated_ott.tre"),
+           s03_clean_phylo("exemplified_phylo/args.txt"),
+           s03_clean_phylo("cleaned_phylo/phylo_inputs_cleaned.txt"),
+           s04_modify_taxonomy("bumped_ott/cleaned_not_updated_ott.tre"),
+           s05_exemplify("exemplified_phylo/nonempty_trees.txt")
 
 # # End Phylo cleaning
 # ################################################################################

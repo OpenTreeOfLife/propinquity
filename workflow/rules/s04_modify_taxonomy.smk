@@ -16,7 +16,7 @@ min_version("5.30.1")
 CFG = validate_config(config, logger)
 
 rule all:
-    input: "phylo_input/blob_shas.txt"
+    input: "bumped_ott/cleaned_ott.tre"
     log: "logs/snapshot"
 
 rule create_extinct_bump_file:
@@ -88,25 +88,3 @@ rule link_bumped_clean_ott_tree:
     input: "bumped_ott/cleaned_not_updated_ott.tre"
     output: "bumped_ott/cleaned_ott.tre"
     run: os.symlink(os.path.split(input[0])[1], output[0])
-
-rule exemplify:
-    input: config = "config", \
-           otcconfig = "otc-config", \
-           phylo_fp = "exemplified_phylo/args.txt", \
-           taxo = "bumped_ott/cleaned_ott.tre"
-    output: nonempty = "exemplified_phylo/nonempty_trees.txt", \
-            exlog = "exemplified_phylo/exemplified_log.json"
-    run:
-        ep_dir = os.path.split(output.nonempty)[0]
-        invocation = ["otc-nonterminals-to-exemplars",
-                      "-e{}".format(ep_dir),
-                      input.taxo,
-                      "-f{}".format(input.phylo_fp),
-                      "-j{}".format(output.exlog),
-                      "-n{}.hide".format(output.nonempty)
-                      ]
-        rp = subprocess.run(invocation)
-        rp.check_returncode()
-        cp_if_needed(src="{}.hide".format(output.nonempty),
-                     dest=output.nonempty,
-                     CFG=CFG)
