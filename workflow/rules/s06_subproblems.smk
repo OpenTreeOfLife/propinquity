@@ -71,4 +71,8 @@ rule solved_ids:
     input: aggregate_trees
     output: "subproblem_solutions/solution-ids.txt"
     run:
-        print("input=", input[0])
+        tags = [os.path.split(i)[-1] for i in input]
+        # print("input=", tags)
+        content = '\n'.join(tags)
+        write_if_needed(fp=output[0], content=content, CFG=CFG)
+

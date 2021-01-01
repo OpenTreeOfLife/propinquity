@@ -1248,11 +1248,20 @@ def decompose_into_subproblems(tax_tree_fp,
     run_unhide_if_worked(invocation, unhide, CFG=CFG)
 
 def solve_subproblem(incert_sed_fp, subprob_fp, out_fp, CFG=None):
-    sys.exit(f"""{incert_sed_fp}
-{subprob_fp}
-{out_fp}
-""")
-
+    sp_fn = os.path.split(subprob_fp)[-1]
+    sp_id = sp_fn[:-4] if sp_fn.endswith('.tre') else sp_fn
+    invocation = ["otc-solve-subproblem",
+                  subprob_fp,
+                  "-n{}".format(sp_id),
+                  "-I",
+                  incert_sed_fp,
+                  ]
+    hide = out_fp + ".hide"
+    unhide = [(hide, out_fp)]
+    run_unhide_if_worked(invocation,
+                         unhide,
+                         CFG=CFG,
+                         stdout_capture=hide)
 
 def write_inc_sed_ids(tax_tree,
                       ott_dir,
