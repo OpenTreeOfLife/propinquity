@@ -1248,7 +1248,7 @@ def decompose_into_subproblems(tax_tree_fp,
     run_unhide_if_worked(invocation, unhide, CFG=CFG)
 
 def solve_subproblem(incert_sed_fp, subprob_fp, out_fp, CFG=None):
-    print(f"""{incert_sed_fp}
+    sys.exit(f"""{incert_sed_fp}
 {subprob_fp}
 {out_fp}
 """)

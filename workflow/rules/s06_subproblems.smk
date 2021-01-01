@@ -1,4 +1,5 @@
 from propinquity import (decompose_into_subproblems,
+                         solve_subproblem,
                          validate_config,
                          write_if_needed)
 from snakemake.logging import logger
@@ -31,7 +32,7 @@ rule expand_path_to_nonempty_phylo:
                         name="nonempty tree fullpaths",
                         CFG=CFG)
 
-rule exemplify:
+checkpoint decompose:
     input: config = "config", \
            otcconfig = "otc-config", \
            phylo_list_fp = "subproblems/scratch/args.txt", \
@@ -46,3 +47,28 @@ rule exemplify:
                                    out_contesting=output.contesting,
                                    CFG=CFG)
 
+
+rule solve:
+    input: config = "config", \
+           otcconfig = "otc-config", \
+           subprob_id = "subproblems/dumped_subproblem_ids.txt", \
+           incert = "exemplified_phylo/incertae_sedis.txt", \
+           subprob = "subproblems/{ottid}.tre"
+    output: soln = "subproblem_solutions/{ottid}.tre"
+    run:
+        solve_subproblem(incert_sed_fp=input.incert,
+                         subprob_fp=input.subprob,
+                         out_fp=output.soln,
+                         CFG=CFG)
+
+def aggregate_trees(wildcards):
+    solve_out = os.path.split(checkpoints.decompose.get(**wildcards).output[0])[0]
+    return expand("subproblem_solutions/{ottid}.tre",
+                  ottid=glob_wildcards(os.path.join(solve_out, '{ottid}.tre')).ottid)
+
+
+rule solved_ids:
+    input: aggregate_trees
+    output: "subproblem_solutions/solution-ids.txt"
+    run:
+        print("input=", input[0])
