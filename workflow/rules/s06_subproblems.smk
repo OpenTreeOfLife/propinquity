@@ -1,4 +1,5 @@
 from propinquity import (decompose_into_subproblems,
+                         run_unhide_if_worked, 
                          solve_subproblem,
                          validate_config,
                          write_if_needed)
@@ -54,12 +55,22 @@ rule solve:
            subprob_id = "subproblems/dumped_subproblem_ids.txt", \
            incert = "exemplified_phylo/incertae_sedis.txt", \
            subprob = "subproblems/{ottid}.tre"
-    output: soln = "subproblem_solutions/{ottid}.tre"
+    output: soln = "subproblem_solutions/{ottid}.tre", \
+            sol_dd = "subproblem_solutions/deg-dist-{ottid}.txt"
     run:
         solve_subproblem(incert_sed_fp=input.incert,
                          subprob_fp=input.subprob,
                          out_fp=output.soln,
                          CFG=CFG)
+        hstdout = output.sol_dd + ".hide"
+        invocation = ["otc-degree-distribution",
+                      output.soln]
+        run_unhide_if_worked(invocation,
+                             [(hstdout, output.sol_dd)],
+                             CFG=CFG,
+                             stdout_capture=hstdout)
+
+
 
 def aggregate_trees(wildcards):
     solve_out = os.path.split(checkpoints.decompose.get(**wildcards).output[0])[0]
@@ -74,5 +85,25 @@ rule solved_ids:
         tags = [os.path.split(i)[-1] for i in input]
         # print("input=", tags)
         content = '\n'.join(tags)
+        write_if_needed(fp=output[0], content=content, CFG=CFG)
+
+
+def aggregate_sdd(wildcards):
+    solve_out = directory("subproblem_solutions")
+    r = expand("subproblem_solutions/deg-dist-{ottid}.txt",
+                  ottid=glob_wildcards(os.path.join(solve_out, '{ottid}.tre')).ottid)
+    return r
+
+rule concat_soln_deg_dist:
+    input: aggregate_sdd
+    output: "subproblem_solutions/solution-degree-distributions.txt"
+    run:
+        filepaths = list(input)
+        filepaths.sort()
+        lines = []
+        for fp in filepaths:
+            with open(fp, "r") as inp:
+                lines.extend([i[:-1] for i in inp.readlines() if i])
+        content = '\n'.join(lines)
         write_if_needed(fp=output[0], content=content, CFG=CFG)
 

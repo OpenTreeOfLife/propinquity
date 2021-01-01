@@ -64,7 +64,8 @@ rule all:
            s04_modify_taxonomy("bumped_ott/cleaned_ott.tre"),
            s05_exemplify("exemplified_phylo/incertae_sedis.txt"),
            s06_subproblems("subproblems/dumped_subproblem_ids.txt"),
-           s06_subproblems("subproblem_solutions/solution-ids.txt")
+           s06_subproblems("subproblem_solutions/solution-ids.txt"),
+           s06_subproblems("subproblem_solutions/solution-degree-distributions.txt")
 
 # # End Phylo cleaning
 # ################################################################################
