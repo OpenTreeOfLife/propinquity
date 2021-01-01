@@ -14,7 +14,7 @@ min_version("5.30.1")
 CFG = validate_config(config, logger)
 
 rule all:
-    input: "subproblems/subproblem-ids.txt"
+    input: "grafted_solution/grafted_solution_ottnames.tre"
     log: "logs/subproblems"
 
 rule expand_path_to_nonempty_phylo:

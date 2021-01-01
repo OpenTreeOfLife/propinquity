@@ -49,9 +49,9 @@ subworkflow s06_subproblems:
     snakefile: "rules/s06_subproblems.smk"
     configfile: "config.json"
 
-subworkflow s07_subproblem_solutions:
+subworkflow s07_unprune_taxa:
     workdir: CFG.out_dir
-    snakefile: "rules/s07_subproblem_solutions.smk"
+    snakefile: "rules/s07_unprune_taxa.smk"
     configfile: "config.json"
 
 rule all:
@@ -64,7 +64,7 @@ rule all:
            s04_modify_taxonomy("bumped_ott/cleaned_ott.tre"),
            s05_exemplify("exemplified_phylo/incertae_sedis.txt"),
            s06_subproblems("grafted_solution/grafted_solution_ottnames.tre"),
-#            s06_subproblems("subproblem_solutions/solution-degree-distributions.txt")
+           s07_unprune_taxa("full_supertree/full_supertree.tre")
 
 # # End Phylo cleaning
 # ################################################################################
