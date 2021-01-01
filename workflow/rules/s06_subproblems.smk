@@ -55,21 +55,24 @@ rule solve:
            subprob_id = "subproblems/dumped_subproblem_ids.txt", \
            incert = "exemplified_phylo/incertae_sedis.txt", \
            subprob = "subproblems/{ottid}.tre"
-    output: soln = "subproblem_solutions/{ottid}.tre", \
-            sol_dd = "subproblem_solutions/deg-dist-{ottid}.txt"
+    output: soln = "subproblem_solutions/{ottid}.tre" #, sol_dd = "subproblem_solutions/deg-dist-{ottid}.txt"
     run:
         solve_subproblem(incert_sed_fp=input.incert,
                          subprob_fp=input.subprob,
                          out_fp=output.soln,
                          CFG=CFG)
+
+rule calc_dd:
+    input: otcconfig = "otc-config", \
+           soln = "subproblem_solutions/{ottid}.tre"
+    output: sol_dd = "subproblem_solutions/deg-dist-{ottid}.txt"
+    run:
         hstdout = output.sol_dd + ".hide"
-        invocation = ["otc-degree-distribution",
-                      output.soln]
+        invocation = ["otc-degree-distribution", input.soln]
         run_unhide_if_worked(invocation,
                              [(hstdout, output.sol_dd)],
                              CFG=CFG,
                              stdout_capture=hstdout)
-
 
 
 def aggregate_trees(wildcards):
