@@ -63,9 +63,8 @@ rule all:
            s03_clean_phylo("cleaned_phylo/phylo_inputs_cleaned.txt"),
            s04_modify_taxonomy("bumped_ott/cleaned_ott.tre"),
            s05_exemplify("exemplified_phylo/incertae_sedis.txt"),
-           s06_subproblems("subproblems/dumped_subproblem_ids.txt"),
-           s06_subproblems("subproblem_solutions/solution-ids.txt"),
-           s06_subproblems("subproblem_solutions/solution-degree-distributions.txt")
+           s06_subproblems("grafted_solution/grafted_solution_ottnames.tre"),
+#            s06_subproblems("subproblem_solutions/solution-degree-distributions.txt")
 
 # # End Phylo cleaning
 # ################################################################################

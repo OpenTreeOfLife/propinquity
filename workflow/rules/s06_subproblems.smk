@@ -77,9 +77,13 @@ rule calc_dd:
 
 def aggregate_trees(wildcards):
     solve_out = os.path.split(checkpoints.decompose.get(**wildcards).output[0])[0]
-    return expand("subproblem_solutions/{ottid}.tre",
-                  ottid=glob_wildcards(os.path.join(solve_out, '{ottid}.tre')).ottid)
+    gw = glob_wildcards(os.path.join(solve_out, '{ottid}.tre'))
+    return expand("subproblem_solutions/{ottid}.tre", ottid=gw.ottid)
 
+def aggregate_sdd(wildcards):
+    solve_out = directory("subproblem_solutions")
+    gw = glob_wildcards(os.path.join(solve_out, '{ottid}.tre'))
+    return expand("subproblem_solutions/deg-dist-{ottid}.txt", ottid=gw.ottid)
 
 rule solved_ids:
     input: aggregate_trees
@@ -89,13 +93,6 @@ rule solved_ids:
         # print("input=", tags)
         content = '\n'.join(tags)
         write_if_needed(fp=output[0], content=content, CFG=CFG)
-
-
-def aggregate_sdd(wildcards):
-    solve_out = directory("subproblem_solutions")
-    r = expand("subproblem_solutions/deg-dist-{ottid}.txt",
-                  ottid=glob_wildcards(os.path.join(solve_out, '{ottid}.tre')).ottid)
-    return r
 
 rule concat_soln_deg_dist:
     input: aggregate_sdd
@@ -110,3 +107,35 @@ rule concat_soln_deg_dist:
         content = '\n'.join(lines)
         write_if_needed(fp=output[0], content=content, CFG=CFG)
 
+rule graft_solutions:
+    input: aggregate_trees
+    output: tree = "grafted_solution/grafted_solution.tre"
+    run:
+        content = '\n'.join(list(input))
+        tfp = "subproblem_solutions/.tmp_paths.txt"
+        write_if_needed(fp=tfp, content=content, CFG=CFG)
+        hstdout = output.tree + ".hide"
+        invocation = ["otc-graft-solutions", "-f{}".format(tfp)]
+        run_unhide_if_worked(invocation,
+                             [(hstdout, output.tree)],
+                             CFG=CFG,
+                             stdout_capture=hstdout)
+        os.unlink(tfp)
+
+rule relabel_grafted:
+    input: config = "config", \
+           otcconfig = "otc-config", \
+           tree = "grafted_solution/grafted_solution.tre"
+    output: "grafted_solution/grafted_solution_ottnames.tre"
+    run:
+        hstdout = output[0] + ".hide"
+        invocation = ["otc-relabel-tree",
+                      input.tree,
+                      "--taxonomy={}".format(CFG.ott_dir),
+                      '--format-tax=%N ott%I',
+                      "--del-monotypic"
+                      ]
+        run_unhide_if_worked(invocation,
+                             [(hstdout, output[0])],
+                             CFG=CFG,
+                             stdout_capture=hstdout)

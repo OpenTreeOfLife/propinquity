@@ -1274,7 +1274,7 @@ def write_inc_sed_ids(tax_tree,
                   "--config={}".format(config_fp),
                   "--in-tree={}".format(tax_tree),
                   "--any-flag=incertae_sedis,major_rank_conflict,unplaced,unclassified",
-                  '--format="%I"',
+                  '--format=%I',
                  ]
     unhide = [(out_fp, out_inc_sed_id_fp), ]
     run_unhide_if_worked(invocation,
