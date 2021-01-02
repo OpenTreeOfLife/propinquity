@@ -4,6 +4,7 @@ from collections import defaultdict
 import subprocess
 import datetime
 import filecmp
+import pkgutil
 import codecs
 import shutil
 import json
@@ -132,7 +133,6 @@ class PropinquityConfig(object):
 
 
 def validate_config(config, logger):
-    print(config)
     return PropinquityConfig(config, logger)
 
 ################################################################################
@@ -188,6 +188,9 @@ def write_if_needed(fp, content, name=None, CFG=None):
                 if CFG is not None:
                     CFG.warn("{n} has not changed".format(n=name))
             return False
+    par = os.path.split(fp)[0]
+    if par and not os.path.exists(par):
+        os.makedirs(par)
     with open(fp, "w") as outp:
         outp.write(content)
     return True
@@ -1517,12 +1520,6 @@ def merge_annotations(in_1, in_2, out_fp, CFG=None):
     m = merge_json(in_1, in_2)
     write_annot_json(blob=m, fp=out_fp)
 
-
-
-def document_outputs(summary_fp, CFG=None):
-    import snakemake.utils
-    print(dir(snakemake.utils.snakemake))
-
 def parse_degree_dist(fn):
     header_pat = re.compile(r'Out-degree\S+Count')
     dd = []
@@ -1726,3 +1723,41 @@ def analyze_lost_taxa(in_tax, in_tree, ott_dir, out_fp, CFG=None):
     run_unhide_if_worked(invocation,
                      CFG=CFG,
                      stdout_capture=out_fp)
+
+_STATIC_MD = ['static/phylo_input/README.md',
+              'static/subproblem_solutions/README.md',
+              'static/cleaned_ott/README.md',
+              'static/phylo_induced_taxonomy/README.md',
+              'static/labelled_supertree/README.md',
+              'static/assessments/README.md',
+              'static/cleaned_phylo/README.md',
+              'static/subproblems/scratch/README.md',
+              'static/logs/README.md',
+              'static/logs/index.html',
+              'static/grafted_solution/README.md',
+              'static/phylo_snapshot/README.md',
+              'static/annotated_supertree/README.md',
+              'static/full_supertree/README.md',
+              'static/exemplified_phylo/README.md',]
+_TEMPLATES = ['static/templates/adnnotated_supertree_index.pt',
+              'static/templates/assessments_index.pt',
+              'static/templates/cleaned_ott_index.pt',
+              'static/templates/cleaned_phylo_index.pt',
+              'static/templates/exemplified_phylo_index.pt',
+              'static/templates/grafted_solution_index.pt',
+              'static/templates/head.pt',
+              'static/templates/labelled_supertree_index.pt',
+              'static/templates/phylo_input_index.pt',
+              'static/templates/phylo_snapshot_index.pt',
+              'static/templates/subproblems_index.pt',
+              'static/templates/subproblem_solutions_index.pt',
+              'static/templates/top_index.pt', ]
+
+
+def document_outputs(summary_fp, CFG=None):
+    for i in _STATIC_MD:
+        assert i.startswith('static/')
+        sans_stat = i[len('static/'):]
+        content = pkgutil.get_data('propinquity', i).decode('utf-8')
+        print(content)
+        write_if_needed(fp=sans_stat, content=content, CFG=CFG)

@@ -62,6 +62,12 @@ setup(
                       "peyotl>=1.0.0dev",
                       ],
     packages=PACKAGES,
+    package_data={'propinquity': ['static/*',
+                                  'static/*/*.html',
+                                  'static/*/*.md',
+                                  'static/*/*/*.md',
+                                  'static/templates/*.pt',
+                                  ]},
     entry_points=ENTRY_POINTS,
     classifiers=[
         'Development Status :: 4 - Beta',

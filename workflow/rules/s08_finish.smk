@@ -84,6 +84,5 @@ rule assess:
 rule html:
     input: "assessments/summary.json"
     output: "index.html"
-    run: print(config)
-         document_outputs(input[0], CFG)
+    run: document_outputs(input[0], CFG=CFG)
 

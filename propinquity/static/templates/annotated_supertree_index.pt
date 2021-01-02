@@ -1,0 +1,15 @@
+<html metal:use-macro="load: head.pt">
+<div metal:fill-slot="content" tal:define="basename import: os.path.basename">
+<p>Propinquity output documentation. The top-level docs are <a href="../index.html">here</a>.</p>
+<p>The previous step (<a href="../labelled_supertree/index.html">../labelled_supertree/index.html</a>) produced the final tree.
+The <em>annotated_supertree</em> directory just holds annoations of that tree</p>
+<p>The files of interest in this directory are (click to download):
+<ul>
+    <li><a href="./annotations1.json" download>./annotations1.json</a>: contains support and conflict statements for each edge in the synthesis tree</li>
+    <li><a href="./annotations2.json" download>./annotations2.json</a>: contains only metadata about the pipeline and the inputs used</li>
+    <li><a href="./annotations.json" download>./annotations.json</a>: contains all of the information from annotations1 and annotations2</li>
+</ul>
+<p>See <a href="https://github.com/OpenTreeOfLife/propinquity/blob/master/annotated_supertree/README.md">README</a> for discussion of these files and links to the description of the schema</p>
+
+</div>
+</html>

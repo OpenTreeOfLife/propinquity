@@ -1,0 +1,31 @@
+<html metal:use-macro="load: head.pt">
+<div metal:fill-slot="content" tal:define="basename import: os.path.basename">
+<p>Propinquity output documentation. The top-level docs are <a href="../index.html">here</a>.
+<p>The <em>cleaned_phylo</em> contains the results of pruning problematically
+mapped tips from phylogenetic inputs. Full documentation of the procedure and
+artifacts can be found in the
+<a href="https://github.com/OpenTreeOfLife/propinquity/blob/master/cleaned_phylo/README.md">README</a>. Note that trees in this directory may have tips that are mapped
+to higher (non-terminal) taxa in the OpenTreeTaxonomy.
+</p>
+<p>
+<strong>Next step: </strong>The next step in phylogeny processing is to choose
+exemplars for tips that are mapped to higher taxa (see
+<a href="../exemplified_phylo/index.html">../exemplified_phylo/index.html</a>).
+First, though, we pre-process the Open Tree Taxonomy (see
+<a href="../cleaned_ott/index.html">../cleaned_ott/index.html</a>).
+</p>
+<p><strong>Results: </strong>There were ${len(exemplified_phylo.nonempty_trees)}
+nonempty trees after cleaning. The files of interest in this directory are:</p>
+<table>
+    <tr><th>JSON log of pruning</th><th>pruned newick</th></tr>
+    <tr tal:repeat="stp phylo_input.study_id_tree_id_pairs">
+        <td><a href="./${stp[0]}@${stp[1]}.json">${stp[0]}@${stp[1]}.json</a></td>
+        <td><div tal:switch="stp in exemplified_phylo.nonempty_trees">
+             <a tal:case="True" href="./${stp[0]}@${stp[1]}.tre">${stp[0]}@${stp[1]}.tre</a>
+             <p tal:case="False">NO TREE (empty after cleaning)</p>
+            </div>
+        </td>
+    </tr>
+</table>
+</div>
+</html>
