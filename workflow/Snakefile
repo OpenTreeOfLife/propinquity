@@ -54,6 +54,11 @@ subworkflow s07_unprune_taxa:
     snakefile: "rules/s07_unprune_taxa.smk"
     configfile: "config.json"
 
+subworkflow s08_finish:
+    workdir: CFG.out_dir
+    snakefile: "rules/s08_finish.smk"
+    configfile: "config.json"
+
 rule all:
     input: s00_tool_config("config"), 
            s00_tool_config("otc-config"),
@@ -70,7 +75,9 @@ rule all:
            s07_unprune_taxa("labelled_supertree/labelled_supertree_simplified_ottnames.tre"),
            s07_unprune_taxa("labelled_supertree/labelled_supertree_ottnames_without_monotypic.tre"),
            s07_unprune_taxa("labelled_supertree/labelled_supertree_simplified_ottnames_without_monotypic.tre"),
-           s07_unprune_taxa("annotated_supertree/annotations.json")
+           s08_finish("annotated_supertree/annotations.json"),
+           s08_finish("index.html")
+
 # # End Phylo cleaning
 # ################################################################################
 
