@@ -69,8 +69,8 @@ rule all:
            s07_unprune_taxa("labelled_supertree/labelled_supertree_ottnames.tre"),
            s07_unprune_taxa("labelled_supertree/labelled_supertree_simplified_ottnames.tre"),
            s07_unprune_taxa("labelled_supertree/labelled_supertree_ottnames_without_monotypic.tre"),
-           s07_unprune_taxa("labelled_supertree/labelled_supertree_simplified_ottnames_without_monotypic.tre")
-
+           s07_unprune_taxa("labelled_supertree/labelled_supertree_simplified_ottnames_without_monotypic.tre"),
+           s07_unprune_taxa("annotated_supertree/annotations.json")
 # # End Phylo cleaning
 # ################################################################################
 

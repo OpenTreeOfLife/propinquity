@@ -1212,7 +1212,7 @@ def run_unhide_if_worked(invocation,
         h = stdout_capture + ".hide"
         unhide_list.append((h, stdout_capture))
         par = os.path.split(stdout_capture)[0]
-        if not os.path.exists(par):
+        if par and not os.path.exists(par):
             os.makedirs(par)
         with open(h, "w", encoding="utf-8") as outp:
             if stderr_capture is None:
@@ -1220,6 +1220,9 @@ def run_unhide_if_worked(invocation,
             else:
                 he = stderr_capture + ".hide"
                 unhide_list.append((he, stderr_capture))
+                par = os.path.split(stderr_capture)[0]
+                if par and not os.path.exists(par):
+                    os.makedirs(par)
                 with open(he, "w", encoding="utf-8") as errp:
                     rc = subprocess.call(invocation, stdout=outp, stderr=errp)
         if rc != 0:
@@ -1313,3 +1316,115 @@ def relabel_tree(in_tree, in_tax, out_tree, del_monotypic=False, CFG=None):
     if del_monotypic:
         invocation.append("--del-monotypic")
     run_unhide_if_worked(invocation, CFG=CFG, stdout_capture=out_tree)
+
+
+def merge_json(fp_1, fp_2, src_prop=None, dest_prop=None):
+    if (dest_prop is not None and src_prop is None) \
+       or (src_prop is not None and dest_prop is None):
+        raise ValueError("only prop given")
+    dict1 = json.load(codecs.open(fp_1, 'r', encoding='utf-8'))
+    merged_dict = json.load(codecs.open(fp_2, 'r', encoding='utf-8'))
+    if src_prop is None:
+        merged_dict.update(dict1)
+        return merged_dict
+    if '/' in src_prop or '/' in dest_prop:
+        raise NotImplementedError("/ in property no longer supported.")
+    sv = dict1[src_prop]
+    merged_dict[dest_prop]
+    return merged_dict
+
+
+def write_annot_json(blob, fp):
+    with open(fp, "w", encoding="utf-8") as out:
+        json.dump(blob,
+                  out,
+                  indent=1,
+                  sort_keys=True,
+                  separators=(',', ': '),
+                  ensure_ascii=True)
+
+def stripped_nonempty_lines(fn):
+    with open(fn, 'r', encoding='utf-8') as inp:
+        for line in inp:
+            ls = line.strip()
+            if ls:
+                yield ls
+
+def add_subproblem_info_to_annotations(subpr_id_fp, pre_fp, out_fp, CFG=None):
+    h = out_fp + ".hide"
+    subproblems = []
+    for s in stripped_nonempty_lines(subpr_id_fp):
+        if not s.endswith('.tre'):
+            m = 'Expecting every line in "{}" to end in ".tre"'
+            raise RuntimeError(m.format(subpr_id_fp))
+        subproblems.append(s[:-4])
+    jsonblob = read_as_json(pre_fp)
+    nodes_dict = jsonblob['nodes']
+    for ott_id in subproblems:
+        d = nodes_dict.setdefault(ott_id, {})
+        d['was_constrained'] = True
+        d['was_uncontested'] = True
+    with codecs.open(h, 'w', encoding='utf-8') as out_stream:
+        json.dump(jsonblob, out_stream, indent=2, sort_keys=True, separators=(',', ': '))
+    mv_if_needed(h, out_fp, CFG=CFG)
+
+def annotate_1_tree(in_tree, in_phylo_fps, in_subpr, out_fp, CFG=None):
+    tf = '.annotate_1_tree_list.hide'
+    pa = '.preannot.json'
+    with open(tf, "w") as tmp:
+        tmp.write('{}\n'.format('\n'.join(in_phylo_fps)))
+    try:
+        inv = ["otc-annotate-synth" ,
+               in_tree,
+               "-f{}".format(tf), ]
+        run_unhide_if_worked(inv, CFG=CFG, stdout_capture=pa)
+        add_subproblem_info_to_annotations(in_subpr, pa, out_fp, CFG=CFG)
+    finally:
+        for i in [tf, pa]:
+            if os.path.exists(i):
+                os.unlink(i)
+
+
+
+def annotate_2_tree(in_1, in_tax_dd, out_fp, CFG=None):
+    with open(in_tax_dd) as inp:
+        line = next(inp)
+        line = next(inp)
+        ls = line.split()
+        if ls[0] != "0":
+            m = "Expecting first word of second line of {} to be 0"
+            raise ValueError(m.format(in_tax_dd))
+        num_tips = int(ls[1])
+    annot_2 = gen_config_annot(CFG)
+    annot_2['num_leaves_in_exemplified_taxonomy'] = num_tips
+    write_annot_json(blob=annot_2, fp=out_fp)
+
+
+
+def merge_annoations(in_1, in_2, out_fp, CFG=None):
+    pass
+
+# @if ! test -d $(PROPINQUITY_OUT_DIR)/annotated_supertree ; then mkdir -p $(PROPINQUITY_OUT_DIR)/annotated_supertree ; fi
+# otc-annotate-synth \
+#   $(PROPINQUITY_OUT_DIR)/labelled_supertree/labelled_supertree.tre \
+#   $$(sed "s:^:$(PROPINQUITY_OUT_DIR)/exemplified_phylo/:" $(PROPINQUITY_OUT_DIR)/exemplified_phylo/nonempty_trees.txt) \
+#   > $(PROPINQUITY_OUT_DIR)/annotated_supertree/preannotations1.json
+# bin/add_subproblem_info_to_annotations.py \
+#   $(PROPINQUITY_OUT_DIR)/subproblems/subproblem-ids.txt \
+#   $(PROPINQUITY_OUT_DIR)/annotated_supertree/preannotations1.json \
+#   $(PROPINQUITY_OUT_DIR)/annotated_supertree/annotations1.json
+# @rm $(PROPINQUITY_OUT_DIR)/annotated_supertree/preannotations1.json
+# bin/gen_attributes.py $(CONFIG_FILENAME) --user --out-dir=$(PROPINQUITY_OUT_DIR) \
+#   > $(PROPINQUITY_OUT_DIR)/annotated_supertree/preannotations2.json
+# bin/merge-json.py \
+#   $(PROPINQUITY_OUT_DIR)/annotated_supertree/num_phylo_tips.json \
+#   x \
+#   $(PROPINQUITY_OUT_DIR)/annotated_supertree/preannotations2.json \
+#   num_leaves_in_exemplified_taxonomy \
+#   > $(PROPINQUITY_OUT_DIR)/annotated_supertree/annotations2.json
+# @rm $(PROPINQUITY_OUT_DIR)/annotated_supertree/preannotations2.json
+# @rm $(PROPINQUITY_OUT_DIR)/annotated_supertree/num_phylo_tips.json
+# bin/merge-json.py \
+#   $(PROPINQUITY_OUT_DIR)/annotated_supertree/annotations1.json \
+#   $(PROPINQUITY_OUT_DIR)/annotated_supertree/annotations2.json \
+#   > $(PROPINQUITY_OUT_DIR)/annotated_supertree/annotations.json
