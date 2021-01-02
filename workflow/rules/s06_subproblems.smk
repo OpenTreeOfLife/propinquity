@@ -1,4 +1,5 @@
-from propinquity import (decompose_into_subproblems,
+from propinquity import (calc_degree_dist,
+                         decompose_into_subproblems,
                          run_unhide_if_worked, 
                          solve_subproblem,
                          validate_config,
@@ -67,10 +68,8 @@ rule calc_dd:
            soln = "subproblem_solutions/{ottid}.tre"
     output: sol_dd = "subproblem_solutions/deg-dist-{ottid}.txt"
     run:
-        invocation = ["otc-degree-distribution", input.soln]
-        run_unhide_if_worked(invocation,
-                             CFG=CFG,
-                             stdout_capture=output.sol_dd)
+        calc_degree_dist(input.soln, output.sol_dd, CFG=CFG)
+
 
 
 def aggregate_trees(wildcards):

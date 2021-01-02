@@ -1190,7 +1190,8 @@ def subset_ott(orig_ott_dir, sub_ott_dir, root_id, CFG):
 def run_unhide_if_worked(invocation,
                          unhide_list=None,
                          CFG=None,
-                         stdout_capture=None):
+                         stdout_capture=None,
+                         stderr_capture=None):
     """Runs `invocation`. If that does not fail, moves src to dest
     for every element in `unhide_list = [(src1, dest1), ...]
     If `stdout_capture` is sent, it should be a string that is
@@ -1203,6 +1204,8 @@ def run_unhide_if_worked(invocation,
     if unhide_list is None:
         unhide_list = []
     if stdout_capture is None:
+        if stderr_capture is not None:
+            raise NotImplementedError("stderr_capture != None, but stdout_capture is None")
         rp = subprocess.run(invocation)
         rp.check_returncode()
     else:
@@ -1211,9 +1214,16 @@ def run_unhide_if_worked(invocation,
         par = os.path.split(stdout_capture)[0]
         if not os.path.exists(par):
             os.makedirs(par)
-        with open(h, "w") as outp:
-            if subprocess.call(invocation, stdout=outp) != 0:
-                raise RuntimeError('Call failed:\n"{}"\n'.format('" "'.join(invocation)))
+        with open(h, "w", encoding="utf-8") as outp:
+            if stderr_capture is None:
+                rc = subprocess.call(invocation, stdout=outp)
+            else:
+                he = stderr_capture + ".hide"
+                unhide_list.append((he, stderr_capture))
+                with open(he, "w", encoding="utf-8") as errp:
+                    rc = subprocess.call(invocation, stdout=outp, stderr=errp)
+        if rc != 0:
+            raise RuntimeError('Call failed:\n"{}"\n'.format('" "'.join(invocation)))
     
     for src, dest in unhide_list:
         mv_if_needed(src=src, dest=dest, CFG=CFG)
@@ -1284,3 +1294,22 @@ def write_inc_sed_ids(tax_tree,
                          CFG=CFG,
                          stdout_capture=out_inc_sed_id_fp)
 
+def calc_degree_dist(on_tree_fp, out_dd_fp, CFG=None):
+    invocation = ["otc-degree-distribution", on_tree_fp]
+    run_unhide_if_worked(invocation, CFG=CFG, stdout_capture=out_dd_fp)
+
+def simplify_tax_names(in_tree, out_tree, out_log, CFG=None):
+    invocation = ["otc-munge-names", in_tree]
+    run_unhide_if_worked(invocation,
+                     CFG=CFG,
+                     stdout_capture=out_tree,
+                     stderr_capture=out_log)
+
+def relabel_tree(in_tree, in_tax, out_tree, del_monotypic=False, CFG=None):
+    invocation = ["otc-relabel-tree" ,
+                  in_tree,
+                  "--taxonomy={}".format(in_tax),
+                  "--format-tax=%N ott%I", ]
+    if del_monotypic:
+        invocation.append("--del-monotypic")
+    run_unhide_if_worked(invocation, CFG=CFG, stdout_capture=out_tree)
