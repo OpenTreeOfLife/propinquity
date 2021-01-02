@@ -2,7 +2,7 @@ from propinquity import (annotate_1_tree,
                          annotate_2_tree, 
                          calc_degree_dist, 
                          decompose_into_subproblems,
-                         merge_annoations,
+                         merge_annotations,
                          OTT_FILENAMES,
                          relabel_tree, 
                          run_unhide_if_worked,
@@ -140,5 +140,5 @@ rule annotate:
     input: annot_1 = "annotated_supertree/annotations1.json", \
            annot_2 = "annotated_supertree/annotations2.json"
     output: "annotated_supertree/annotations.json"
-    run: merge_annoations(input.annot_1, input.annot_2, output[0], CFG=CFG)
+    run: merge_annotations(input.annot_1, input.annot_2, output[0], CFG=CFG)
 

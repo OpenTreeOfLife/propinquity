@@ -2,6 +2,7 @@
 
 from collections import defaultdict
 import subprocess
+import datetime
 import filecmp
 import codecs
 import shutil
@@ -23,6 +24,7 @@ from peyotl import Phylesystem
 # TODO: move these up to top-level peyotl imports, when that is supported
 from peyotl.ott import OTT
 from peyotl.phylo.entities import OTULabelStyleEnum
+import peyotl
 
 __version__ = '2.0.dev1'
 
@@ -1400,9 +1402,118 @@ def annotate_2_tree(in_1, in_tax_dd, out_fp, CFG=None):
     write_annot_json(blob=annot_2, fp=out_fp)
 
 
+def read_num_studies():
+    fp = 'phylo_snapshot/concrete_rank_collection.json'
+    with open(fp) as data_file:
+        snapshot_data = json.load(data_file)
+    studies = set()
+    for study_tree_object in snapshot_data["decisions"]:
+        study_id = study_tree_object["studyID"]
+        studies.add(study_id)
+    return len(studies)
 
-def merge_annoations(in_1, in_2, out_fp, CFG=None):
-    pass
+def gen_source_id_map_from_output():
+    fp = 'phylo_snapshot/concrete_rank_collection.json'
+    snapshot_data = read_as_json(fp)
+    source_id_map = {}
+    for study_tree_object in snapshot_data["decisions"]:
+        study_id = study_tree_object["studyID"]
+        tree_id = study_tree_object["treeID"]
+        git_sha = study_tree_object["SHA"]
+        name = '{}@{}'.format(study_id, tree_id) # Using @, which will not be in treeid
+        source_id_map[name] = {"study_id":study_id, "tree_id":tree_id, "git_sha":git_sha}
+    return source_id_map
+
+def read_ott_version(CFG):
+    with codecs.open(os.path.join(CFG.ott_dir, 'version.txt'), 'r', encoding='utf-8') as fo:
+        return fo.read().strip()
+
+def get_otc_version():
+    git_sha, version, boost_version = ['unknown']*3
+    try:
+        out = subprocess.check_output('otc-version-reporter')
+        try:
+            git_sha = re.compile('git_sha *= *([a-zA-Z0-9]+)').search(out).group(1)
+        except:
+            pass
+        try:
+            version = re.compile('version *= *([-._a-zA-Z0-9]+)').search(out).group(1)
+        except:
+            pass
+        try:
+            boost_version = re.compile('BOOST_LIB_VERSION *= *([-._a-zA-Z0-9]+)').search(out).group(1)
+        except:
+            pass
+    except:
+        pass
+    return git_sha, version, boost_version
+
+def root_taxon_name(CFG):
+    FNULL = open(os.devnull, 'w')
+    inv = ["otc-taxonomy-parser", CFG.ott_dir, "-N", str(CFG.root_ott_id)]
+    proc = subprocess.Popen(inv, stdout=subprocess.PIPE, stderr=FNULL)
+    root_name = proc.communicate()[0].strip().decode('utf-8')
+    return root_name
+
+def get_git_sha_from_dir(d):
+    head = os.path.join(d, '.git', 'HEAD')
+    head_branch_ref_frag = open(head, 'r').read().split()[1]
+    head_branch_ref = os.path.join(d, '.git', head_branch_ref_frag)
+    return open(head_branch_ref, 'r').read().strip()
+
+def get_peyotl_version(peyotl_dir):
+    peyotl_version, peyotl_sha = ['unknown'] * 2
+    try:
+        import peyotl
+        peyotl_version = peyotl.__version__
+    except:
+        pass
+    try:
+        peyotl_sha = get_git_sha_from_dir(peyotl_dir)
+    except:
+        raise
+        pass
+    return peyotl_version, peyotl_sha
+
+def gen_config_annot(CFG):
+    otc_sha, otc_version, otc_boost_version = get_otc_version()
+    document = {}
+    document["date_completed"] = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    synth_id = CFG.synth_id
+    propinquity_sha = 'unknown'
+    document["tree_id"] = synth_id
+    document["synth_id"] = synth_id
+    document["taxonomy_version"] = read_ott_version(CFG)
+    document["root_taxon_name"] = root_taxon_name(CFG)
+    document["generated_by"] = [
+        {"name":"propinquity",
+         "version":__version__,
+         "git_sha": 'unknown' ,
+         "url":"https://github.com/OpenTreeOfLife/propinquity",
+         "invocation":"cmd"},
+        {"name":"peyotl",
+         "version": peyotl.__version__,
+         "git_sha": "unknown",
+         "url":"http://opentreeoflife.github.io/peyotl",
+         "invocation":"N/A"},
+        {"name":"otcetera",
+         "version": otc_version,
+         "git_sha": otc_sha,
+         "url":"https://github.com/OpenTreeOfLife/otcetera",
+         "invocation":"N/A"},
+    ]
+    document["filtered_flags"] = CFG.cleaning_flags
+    sim = gen_source_id_map_from_output()
+    document["source_id_map"] = sim
+    document["num_source_trees"] = len(sim) # each tree is a key in sim
+    studies = set([v['study_id'] for v in sim.values()])
+    document["num_source_studies"] = len(studies)
+    return document
+
+
+def merge_annotations(in_1, in_2, out_fp, CFG=None):
+    m = merge_json(in_1, in_2)
+    write_annot_json(blob=m, fp=out_fp)
 
 # @if ! test -d $(PROPINQUITY_OUT_DIR)/annotated_supertree ; then mkdir -p $(PROPINQUITY_OUT_DIR)/annotated_supertree ; fi
 # otc-annotate-synth \
