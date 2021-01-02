@@ -132,6 +132,7 @@ class PropinquityConfig(object):
 
 
 def validate_config(config, logger):
+    print(config)
     return PropinquityConfig(config, logger)
 
 ################################################################################
@@ -1519,7 +1520,8 @@ def merge_annotations(in_1, in_2, out_fp, CFG=None):
 
 
 def document_outputs(summary_fp, CFG=None):
-    raise NotImplementedError("doc")
+    import snakemake.utils
+    print(dir(snakemake.utils.snakemake))
 
 def parse_degree_dist(fn):
     header_pat = re.compile(r'Out-degree\S+Count')

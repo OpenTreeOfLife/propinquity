@@ -3,6 +3,7 @@ from propinquity import (analyze_lost_taxa,
                          annotate_2_tree, 
                          calc_degree_dist, 
                          combine_ott_cleaning_logs,
+                         document_outputs,
                          merge_annotations,
                          run_assessments,
                          validate_config)
@@ -83,5 +84,6 @@ rule assess:
 rule html:
     input: "assessments/summary.json"
     output: "index.html"
-    run: document_outputs(input[0], CFG)
+    run: print(config)
+         document_outputs(input[0], CFG)
 

@@ -77,35 +77,3 @@ rule all:
            s07_unprune_taxa("labelled_supertree/labelled_supertree_simplified_ottnames_without_monotypic.tre"),
            s08_finish("annotated_supertree/annotations.json"),
            s08_finish("index.html")
-
-# # End Phylo cleaning
-# ################################################################################
-
-# rule exemplify:
-#     input: "otc-config", \
-#            args="exemplified_phylo/args.txt", \
-#            cott="cleaned_ott/cleaned_ott.tre"
-#     output: extaxa="exemplified_phylo/taxonomy.tre", \
-#             nonempty="exemplified_phylo/nonempty_trees.txt", \
-#             jsonout="exemplified_phylo/exemplified_log.json"
-#     shell:
-#         """otc-nonterminals-to-exemplars \
-#             -e{out_dir}/exemplified_phylo {input.cott} -f{input.args} \
-#             -j{output.jsonout} -n{output.nonempty}"""
-
-# rule exemplify_for_regraft:
-#     input: "otc-config", \
-#            "phylo_snapshot/ps_shard_shas.txt", \
-#            "phylo_snapshot/collections_shard_shas.txt", \
-#            config="config", \
-#            extaxa="exemplified_phylo/taxonomy.tre"
-#     output: regott="exemplified_phylo/regraft_cleaned_ott.tre", \
-#             regjson="exemplified_phylo/pruned_for_regraft_cleaned_ott.json"
-#     shell:
-#         """otc-regraft-taxonomy-generator \
-#             --in-tree={input.extaxa} \
-#             --config={input.config} \
-#             {ott_dir} \
-#             --json={output.regjson} \
-#             >{output.regott}
-#         """
