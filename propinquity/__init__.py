@@ -1514,28 +1514,3 @@ def gen_config_annot(CFG):
 def merge_annotations(in_1, in_2, out_fp, CFG=None):
     m = merge_json(in_1, in_2)
     write_annot_json(blob=m, fp=out_fp)
-
-# @if ! test -d $(PROPINQUITY_OUT_DIR)/annotated_supertree ; then mkdir -p $(PROPINQUITY_OUT_DIR)/annotated_supertree ; fi
-# otc-annotate-synth \
-#   $(PROPINQUITY_OUT_DIR)/labelled_supertree/labelled_supertree.tre \
-#   $$(sed "s:^:$(PROPINQUITY_OUT_DIR)/exemplified_phylo/:" $(PROPINQUITY_OUT_DIR)/exemplified_phylo/nonempty_trees.txt) \
-#   > $(PROPINQUITY_OUT_DIR)/annotated_supertree/preannotations1.json
-# bin/add_subproblem_info_to_annotations.py \
-#   $(PROPINQUITY_OUT_DIR)/subproblems/subproblem-ids.txt \
-#   $(PROPINQUITY_OUT_DIR)/annotated_supertree/preannotations1.json \
-#   $(PROPINQUITY_OUT_DIR)/annotated_supertree/annotations1.json
-# @rm $(PROPINQUITY_OUT_DIR)/annotated_supertree/preannotations1.json
-# bin/gen_attributes.py $(CONFIG_FILENAME) --user --out-dir=$(PROPINQUITY_OUT_DIR) \
-#   > $(PROPINQUITY_OUT_DIR)/annotated_supertree/preannotations2.json
-# bin/merge-json.py \
-#   $(PROPINQUITY_OUT_DIR)/annotated_supertree/num_phylo_tips.json \
-#   x \
-#   $(PROPINQUITY_OUT_DIR)/annotated_supertree/preannotations2.json \
-#   num_leaves_in_exemplified_taxonomy \
-#   > $(PROPINQUITY_OUT_DIR)/annotated_supertree/annotations2.json
-# @rm $(PROPINQUITY_OUT_DIR)/annotated_supertree/preannotations2.json
-# @rm $(PROPINQUITY_OUT_DIR)/annotated_supertree/num_phylo_tips.json
-# bin/merge-json.py \
-#   $(PROPINQUITY_OUT_DIR)/annotated_supertree/annotations1.json \
-#   $(PROPINQUITY_OUT_DIR)/annotated_supertree/annotations2.json \
-#   > $(PROPINQUITY_OUT_DIR)/annotated_supertree/annotations.json
