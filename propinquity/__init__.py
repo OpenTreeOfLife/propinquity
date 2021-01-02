@@ -1188,20 +1188,30 @@ def subset_ott(orig_ott_dir, sub_ott_dir, root_id, CFG):
                  CFG=CFG)
 
 def run_unhide_if_worked(invocation,
-                         unhide_list,
+                         unhide_list=None,
                          CFG=None,
                          stdout_capture=None):
     """Runs `invocation`. If that does not fail, moves src to dest
     for every element in `unhide_list = [(src1, dest1), ...]
+    If `stdout_capture` is sent, it should be a string that is
+        the filepath to the final destination of stdout redirection.
+        The actual redirection will occur to that path with the 
+        suffix ".hide" appended. The output will be moved to the
+        final location, if it differs from the content at that
+        location.
     """
+    if unhide_list is None:
+        unhide_list = []
     if stdout_capture is None:
         rp = subprocess.run(invocation)
         rp.check_returncode()
     else:
+        h = stdout_capture + ".hide"
+        unhide_list.append((h, stdout_capture))
         par = os.path.split(stdout_capture)[0]
         if not os.path.exists(par):
             os.makedirs(par)
-        with open(stdout_capture, "w") as outp:
+        with open(h, "w") as outp:
             if subprocess.call(invocation, stdout=outp) != 0:
                 raise RuntimeError('Call failed:\n"{}"\n'.format('" "'.join(invocation)))
     
@@ -1256,19 +1266,13 @@ def solve_subproblem(incert_sed_fp, subprob_fp, out_fp, CFG=None):
                   "-I",
                   incert_sed_fp,
                   ]
-    hide = out_fp + ".hide"
-    unhide = [(hide, out_fp)]
-    run_unhide_if_worked(invocation,
-                         unhide,
-                         CFG=CFG,
-                         stdout_capture=hide)
+    run_unhide_if_worked(invocation, CFG=CFG, stdout_capture=out_fp)
 
 def write_inc_sed_ids(tax_tree,
                       ott_dir,
                       config_fp,
                       out_inc_sed_id_fp,
                       CFG=None):
-    out_fp = out_inc_sed_id_fp + ".hide"
     invocation = ["otc-taxonomy-parser",
                   ott_dir,
                   "--config={}".format(config_fp),
@@ -1276,9 +1280,7 @@ def write_inc_sed_ids(tax_tree,
                   "--any-flag=incertae_sedis,major_rank_conflict,unplaced,unclassified",
                   '--format=%I',
                  ]
-    unhide = [(out_fp, out_inc_sed_id_fp), ]
     run_unhide_if_worked(invocation,
-                         unhide,
                          CFG=CFG,
-                         stdout_capture=out_fp)
+                         stdout_capture=out_inc_sed_id_fp)
 

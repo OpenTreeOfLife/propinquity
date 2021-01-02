@@ -67,12 +67,10 @@ rule calc_dd:
            soln = "subproblem_solutions/{ottid}.tre"
     output: sol_dd = "subproblem_solutions/deg-dist-{ottid}.txt"
     run:
-        hstdout = output.sol_dd + ".hide"
         invocation = ["otc-degree-distribution", input.soln]
         run_unhide_if_worked(invocation,
-                             [(hstdout, output.sol_dd)],
                              CFG=CFG,
-                             stdout_capture=hstdout)
+                             stdout_capture=output.sol_dd)
 
 
 def aggregate_trees(wildcards):
@@ -114,12 +112,10 @@ rule graft_solutions:
         content = '\n'.join(list(input))
         tfp = "subproblem_solutions/.tmp_paths.txt"
         write_if_needed(fp=tfp, content=content, CFG=CFG)
-        hstdout = output.tree + ".hide"
         invocation = ["otc-graft-solutions", "-f{}".format(tfp)]
         run_unhide_if_worked(invocation,
-                             [(hstdout, output.tree)],
                              CFG=CFG,
-                             stdout_capture=hstdout)
+                             stdout_capture=output.tree)
         os.unlink(tfp)
 
 rule relabel_grafted:
@@ -128,7 +124,6 @@ rule relabel_grafted:
            tree = "grafted_solution/grafted_solution.tre"
     output: "grafted_solution/grafted_solution_ottnames.tre"
     run:
-        hstdout = output[0] + ".hide"
         invocation = ["otc-relabel-tree",
                       input.tree,
                       "--taxonomy={}".format(CFG.ott_dir),
@@ -136,6 +131,5 @@ rule relabel_grafted:
                       "--del-monotypic"
                       ]
         run_unhide_if_worked(invocation,
-                             [(hstdout, output[0])],
                              CFG=CFG,
-                             stdout_capture=hstdout)
+                             stdout_capture=output[0])

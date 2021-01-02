@@ -25,18 +25,16 @@ rule ott_for_regraft:
     output: tree = "exemplified_phylo/regraft_cleaned_ott.tre", \
             json = "exemplified_phylo/pruned_for_regraft_cleaned_ott.json"
     run:
-        hstdout = output.tree + ".hide"
         hjson = output.json + ".hide"
         invocation = ["otc-regraft-taxonomy-generator",
                       "--in-tree={}".format(input.tax),
                       "--config={}".format(input.config),
                       directory("bumped_ott"),
                       "--json={}".format(hjson),]
-        unhide = [(hstdout, output.tree), (hjson, output.json)]
         run_unhide_if_worked(invocation,
-                             unhide,
+                             [(hjson, output.json)],
                              CFG=CFG,
-                             stdout_capture=hstdout)
+                             stdout_capture=output.tree)
 
 rule terse_labelled_tree:
     input: config = "config", \
@@ -45,11 +43,7 @@ rule terse_labelled_tree:
            tax_tree = "exemplified_phylo/regraft_cleaned_ott.tre"
     output: "full_supertree/full_supertree.tre"
     run:
-        hstdout = output[0] + ".hide"
         invocation = ["otc-unprune-solution",
                       input.grafted, 
                       input.tax_tree]
-        run_unhide_if_worked(invocation,
-                             [(hstdout, output[0])],
-                             CFG=CFG,
-                             stdout_capture=hstdout)
+        run_unhide_if_worked(invocation, CFG=CFG, stdout_capture=output[0])
