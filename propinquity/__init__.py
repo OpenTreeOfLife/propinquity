@@ -1879,10 +1879,6 @@ def gen_degree_dist(fn):
         if rfn:
             yield rfn, dd
 
-def write_as_json(obj, out_stream):
-    json.dump(obj, out_stream, indent=2, sort_keys=True, separators=(',', ': '))
-    out_stream.write('\n')
-
 def render_top_index(container, template, html_out, json_out):
     write_as_json({'config' : container.config.__dict__}, json_out)
     html_out.write(template(config=container.config,

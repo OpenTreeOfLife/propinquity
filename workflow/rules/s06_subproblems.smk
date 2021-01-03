@@ -15,7 +15,7 @@ min_version("5.30.1")
 CFG = validate_config(config, logger)
 
 rule all:
-    input: "grafted_solution/grafted_solution_ottnames.tre"
+    input: "subproblem_solutions/solution-ids.txt"
     log: "logs/subproblems"
 
 rule expand_path_to_nonempty_phylo:
@@ -63,26 +63,12 @@ rule solve:
                          out_fp=output.soln,
                          CFG=CFG)
 
-rule calc_dd:
-    input: otcconfig = "otc-config", \
-           soln = "subproblem_solutions/{ottid}.tre"
-    output: sol_dd = "subproblem_solutions/deg-dist-{ottid}.txt"
-    run:
-        calc_degree_dist(input.soln, output.sol_dd, CFG=CFG)
-
-
-
 def aggregate_trees(wildcards):
     solve_out = os.path.split(checkpoints.decompose.get(**wildcards).output[0])[0]
     gw = glob_wildcards(os.path.join(solve_out, '{ottid}.tre'))
     return expand("subproblem_solutions/{ottid}.tre", ottid=gw.ottid)
 
-def aggregate_sdd(wildcards):
-    solve_out = directory("subproblem_solutions")
-    gw = glob_wildcards(os.path.join(solve_out, '{ottid}.tre'))
-    return expand("subproblem_solutions/deg-dist-{ottid}.txt", ottid=gw.ottid)
-
-rule solved_ids:
+checkpoint solved_ids:
     input: aggregate_trees
     output: "subproblem_solutions/solution-ids.txt"
     run:
@@ -90,6 +76,20 @@ rule solved_ids:
         # print("input=", tags)
         content = '\n'.join(tags)
         write_if_needed(fp=output[0], content=content, CFG=CFG)
+
+
+rule calc_dd:
+    input: otcconfig = "otc-config", \
+           soln = "subproblem_solutions/{ottid}.tre"
+    output: sol_dd = "subproblem_solutions/deg-dist-{ottid}.txt"
+    run:
+        calc_degree_dist(input.soln, output.sol_dd, CFG=CFG)
+
+def aggregate_sdd(wildcards):
+    solve_out = os.path.split(checkpoints.solved_ids.get(**wildcards).output[0])[0]
+    solve_out = directory("subproblem_solutions")
+    gw = glob_wildcards(os.path.join(solve_out, '{ottid}.tre'))
+    return expand("subproblem_solutions/deg-dist-{ottid}.txt", ottid=gw.ottid)
 
 rule concat_soln_deg_dist:
     input: aggregate_sdd
@@ -124,18 +124,3 @@ rule graft_solutions:
                              stdout_capture=output.tree)
         os.unlink(tfp)
 
-rule relabel_grafted:
-    input: config = "config", \
-           otcconfig = "otc-config", \
-           tree = "grafted_solution/grafted_solution.tre"
-    output: "grafted_solution/grafted_solution_ottnames.tre"
-    run:
-        invocation = ["otc-relabel-tree",
-                      input.tree,
-                      "--taxonomy={}".format(CFG.ott_dir),
-                      '--format-tax=%N ott%I',
-                      "--del-monotypic"
-                      ]
-        run_unhide_if_worked(invocation,
-                             CFG=CFG,
-                             stdout_capture=output[0])

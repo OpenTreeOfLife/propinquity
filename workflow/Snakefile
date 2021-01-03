@@ -49,6 +49,11 @@ subworkflow s06_subproblems:
     snakefile: "rules/s06_subproblems.smk"
     configfile: "config.json"
 
+subworkflow s06b_subproblems_deg_dist:
+    workdir: CFG.out_dir
+    snakefile: "rules/s06b_subproblems_deg_dist.smk"
+    configfile: "config.json"
+
 subworkflow s07_unprune_taxa:
     workdir: CFG.out_dir
     snakefile: "rules/s07_unprune_taxa.smk"
@@ -68,9 +73,11 @@ rule all:
            s03_clean_phylo("cleaned_phylo/phylo_inputs_cleaned.txt"),
            s04_modify_taxonomy("bumped_ott/cleaned_ott.tre"),
            s05_exemplify("exemplified_phylo/incertae_sedis.txt"),
-           s06_subproblems("grafted_solution/grafted_solution_ottnames.tre"),
-           s06_subproblems("subproblem_solutions/solution-degree-distributions.txt"),
            s06_subproblems("subproblems/contesting_trees.json"),
+           s06_subproblems("subproblem_solutions/solution-ids.txt"),
+           s06_subproblems("subproblem_solutions/solution-degree-distributions.txt"),
+           s06_subproblems("grafted_solution/grafted_solution.tre"),
+           s06b_subproblems_deg_dist("grafted_solution/grafted_solution_ottnames.tre"),
            s07_unprune_taxa("labelled_supertree/labelled_supertree.tre"),
            s07_unprune_taxa("labelled_supertree/labelled_supertree_out_degree_distribution.txt"),
            s07_unprune_taxa("labelled_supertree/labelled_supertree_ottnames.tre"),
