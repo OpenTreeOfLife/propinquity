@@ -18,7 +18,7 @@ min_version("5.30.1")
 CFG = validate_config(config, logger)
 
 rule all:
-    input: "subproblems/subproblem-ids.txt"
+    input: "subproblems/dumped_subproblem_ids.txt"
     log: "logs/unprune"
 
 rule ott_for_regraft:

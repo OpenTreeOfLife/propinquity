@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 from collections import defaultdict
-from chameleon import PageTemplate
+from chameleon import PageTemplateLoader
 import subprocess
 import datetime
 import filecmp
@@ -1737,19 +1737,20 @@ _STATIC_MD = ['static/phylo_input/README.md',
               'static/annotated_supertree/README.md',
               'static/full_supertree/README.md',
               'static/exemplified_phylo/README.md',]
-_TEMPLATES = ['static/templates/adnnotated_supertree_index.pt',
-              'static/templates/assessments_index.pt',
-              'static/templates/cleaned_ott_index.pt',
-              'static/templates/cleaned_phylo_index.pt',
-              'static/templates/exemplified_phylo_index.pt',
-              'static/templates/grafted_solution_index.pt',
-              'static/templates/head.pt',
-              'static/templates/labelled_supertree_index.pt',
-              'static/templates/phylo_input_index.pt',
-              'static/templates/phylo_snapshot_index.pt',
-              'static/templates/subproblems_index.pt',
-              'static/templates/subproblem_solutions_index.pt',
-              'static/templates/top_index.pt', ]
+TEMPLATE_FNS=['annotated_supertree_index.pt',
+              'assessments_index.pt',
+              'cleaned_ott_index.pt',
+              'cleaned_phylo_index.pt',
+              'exemplified_phylo_index.pt',
+              'grafted_solution_index.pt',
+              'head.pt',
+              'labelled_supertree_index.pt',
+              'phylo_input_index.pt',
+              'phylo_snapshot_index.pt',
+              'subproblems_index.pt',
+              'subproblem_solutions_index.pt',
+              'top_index.pt', ]
+_TEMPLATES = ['static/templates/{}'.format(i) for i in TEMPLATE_FNS]
 
 
 def document_outputs(summary_fp, CFG=None):
@@ -1762,6 +1763,9 @@ def document_outputs(summary_fp, CFG=None):
     dg = DocGen(CFG)
     dg.render()
 
+def get_template_text(fn):
+    rb = pkgutil.get_data('propinquity', 'static/templates/{}'.format(fn))
+    return rb.decode('utf-8')
 
 class Extensible(object):
     pass
@@ -1797,8 +1801,9 @@ def get_git_sha_from_dir(d):
 def get_runtime_configuration(CFG):
     def parse_config_as_extensible(CFG):
         config = Extensible()
-        config.taxonomy_cleaning_flags = list(CFG.cleaning_flags)
-        config.collections = list(CFG.collections)
+        config.taxonomy_cleaning_flags = CFG.cleaning_flags.split(',')
+        config.config_filepath = "config"
+        config.collections = CFG.collections.split(',')
         config.root_ott_id = CFG.root_ott_id
         config.synth_id = CFG.synth_id
         config.phylesystem_root = CFG.phylesystem_dir
@@ -1970,7 +1975,7 @@ def node_label2obj(nl):
 # add OTT metadata to the monophyletic taxa blob
 def add_taxonomy_metadata(non_monophyletic_taxa, ott_dir):
     broken_taxa = non_monophyletic_taxa['non_monophyletic_taxa']
-    taxonomy = ott.OTT(ott_dir=ott_dir)
+    taxonomy = OTT(ott_dir=ott_dir)
     id2names = taxonomy.ott_id_to_names
     id2ranks = taxonomy.ott_id_to_ranks
 
@@ -1990,6 +1995,10 @@ def add_taxonomy_metadata(non_monophyletic_taxa, ott_dir):
         broken_taxa[oid]['rank'] = rank
     non_monophyletic_taxa['non_monophyletic_taxa']=broken_taxa
     return non_monophyletic_taxa
+
+def demand_fp(fp):
+    if not os.path.exists(fp):
+        raise RuntimeError('Expected filepath "{}" does not exist'.format(fp))
 
 class DocGen(object):
     def __init__(self, CFG):
@@ -2026,7 +2035,7 @@ class DocGen(object):
         d = os.path.join(self.top_output_dir, 'labelled_supertree')
         p = 'labelled_supertree_out_degree_distribution.txt'
         lsodd = os.path.join(d, p)
-        assert(os.path.exists(lsodd))
+        demand_fp(lsodd)
         blob = Extensible()
         blob.unprune_stats = read_as_json(os.path.join(d, 'input_output_stats.json'))
         blob.non_monophyletic_taxa = read_as_json(os.path.join(d, 'broken_taxa.json'))
@@ -2039,7 +2048,7 @@ class DocGen(object):
     def read_subproblem_solutions(self):
         d = os.path.join(self.top_output_dir, 'subproblem_solutions')
         sdd = os.path.join(d, 'solution-degree-distributions.txt')
-        assert(os.path.exists(sdd))
+        demand_fp(os.path.exists(sdd))
         blob = Extensible()
         blob.subproblem_num_leaves_num_internal_nodes = parse_subproblem_solutions_degree_dist(sdd)
         return blob
@@ -2047,7 +2056,7 @@ class DocGen(object):
     def read_subproblems(self):
         d = os.path.join(self.top_output_dir, 'subproblems')
         blob = Extensible()
-        conf_tax_json_fp = os.path.join(d, 'contesting-trees.json')
+        conf_tax_json_fp = os.path.join(d, 'contesting_trees.json')
         conf_tax_info = read_as_json(conf_tax_json_fp)
         if not conf_tax_info:
             conf_tax_info = {}
@@ -2075,16 +2084,18 @@ class DocGen(object):
                          }
                     cf_nl.append(el)
         blob.contested_taxa = externalized_conf_tax_info
-        blob.tree_files = stripped_nonempty_lines(os.path.join(d, 'subproblem-ids.txt'))
+        blob.tree_files = stripped_nonempty_lines(os.path.join(d, 'dumped_subproblem_ids.txt'))
         id2num_leaves = {}
         for el in self.subproblem_solutions.subproblem_num_leaves_num_internal_nodes:
             id2num_leaves[el[0]] = el[1]
         by_num_phylo = []
         by_input = {}
         for s in blob.tree_files:
-            assert s.endswith('.tre')
+            if not s.endswith('.tre'):
+                raise RuntimeError("expecting {} to end in .tre".format(s))
             pref = s[:-4]
-            assert pref.startswith('ott')
+            if not pref.startswith('ott'):
+                raise RuntimeError("expecting {} to startwith ott".format(s))
             tree_name_file = os.path.join(d, pref + '-tree-names.txt')
             phylo_inputs = []
             for i in stripped_nonempty_lines(tree_name_file):
@@ -2127,11 +2138,13 @@ class DocGen(object):
         for v in by_source_tree.values():
             v.sort()
         ptdd = os.path.join(d, 'pruned_taxonomy_degree_distribution.txt')
-        assert(os.path.exists(ptdd))
+        demand_fp(os.path.exists(ptdd))
         ddlines = [i.split() for i in stripped_nonempty_lines(ptdd) if i.split()[0] == '0']
-        assert(len(ddlines) == 1)
-        leaf_line = ddlines[0] # should b
-        assert(len(leaf_line) == 2)
+        if len(ddlines) != 1:
+            raise RuntimeError("expecting {} to have 1 line".format(ptdd))
+        leaf_line = ddlines[0]
+        if len(leaf_line) != 2:
+            raise RuntimeError("expecting {} to have 1 line with 2 words found {}".format(ptdd, leaf_line))
         blob = Extensible()
         blob.num_leaves_in_exemplified_taxonomy = int(leaf_line[1])
         blob.taxa_exemplified = tx
@@ -2164,6 +2177,7 @@ class DocGen(object):
         return fo
 
     def render(self):
+        templates = PageTemplateLoader("logs/templates")
         src_dest_list = ((render_top_index, 'top_index.pt', 'index'),
                          (render_phylo_input_index, 'phylo_input_index.pt', 'phylo_input/index'),
                          (render_phylo_snapshot_index, 'phylo_snapshot_index.pt', 'phylo_snapshot/index'),
@@ -2177,14 +2191,14 @@ class DocGen(object):
                          (render_annotated_supertree_index, 'annotated_supertree_index.pt', 'annotated_supertree/index'),
                          (render_assessments_index, 'assessments_index.pt', 'assessments/index'),
                         )
-        for func, template_path, prefix in src_dest_list:
+        for func, tn, prefix in src_dest_list:
             html_path = prefix + '.html'
             json_path = prefix + '.json'
-            t = pkgutil.get_data('propinquity', 'static/templates/' + i).decode('utf-8')
+            t = templates[tn]
             html_o = self._cham_out(html_path)
             json_o = self._cham_out(json_path)
             try:
-                func(self, PageTemplate(t), html_o, json_o)
+                func(self, t, html_o, json_o)
             finally:
                 html_o.close()
                 json_o.close()

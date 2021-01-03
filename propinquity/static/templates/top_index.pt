@@ -46,8 +46,7 @@
 <h3 id="configuration-tools-peyotl"><a href="http://opentreeoflife.github.io/peyotl">peyotl</a></h3>
 
 <ul>
-    <li>the filepath of the root directory of peyotl was <code>${config.peyotl_root}</code></li>
-    <li>version: <code>${config.peyotl_version}</code> and git SHA <a href="https://github.com/mtholder/peyotl/commit/${config.peyotl_sha}">${config.peyotl_sha}</a></li>
+    <li>version: <code>${config.peyotl_version}</code></li>
 </ul>
 
 <h3 id="configuration-tools-propinquity"><a href="https://github.com/OpenTreeOfLife/propinquity">propinquity</a></h3>

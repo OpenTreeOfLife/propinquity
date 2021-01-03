@@ -69,6 +69,8 @@ rule all:
            s04_modify_taxonomy("bumped_ott/cleaned_ott.tre"),
            s05_exemplify("exemplified_phylo/incertae_sedis.txt"),
            s06_subproblems("grafted_solution/grafted_solution_ottnames.tre"),
+           s06_subproblems("subproblem_solutions/solution-degree-distributions.txt"),
+           s06_subproblems("subproblems/contesting_trees.json"),
            s07_unprune_taxa("labelled_supertree/labelled_supertree.tre"),
            s07_unprune_taxa("labelled_supertree/labelled_supertree_out_degree_distribution.txt"),
            s07_unprune_taxa("labelled_supertree/labelled_supertree_ottnames.tre"),

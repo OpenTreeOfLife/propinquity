@@ -98,8 +98,15 @@ rule concat_soln_deg_dist:
         filepaths = list(input)
         filepaths.sort()
         lines = []
+        ott_id_from_fp = re.compile(r".*deg-dist-ott([-0-9A-Za-z]+)\.txt")
         for fp in filepaths:
             with open(fp, "r") as inp:
+                m = ott_id_from_fp.match(fp)
+                if not m:
+                    msg = "Expected filepath to match deg-dist-ott####.txt found {}"
+                    raise RuntimeError(msg.format(fp))
+                ott_id = m.group(1)
+                lines.append("ott{}.tre".format(ott_id))
                 lines.extend([i[:-1] for i in inp.readlines() if i])
         content = '\n'.join(lines)
         write_if_needed(fp=output[0], content=content, CFG=CFG)

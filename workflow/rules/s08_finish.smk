@@ -4,9 +4,12 @@ from propinquity import (analyze_lost_taxa,
                          calc_degree_dist, 
                          combine_ott_cleaning_logs,
                          document_outputs,
+                         get_template_text,
                          merge_annotations,
                          run_assessments,
-                         validate_config)
+                         TEMPLATE_FNS, 
+                         validate_config,
+                         write_if_needed)
 from snakemake.logging import logger
 from snakemake.utils import min_version
 import subprocess
@@ -18,8 +21,16 @@ min_version("5.30.1")
 CFG = validate_config(config, logger)
 
 rule all:
-    input: "subproblems/subproblem-ids.txt"
+    input: "subproblems/dumped_subproblem_ids.txt"
     log: "logs/unprune"
+
+rule templates:
+    output: expand("logs/templates/{pt_file}", pt_file=TEMPLATE_FNS)
+    run:
+        for ptf in TEMPLATE_FNS:
+            write_if_needed(fp="logs/templates/{}".format(ptf),
+                            content = get_template_text(ptf),
+                            CFG=CFG)
 
 rule annotate_1:
     input: nonempty = "exemplified_phylo/nonempty_trees.txt", \
@@ -82,7 +93,10 @@ rule assess:
 
 
 rule html:
-    input: "assessments/summary.json"
+    input: expand("logs/templates/{pt_file}", pt_file=TEMPLATE_FNS), \
+           summ = "assessments/summary.json", \
+           contesting = "subproblems/contesting_trees.json", \
+           sub_id = "subproblems/dumped_subproblem_ids.txt"
     output: "index.html"
     run: document_outputs(input[0], CFG=CFG)
 
