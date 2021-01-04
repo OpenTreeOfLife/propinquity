@@ -61,12 +61,12 @@ subworkflow s08_graft:
 
 subworkflow s09_unprune_taxa:
     workdir: CFG.out_dir
-    snakefile: "rules/s07_unprune_taxa.smk"
+    snakefile: "rules/s09_unprune_taxa.smk"
     configfile: "config.json"
 
 subworkflow s10_finish:
     workdir: CFG.out_dir
-    snakefile: "rules/s08_finish.smk"
+    snakefile: "rules/s10_finish.smk"
     configfile: "config.json"
 
 rule all:
@@ -81,7 +81,6 @@ rule all:
            s06_subproblems("subproblems/contesting_trees.json"),
            s06_subproblems("subproblem_solutions/solution-ids.txt"),
            s07_subproblems_deg_dist("subproblem_solutions/solution-degree-distributions.txt"),
-           s08_graft("grafted_solution/grafted_solution.tre"),
            s08_graft("grafted_solution/grafted_solution_ottnames.tre"),
            s09_unprune_taxa("labelled_supertree/labelled_supertree.tre"),
            s09_unprune_taxa("labelled_supertree/labelled_supertree_out_degree_distribution.txt"),

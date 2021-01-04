@@ -18,6 +18,8 @@ rule all:
     log: "logs/subproblems"
 
 
+include: "common.smk"
+
 rule graft_solutions:
     input: aggregate_trees
     output: tree = "grafted_solution/grafted_solution.tre"

@@ -17,8 +17,7 @@ rule all:
     input: "subproblem_solutions/solution-degree-distributions.txt"
     log: "logs/subproblems"
 
-
-
+include: "common.smk"
 
 rule calc_dd:
     input: otcconfig = "otc-config", \
@@ -28,7 +27,6 @@ rule calc_dd:
         calc_degree_dist(input.soln, output.sol_dd, CFG=CFG)
 
 def aggregate_sdd(wildcards):
-    solve_out = os.path.split(checkpoints.solved_ids.get(**wildcards).output[0])[0]
     solve_out = directory("subproblem_solutions")
     gw = glob_wildcards(os.path.join(solve_out, '{ottid}.tre'))
     return expand("subproblem_solutions/deg-dist-{ottid}.txt", ottid=gw.ottid)
