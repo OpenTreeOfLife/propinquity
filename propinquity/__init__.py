@@ -37,6 +37,9 @@ OTT_FILENAMES = ("forwards.tsv",
                  "version.txt", 
                  )
 
+
+OTT_ID_FROM_STR = re.compile(r'^ott(\d+)')
+
 class PropinquityConfig(object):
     """
     Validating config and setting global variables:
@@ -1613,7 +1616,7 @@ def run_assessments(CFG):
             lte[ott_id_str] = {'listed': lt_pair, 'absent': bt_pair}
     if bool(lte) or len(lt_set) != len(bt_dict):
         for ott_id_str in bt_dict.keys():
-            ott_id = int(ott_id_from_str.match(ott_id_str).group(1))
+            ott_id = int(OTT_ID_FROM_STR.match(ott_id_str).group(1))
             if (ott_id not in lt_set) and (ott_id_str not in aliased_in_tree):
                 CFG.error('{} was in {} but not {}'.format(ott_id_str, bt_name, lt_name))
                 lte[ott_id_str] = {'listed': bt_pair, 'absent': lt_pair}
