@@ -49,17 +49,22 @@ subworkflow s06_subproblems:
     snakefile: "rules/s06_subproblems.smk"
     configfile: "config.json"
 
-subworkflow s06b_subproblems_deg_dist:
+subworkflow s07_subproblems_deg_dist:
     workdir: CFG.out_dir
-    snakefile: "rules/s06b_subproblems_deg_dist.smk"
+    snakefile: "rules/s07_subproblems_deg_dist.smk"
     configfile: "config.json"
 
-subworkflow s07_unprune_taxa:
+subworkflow s08_graft:
+    workdir: CFG.out_dir
+    snakefile: "rules/s08_graft.smk"
+    configfile: "config.json"
+
+subworkflow s09_unprune_taxa:
     workdir: CFG.out_dir
     snakefile: "rules/s07_unprune_taxa.smk"
     configfile: "config.json"
 
-subworkflow s08_finish:
+subworkflow s10_finish:
     workdir: CFG.out_dir
     snakefile: "rules/s08_finish.smk"
     configfile: "config.json"
@@ -75,14 +80,15 @@ rule all:
            s05_exemplify("exemplified_phylo/incertae_sedis.txt"),
            s06_subproblems("subproblems/contesting_trees.json"),
            s06_subproblems("subproblem_solutions/solution-ids.txt"),
-           s06_subproblems("subproblem_solutions/solution-degree-distributions.txt"),
-           s06_subproblems("grafted_solution/grafted_solution.tre"),
-           s06b_subproblems_deg_dist("grafted_solution/grafted_solution_ottnames.tre"),
-           s07_unprune_taxa("labelled_supertree/labelled_supertree.tre"),
-           s07_unprune_taxa("labelled_supertree/labelled_supertree_out_degree_distribution.txt"),
-           s07_unprune_taxa("labelled_supertree/labelled_supertree_ottnames.tre"),
-           s07_unprune_taxa("labelled_supertree/labelled_supertree_simplified_ottnames.tre"),
-           s07_unprune_taxa("labelled_supertree/labelled_supertree_ottnames_without_monotypic.tre"),
-           s07_unprune_taxa("labelled_supertree/labelled_supertree_simplified_ottnames_without_monotypic.tre"),
-           s08_finish("annotated_supertree/annotations.json"),
-           s08_finish("index.html")
+           s07_subproblems_deg_dist("subproblem_solutions/solution-degree-distributions.txt"),
+           s08_graft("grafted_solution/grafted_solution.tre"),
+           s08_graft("grafted_solution/grafted_solution_ottnames.tre"),
+           s09_unprune_taxa("labelled_supertree/labelled_supertree.tre"),
+           s09_unprune_taxa("labelled_supertree/labelled_supertree_out_degree_distribution.txt"),
+           s09_unprune_taxa("labelled_supertree/labelled_supertree_ottnames.tre"),
+           s09_unprune_taxa("labelled_supertree/labelled_supertree_simplified_ottnames.tre"),
+           s09_unprune_taxa("labelled_supertree/labelled_supertree_ottnames_without_monotypic.tre"),
+           s09_unprune_taxa("labelled_supertree/labelled_supertree_simplified_ottnames_without_monotypic.tre"),
+           s09_unprune_taxa("exemplified_phylo/pruned_taxonomy_degree_distribution.txt"), 
+           s10_finish("annotated_supertree/annotations.json"),
+           s10_finish("index.html")
