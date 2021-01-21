@@ -3,8 +3,10 @@ from propinquity import (analyze_lost_taxa,
                          annotate_2_tree, 
                          calc_degree_dist, 
                          combine_ott_cleaning_logs,
+                         create_indented_tip_count,
                          document_outputs,
                          get_template_text,
+                         indented_taxon_count_to_json_for_ott,
                          merge_annotations,
                          run_assessments,
                          TEMPLATE_FNS, 
@@ -12,6 +14,7 @@ from propinquity import (analyze_lost_taxa,
                          write_if_needed)
 from snakemake.logging import logger
 import os
+import re
 
 CFG = validate_config(config, logger)
 
@@ -85,11 +88,22 @@ rule assess:
     output: "assessments/summary.json"
     run: run_assessments(CFG=CFG)
 
+rule create_indented_tip_count:
+    input: "labelled_supertree/labelled_supertree_simplified_ottnames.tre"
+    output: "labelled_supertree/labelled-tree-tip-count-indented-table.txt"
+    run: create_indented_tip_count(input[0], output[0], CFG=CFG)
+
+rule calc_tips_for_ott_internals:
+    input: "labelled_supertree/labelled-tree-tip-count-indented-table.txt"
+    output: "labelled_supertree/num_tips_for_ott_internals_in_labelled_tree.json"
+    run: indented_taxon_count_to_json_for_ott(input[0], output[0], CFG=CFG)
+
 rule html:
     input: expand("logs/templates/{pt_file}", pt_file=TEMPLATE_FNS), \
            summ = "assessments/summary.json", \
            contesting = "subproblems/contesting_trees.json", \
-           sub_id = "subproblems/dumped_subproblem_ids.txt"
+           sub_id = "subproblems/dumped_subproblem_ids.txt", \
+           num_tips_per_ott = "labelled_supertree/num_tips_for_ott_internals_in_labelled_tree.json"
     output: "index.html"
     run: document_outputs(input[0], CFG=CFG)
 

@@ -183,6 +183,11 @@ def mv_if_needed(src, dest, name=None, CFG=None):
     os.unlink(src)
     return False
 
+def write_as_json_if_needed(blob, fp, CFG=None):
+    hide_fp = fp + '.hide'
+    write_as_json(blob, hide_fp)
+    return mv_if_needed(hide_fp, fp, CFG=CFG)
+
 def write_if_needed(fp, content, name=None, CFG=None):
     """Writes `content` to `fp` if the content of that filepath is empty or different.
 
@@ -2253,3 +2258,29 @@ def suppress_non_listed_ids_or_unnamed(in_tree_fp,
 
     content = tree.as_string(schema="newick")
     write_if_needed(fp=out_tree_fp, content=content, CFG=CFG)
+
+
+def indented_taxon_count_to_json_for_ott(inp_fp, out_fp, CFG=None):
+    ott_to_count = read_indented_taxon_count_to_json_for_ott(inp_fp)
+    return write_as_json_if_needed(ott_to_count, out_fp, CFG=CFG)
+
+def read_indented_taxon_count_to_json_for_ott(inp_fp):
+    ott_id_to_num_tips = {}
+    mrca_pat = re.compile(r'^ *mrcaott[0-9]+ott[0-9]+')
+    ott_pat = re.compile(r'.* (ott[0-9]+) : ([0-9]+)\s*$')
+    with open(inp_fp, 'r', encoding='utf-8') as inp:
+        for n, line in enumerate(inp):
+            if mrca_pat.match(line):
+                continue
+            m = ott_pat.match(line)
+            if not m:
+                msg = 'Expected pattern ott#### : ### to end lines in "{}", but found "{}" on line {}'
+                raise RuntimeError(msg.format(inf_pf, line, n))
+            ott_id, count = m.group(1), int(m.group(2))
+            ott_id_to_num_tips[ott_id] = count
+    return ott_id_to_num_tips
+
+def create_indented_tip_count(tree_fp, indented_txt_fp, CFG=None):
+    invocation = ["otc-tree-tool", "--indented-table", tree_fp]
+    run_unhide_if_worked(invocation, CFG=CFG, stdout_capture=indented_txt_fp)
+

@@ -93,7 +93,7 @@ checkpoint reverse_subproblems:
                 nl, last = nl[:-1], nl[-1]
                 nl.reverse()
                 nl.append(last)
-            write_if_needed(fp=output.subprob, content="\n".join(nl))
+        write_if_needed(fp=output.subprob, content="\n".join(nl))
 
 rule solve_rev:
     input: config = "config", \
