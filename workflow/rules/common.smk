@@ -8,6 +8,7 @@ import os
 CFG = validate_config(config, logger)
 
 checkpoint decompose:
+    """Also makes subproblems/{ottid}-tree-names.txt."""
     input: config = "config", \
            otcconfig = "otc-config", \
            phylo_list_fp = "subproblems/scratch/args.txt", \
@@ -22,17 +23,29 @@ checkpoint decompose:
                                    out_contesting=output.contesting,
                                    CFG=CFG)
 
-def aggregate_trees(wildcards):
+def _agg_trees_impl(wildcards, soln_dir):
     solve_out = os.path.split(checkpoints.decompose.get(**wildcards).output[0])[0]
     gw = glob_wildcards(os.path.join(solve_out, '{ottid}.tre'))
-    return expand("subproblem_solutions/{ottid}.tre", ottid=gw.ottid)
+    template = soln_dir + "/{ottid}.tre"
+    return expand(template, ottid=gw.ottid)
+
+def aggregate_trees(wildcards):
+    return _agg_trees_impl(wildcards, "subproblem_solutions")
+
+def aggregate_rev_trees(wildcards):
+    return _agg_trees_impl(wildcards, "reversed_subproblem_solutions")
 
 
 rule solved_ids:
     input: aggregate_trees
     output: "subproblem_solutions/solution-ids.txt"
     run:
-        tags = [os.path.split(i)[-1] for i in input]
-        # print("input=", tags)
-        content = '\n'.join(tags)
+        content = '\n'.join([os.path.split(i)[-1] for i in input])
+        write_if_needed(fp=output[0], content=content, CFG=CFG)
+
+rule rev_solved_ids:
+    input: aggregate_rev_trees
+    output: "reversed_subproblem_solutions/solution-ids.txt"
+    run:
+        content = '\n'.join([os.path.split(i)[-1] for i in input])
         write_if_needed(fp=output[0], content=content, CFG=CFG)
