@@ -1,15 +1,8 @@
 from propinquity import (clean_phylo_input,
-                         gen_config_content,
-                         gen_otc_config_content,
                          force_or_touch_file,
-                         validate_config,
-                         write_if_needed)
+                         validate_config)
 from snakemake.logging import logger
-from snakemake.utils import min_version
-import sys
 import os
-
-min_version("5.30.1")
 
 CFG = validate_config(config, logger)
 
@@ -21,14 +14,6 @@ _st_pairs_fp = os.path.join(CFG.out_dir, "phylo_input", "study_tree_pairs.txt")
 
 def write_full_path_for_inputs(x, y, z):
     pass
-
-# rule snapshot_phylo:
-#     input: "phylo_input/study_tree_pairs.txt", "phylo_input/blob_shas.txt"
-#     output: trees=dynamic("phylo_snapshot/tree_{tag}.json")
-#     run:
-#         write_full_path_for_inputs(input[0],
-#                                    phylesystem_dir,
-#                                    os.path.join(out_dir, "phylo_snapshot"))
 
 def set_tag_to_study_tree_pair(wildcards, snapshot=True):
     sp = os.path.join(CFG.out_dir, "phylo_input", "study_tree_pairs.txt")
@@ -72,18 +57,3 @@ rule clean_phylo_tre:
                               nonempty_out_fp=output.nonempty_out_fp,
                               CFG=CFG)
         force_or_touch_file(output.signal, c)
-
-
-# rule create_exemplify_full_path_args:
-#     input: pairs="phylo_input/study_tree_pairs.txt", \
-#            signal="cleaned_phylo/phylo_inputs_cleaned.txt"
-#     output: 
-#     run:
-#         clean_phy = os.path.join(CFG.out_dir, "cleaned_phylo", 'tree_{tag}.tre')
-#         tags = [i.strip() for i in open(input.pairs, "r").readlines() if i.strip()]
-#         paths = [clean_phy.format(tag=i) for i in tags] 
-#         c = '\n'.join(paths)
-#         write_if_needed(fp=output[0],
-#                         content=c,
-#                         name="cleaned phylo filepaths", CFG=CFG)
-

@@ -79,6 +79,8 @@ rule all:
            s04_modify_taxonomy("bumped_ott/cleaned_ott.tre"),
            s05_exemplify("exemplified_phylo/incertae_sedis.txt"),
            s06_subproblems("subproblems/contesting_trees.json"),
+           s06_subproblems("subproblem_solutions/subproblems-scaffold.tre"),
+           s06_subproblems("subproblem_solutions/subproblems-scaffold-only.tre"),
            s06_subproblems("subproblem_solutions/solution-ids.txt"),
            s07_subproblems_deg_dist("subproblem_solutions/solution-degree-distributions.txt"),
            s08_graft("grafted_solution/grafted_solution_ottnames.tre"),

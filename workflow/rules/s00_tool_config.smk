@@ -4,14 +4,11 @@ from propinquity import (gen_config_content,
                          write_if_needed)
 from snakemake.logging import logger
 
-
 CFG = validate_config(config, logger)
-
 
 rule all:
     input: "config", "otc_config"
     log: "logs/config"
-
 
 rule config:
     """Uses snakemake config to creat a config file for synthesis settings"""
@@ -26,7 +23,6 @@ rule otc_config:
     log: "logs/config"
     run:
         write_if_needed(fp=output[0], content=gen_otc_config_content(CFG), CFG=CFG)
-
 
 rule clean_config:
     """Clean up the config and otc-config that are created automatically"""

@@ -4,11 +4,6 @@ from propinquity import (OTT_FILENAMES,
                          subset_ott,
                          write_if_needed)
 from snakemake.logging import logger
-from snakemake.utils import min_version
-import sys
-import os
-
-min_version("5.30.1")
 
 CFG = validate_config(config, logger)
 

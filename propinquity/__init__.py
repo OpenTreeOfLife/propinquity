@@ -136,8 +136,13 @@ class PropinquityConfig(object):
         self.log.error(msg)
 
 
+_PCFG = None
 def validate_config(config, logger):
-    return PropinquityConfig(config, logger)
+    global _PCFG
+    if _PCFG is None:
+        x = PropinquityConfig(config, logger)
+        _PCFG = x
+    return _PCFG
 
 ################################################################################
 # simple helper functions
@@ -2203,4 +2208,48 @@ class DocGen(object):
                 json_o.close()
 
 
+def suppress_non_listed_ids_or_unnamed(in_tree_fp,
+                                       id_fp,
+                                       out_tree_fp,
+                                       CFG=None):
+    import dendropy
+    id_extractor = re.compile('.*ott([0-9]+)$')
+    tree = dendropy.Tree.get(path=in_tree_fp,
+                             schema='newick',
+                             suppress_internal_node_taxa=False)
 
+    # Get the list of IDs to retain
+    trl = []
+    for i in open(id_fp, 'r').readlines():
+        if i.lower().startswith('ott'):
+            i = i[3:]
+        i = i.strip()
+        while i.endswith(','):
+            i = i[:-1]
+        trl.append(i)
+    to_retain_ids = frozenset(trl)
+
+    to_suppress = []
+    for node in tree.postorder_node_iter():
+        if node.taxon:
+            m = id_extractor.match(node.taxon.label)
+            if not m:
+                msg = 'name not matching pattern: {}'
+                raise RuntimeError(msg.format(node.taxon.label))
+            id_for_node = m.group(1)
+            if id_for_node not in to_retain_ids:
+                if CFG is not None:
+                    msg = 'flagging for suppression due to non-retained ID: {}\n'
+                    CFG.warning(msg.format(node.taxon.label))
+                to_suppress.append(node)
+        else:
+            if node.num_child_nodes() == 0:
+                raise RuntimeError("unlabeled tip")
+            to_suppress.append(node)
+
+    for node in to_suppress:
+        if node.edge:
+            node.edge.collapse()
+
+    content = tree.as_string(schema="newick")
+    write_if_needed(fp=out_tree_fp, content=content, CFG=CFG)

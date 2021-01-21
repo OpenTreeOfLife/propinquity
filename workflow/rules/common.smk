@@ -3,12 +3,7 @@ from propinquity import (decompose_into_subproblems,
                          validate_config,
                          write_if_needed)
 from snakemake.logging import logger
-from snakemake.utils import min_version
-import subprocess
-import sys
 import os
-
-min_version("5.30.1")
 
 CFG = validate_config(config, logger)
 

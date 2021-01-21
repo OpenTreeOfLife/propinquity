@@ -1,15 +1,10 @@
-from propinquity import (calc_degree_dist,
-                         run_unhide_if_worked, 
+from propinquity import (run_unhide_if_worked, 
                          solve_subproblem,
                          validate_config,
                          write_if_needed)
 from snakemake.logging import logger
-from snakemake.utils import min_version
-import subprocess
 import sys
 import os
-
-min_version("5.30.1")
 
 CFG = validate_config(config, logger)
 
@@ -24,7 +19,7 @@ rule graft_solutions:
     input: aggregate_trees
     output: tree = "grafted_solution/grafted_solution.tre"
     run:
-        content = '\n'.join(list(input))
+        content = '{}\n'.format('\n'.join(list(input)))
         tfp = "subproblem_solutions/.tmp_paths.txt"
         write_if_needed(fp=tfp, content=content, CFG=CFG)
         invocation = ["otc-graft-solutions", "-f{}".format(tfp)]

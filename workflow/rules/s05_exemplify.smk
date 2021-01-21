@@ -1,11 +1,6 @@
 from propinquity import (exemplify_taxa, validate_config, write_inc_sed_ids)
 from snakemake.logging import logger
-from snakemake.utils import min_version
-import subprocess
-import sys
 import os
-
-min_version("5.30.1")
 
 CFG = validate_config(config, logger)
 

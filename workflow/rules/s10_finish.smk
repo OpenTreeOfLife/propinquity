@@ -11,12 +11,7 @@ from propinquity import (analyze_lost_taxa,
                          validate_config,
                          write_if_needed)
 from snakemake.logging import logger
-from snakemake.utils import min_version
-import subprocess
-import sys
 import os
-
-min_version("5.30.1")
 
 CFG = validate_config(config, logger)
 
@@ -89,8 +84,6 @@ rule assess:
            cleaned_ott_json = "cleaned_ott/cleaned_ott.json"
     output: "assessments/summary.json"
     run: run_assessments(CFG=CFG)
-
-
 
 rule html:
     input: expand("logs/templates/{pt_file}", pt_file=TEMPLATE_FNS), \

@@ -1,16 +1,10 @@
-from propinquity import (calc_degree_dist,
-                         decompose_into_subproblems,
-                         run_unhide_if_worked, 
+from propinquity import (run_unhide_if_worked, 
                          solve_subproblem,
+                         suppress_non_listed_ids_or_unnamed,
                          validate_config,
                          write_if_needed)
 from snakemake.logging import logger
-from snakemake.utils import min_version
-import subprocess
-import sys
 import os
-
-min_version("5.30.1")
 
 CFG = validate_config(config, logger)
 
@@ -36,6 +30,40 @@ rule expand_path_to_nonempty_phylo:
 
 include: "common.smk"
 
+rule create_subproblem_scaffold:
+    input: config = "config", \
+           tax = "exemplified_phylo/taxonomy.tre", \
+           sub = "subproblems/dumped_subproblem_ids.txt"
+    output: scaff = "subproblem_solutions/subproblems-scaffold.tre", \
+            tmp = temp("subproblem_solutions/poly_prob.tre"),
+            sans_suff = "subproblem_solutions/ids_without_dot_tre.txt"
+    run:
+        prob_ids = []
+        with open(input.sub, "r") as inp:
+            for line in inp:
+                ls = line.strip()
+                if ls:
+                    if not ls.endswith('.tre'):
+                        m = "Expecting every line in {} to end in .tre, but found {}"
+                        raise RuntimeError(m.format(input.sub, ls))
+                    prob_ids.append(ls[:-4])
+        with open(output.tmp, "w", encoding='utf-8') as o:
+            o.write('({});\n'.format(', '.join(prob_ids)))
+        content = '{}\n'.format('\n'.join(prob_ids))
+        write_if_needed(fp=output.sans_suff, content=content, CFG=CFG)
+        inv = ['otc-induced-subtree', input.tax, output.tmp]
+        run_unhide_if_worked(inv, CFG=CFG, stdout_capture=output.scaff)
+
+rule simplify_scaffold:
+    input: config = "config", \
+           tree = "subproblem_solutions/subproblems-scaffold.tre", \
+           id_list = "subproblem_solutions/ids_without_dot_tre.txt"
+    output: scaff = "subproblem_solutions/subproblems-scaffold-only.tre"
+    run:
+        suppress_non_listed_ids_or_unnamed(in_tree_fp=input.tree,
+                                           id_fp=input.id_list,
+                                           out_tree_fp=output.scaff,
+                                           CFG=CFG)
 
 rule solve:
     input: config = "config", \
