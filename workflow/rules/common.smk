@@ -49,3 +49,18 @@ rule rev_solved_ids:
     run:
         content = '\n'.join([os.path.split(i)[-1] for i in input])
         write_if_needed(fp=output[0], content=content, CFG=CFG)
+
+def aggregate_sdd_common(wildcards, solved_dir, dd_dir=None):
+    if dd_dir is None:
+        dd_dir = solved_dir
+    gw = glob_wildcards(os.path.join(solved_dir, '{ottid}.tre'))
+    return expand(dd_dir + "/deg-dist-{ottid}.txt", ottid=gw.ottid)
+
+def aggregate_sdd(wildcards):
+    return aggregate_sdd_common(wildcards, directory("subproblem_solutions"))
+
+def aggregate_rsdd(wildcards):
+    return aggregate_sdd_common(wildcards, directory("reversed_subproblem_solutions"))
+
+def aggregate_probdd(wildcards):
+    return aggregate_sdd_common(wildcards, directory("subproblems"), "subproblems/deg-dist")

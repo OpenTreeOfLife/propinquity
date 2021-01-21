@@ -85,6 +85,7 @@ rule all:
            s06_subproblems("reversed_subproblem_solutions/solution-ids.txt"),
            s07_subproblems_deg_dist("subproblem_solutions/solution-degree-distributions.txt"),
            s07_subproblems_deg_dist("reversed_subproblem_solutions/solution-degree-distributions.txt"),
+           s07_subproblems_deg_dist("subproblems/.all_deg_dist_calculated.txt"),
            s08_graft("grafted_solution/grafted_solution_ottnames.tre"),
            s09_unprune_taxa("labelled_supertree/labelled_supertree.tre"),
            s09_unprune_taxa("labelled_supertree/labelled_supertree_out_degree_distribution.txt"),
@@ -94,4 +95,5 @@ rule all:
            s09_unprune_taxa("labelled_supertree/labelled_supertree_simplified_ottnames_without_monotypic.tre"),
            s09_unprune_taxa("exemplified_phylo/pruned_taxonomy_degree_distribution.txt"), 
            s10_finish("annotated_supertree/annotations.json"),
-           s10_finish("index.html")
+           s10_finish("index.html"),
+           s10_finish("subproblems/subproblem_size_summary_table.tsv")

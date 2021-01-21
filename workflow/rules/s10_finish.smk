@@ -5,6 +5,8 @@ from propinquity import (analyze_lost_taxa,
                          combine_ott_cleaning_logs,
                          create_indented_tip_count,
                          document_outputs,
+                         format_subprob_size_json_as_tsv,
+                         generate_subprob_size_summary,
                          get_template_text,
                          indented_taxon_count_to_json_for_ott,
                          merge_annotations,
@@ -104,6 +106,33 @@ rule html:
            contesting = "subproblems/contesting_trees.json", \
            sub_id = "subproblems/dumped_subproblem_ids.txt", \
            num_tips_per_ott = "labelled_supertree/num_tips_for_ott_internals_in_labelled_tree.json"
-    output: "index.html"
+    output: top = "index.html", \
+            subproblems_ind_j = "subproblems/index.json" 
     run: document_outputs(input[0], CFG=CFG)
 
+rule calc_dd:
+    input: otcconfig = "otc-config", \
+           soln = "subproblem_solutions/{ottid}.tre"
+    output: sol_dd = "subproblem_solutions/deg-dist-{ottid}.txt"
+    run:
+        calc_degree_dist(input.soln, output.sol_dd, CFG=CFG)
+
+
+rule summarize_subpr_size:
+    input: ind = "subproblems/index.json", \
+           dd_flag = "subproblems/.all_deg_dist_calculated.txt", \
+           num_tips_per_ott = "labelled_supertree/num_tips_for_ott_internals_in_labelled_tree.json", \
+           dd_dir = "subproblems/deg-dist"
+    output: "subproblems/subproblem_size_summary.json"
+    run:
+        generate_subprob_size_summary(input.ind,
+                                      input.num_tips_per_ott,
+                                      input.dd_dir,
+                                      output[0],
+                                      CFG=CFG)
+
+rule format_subpr_size_as_table:
+    input: "subproblems/subproblem_size_summary.json"
+    output: "subproblems/subproblem_size_summary_table.tsv"
+    run:
+        format_subprob_size_json_as_tsv(input[0], output[0], CFG=CFG)

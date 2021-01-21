@@ -19,17 +19,26 @@ rule calc_dd:
     run:
         calc_degree_dist(input.soln, output.sol_dd, CFG=CFG)
 
+rule calc_rdd:
+    input: otcconfig = "otc-config", \
+           soln = "reversed_subproblem_solutions/{ottid}.tre"
+    output: sol_dd = "reversed_subproblem_solutions/deg-dist-{ottid}.txt"
+    run:
+        calc_degree_dist(input.soln, output.sol_dd, CFG=CFG)
 
-def aggregate_sdd_common(wildcards, solved_dir):
-    gw = glob_wildcards(os.path.join(solved_dir, '{ottid}.tre'))
-    return expand("subproblem_solutions/deg-dist-{ottid}.txt", ottid=gw.ottid)
+rule calc_probdd:
+    input: otcconfig = "otc-config", \
+           soln = "subproblems/{ottid}.tre"
+    output: sol_dd = "subproblems/deg-dist/deg-dist-{ottid}.txt"
+    run:
+        calc_degree_dist(input.soln, output.sol_dd, CFG=CFG)
 
-def aggregate_sdd(wildcards):
-    return aggregate_sdd_common(wildcards, directory("subproblem_solutions"))
-
-def aggregate_rsdd(wildcards):
-    return aggregate_sdd_common(wildcards, directory("reversed_subproblem_solutions"))
-
+rule force_all_subr_dd:
+    input: aggregate_probdd
+    output: "subproblems/.all_deg_dist_calculated.txt"
+    run:
+        c = "{}\n".format('\n'.join([str(i) for i in input]))
+        write_if_needed(fp=output[0], content=c, CFG=CFG)
 
 def concatenate_deg_dist(filepaths, out_fp):
     filepaths = list(filepaths)

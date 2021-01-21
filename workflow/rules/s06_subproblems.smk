@@ -72,7 +72,7 @@ rule solve:
            subprob_id = "subproblems/dumped_subproblem_ids.txt", \
            incert = "exemplified_phylo/incertae_sedis.txt", \
            subprob = "subproblems/{ottid}.tre"
-    output: soln = "subproblem_solutions/{ottid}.tre" #, sol_dd = "subproblem_solutions/deg-dist-{ottid}.txt"
+    output: soln = "subproblem_solutions/{ottid}.tre"
     run:
         solve_subproblem(incert_sed_fp=input.incert,
                          subprob_fp=input.subprob,

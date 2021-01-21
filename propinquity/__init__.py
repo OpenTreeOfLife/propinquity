@@ -3,6 +3,7 @@
 from collections import defaultdict
 from chameleon import PageTemplateLoader
 import subprocess
+import itertools
 import datetime
 import filecmp
 import pkgutil
@@ -2284,3 +2285,115 @@ def create_indented_tip_count(tree_fp, indented_txt_fp, CFG=None):
     invocation = ["otc-tree-tool", "--indented-table", tree_fp]
     run_unhide_if_worked(invocation, CFG=CFG, stdout_capture=indented_txt_fp)
 
+
+
+def count_tips_and_inf_splits(deg_dist_fp, CFG=None):
+    all_pairs = []
+    cur_pair = None
+    with open(deg_dist_fp, 'r', encoding='utf-8') as inp:
+        for line in inp:
+            if not line.strip():
+                continue
+            if line.startswith('Out-degree'):
+                if cur_pair:
+                    all_pairs.append(cur_pair)
+                cur_pair = [0, 0]
+                continue
+            out_degree, count = [int(i) for i in line.strip().split()]
+            if out_degree == 0:
+                cur_pair[0] = count
+            elif out_degree > 1:
+                assert cur_pair[0] > 0
+                if out_degree < cur_pair[0]:
+                    cur_pair[1] = cur_pair[1] + count
+    if cur_pair:
+        all_pairs.append(cur_pair)
+    return all_pairs
+
+def generate_subprob_size_summary(subpr_index_json_fp,
+                                  num_tips_per_ott_fp,
+                                  deg_dist_dir,
+                                  out_fp,
+                                  CFG=None):
+    index_blob = read_as_json(subpr_index_json_fp)
+    nsynth_tip_blob = read_as_json(num_tips_per_ott_fp)
+    tree_list = []
+    tree_to_index = {}
+    sub_obj = {}
+    for blob in index_blob["subproblems"]["sorted_by_num_phylo_inputs"]:
+        subprob_tree_file, inp_tree_list, num_leaves = blob
+        assert subprob_tree_file.startswith("ott")
+        assert subprob_tree_file.endswith(".tre")
+        subprob_id = subprob_tree_file[:-4]
+        assert subprob_id not in sub_obj
+        tree_ind_list = []
+        taxonomy_found = False
+        for tree_id in inp_tree_list:
+            assert not taxonomy_found
+            if tree_id.lower() == 'taxonomy':
+                taxonomy_found = True
+                continue
+            inp_tree_ind = tree_to_index.get(tree_id)
+            if inp_tree_ind is None:
+                inp_tree_ind = len(tree_list)
+                tree_to_index[tree_id] = inp_tree_ind
+                tree_list.append(tree_id)
+            tree_ind_list.append(inp_tree_ind)
+        assert taxonomy_found
+        fn = "deg-dist-{}.txt".format(subprob_id)
+        dd_fp = os.path.join(deg_dist_dir, fn)
+        tips_and_inf_spl = count_tips_and_inf_splits(dd_fp)
+        curr = {'num_leaves': num_leaves,
+                'num_synth_leaves': nsynth_tip_blob[subprob_id],
+                'tree_indices': tree_ind_list,
+                'tree_tips_and_inf_splits': tips_and_inf_spl
+               }
+        sub_obj[subprob_id] = curr
+
+    taxonomy_index = len(tree_list)
+    tree_list.append('TAXONOMY')
+    compressed_obj = {}
+    for key, value in sub_obj.items():
+        nl = value['num_leaves']
+        nsl = value['num_synth_leaves']
+        til = value['tree_indices']
+        ttais = value['tree_tips_and_inf_splits']
+        til.append(taxonomy_index)
+        assert len(til) == len(ttais)
+        concat = []
+        for tree_index, nt_inf_sp_pair in itertools.zip_longest(til, ttais):
+            num_tips, num_splits = nt_inf_sp_pair
+            concat.append([num_tips, num_splits, tree_index])
+        compressed_obj[key]  = [nl, nsl, concat]
+
+    blob = {"subproblems": compressed_obj,
+           "tree_ids": tree_list}
+    write_as_json_if_needed(blob=blob, fp=out_fp, CFG=CFG)
+
+def format_subprob_size_json_as_tsv(inp_fp, out_fp, CFG=None):
+    summary_blob = read_as_json(inp_fp)
+    subprobs = summary_blob["subproblems"]
+    tree_ids = summary_blob["tree_ids"]
+    lines = ['\t'.join(["ID",
+                     "num_scaff_leaves",
+                     "num_synth_leaves",
+                     "num_splits",
+                     "num_informative_input_trees",
+                     "num_noninformative_overlapping_input_trees",
+                     "inf_tree_ids",
+                     "noninf_tree_ids"])]
+    for ott_id, summary_blob in subprobs.items():
+        num_scaff_leaves, num_synth_leaves, by_input = summary_blob
+        inf_by_inp, non_inf = [], []
+        num_splits = 0
+        for el in by_input:
+            tid = tree_ids[el[2]]
+            if el[1] > 0:
+                num_splits += el[1]
+                inf_by_inp.append(tid)
+            else:
+                non_inf.append(tid)    
+        data = [ott_id, num_scaff_leaves, num_synth_leaves, num_splits, len(inf_by_inp), len(non_inf), ','.join(inf_by_inp), ','.join(non_inf)]
+        lines.append('\t'.join([str(i) for i in data]))
+    content = '{}\n'.format('\n'.join(lines))
+    return write_if_needed(out_fp, content, name=None, CFG=CFG)
