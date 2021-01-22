@@ -60,7 +60,32 @@ def aggregate_sdd(wildcards):
     return aggregate_sdd_common(wildcards, directory("subproblem_solutions"))
 
 def aggregate_rsdd(wildcards):
+    solve_out = os.path.split(checkpoints.reverse_subproblems_flag.get(**wildcards).output[0])[0]
     return aggregate_sdd_common(wildcards, directory("reversed_subproblem_solutions"))
 
 def aggregate_probdd(wildcards):
     return aggregate_sdd_common(wildcards, directory("subproblems"), "subproblems/deg-dist")
+
+checkpoint reverse_subproblems_flag:
+    input: config = "config", \
+           otcconfig = "otc-config", \
+           subprob_id = "subproblems/dumped_subproblem_ids.txt"
+    output: "reversed_subproblems/flag.txt"
+    run: write_if_needed(content="", fp=output[0])
+
+rule reverse_subproblems:
+    input: config = "config", \
+           otcconfig = "otc-config", \
+           subprob_id = "subproblems/dumped_subproblem_ids.txt", \
+           subprob = "subproblems/{ottid}.tre", \
+           flag = "reversed_subproblems/flag.txt"
+    output: subprob="reversed_subproblems/{ottid}.tre"
+    run:
+        # gen_reversed.py gist
+        nl = list(stripped_nonempty_lines(input.subprob))
+        if nl:
+            if len(nl) > 1:
+                nl, last = nl[:-1], nl[-1]
+                nl.reverse()
+                nl.append(last)
+        write_if_needed(fp=output.subprob, content="\n".join(nl))

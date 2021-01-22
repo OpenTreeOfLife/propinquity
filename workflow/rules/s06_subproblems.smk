@@ -79,21 +79,6 @@ rule solve:
                          out_fp=output.soln,
                          CFG=CFG)
 
-checkpoint reverse_subproblems:
-    input: config = "config", \
-           otcconfig = "otc-config", \
-           subprob_id = "subproblems/dumped_subproblem_ids.txt", \
-           subprob = "subproblems/{ottid}.tre"
-    output: subprob="reversed_subproblems/{ottid}.tre"
-    run:
-        # gen_reversed.py gist
-        nl = list(stripped_nonempty_lines(input.subprob))
-        if nl:
-            if len(nl) > 1:
-                nl, last = nl[:-1], nl[-1]
-                nl.reverse()
-                nl.append(last)
-        write_if_needed(fp=output.subprob, content="\n".join(nl))
 
 rule solve_rev:
     input: config = "config", \
