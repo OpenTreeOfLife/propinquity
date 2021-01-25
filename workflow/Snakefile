@@ -72,7 +72,7 @@ subworkflow s10_finish:
 rule all:
     input: s00_tool_config("config"), 
            s00_tool_config("otc-config"),
-           s01_snapshot("phylo_input/blob_shas.txt"), 
+           s01_snapshot("checksum_for_run.md5"), 
            s02_clean_ott("cleaned_ott/cleaned_not_updated_ott.tre"),
            s03_clean_phylo("exemplified_phylo/args.txt"),
            s03_clean_phylo("cleaned_phylo/phylo_inputs_cleaned.txt"),
@@ -97,3 +97,8 @@ rule all:
            s10_finish("annotated_supertree/annotations.json"),
            s10_finish("index.html"),
            s10_finish("subproblems/subproblem_size_summary_table.tsv")
+
+rule checksum_inputs:
+    input: s00_tool_config("config"), 
+           s00_tool_config("otc-config"),
+           s01_snapshot("checksum_for_run.md5")

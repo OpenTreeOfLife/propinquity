@@ -88,3 +88,9 @@ rule concrete_tree_list:
                                    out_fp=output.pairs,
                                    obj_blob_shas_fp=output.blob_shas,
                                    CFG=CFG)
+
+rule run_md5:
+    input: blobs="phylo_input/blob_shas.txt", cfg="config"
+    output: "checksum_for_run.md5"
+    shell:
+        "cat {input.cfg} {input.blobs} | md5sum | awk '{{print $1}}' > {output[0]}"
