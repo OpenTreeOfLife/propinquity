@@ -90,7 +90,10 @@ rule concrete_tree_list:
                                    CFG=CFG)
 
 rule run_md5:
+    """writes and md5sum based off of config (minus the "synth_id ="" line)
+    and the phylogenetic tree blobs SHAs.
+    """
     input: blobs="phylo_input/blob_shas.txt", cfg="config"
     output: "checksum_for_run.md5"
     shell:
-        "cat {input.cfg} {input.blobs} | md5sum | awk '{{print $1}}' > {output[0]}"
+        "cat {input.cfg} {input.blobs} | sed -E '/^synth_id = /d' | md5sum | awk '{{print $1}}' > {output[0]}"
