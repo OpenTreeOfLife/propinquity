@@ -8,7 +8,7 @@ import json
 from peyutil import write_as_json
 
 
-min_version("5.30.1")
+min_version("5.31.1")
 
 CFG = validate_config(config, logger)
 content = json.dumps(config, sort_keys=True, indent=2) + '\n'
