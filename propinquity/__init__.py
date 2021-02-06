@@ -1692,7 +1692,7 @@ def run_assessments(CFG):
         mtb['description'] = 'Check that the taxa from the monophyly tests listed in {} are monophyletic in the tree.'.format(src)
         summary['monophyly'] = mtb
     else:
-        CFG.error.write('MONOPHYLY_TEST_CSV_FILE is not in the env, so no monophyly tests are being run\n')
+        CFG.error('MONOPHYLY_TEST_CSV_FILE is not in the env, so no monophyly tests are being run\n')
     # serialize the summary
     #
     write_as_json(summary, os.path.join(assessments_dir, 'summary.json'), indent=2)
