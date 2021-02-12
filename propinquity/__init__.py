@@ -1292,7 +1292,8 @@ def decompose_into_subproblems(tax_tree_fp,
               (tmp_contesting, out_contesting),]
     run_unhide_if_worked(invocation, unhide, CFG=CFG)
 
-def solve_subproblem(incert_sed_fp, subprob_fp, out_fp, CFG=None):
+def solve_subproblem(incert_sed_fp, subprob_fp, out_fp,
+                     in_deg_dist_fp=None, out_deg_dist_fp=None, CFG=None):
     sp_fn = os.path.split(subprob_fp)[-1]
     sp_id = sp_fn[:-4] if sp_fn.endswith('.tre') else sp_fn
     invocation = ["otc-solve-subproblem",
@@ -1301,7 +1302,14 @@ def solve_subproblem(incert_sed_fp, subprob_fp, out_fp, CFG=None):
                   "-I",
                   incert_sed_fp,
                   ]
-    run_unhide_if_worked(invocation, CFG=CFG, stdout_capture=out_fp)
+    unhide = []
+    if in_deg_dist_fp:
+        unhide.append([in_deg_dist_fp + '.hide', in_deg_dist_fp])
+        invocation.extend(['--input-deg-dist', in_deg_dist_fp + '.hide'])
+    if out_deg_dist_fp:
+        unhide.append([out_deg_dist_fp + '.hide', out_deg_dist_fp])
+        invocation.extend(['--output-deg-dist', out_deg_dist_fp + '.hide'])
+    run_unhide_if_worked(invocation, unhide, CFG=CFG, stdout_capture=out_fp)
 
 def write_inc_sed_ids(tax_tree,
                       ott_dir,

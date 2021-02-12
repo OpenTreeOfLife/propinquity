@@ -1,5 +1,4 @@
-from propinquity import (calc_degree_dist,
-                         validate_config,
+from propinquity import (validate_config,
                          write_if_needed)
 from snakemake.logging import logger
 import os
@@ -11,27 +10,6 @@ rule all:
     log: "logs/subproblems"
 
 include: "common.smk"
-
-rule calc_dd:
-    input: otcconfig = "otc-config", \
-           soln = "subproblem_solutions/{ottid}.tre"
-    output: sol_dd = "subproblem_solutions/deg-dist-{ottid}.txt"
-    run:
-        calc_degree_dist(input.soln, output.sol_dd, CFG=CFG)
-
-rule calc_rdd:
-    input: otcconfig = "otc-config", \
-           soln = "reversed_subproblem_solutions/{ottid}.tre"
-    output: sol_dd = "reversed_subproblem_solutions/deg-dist-{ottid}.txt"
-    run:
-        calc_degree_dist(input.soln, output.sol_dd, CFG=CFG)
-
-rule calc_probdd:
-    input: otcconfig = "otc-config", \
-           soln = "subproblems/{ottid}.tre"
-    output: sol_dd = "subproblems/deg-dist/deg-dist-{ottid}.txt"
-    run:
-        calc_degree_dist(input.soln, output.sol_dd, CFG=CFG)
 
 rule force_all_subr_dd:
     input: aggregate_probdd

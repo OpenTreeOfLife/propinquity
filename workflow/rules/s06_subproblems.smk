@@ -72,11 +72,15 @@ rule solve:
            subprob_id = "subproblems/dumped_subproblem_ids.txt", \
            incert = "exemplified_phylo/incertae_sedis.txt", \
            subprob = "subproblems/{ottid}.tre"
-    output: soln = "subproblem_solutions/{ottid}.tre"
+    output: soln = "subproblem_solutions/{ottid}.tre", \
+            out_deg_dist = "subproblem_solutions/deg-dist-{ottid}.txt", \
+            in_deg_dist = "subproblems/deg-dist/deg-dist-{ottid}.txt"
     run:
         solve_subproblem(incert_sed_fp=input.incert,
                          subprob_fp=input.subprob,
                          out_fp=output.soln,
+                         in_deg_dist_fp=output.in_deg_dist,
+                         out_deg_dist_fp=output.out_deg_dist,
                          CFG=CFG)
 
 
@@ -86,9 +90,11 @@ rule solve_rev:
            subprob_id = "subproblems/dumped_subproblem_ids.txt", \
            incert = "exemplified_phylo/incertae_sedis.txt", \
            subprob = "reversed_subproblems/{ottid}.tre"
-    output: soln = "reversed_subproblem_solutions/{ottid}.tre"
+    output: soln = "reversed_subproblem_solutions/{ottid}.tre", \
+            deg_dist = "reversed_subproblem_solutions/deg-dist-{ottid}.txt"
     run:
         solve_subproblem(incert_sed_fp=input.incert,
                          subprob_fp=input.subprob,
                          out_fp=output.soln,
+                         out_deg_dist_fp=output.deg_dist,
                          CFG=CFG)

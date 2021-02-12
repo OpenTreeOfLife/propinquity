@@ -53,7 +53,7 @@ rule rev_solved_ids:
 def aggregate_sdd_common(wildcards, solved_dir, dd_dir=None):
     if dd_dir is None:
         dd_dir = solved_dir
-    gw = glob_wildcards(os.path.join(solved_dir, '{ottid}.tre'))
+    gw = glob_wildcards(os.path.join(solved_dir, '{ottid,ott[0-9]+}.tre'))
     return expand(dd_dir + "/deg-dist-{ottid}.txt", ottid=gw.ottid)
 
 def aggregate_sdd(wildcards):

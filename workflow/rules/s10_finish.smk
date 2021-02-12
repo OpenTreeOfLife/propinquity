@@ -110,14 +110,6 @@ rule html:
             subproblems_ind_j = "subproblems/index.json" 
     run: document_outputs(input[0], CFG=CFG)
 
-rule calc_dd:
-    input: otcconfig = "otc-config", \
-           soln = "subproblem_solutions/{ottid}.tre"
-    output: sol_dd = "subproblem_solutions/deg-dist-{ottid}.txt"
-    run:
-        calc_degree_dist(input.soln, output.sol_dd, CFG=CFG)
-
-
 rule summarize_subpr_size:
     input: ind = "subproblems/index.json", \
            dd_flag = "subproblems/.all_deg_dist_calculated.txt", \
