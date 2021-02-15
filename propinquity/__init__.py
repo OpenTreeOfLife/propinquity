@@ -534,6 +534,9 @@ def suppress_by_flag(ott_dir,
     rp.check_returncode()
 
 
+class MissingTreeError(Exception):
+    def __init__(self, tree_id):
+        Exception.__init__(self, 'Tree "{}" was not found.'.format(tree_id))
 
 class EmptyTreeError(Exception):
     pass
@@ -544,7 +547,7 @@ class NexsonTreeWrapper(object):
         self.logger_msg_obj = logger_msg_obj
         self.tree, self.otus = find_tree_and_otus_in_nexson(nexson, tree_id)
         if self.tree is None:
-            raise KeyError('Tree "{}" was not found.'.format(tree_id))
+            raise MissingTreeError(tree_id)
         self._log_obj = log_obj
         self._edge_by_source = self.tree['edgeBySourceId']
         self._node_by_id = self.tree['nodeById']
@@ -979,9 +982,20 @@ def clean_phylo_input(ott_dir,
                 print(f'{study_tree} at {path}')
                 external_trees.append( (study_tree,path) )
             continue
+        newick_fp = os.path.join(output_dir, study_tree + '.tre')
+        try:
+            ntw = NexsonTreeWrapper(nexson_blob,
+                                    tree_id,
+                                    log_obj=log_obj,
+                                    logger_msg_obj=CFG)
+        except MissingTreeError:
+            if CFG is not None:
+                CFG.warning('No tree "{}" in study "{}"'.format(tree_id, study_id))
+            if os.path.isfile(newick_fp):
+                os.unlink(newick_fp)
+                touched = True
+                continue
 
-        ntw = NexsonTreeWrapper(nexson_blob, tree_id, log_obj=log_obj,
-                                logger_msg_obj=CFG)
         assert ntw.root_node_id
         taxonomy_treefile = os.path.join(output_dir, study_tree + '-taxonomy.tre')
         try:
@@ -994,7 +1008,7 @@ def clean_phylo_input(ott_dir,
             log_obj['EMPTY_TREE'] = True
         out_log = os.path.join(output_dir, study_tree + '.json')
         write_as_json(log_obj, out_log)
-        newick_fp = os.path.join(output_dir, study_tree + '.tre')
+        
 
 
 
