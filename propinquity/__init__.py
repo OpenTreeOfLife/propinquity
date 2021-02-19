@@ -1681,7 +1681,7 @@ def run_assessments(CFG):
     
     ltb['description'] = "Check that otcetera's tc-taxonomy-parser and otc-unprune-solution-and-name-unnamed-nodes tools agree about the number of taxa that are not present in the solution"
     btb['description'] = 'Check that none of the taxa listed as "lost" are in the annotations file'
-    ub['description'] = 'Check that none of the nodes listed in the annotations file are completely unsuported'
+    ub['description'] = 'Check that none of the nodes listed in the annotations file are completely unsupported'
     summary['lost_taxa'] = ltb
     summary['lost_taxa_included_in_tree'] = btb
     summary['unsupported_nodes'] = ub
