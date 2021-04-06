@@ -1473,7 +1473,7 @@ def read_ott_version(CFG):
 def get_otc_version():
     git_sha, version, boost_version = ['unknown']*3
     try:
-        out = subprocess.check_output('otc-version-reporter')
+        out = str(subprocess.check_output('otc-version-reporter'))
         try:
             git_sha = re.compile('git_sha *= *([a-zA-Z0-9]+)').search(out).group(1)
         except:
@@ -1790,11 +1790,13 @@ _TEMPLATES = ['static/templates/{}'.format(i) for i in TEMPLATE_FNS]
 
 
 def document_outputs(summary_fp, CFG=None):
+    if CFG is not None:
+        CFG.config_annot = gen_config_annot(CFG)
     for i in _STATIC_MD:
         assert i.startswith('static/')
         sans_stat = i[len('static/'):]
         content = pkgutil.get_data('propinquity', i).decode('utf-8')
-        print(content)
+        # print(content)
         write_if_needed(fp=sans_stat, content=content, CFG=CFG)
     dg = DocGen(CFG)
     dg.render()
@@ -1806,26 +1808,6 @@ def get_template_text(fn):
 class Extensible(object):
     pass
 
-
-def get_otc_version():
-    git_sha, version, boost_version = ['unknown']*3
-    try:
-        out = subprocess.check_output('otc-version-reporter')
-        try:
-            git_sha = re.compile('git_sha *= *([a-zA-Z0-9]+)').search(out).group(1)
-        except:
-            pass
-        try:
-            version = re.compile('version *= *([-._a-zA-Z0-9]+)').search(out).group(1)
-        except:
-            pass
-        try:
-            boost_version = re.compile('BOOST_LIB_VERSION *= *([-._a-zA-Z0-9]+)').search(out).group(1)
-        except:
-            pass
-    except:
-        pass
-    return git_sha, version, boost_version
 
 def get_git_sha_from_dir(d):
     head = os.path.join(d, '.git', 'HEAD')

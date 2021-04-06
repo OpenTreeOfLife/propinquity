@@ -2,17 +2,18 @@
 <div metal:fill-slot="content">
 <p>The files in this directory (and its children) were produced using
     <a href="https://github.com/OpenTreeOfLife/propinquity">propinquity</a>,
-    a <a href="https://www.gnu.org/software/make/">make</a>-based pipeline for phylogenetic supertrees.
+    a <a href="https://snakemake.github.io/">snakemake</a>-based pipeline for phylogenetic supertrees.
 </p>
 <h1 id="configuration">Configuration</h1>
 
 <div tal:switch="bool(config.synth_id)">
     <div tal:case="True">
-      <p>The Open Tree of Life version is <strong><code>${config.synth_id}</code></strong>.</p>
+      <p>The Open Tree of Life version is: <strong><code>${config.synth_id}</code></strong></p>
     </div>
 </div>
 
-<p>The configuration file for the propinquity run was at: <code>${config.config_filepath}</code></p>
+<p>The configuration file for the propinquity run is at <a href="./config.json"><code>config.json</code></a>.
+The run completed at <code>${config.config_annot["date_completed"]</code>.</p>
 
 <h2 id="configuration-taxonomy">Taxonomy</h2>
 <ul>

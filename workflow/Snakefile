@@ -72,6 +72,8 @@ subworkflow s10_finish:
 rule all:
     input: s00_tool_config("config"), 
            s00_tool_config("otc-config"),
+           s01_snapshot("phylo_snapshot/ps_shard_shas.txt"),
+           s01_snapshot("phylo_snapshot/collections_shard_shas.txt"),
            s01_snapshot("checksum_for_run.md5"), 
            s02_clean_ott("cleaned_ott/cleaned_not_updated_ott.tre"),
            s03_clean_phylo("exemplified_phylo/args.txt"),
