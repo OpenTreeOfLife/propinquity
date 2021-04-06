@@ -23,15 +23,14 @@ for details about that step.</p>
             <li tal:repeat="git_sha phylo_snapshot.collections_git_shas">${git_sha}</li>
         </ul>
     </li>
-    <li><a href="./${basename(phylo_snapshot.git_shas_file)}">${basename(phylo_snapshot.git_shas_file)}</a> holds a list of the SHAs for the HEADs of each shard of the phylesystem at the time that the supertree operation was run. In the case of this run:
-        <ul>
-            <li tal:repeat="git_sha phylo_snapshot.git_shas">${git_sha}</li>
-        </ul>
-    </li>
-    <li>The ${len(phylo_input.study_id_tree_id_pairs)} NexSON files stored are:
-        <ol>
-            <li tal:repeat="stp phylo_input.study_id_tree_id_pairs"><a href="./${stp[0]}@${stp[1]}.json">${stp[0]}@${stp[1]}.json</a></li>
-        </ol>
+    <li>The ${':,}'.format(len(phylo_input.study_id_tree_id_pairs))} NexSON files stored are:
+        <table>
+            <tr><th>Link to NexSON</th><th>git object SHA of for source of NexSON</th></tr>
+            <tr tal:repeat="nstp enumerate(phylo_input.study_id_tree_id_pairs)">
+                <td><a href="./tree_${nstp[1][0]}@${nstp[1][1]}.json">tree_${nstp[1][0]}@${nstp[1][1]}.json</a></td>
+                <td><code>${phylo_snapshot.git_shas[nstp[0]]}</code></td>
+            </tr>
+        </table>
     </li>
 </div>
 </html>

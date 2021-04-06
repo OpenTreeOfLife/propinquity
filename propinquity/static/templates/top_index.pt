@@ -74,7 +74,7 @@ pruning of tips from input phylogenies due to mapping to problematic taxa. There
 <ol>
     <li>The <a href="./subott_dir/index.html">subott_dir</a> directory holds a version of the OpenTree Taxonomy pruned so that 
         the root taxon is <code>${config.root_ott_id}</code>.</li>
-    <li> <a href="./cleaned_ott/index.html">cleaned_ott/index.html</a> describes the removal of flagged taxa and pruning to the chosen root.</li>
+    <li>The <a href="./cleaned_ott/index.html">cleaned_ott</a> directory holds information from the removal of flagged taxa and pruning to the chosen root.</li>
     <li>The <a href="./bumped_ott/index.html">bumped_ott</a> directory 
     holds a version of the OpenTree Taxonomy that may have some
     <em>incertae sedis</em> taxa moved toward the root of the tree.
