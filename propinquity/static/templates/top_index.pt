@@ -13,7 +13,7 @@
 </div>
 
 <p>The configuration file for the propinquity run is at <a href="./config.json"><code>config.json</code></a>.
-The run completed at <code>${config.config_annot["date_completed"]</code>.</p>
+The run completed at <code>${config.config_annot["date_completed"]}</code>.</p>
 
 <h2 id="configuration-taxonomy">Taxonomy</h2>
 <ul>

@@ -1473,7 +1473,7 @@ def read_ott_version(CFG):
 def get_otc_version():
     git_sha, version, boost_version = ['unknown']*3
     try:
-        out = str(subprocess.check_output('otc-version-reporter'))
+        out = subprocess.check_output('otc-version-reporter').decode('utf-8')
         try:
             git_sha = re.compile('git_sha *= *([a-zA-Z0-9]+)').search(out).group(1)
         except:
@@ -1489,6 +1489,15 @@ def get_otc_version():
     except:
         pass
     return git_sha, version, boost_version
+
+def get_propinquity_sha(CFG):
+    try:
+        cmd = ['git', 'rev-parse', 'HEAD']
+        out = subprocess.check_output(cmd, cwd=CFG.propinquity_dir).decode('utf-8')
+        return out.strip()
+    except:
+        return 'unknown'
+
 
 def root_taxon_name(CFG):
     FNULL = open(os.devnull, 'w')
@@ -1514,10 +1523,10 @@ def get_peyotl_version(CFG):
 
 def gen_config_annot(CFG):
     otc_sha, otc_version, otc_boost_version = get_otc_version()
+    propinquity_sha = get_propinquity_sha(CFG)
     document = {}
     document["date_completed"] = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     synth_id = CFG.synth_id
-    propinquity_sha = 'unknown'
     document["tree_id"] = synth_id
     document["synth_id"] = synth_id
     document["taxonomy_version"] = read_ott_version(CFG)
@@ -1525,7 +1534,7 @@ def gen_config_annot(CFG):
     document["generated_by"] = [
         {"name":"propinquity",
          "version":__version__,
-         "git_sha": 'unknown' ,
+         "git_sha": propinquity_sha,
          "url":"https://github.com/OpenTreeOfLife/propinquity",
          "invocation":"cmd"},
         {"name":"peyotl",
@@ -1835,6 +1844,9 @@ def get_runtime_configuration(CFG):
             config.ott_major_minor_version = m.group(1)
         else:
             config.ott_major_minor_version = 'NOT built using OTT'
+        if not hasattr(CFG, "config_annot"):
+            CFG.config_annot = gen_config_annot(CFG)
+        config.config_annot = CFG.config_annot
         return config
     config = parse_config_as_extensible(CFG)
     x = get_otc_version()
@@ -1842,6 +1854,9 @@ def get_runtime_configuration(CFG):
     x = get_peyotl_version(CFG)
     config.peyotl_version, config.peyotl_sha = x
     config.propinquity_sha = 'unknown'
+    for el in config.config_annot["generated_by"]:
+        if el.get('name') == 'propinquity':
+            config.propinquity_sha = el.get('git_sha', config.propinquity_sha)
     return config
 
 def stripped_nonempty_lines(fn):
