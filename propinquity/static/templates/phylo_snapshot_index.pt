@@ -23,7 +23,7 @@ for details about that step.</p>
             <li tal:repeat="git_sha phylo_snapshot.collections_git_shas">${git_sha}</li>
         </ul>
     </li>
-    <li>The ${':,}'.format(len(phylo_input.study_id_tree_id_pairs))} NexSON files stored are:
+    <li>The ${'{:,}'.format(len(phylo_input.study_id_tree_id_pairs))} NexSON files stored are:
         <table>
             <tr><th>Link to NexSON</th><th>git object SHA of for source of NexSON</th></tr>
             <tr tal:repeat="nstp enumerate(phylo_input.study_id_tree_id_pairs)">

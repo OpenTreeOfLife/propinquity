@@ -22,5 +22,19 @@ mapped to higher taxa. See
 </p>
 <p>The taxonomic structure in the files in this directory will determine the
 phylogenetic interpretation of names in the rest of the synthesis run.</p>
+
+<p><strong>Results: </strong>
+<ul>
+  <li><a href="./cleaned_ott_1.json">cleaned_ott.json</a> is a JSON summary (often a large file that can be hard to look at in a browser) that lists the reasons different taxa were pruned. The file is composed from 
+  2 different files (which are rarely of direct interest to end-users): 
+  <a href="./flagged_in_cleaned.json">flagged_in_cleaned.json</a> and
+  <a href="./cleaned_ott_pruned_nonflagged.json">cleaned_ott_pruned_nonflagged.json</a>/
+  </li>
+  <li><a href="./cleaned_not_updated_ott.tre">cleaned_not_updated_ott.tre</a> is a
+newick representation of the taxonomy.</li>
+  <li><a href="./cleaned_ott_with_hiddenbarren.tre">cleaned_ott_with_hiddenbarren.tre</a> is another representation of the taxonomic tree. This file contains higher taxa that lack descendants. Such taxa are pruned from the cleaned_not_updated_ott.tre form.</li>
+  <li><a href="./cleaned_ott.tre">cleaned_ott.tre</a> is the newick representation of the taxonomy to be used in subsequent steps.</li>
+</ul>
+
 </div>
 </html>
