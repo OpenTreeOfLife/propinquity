@@ -1939,9 +1939,19 @@ def render_cleaned_phylo_index(container, template, html_out, json_out):
     html_out.write(template(phylo_input=container.phylo_input,
                             phylo_snapshot=container.phylo_snapshot,
                             exemplified_phylo=container.exemplified_phylo))
+def ott_id_to_link(x):
+    try:
+        if x.startswith('ott'):
+            return x[3:]
+    except:
+        pass
+    return x
+
 def render_exemplified_phylo_index(container, template, html_out, json_out):
     write_as_json({'exemplified_phylo' : container.exemplified_phylo.__dict__}, json_out)
-    html_out.write(template(exemplified_phylo=container.exemplified_phylo))
+    html_out.write(template(exemplified_phylo=container.exemplified_phylo,
+                            ott_id_to_link=ott_id_to_link))
+
 def render_subproblems_index(container, template, html_out, json_out):
     write_as_json({'subproblems' : container.subproblems.__dict__}, json_out)
     html_out.write(template(subproblems=container.subproblems))
