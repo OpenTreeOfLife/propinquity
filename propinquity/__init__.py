@@ -979,7 +979,7 @@ def clean_phylo_input(ott_dir,
             etlist = nexson_blob["nexml"]["externalTrees"]
             for et in etlist:
                 path = et["pathFromScriptManagedRepo"]
-                print(f'{study_tree} at {path}')
+                # print(f'{study_tree} at {path}')
                 external_trees.append( (study_tree,path) )
             continue
         newick_fp = os.path.join(output_dir, study_tree + '.tre')
@@ -1540,7 +1540,7 @@ def gen_config_annot(CFG):
         {"name":"peyotl",
          "version": peyotl.__version__,
          "git_sha": "unknown",
-         "url":"http://opentreeoflife.github.io/peyotl",
+         "url":"https://opentreeoflife.github.io/peyotl",
          "invocation":"N/A"},
         {"name":"otcetera",
          "version": otc_version,
@@ -1784,6 +1784,7 @@ _STATIC_MD = ['static/phylo_input/README.md',
               'static/exemplified_phylo/README.md',]
 TEMPLATE_FNS=['annotated_supertree_index.pt',
               'assessments_index.pt',
+              'bumped_ott_index.pt',
               'cleaned_ott_index.pt',
               'cleaned_phylo_index.pt',
               'exemplified_phylo_index.pt',
@@ -1792,6 +1793,7 @@ TEMPLATE_FNS=['annotated_supertree_index.pt',
               'labelled_supertree_index.pt',
               'phylo_input_index.pt',
               'phylo_snapshot_index.pt',
+              'subott_dir_index.pt',
               'subproblems_index.pt',
               'subproblem_solutions_index.pt',
               'top_index.pt', ]
@@ -1923,12 +1925,16 @@ def render_phylo_input_index(container, template, html_out, json_out):
     write_as_json({'phylo_input' : container.phylo_input.__dict__}, json_out)
     html_out.write(template(phylo_input=container.phylo_input))
 
+def render_no_vars_index(container, template, html_out, json_out):
+    html_out.write(template())
+
 def render_phylo_snapshot_index(container, template, html_out, json_out):
     html_out.write(template(phylo_input=container.phylo_input,
                             phylo_snapshot=container.phylo_snapshot))
 
 def render_cleaned_ott_index(container, template, html_out, json_out):
     html_out.write(template(cleaned_ott=container.cleaned_ott))
+
 def render_cleaned_phylo_index(container, template, html_out, json_out):
     html_out.write(template(phylo_input=container.phylo_input,
                             phylo_snapshot=container.phylo_snapshot,
@@ -2019,7 +2025,7 @@ def add_taxonomy_metadata(non_monophyletic_taxa, ott_dir):
                 name = name[0]
             if int_id in id2ranks:
                 rank = id2ranks[int_id]
-        print(oid,name,rank)
+        # print(oid,name,rank)
         broken_taxa[oid]['name'] = name
         broken_taxa[oid]['rank'] = rank
     non_monophyletic_taxa['non_monophyletic_taxa']=broken_taxa
@@ -2208,10 +2214,12 @@ class DocGen(object):
     def render(self):
         templates = PageTemplateLoader("logs/templates")
         src_dest_list = ((render_top_index, 'top_index.pt', 'index'),
+                         (render_no_vars_index, 'subott_dir_index.pt', 'subott_dir/index'),
                          (render_phylo_input_index, 'phylo_input_index.pt', 'phylo_input/index'),
                          (render_phylo_snapshot_index, 'phylo_snapshot_index.pt', 'phylo_snapshot/index'),
                          (render_cleaned_phylo_index, 'cleaned_phylo_index.pt', 'cleaned_phylo/index'),
                          (render_cleaned_ott_index, 'cleaned_ott_index.pt', 'cleaned_ott/index'),
+                         (render_no_vars_index, 'bumped_ott_index.pt', 'bumped_ott/index'),
                          (render_exemplified_phylo_index, 'exemplified_phylo_index.pt', 'exemplified_phylo/index'),
                          (render_subproblems_index, 'subproblems_index.pt', 'subproblems/index'),
                          (render_subproblem_solutions_index, 'subproblem_solutions_index.pt', 'subproblem_solutions/index'),
