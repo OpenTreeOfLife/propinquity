@@ -18,7 +18,7 @@ The run completed at <code>${config.config_annot["date_completed"]}</code>.</p>
 <h2 id="configuration-taxonomy">Taxonomy</h2>
 <ul>
     <li>OTT version: <a href="https://tree.opentreeoflife.org/about/taxonomy-version/ott${config.ott_major_minor_version}">${config.ott_major_minor_version}</a> (specifically version ${config.ott_version})</li>
-    <li>root taxon:  <a href="https://tree.opentreeoflife.org/taxonomy/browse?id=${config.root_ott_id}">${config.root_ott_id}</a></li>
+    <li>root taxon:  <a href="https://tree.opentreeoflife.org/taxonomy/browse?id=${config.root_ott_id}" title="${ott_name_finder.ott_id_to_label(config.root_ott_id)}">${config.root_ott_id}</a></li>
     <li>The local copy of this version of OTT was at <code>${config.ott_root}</code></li>
     <li>This version of OTT was pruned to removed taxa that are flagged with any of the following <a href="https://github.com/OpenTreeOfLife/reference-taxonomy/wiki/Taxon-flags">taxon flags</a>:
     <ul>

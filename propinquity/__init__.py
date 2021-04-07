@@ -1918,7 +1918,8 @@ def render_top_index(container, template, html_out, json_out):
     write_as_json({'config' : container.config.__dict__}, json_out)
     html_out.write(template(config=container.config,
                             phylo_input=container.phylo_input,
-                            exemplified_phylo=container.exemplified_phylo))
+                            exemplified_phylo=container.exemplified_phylo,
+                            ott_name_finder=container))
 
 # Note: these render commands could in theory be replaced by Jim with cooler HTML output or something.
 def render_phylo_input_index(container, template, html_out, json_out):
@@ -1939,7 +1940,7 @@ def render_cleaned_phylo_index(container, template, html_out, json_out):
     html_out.write(template(phylo_input=container.phylo_input,
                             phylo_snapshot=container.phylo_snapshot,
                             exemplified_phylo=container.exemplified_phylo))
-def ott_id_to_link(x):
+def ott_id_number_str(x):
     try:
         if x.startswith('ott'):
             return x[3:]
@@ -1950,7 +1951,8 @@ def ott_id_to_link(x):
 def render_exemplified_phylo_index(container, template, html_out, json_out):
     write_as_json({'exemplified_phylo' : container.exemplified_phylo.__dict__}, json_out)
     html_out.write(template(exemplified_phylo=container.exemplified_phylo,
-                            ott_id_to_link=ott_id_to_link))
+                            ott_id_number_str=ott_id_number_str,
+                            ott_name_finder=container))
 
 def render_subproblems_index(container, template, html_out, json_out):
     write_as_json({'subproblems' : container.subproblems.__dict__}, json_out)
@@ -2048,7 +2050,8 @@ def demand_fp(fp):
 class DocGen(object):
     def __init__(self, CFG):
         self.top_output_dir = os.path.abspath(os.curdir)
-        self.ott = OTT(ott_dir=os.path.join(self.top_output_dir, 'bumped_ott'))
+        self._int_ott_dir = os.path.join(self.top_output_dir, 'subott_dir')
+        self._ott = None
         self.config = get_runtime_configuration(CFG)
         self.phylo_input = self.read_phylo_input()
         self.phylo_snapshot = self.read_phylo_snapshot()
@@ -2059,6 +2062,23 @@ class DocGen(object):
         self.labelled_supertree = self.read_labelled_supertree()
         self.assessments = self.read_assessments()
         #self.broken_taxa = self.read_broken_taxa()
+
+    @property
+    def ott(self):
+        if self._ott is None:
+            self._ott = OTT(ott_dir=self._int_ott_dir)
+        return self._ott
+    
+    def ott_id_to_label(self, ott_id, default=''):
+        ns = ott_id_number_str(ott_id)
+        x = None
+        try:
+            ott_id = int(ns)
+        except:
+            pass
+        else:
+            x = self.ott.get_name(ott_id)
+        return default if x is None else x
     
     def read_assessments(self):
         d = os.path.join(self.top_output_dir, 'assessments')

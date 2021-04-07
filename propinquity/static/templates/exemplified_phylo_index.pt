@@ -35,7 +35,8 @@ taxa).</p>
 <p>The following source input trees were affected by the exemplar step:</p>
 <table>
     <tr><th>study_id + tree_id key</th><th>OTT IDs exemplified</th></tr>
-    <tr tal:repeat="tn_id_set_pair exemplified_phylo.source_tree_to_ott_id_exemplified_list.items()"><td>${tn_id_set_pair[0]}</td><td>${', '.join(tn_id_set_pair[1])}</td></tr>
+    <tr tal:repeat="tn_id_set_pair exemplified_phylo.source_tree_to_ott_id_exemplified_list.items()"><td>${tn_id_set_pair[0]}</td><td>
+      <span tal:repeat="eu tn_id_set_pair[1]"><span tal:condition="not repeat.eu.start">, </span><a href="https://tree.opentreeoflife.org/taxonomy/browse?id=${ott_id_number_str(eu)}" title="${ott_name_finder.ott_id_to_label(eu)}">${ott_id_number_str(eu)}</a></span></td></tr>
 </table>
 
 <h3><a name="ottidtoexemplified">Higher taxon to exemplar mapping</a></h3>
@@ -43,8 +44,8 @@ taxa).</p>
 <table>
     <tr><th>higher taxon OTT ID</th><th>exemplars used</th></tr>
     <tr tal:repeat="id_eblob exemplified_phylo.taxa_exemplified.items()">
-        <td><a href="https://tree.opentreeoflife.org/taxonomy/browse?id=${ott_id_to_link(id_eblob[0])}">${ott_id_to_link(id_eblob[0])}</a></td>
-        <td><span tal:repeat="eu id_eblob[1]['exemplars_used']"><a href="https://tree.opentreeoflife.org/taxonomy/browse?id=${ott_id_to_link(eu)}">${ott_id_to_link(eu)}</a>, </span>
+        <td><a href="https://tree.opentreeoflife.org/taxonomy/browse?id=${ott_id_number_str(id_eblob[0])}" title="${ott_name_finder.ott_id_to_label(id_eblob[0])}">${ott_id_number_str(id_eblob[0])}</a></td>
+        <td><span tal:repeat="eu id_eblob[1]['exemplars_used']"><span tal:condition="not repeat.eu.start">, </span><a href="https://tree.opentreeoflife.org/taxonomy/browse?id=${ott_id_number_str(eu)}" title="${ott_name_finder.ott_id_to_label(eu)}">${ott_id_number_str(eu)}</a></span>
         </td></tr>
 </table>
 </div>
