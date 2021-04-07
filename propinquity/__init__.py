@@ -2048,6 +2048,7 @@ def demand_fp(fp):
 class DocGen(object):
     def __init__(self, CFG):
         self.top_output_dir = os.path.abspath(os.curdir)
+        self.ott = OTT(ott_dir=os.path.join(self.top_output_dir, 'bumped_ott'))
         self.config = get_runtime_configuration(CFG)
         self.phylo_input = self.read_phylo_input()
         self.phylo_snapshot = self.read_phylo_snapshot()
