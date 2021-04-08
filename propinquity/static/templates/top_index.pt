@@ -88,7 +88,7 @@ pruning of tips from input phylogenies due to mapping to problematic taxa. There
 <ol>
     <li><a href="./subproblems/index.html">subproblems/index.html</a> describes the decomposition of the full tree into adjacent subproblems. For the sake of comparison,
         a version of the subproblems with the order of phylogenetic inputs reversed may be generated at <a href="./reversed_subproblems/index.html">reversed_subproblems/index.html</a></li>
-    <li><a href="./subproblem_solutions/index.html">subproblem_solutions/index.html</a> describes the solutions that result from each of these subproblems.</li>
+    <li><a href="./subproblem_solutions/index.html">subproblem_solutions/index.html</a> describes the solutions that result from each of these subproblems. If the reversed subproblems were produced, their solutions will be in <a href="./reversed_subproblem_solutions/index.html">reversed_subproblem_solutions/index.html</a>.</li>
     <li><a href="./grafted_solution/index.html">grafted_solution/index.html</a> describes piecing the subproblem solutions into a single solution for the exemplified taxa.</li>
     <li><a href="./labelled_supertree/index.html">labelled_supertree/index.html</a> describes how the taxa pruned off in the exemplar step are reattached to produce a full supertree.</li>
 </ol>
