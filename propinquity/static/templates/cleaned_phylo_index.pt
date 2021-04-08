@@ -18,17 +18,19 @@ nonempty trees after cleaning. The files of interest in this directory are:</p>
 <table>
     <tr><th>JSON log of pruning</th><th>pruned newick</th><th>induce taxonomy newick for pruned</th></tr>
     <tr tal:repeat="stp phylo_input.study_id_tree_id_pairs">
-        <td><a href="./tree_${stp[0]}@${stp[1]}.json">tree_${stp[0]}@${stp[1]}.json</a></td>
-        <td><div tal:switch="['tree_{}'.format(stp[0]), stp[1]] in exemplified_phylo.nonempty_trees">
-             <a tal:case="True" href="./tree_${stp[0]}@${stp[1]}.tre">tree_${stp[0]}@${stp[1]}.tre</a>
+        <div tal:define="study_id stp[0]; tree_id stp[1]">
+        <td><a href="./tree_${study_id}@${tree_id}.json">tree_${study_id}@${tree_id}.json</a></td>
+        <td><div tal:switch="['tree_{}'.format(study_id), tree_id] in exemplified_phylo.nonempty_trees">
+             <a tal:case="True" href="./tree_${study_id}@${tree_id}.tre">tree_${study_id}@${tree_id}.tre</a>
              <span tal:case="False">Cleaning led to empty tree</span>
             </div>
         </td>
-        <td><div tal:switch="['tree_{}'.format(stp[0]), stp[1]] in exemplified_phylo.nonempty_trees">
-             <a tal:case="True" href="./tree_${stp[0]}@${stp[1]}-taxonomy.tre">tree_${stp[0]}@${stp[1]}-taxonomy.tre</a>
+        <td><div tal:switch="['tree_{}'.format(study_id), tree_id] in exemplified_phylo.nonempty_trees">
+             <a tal:case="True" href="./tree_${study_id}@${tree_id}-taxonomy.tre">tree_${study_id}@${tree_id}-taxonomy.tre</a>
              <span tal:case="False"></span>
             </div>
         </td>
+        </div>
     </tr>
 </table>
 

@@ -1,5 +1,6 @@
 <html metal:use-macro="load: head.pt">
 <div metal:fill-slot="content">
+<div tal:define="root_name ott_name_finder.ott_id_to_label(config.root_ott_id)">
 <p>The files in this directory (and its children) were produced using
     <a href="https://github.com/OpenTreeOfLife/propinquity">propinquity</a>,
     a <a href="https://snakemake.github.io/">snakemake</a>-based pipeline for phylogenetic supertrees.
@@ -15,15 +16,17 @@
 <p>The configuration file for the propinquity run is at <a href="./config.json"><code>config.json</code></a>.
 The run completed at <code>${config.config_annot["date_completed"]}</code>.</p>
 
+
 <h2 id="configuration-taxonomy">Taxonomy</h2>
 <ul>
     <li>OTT version: <a href="https://tree.opentreeoflife.org/about/taxonomy-version/ott${config.ott_major_minor_version}">${config.ott_major_minor_version}</a> (specifically version ${config.ott_version})</li>
-    <li>root taxon:  <a href="https://tree.opentreeoflife.org/taxonomy/browse?id=${config.root_ott_id}" title="${ott_name_finder.ott_id_to_label(config.root_ott_id)}">${config.root_ott_id}</a></li>
+    <li>root taxon:  <a href="https://tree.opentreeoflife.org/taxonomy/browse?id=${config.root_ott_id}" title="${root_name}">${config.root_ott_id}</a> (${root_name})</li>
     <li>The local copy of this version of OTT was at <code>${config.ott_root}</code></li>
     <li>This version of OTT was pruned to removed taxa that are flagged with any of the following <a href="https://github.com/OpenTreeOfLife/reference-taxonomy/wiki/Taxon-flags">taxon flags</a>:
-    <ul>
-        <li tal:repeat="flag config.taxonomy_cleaning_flags" tal:content="flag" />
-    </ul>
+      <ul>
+        <li tal:repeat="flag config.taxonomy_cleaning_flags" tal:content="flag" ></li>
+      </ul>
+    </li>
 </ul>
 
 <h2 id="configuration-phylogenies">Phylogenetic inputs</h2>
@@ -108,7 +111,8 @@ run to assess the supertree.</p>
 <ol>
     <li><a href="./labelled_supertree/labelled_supertree.tre">./labelled_supertree/labelled_supertree.tre</a> (the tree)</li>
     <li><a href="./annotated_supertree/annotations.json">./annotated_supertree/annotations.json</a> (the annotations file)</li>
-<ol>
+</ol>
 
+</div>
 </div>
 </html>
