@@ -1770,7 +1770,6 @@ def analyze_lost_taxa(in_tax, in_tree, ott_dir, out_fp, CFG=None):
 _STATIC_MD = ['static/phylo_input/README.md',
               'static/subproblem_solutions/README.md',
               'static/cleaned_ott/README.md',
-              'static/phylo_induced_taxonomy/README.md',
               'static/labelled_supertree/README.md',
               'static/assessments/README.md',
               'static/cleaned_phylo/README.md',
@@ -1921,7 +1920,7 @@ def render_top_index(container, template, html_out, json_out):
     html_out.write(template(config=container.config,
                             phylo_input=container.phylo_input,
                             exemplified_phylo=container.exemplified_phylo,
-                            ott_name_finder=container))
+                            doc_gen=container))
 
 # Note: these render commands could in theory be replaced by Jim with cooler HTML output or something.
 def render_phylo_input_index(container, template, html_out, json_out):
@@ -1954,16 +1953,16 @@ def render_exemplified_phylo_index(container, template, html_out, json_out):
     write_as_json({'exemplified_phylo' : container.exemplified_phylo.__dict__}, json_out)
     html_out.write(template(exemplified_phylo=container.exemplified_phylo,
                             ott_id_number_str=ott_id_number_str,
-                            ott_name_finder=container))
+                            doc_gen=container))
 
 def render_subproblems_index(container, template, html_out, json_out):
     write_as_json({'subproblems' : container.subproblems.__dict__}, json_out)
     html_out.write(template(subproblems=container.subproblems,
-                            ott_name_finder=container))
+                            doc_gen=container))
 
 def render_reversed_subproblems_index(container, template, html_out, json_out):
     html_out.write(template(subproblems=container.subproblems,
-                            ott_name_finder=container))
+                            doc_gen=container))
 
 def render_subproblem_solutions_index(container, template, html_out, json_out):
     write_as_json({'subproblem_solutions' : container.subproblem_solutions.__dict__}, json_out)
@@ -1980,7 +1979,9 @@ def render_grafted_solution_index(container, template, html_out, json_out):
     html_out.write(template(subproblems=container.subproblems))
 def render_labelled_supertree_index(container, template, html_out, json_out):
     html_out.write(template(unprune_stats=container.labelled_supertree.unprune_stats,
-                            non_monophyletic_taxa=container.labelled_supertree.non_monophyletic_taxa))
+                            non_monophyletic_taxa=container.labelled_supertree.non_monophyletic_taxa,
+                            doc_gen=container))
+
 def render_annotated_supertree_index(container, template, html_out, json_out):
     html_out.write(template())
 def render_assessments_index(container, template, html_out, json_out):

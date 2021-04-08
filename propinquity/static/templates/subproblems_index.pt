@@ -32,11 +32,11 @@ The taxonomy overlaps with every subproblem.</p>
 <table>
     <tr><th>Subproblem</th><th># inputs</th><th># tips</th><th>Input Identifiers</th></tr>
     <tr tal:repeat="id_src_el subproblems.sorted_by_num_phylo_inputs">
-        <td><tal:block tal:define="ottp id_src_el[0]; ott_name ott_name_finder.ott_prefixed_to_label(ottp)">
+        <td><tal:block tal:define="ottp id_src_el[0]; ott_name doc_gen.ott_prefixed_to_label(ottp)">
             <a href="./${ottp}" title="${ott_name}">${ottp}</a> (${ott_name})</tal:block></td>
         <td>${len(id_src_el[1])}</td>
         <td>${id_src_el[2]}</td>
-        <td><tal:block tal:repeat="tsn id_src_el[1][:-1]"><tal:block tal:define="stid ott_name_finder.extract_study_tree_id(tsn); sid stid[0]; tid stid[1]"><a href="https://tree.opentreeoflife.org/curator/study/view/${sid}/?tab=trees&tree=${tid}" target="_blank">${'{}@{}'.format(sid, tid)}</a></tal:block>, </tal:block>TAXONOMY</td>
+        <td><tal:block tal:repeat="tsn id_src_el[1][:-1]"><tal:block tal:define="stid doc_gen.extract_study_tree_id(tsn); sid stid[0]; tid stid[1]"><a href="https://tree.opentreeoflife.org/curator/study/view/${sid}/?tab=trees&tree=${tid}" target="_blank">${'{}@{}'.format(sid, tid)}</a></tal:block>, </tal:block>TAXONOMY</td>
     </tr>
 </table>
 
@@ -46,9 +46,9 @@ The taxonomy overlaps with every subproblem.</p>
 <table>
     <tr><th>Study+Tree key</th><th># subproblems</th><th>Subproblem Identifiers</th></tr>
     <tr tal:repeat="inp_sub_l subproblems.input_and_subproblems_sorted">
-        <td><tal:block tal:define="stid ott_name_finder.extract_study_tree_id(inp_sub_l[0]); sid stid[0]; tid stid[1]"><a href="https://tree.opentreeoflife.org/curator/study/view/${sid}/?tab=trees&tree=${tid}" target="_blank">${'{}@{}'.format(sid, tid)}</a></tal:block></td>
+        <td><tal:block tal:define="stid doc_gen.extract_study_tree_id(inp_sub_l[0]); sid stid[0]; tid stid[1]"><a href="https://tree.opentreeoflife.org/curator/study/view/${sid}/?tab=trees&tree=${tid}" target="_blank">${'{}@{}'.format(sid, tid)}</a></tal:block></td>
         <td>${len(inp_sub_l[1])}</td>
-        <td>${', '.join([ott_name_finder.ott_id_number_str(i) for i in inp_sub_l[1]])}</td>
+        <td>${', '.join([doc_gen.ott_id_number_str(i) for i in inp_sub_l[1]])}</td>
     </tr>
 </table>
 
@@ -63,7 +63,7 @@ not contested, there would only be one internal node that fit those criterion, b
 in contested taxa there are multiple.</p>
 <ul>
     <li tal:repeat="ott_all_trees subproblems.contested_taxa.items()">
-      <tal:block tal:define="ott_id ott_all_trees[0]; ott_name ott_name_finder.ott_id_to_label(ott_id)">
+      <tal:block tal:define="ott_id ott_all_trees[0]; ott_name doc_gen.ott_id_to_label(ott_id)">
       <a href="https://tree.opentreeoflife.org/taxonomy/browse?id=${ott_id}">${ott_id}</a> (${ott_name}) contested by:
       <ul>
         <li tal:repeat="tree_bundle ott_all_trees[1]">

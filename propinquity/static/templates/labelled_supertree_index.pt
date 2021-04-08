@@ -14,18 +14,18 @@
 </p>
 
 <p><strong>Results</strong></p>
-<p>The input grafted solution had ${unprune_stats.input["num_solution_leaves"]} leaves and
-    ${unprune_stats.input["num_solution_splits"]} forking nodes
-    (and ${unprune_stats.input["num_solution_internals"] - unprune_stats.input["num_solution_splits"]} monotypic nodes).</p>
-<p>The input cleaned taxonomy had ${unprune_stats.input["num_taxonomy_leaves"]} leaves and
-    ${unprune_stats.input["num_taxonomy_splits"]} forking nodes
-    (and ${unprune_stats.input["num_taxonomy_internals"] - unprune_stats.input["num_taxonomy_splits"]} monotypic nodes).</p>
-<p>${unprune_stats.output["num_leaves_added"]} leaves were added to create the solution.
-    ${unprune_stats.output["num_taxa_rejected"]} taxa were rejected.</p>
+<p>The input grafted solution had ${'{:,}'.format(unprune_stats.input["num_solution_leaves"])} leaves and
+    ${'{:,}'.format(unprune_stats.input["num_solution_splits"])} forking nodes
+    (and ${'{:,}'.format(unprune_stats.input["num_solution_internals"] - unprune_stats.input["num_solution_splits"])} monotypic nodes).</p>
+<p>The input cleaned taxonomy had ${'{:,}'.format(unprune_stats.input["num_taxonomy_leaves"])} leaves and
+    ${'{:,}'.format(unprune_stats.input["num_taxonomy_splits"])} forking nodes
+    (and ${'{:,}'.format(unprune_stats.input["num_taxonomy_internals"] - unprune_stats.input["num_taxonomy_splits"])} monotypic nodes).</p>
+<p>${'{:,}'.format(unprune_stats.output["num_leaves_added"])} leaves were added in the labelled_supertree step to create the solution.
+    ${'{:,}'.format(unprune_stats.output["num_taxa_rejected"])} taxa were rejected.</p>
 <p>The files of interest in this directory are (for large files, the link will download the file):
 <ul>
-    <li>the <a href="./labelled_supertree.tre" download>./labelled_supertree.tre</a> (full solution with names created for non-taxonomic internal nodes).</li>
-    <li>the <a href="./labelled_supertree_ottnames.tre" download>./labelled_supertree_ottnames.tre</a> the same tree with the name_id format for taxa from OTT.</li>
+    <li>the <a href="./labelled_supertree.tre" download>./labelled_supertree.tre</a> Newick with <code>ott#</code> labels and <code>mrcaott#ott#</code> labels (the latter are created for non-taxonomic internal nodes).</li>
+    <li>the <a href="./labelled_supertree_ottnames.tre" download>./labelled_supertree_ottnames.tre</a> the same tree with the <code>name_id</code> format for taxa from OTT.</li>
     <li>the <a href="./broken_taxa.json" download>./broken_taxa.json</a> which describes who
     members of non-monophyletic taxa are spread across the tree.</li>
     <li>the <a href="./input_output_stats.json">./input_output_stats.json</a> which describes the
@@ -45,12 +45,14 @@
         <table>
             <tr><th>taxon ID</th><th>name</th><th>rank</th><th>MRCA</th><th># attachment points</th><th># intruders</th></tr>
             <tr tal:repeat="id2dict non_monophyletic_taxa.non_monophyletic_taxa.items()">
-                <td>${id2dict[0]}</td>
-                <td>${id2dict[1]["name"]}</td>
-                <td>${id2dict[1]["rank"]}</td>
-                <td>${id2dict[1]["mrca"]}</td>
-                <td>${len(id2dict[1]["attachment_points"])}</td>
-                <td>${len(id2dict[1].get("intruding_taxa",[]))}</td>
+                <tal:block tal:define="ott_num doc_gen.ott_id_number_str(id2dict[0])">
+                    <td><a href="https://tree.opentreeoflife.org/taxonomy/browse?id=${ott_num}" target="_blank">${ott_num}</a></td>
+                    <td>${id2dict[1]["name"]}</td>
+                    <td>${id2dict[1]["rank"]}</td>
+                    <td>${id2dict[1]["mrca"]}</td>
+                    <td>${len(id2dict[1]["attachment_points"])}</td>
+                    <td>${len(id2dict[1].get("intruding_taxa",[]))}</td>
+                </tal:block>
             </tr>
         </table>
     </div>

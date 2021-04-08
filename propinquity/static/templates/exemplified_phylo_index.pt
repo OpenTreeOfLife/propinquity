@@ -37,7 +37,7 @@ taxa).</p>
     <tr><th>study_id + tree_id key</th><th>OTT IDs exemplified</th></tr>
     <tr tal:repeat="tn_id_set_pair exemplified_phylo.source_tree_to_ott_id_exemplified_list.items()">
         <td>${tn_id_set_pair[0]}</td>
-<td><tal:block tal:repeat="eu tn_id_set_pair[1]"><tal:block tal:condition="not repeat.eu.start">, </tal:block><tal:block tal:define="ott_num ott_id_number_str(eu); ott_label ott_name_finder.ott_id_to_label(eu)"><a href="https://tree.opentreeoflife.org/taxonomy/browse?id=${ott_num}" title="${ott_label}">${ott_num}</a></tal:block></tal:block></td>
+<td><tal:block tal:repeat="eu tn_id_set_pair[1]"><tal:block tal:condition="not repeat.eu.start">, </tal:block><tal:block tal:define="ott_num ott_id_number_str(eu); ott_label doc_gen.ott_id_to_label(eu)"><a href="https://tree.opentreeoflife.org/taxonomy/browse?id=${ott_num}" title="${ott_label}">${ott_num}</a></tal:block></tal:block></td>
     </tr>
 </table>
 
@@ -47,10 +47,10 @@ taxa).</p>
     <tr><th>higher taxon OTT ID</th><th>exemplars used</th></tr>
     <tr tal:repeat="id_eblob exemplified_phylo.taxa_exemplified.items()">
         <td>
-            <al:block tal:define="ott_num ott_id_number_str(id_eblob[0]); ott_label ott_name_finder.ott_id_to_label(id_eblob[0])"><a href="https://tree.opentreeoflife.org/taxonomy/browse?id=${ott_num}" title="${ott_label}">${ott_num}</a>
+            <al:block tal:define="ott_num ott_id_number_str(id_eblob[0]); ott_label doc_gen.ott_id_to_label(id_eblob[0])"><a href="https://tree.opentreeoflife.org/taxonomy/browse?id=${ott_num}" title="${ott_label}">${ott_num}</a>
             </al:block>
         </td>
-        <td><tal:block tal:repeat="eu id_eblob[1]['exemplars_used']"><tal:block tal:condition="not repeat.eu.start" tal:content="', '" /><tal:block tal:define="ott_num ott_id_number_str(eu); ott_label ott_name_finder.ott_id_to_label(eu)"><a href="https://tree.opentreeoflife.org/taxonomy/browse?id=${ott_num}" title="${ott_label}">${ott_num}</a></tal:block></tal:block>
+        <td><tal:block tal:repeat="eu id_eblob[1]['exemplars_used']"><tal:block tal:condition="not repeat.eu.start" tal:content="', '" /><tal:block tal:define="ott_num ott_id_number_str(eu); ott_label doc_gen.ott_id_to_label(eu)"><a href="https://tree.opentreeoflife.org/taxonomy/browse?id=${ott_num}" title="${ott_label}">${ott_num}</a></tal:block></tal:block>
         </td>
     </tr>
 </table>

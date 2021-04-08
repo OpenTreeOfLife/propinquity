@@ -20,7 +20,7 @@ for details.</p>
 The reversed subproblems can be found in:
 <ul>
   <li tal:repeat="id_src_el subproblems.sorted_by_num_phylo_inputs">
-    <tal:block tal:define="ottp id_src_el[0]; ott_name ott_name_finder.ott_prefixed_to_label(ottp)">
+    <tal:block tal:define="ottp id_src_el[0]; ott_name doc_gen.ott_prefixed_to_label(ottp)">
       <a href="./${ottp}" title="${ott_name}">${ottp}</a> (${ott_name})
     </tal:block>
   </li>
