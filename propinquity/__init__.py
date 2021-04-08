@@ -1793,6 +1793,7 @@ TEMPLATE_FNS=['annotated_supertree_index.pt',
               'labelled_supertree_index.pt',
               'phylo_input_index.pt',
               'phylo_snapshot_index.pt',
+              'reversed_subproblems_index.pt',
               'subott_dir_index.pt',
               'subproblems_index.pt',
               'subproblem_solutions_index.pt',
@@ -1956,6 +1957,10 @@ def render_exemplified_phylo_index(container, template, html_out, json_out):
 
 def render_subproblems_index(container, template, html_out, json_out):
     write_as_json({'subproblems' : container.subproblems.__dict__}, json_out)
+    html_out.write(template(subproblems=container.subproblems,
+                            ott_name_finder=container))
+
+def render_reversed_subproblems_index(container, template, html_out, json_out):
     html_out.write(template(subproblems=container.subproblems,
                             ott_name_finder=container))
 
@@ -2276,6 +2281,7 @@ class DocGen(object):
                          (render_no_vars_index, 'bumped_ott_index.pt', 'bumped_ott/index'),
                          (render_exemplified_phylo_index, 'exemplified_phylo_index.pt', 'exemplified_phylo/index'),
                          (render_subproblems_index, 'subproblems_index.pt', 'subproblems/index'),
+                         (render_reversed_subproblems_index, 'reversed_subproblems_index.pt', 'reversed_subproblems/index'),
                          (render_subproblem_solutions_index, 'subproblem_solutions_index.pt', 'subproblem_solutions/index'),
                          (render_grafted_solution_index, 'grafted_solution_index.pt', 'grafted_solution/index'),
                          (render_labelled_supertree_index, 'labelled_supertree_index.pt', 'labelled_supertree/index'),

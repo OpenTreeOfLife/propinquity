@@ -10,7 +10,19 @@ for details on the procedure.
 
 <p><strong>Next step: </strong>Grafting the subproblems; See
 <a href="../grafted_solution/index.html">../grafted_solution/index.html</a></p>
-<p><strong>Results: </strong>Sorted by the number of tips then by the number
+
+<p><strong>Results: </strong></p>
+<p id="misc"><strong>Miscellaneous outputs</strong></p>
+<ul>
+	<li><a href="./subproblems-scaffold.tre">subproblems-scaffold.tre</a> is a
+	Newick representation of tree of the subproblem roots induced from the taxonomy tree.</li>
+	<li><a href="./subproblems-scaffold.tre">subproblems-scaffold-only.tre</a> is a simpler
+	version of subproblems-scaffold.tre created by removing flagged taxa.</li>
+	<li>For each subproblem solution, there is a <code>deg-dist-ott#.txt</code> file that holds the nodes' out-degree distribution for the solutions.</li>
+</ul>
+
+<p id="trees"><strong>Subproblems solutions</strong></p>
+<p>Sorted by the number of tips then by the number
 of internal nodes, the subproblem solutions are:</p>
 <table>
     <tr><th>Subproblem</th><th># tips</th><th># internal nodes</th></tr>
