@@ -1956,7 +1956,9 @@ def render_exemplified_phylo_index(container, template, html_out, json_out):
 
 def render_subproblems_index(container, template, html_out, json_out):
     write_as_json({'subproblems' : container.subproblems.__dict__}, json_out)
-    html_out.write(template(subproblems=container.subproblems))
+    html_out.write(template(subproblems=container.subproblems,
+                            ott_name_finder=container))
+
 def render_subproblem_solutions_index(container, template, html_out, json_out):
     write_as_json({'subproblem_solutions' : container.subproblem_solutions.__dict__}, json_out)
     html_out.write(template(subproblems=container.subproblems,
@@ -2047,6 +2049,9 @@ def demand_fp(fp):
     if not os.path.exists(fp):
         raise RuntimeError('Expected filepath "{}" does not exist'.format(fp))
 
+_ott_num_extractor = re.compile(r'^ott([0-9]+)[^0-9].*')
+_sid_tid_extractor = re.compile(r'^tree_([^@]+)@([^.]+)$')
+
 class DocGen(object):
     def __init__(self, CFG):
         self.top_output_dir = os.path.abspath(os.curdir)
@@ -2069,6 +2074,9 @@ class DocGen(object):
             self._ott = OTT(ott_dir=self._int_ott_dir)
         return self._ott
     
+    def ott_id_number_str(self, ott_id):
+        return ott_id_number_str(ott_id)
+    
     def ott_id_to_label(self, ott_id, default=''):
         ns = ott_id_number_str(ott_id)
         x = None
@@ -2079,6 +2087,21 @@ class DocGen(object):
         else:
             x = self.ott.get_name(ott_id)
         return default if x is None else x
+
+    def ott_prefixed_to_label(self, ott_prefixed, default=''):
+        m = _ott_num_extractor.match(ott_prefixed)
+        if m:
+            x = self.ott.get_name(int(m.group(1)))
+            if x is not None:
+                return x
+        return self.ott_id_to_label(ott_pr, default=default)
+
+    def extract_study_tree_id(self, raw_str):
+        pr = raw_str.split('.')[0]
+        m = _sid_tid_extractor.match(pr)
+        if not m:
+            return None, None
+        return m.group(1), m.group(2)
     
     def read_assessments(self):
         d = os.path.join(self.top_output_dir, 'assessments')
