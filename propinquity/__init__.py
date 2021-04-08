@@ -1794,6 +1794,7 @@ TEMPLATE_FNS=['annotated_supertree_index.pt',
               'phylo_input_index.pt',
               'phylo_snapshot_index.pt',
               'reversed_subproblems_index.pt',
+              'reversed_subproblem_solutions_index.pt',
               'subott_dir_index.pt',
               'subproblems_index.pt',
               'subproblem_solutions_index.pt',
@@ -1968,6 +1969,13 @@ def render_subproblem_solutions_index(container, template, html_out, json_out):
     write_as_json({'subproblem_solutions' : container.subproblem_solutions.__dict__}, json_out)
     html_out.write(template(subproblems=container.subproblems,
                             subproblem_solutions=container.subproblem_solutions))
+
+def render_reversed_subproblem_solutions_index(container, template, html_out, json_out):
+    # note that we just use the already-parsed subproblem_solutions object here
+    html_out.write(template(subproblems=container.subproblems,
+                            subproblem_solutions=container.subproblem_solutions))
+
+
 def render_grafted_solution_index(container, template, html_out, json_out):
     html_out.write(template(subproblems=container.subproblems))
 def render_labelled_supertree_index(container, template, html_out, json_out):
@@ -2142,6 +2150,14 @@ class DocGen(object):
     def read_subproblem_solutions(self):
         d = os.path.join(self.top_output_dir, 'subproblem_solutions')
         sdd = os.path.join(d, 'solution-degree-distributions.txt')
+        return self._get_soln_blob(sdd)
+
+    def read_reversed_subproblem_solutions(self):
+        d = os.path.join(self.top_output_dir, 'reversed_subproblem_solutions')
+        sdd = os.path.join(d, 'solution-degree-distributions.txt')
+        return self._get_soln_blob(sdd)
+
+    def _get_soln_blob(self, sdd):
         demand_fp(os.path.exists(sdd))
         blob = Extensible()
         blob.subproblem_num_leaves_num_internal_nodes = parse_subproblem_solutions_degree_dist(sdd)
@@ -2283,6 +2299,7 @@ class DocGen(object):
                          (render_subproblems_index, 'subproblems_index.pt', 'subproblems/index'),
                          (render_reversed_subproblems_index, 'reversed_subproblems_index.pt', 'reversed_subproblems/index'),
                          (render_subproblem_solutions_index, 'subproblem_solutions_index.pt', 'subproblem_solutions/index'),
+                         (render_reversed_subproblem_solutions_index, 'reversed_subproblem_solutions_index.pt', 'reversed_subproblem_solutions/index'),
                          (render_grafted_solution_index, 'grafted_solution_index.pt', 'grafted_solution/index'),
                          (render_labelled_supertree_index, 'labelled_supertree_index.pt', 'labelled_supertree/index'),
                          (render_annotated_supertree_index, 'annotated_supertree_index.pt', 'annotated_supertree/index'),

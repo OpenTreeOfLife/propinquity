@@ -17,7 +17,7 @@ order should not be taken as a demonstration that every order of trees would yie
 for details.</p>
 
 <p><strong>Results:</strong>
-The reversed subproblem can be found in:
+The reversed subproblems can be found in:
 <ul>
   <li tal:repeat="id_src_el subproblems.sorted_by_num_phylo_inputs">
     <tal:block tal:define="ottp id_src_el[0]; ott_name ott_name_finder.ott_prefixed_to_label(ottp)">
