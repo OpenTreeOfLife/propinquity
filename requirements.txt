@@ -1,6 +1,6 @@
 setuptools
 wheel
-peyutil>=0.0.3
+peyutil>=0.0.4
 nexson>=0.0.4
 peyotl>=1.0.1dev
 chameleon>=3.8.1
