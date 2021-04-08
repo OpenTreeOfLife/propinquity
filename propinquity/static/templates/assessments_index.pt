@@ -4,9 +4,7 @@
 <p>This directory holds the output of
 a run of propinquity's <code>run_assessments.py</code> script.
 That script checks for certain types of problems in the output of the pipeline.
-<a href="./summary.json">summary.json</a> is a JSON representation of that data
-and <a href="./log.txt">log.txt</a> is a text log of the assessments run 
-(the text log will be empty if there are no errors).</p>
+<a href="./summary.json">summary.json</a> is a JSON representation of that data.</p>
 <p>The ${len(assessments.categories_of_checks)} checks run were:</p>
 <table>
     <tr><th>nickname of check</th><th>description</th></tr>

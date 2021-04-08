@@ -71,7 +71,7 @@ was run.</li>
 pruning of tips from input phylogenies due to mapping to problematic taxa. There were ${len(exemplified_phylo.nonempty_trees)} nonempty trees after that cleaning.</li>
     <li><a href="./exemplified_phylo/index.html">exemplified_phylo/index.html</a> describes the choice of terminal taxa to exemplify those nodes that are mapped to higher taxa.</li>
 </ol>
-<p>Logs for these steps are <a href="logs/log-of-input-cleaning.txt">here (stdout)</a> and <a href="logs/log-of-input-cleaning-err.txt">here (stderr)</a></p>
+
 
 <h2>Processing of taxonomic inputs</h2>
 <ol>
@@ -92,21 +92,17 @@ pruning of tips from input phylogenies due to mapping to problematic taxa. There
     <li><a href="./grafted_solution/index.html">grafted_solution/index.html</a> describes piecing the subproblem solutions into a single solution for the exemplified taxa.</li>
     <li><a href="./labelled_supertree/index.html">labelled_supertree/index.html</a> describes how the taxa pruned off in the exemplar step are reattached to produce a full supertree.</li>
 </ol>
-<p>Logs for these steps are <a href="logs/log-of-supertree.txt">here (stdout)</a> and <a href="logs/log-of-supertree-err.txt">here (stderr)</a></p>
+
 
 <h2>Annotation of the supertree</h2>
 <p>See <a href="./annotated_supertree/index.html">annotated_supertree/index.html</a> links to the annotations for that tree.</p>
 
-<p>Logs for these steps are <a href="logs/log-of-annotations.txt">here (stdout)</a> and <a href="logs/log-of-annotations-err.txt">here (stderr)</a></p>
+
 
 <h2>Assessment of the pipeline</h2>
 <p>See <a href="./assessments/index.html">assessments/index.html</a> discusses what tests were
 run to assess the supertree.</p>
 
-<p>Logs for these steps are <a href="logs/log-of-assessments.txt">here (stdout)</a> and <a href="logs/log-of-assessments-err.txt">here (stderr)</a></p>
-
-<p>Logs for the HTML generation steps are <a href="logs/log-of-html.txt">here (stdout)</a> and <a href="logs/log-of-html-err.txt">here (stderr)</a></p>
-<p>An index for all of the logs is available <a href="logs/index.html">here</a></p>
 
 <h2>Final output</h2>
 <ol>
