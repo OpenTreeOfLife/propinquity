@@ -14,7 +14,9 @@ checkpoint decompose:
            phylo_list_fp = "subproblems/scratch/args.txt", \
            taxonomy = "exemplified_phylo/taxonomy.tre"
     output: subprob_id = "subproblems/dumped_subproblem_ids.txt", \
-            contesting = "subproblems/contesting_trees.json"
+            contesting = "subproblems/contesting_trees.json", \
+            contest_link = "subproblems/contesting-trees.json", \
+            subprob_link = "subproblems/subproblem-ids.txt"
     run:
         decompose_into_subproblems(tax_tree_fp=input.taxonomy,
                                    phylo_list_fp=input.phylo_list_fp,
@@ -22,6 +24,11 @@ checkpoint decompose:
                                    out_subprob_id_fp=output.subprob_id,
                                    out_contesting=output.contesting,
                                    CFG=CFG)
+        if not os.path.exists(output.contest_link):
+            os.symlink("./" + os.path.split(output.contesting)[-1], output.contest_link)
+        if not os.path.exists(output.subprob_link):
+            os.symlink("./" + os.path.split(output.subprob_id)[-1], output.subprob_link)
+
 
 def _agg_trees_impl(wildcards, soln_dir):
     solve_out = os.path.split(checkpoints.decompose.get(**wildcards).output[0])[0]
