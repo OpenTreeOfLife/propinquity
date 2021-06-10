@@ -8,6 +8,7 @@ import argparse
 import csv
 import glob
 import json
+import sys
 import os
 import re
 import subprocess
@@ -83,40 +84,60 @@ def broken_taxa_diffs(bt1, bt2, verbose):
 
 
 _bold = "\u001b[1m"
-_bold_off = "\u001b[21m"
-_red = "\u001b[31m"
 _reset = "\u001b[0m"
-_black = "\u001b[30m"
+_red = "\u001b[31m"
+_blue = "\u001b[34m"
+_cyan = "\u001b[36m"
 _green = "\u001b[32m"
 _yellow = "\u001b[33m"
-_blue = "\u001b[34m"
-_magenta = "\u001b[35m"
-_cyan = "\u001b[36m"
-_white = "\u001b[37m"
 
+bold_f = _bold + '{}' + _reset
+red_f = _red + '{}' + _reset
+blue_f = _blue + '{}' + _reset
+cyan_f = _cyan + '{}' + _reset
+green_f = _green + '{}' + _reset
+yellow_f = _yellow + '{}' + _reset
+
+HTML_OUT = False
+_bold_html = '<b>{}</b>'
+_red_html = '<span style="color:red;">{}</span>'
+_blue_html = '<span style="color:blue;">{}</span>'
+_cyan_html = '<span style="color:cyan;">{}</span>'
+_green_html = '<span style="color:green;">{}</span>'
+_yellow_html = '<span style="color:yellow;">{}</span>'
+
+def to_html_out():
+    global bold_f, red_f, blue_f, cyan_f, green_f, yellow_f, HTML_OUT
+    HTML_OUT = True
+    bold_f = _bold_html
+    red_f = _red_html
+    blue_f = _blue_html
+    cyan_f = _cyan_html
+    green_f = _green_html
+    yellow_f = _yellow_html
 
 def bold(x):
-    return _bold + str(x) + _reset
+    return bold_f.format(x)
 
 
 def red(x):
-    return _red + str(x) + _reset
+    return red_f.format(x)
 
 
 def blue(x):
-    return _blue + str(x) + _reset
+    return blue_f.format(x)
 
 
 def cyan(x):
-    return _cyan + str(x) + _reset
+    return cyan_f.format(x)
 
 
 def green(x):
-    return _green + str(x) + _reset
+    return green_f.format(x)
 
 
 def yellow(x):
-    return _yellow + str(x) + _reset
+    return yellow_f.format(x)
 
     # NOTE: This section gets a rank for unranked nodes by looking at their descendants
     #       If we didn't do this, then we didn't used to see Fungi being broken, since Nucletmycea
@@ -225,15 +246,21 @@ def conflict_summary_line(conflict1, conflict2):
                                                 n_newly_resolves,
                                                 n_resolves)
 
+_status_str = sys.stderr
+def status(msg, newline=True):
+    if newline:
+        _status_str.write('{}\n'.format(msg))
+    else:
+        _status_str.write(msg)
 
 # writes details of the broken taxa to a file that can be input by
 # report_on_broken_taxa.py
 def newly_broken_taxa_report(run1, run2):
     # load local copy of OTT
-    print("\nAnalyzing broken taxa:")
-    print("  * Loading OTT ... ", end='', flush=True)
+    status("\nAnalyzing broken taxa:")
+    status("  * Loading OTT ... ", newline=False)
     taxonomy = ott.OTT()
-    print("done. (Using version {})".format(taxonomy.version), flush=True)
+    status("done. (Using version {})".format(taxonomy.version))
 
     id2names = taxonomy.ott_id_to_names
     for idk in id2names:
@@ -247,25 +274,19 @@ def newly_broken_taxa_report(run1, run2):
     bt2 = set(run2.broken_taxa)
     diff = bt2.difference(bt1)
     broken_taxa_filename = 'broken_taxa_report.csv'
-    print("  * Printing details of {x} broken taxa to {f}".format(
-        x=len(diff),
-        f=broken_taxa_filename
-    ))
+    btf_s = "  * Printing details of {x} broken taxa to {f}"
+    btf_s = btf_s.format(x=len(diff), f=broken_taxa_filename)
+    status(btf_s)
 
     conflict_status1 = run1.get_taxon_conflict_info()
     conflict_status2 = run2.get_taxon_conflict_info()
     #    print(conflict_status1)
     #    exit(0)
     with open(broken_taxa_filename, 'w') as f:
-        for ottID in diff:
-            # 1. Get name and rank for ottID
-            int_id = get_id_from_ottnum(ottID)
-            name = "no name"
-            rank = "no rank"
-            if int_id in id2names:
-                name = id2names[int_id]
-            if int_id in id2ranks:
-                rank = id2ranks[int_id]
+        for ott_id in diff:
+            int_id = get_id_from_ottnum(ott_id)
+            name = id2names.get(int_id, "no name")
+            rank = id2ranks.get(int_id, "no rank")
             f.write("{i},{n},{r}\n".format(i=int_id, n=name, r=rank))
 
     # We want to know:
@@ -687,6 +708,10 @@ def main():
     parser.add_argument('run2',
                         help='path to the second (newer) output directory'
                         )
+    parser.add_argument('--html',
+                        action='store_true',
+                        help='print output as html'
+                        )
     parser.add_argument('-b',
                         dest='print_broken_taxa',
                         action='store_true',
@@ -705,6 +730,8 @@ def main():
     args = parser.parse_args()
     print("run 1 output: {d}".format(d=args.run1))
     print("run 2 output: {d}".format(d=args.run2))
+    if args.html:
+        to_html_out()
 
     # get stats object for each run
     run1 = RunStatistics(args.run1)
