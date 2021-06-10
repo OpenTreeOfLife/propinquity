@@ -17,7 +17,7 @@ import peyotl.ott as ott
 import requests
 
 # From reference-taxonomy:org/opentreeoflife/taxa/Rank.java
-
+#    and otcetera/otc/taxonomy/taxonomy.cpp
 _ranks = ("domain",
           "superkingdom",
           "kingdom",
@@ -35,6 +35,7 @@ _ranks = ("domain",
           "infraclass",
           "subterclass",  # worms Colobognatha
           "cohort",  # NCBI Polyneoptera
+          "subcohort",
           "superorder",
           "order",
           "suborder",
@@ -50,6 +51,8 @@ _ranks = ("domain",
           "subtribe",
           "genus",
           "subgenus",
+          "section",
+          "subsection",
           "species group",
           "species subgroup",
           "species",
