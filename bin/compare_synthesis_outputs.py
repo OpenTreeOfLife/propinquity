@@ -71,17 +71,7 @@ _ranks = ("domain",
           "no rank"
           )
 
-
-def rank_2_num_dict(ranks):
-    return {rank: i for i, rank in enumerate(ranks)}
-
-
-rank_of_rank = rank_2_num_dict(_ranks)
-
-
-def broken_taxa_diffs(bt1, bt2, verbose):
-    compare_lists("Broken taxa", bt1, bt2, verbose)
-
+rank_of_rank = {rank: i for i, rank in enumerate(_ranks)}
 
 _bold = "\u001b[1m"
 _reset = "\u001b[0m"
@@ -138,6 +128,9 @@ def green(x):
 
 def yellow(x):
     return yellow_f.format(x)
+
+def broken_taxa_diffs(bt1, bt2, verbose):
+    compare_lists("Broken taxa", bt1, bt2, verbose)
 
     # NOTE: This section gets a rank for unranked nodes by looking at their descendants
     #       If we didn't do this, then we didn't used to see Fungi being broken, since Nucletmycea
