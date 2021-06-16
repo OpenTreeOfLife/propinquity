@@ -95,9 +95,13 @@ _blue_html = '<span style="color:blue;">{}</span>'
 _cyan_html = '<span style="color:cyan;">{}</span>'
 _green_html = '<span style="color:green;">{}</span>'
 _yellow_html = '<span style="color:yellow;">{}</span>'
+HTML_DIR = None
 
-def to_html_out():
-    global bold_f, red_f, blue_f, cyan_f, green_f, yellow_f, HTML_OUT
+CONFLICT_FMT = "({}) {} / ({}) {} / ({}) {}"
+LBL_CONFLICT_FMT = "{}{}: " + CONFLICT_FMT + "{}"
+
+def to_html_out(html_dir=None):
+    global bold_f, red_f, blue_f, cyan_f, green_f, yellow_f, HTML_OUT, HTML_DIR
     HTML_OUT = True
     bold_f = _bold_html
     red_f = _red_html
@@ -105,6 +109,10 @@ def to_html_out():
     cyan_f = _cyan_html
     green_f = _green_html
     yellow_f = _yellow_html
+    if html_dir:
+        HTML_DIR = html_dir
+        if not os.path.isdir(HTML_DIR):
+            os.mkdir(HTML_DIR)
 
 def bold(x):
     return bold_f.format(x)
@@ -231,44 +239,38 @@ def union_over_trees(tree_conflict, tree_conflict_at_rank):
     return conflict, conflict_at_rank
 
 
-def conflict_summary_line(conflict1, conflict2):
+
+def color_conf_summ(data):
+    ret = []
+    for n, el in enumerate(data):
+        if isinstance(el, int) and el < 1:
+            ret.append(el)
+        else:
+            ret.append(decorate[n](el))
+    return ret
+
+def conflict_summary_line_data(conflict1, conflict2):
     # This asks the wrong question!  I want the second term to be things that ANY tree has conflicted with
-    n_newly_broken = len(conflict2["conflicts_with"] - conflict1["conflicts_with"])
-
-    if n_newly_broken > 0:
-        n_newly_broken = bold(yellow(n_newly_broken))
-
+    d2 = conflict2["conflicts_with"] - conflict1["conflicts_with"]
+    n_newly_broken = len(d2)
     n_conflicts_with = len(conflict2["conflicts_with"])
-    if n_conflicts_with > 0:
-        n_conflicts_with = yellow(n_conflicts_with)
-
     n_newly_aligns_to = len(conflict2["aligns_to"] - conflict1["aligns_to"])
-    if n_newly_aligns_to > 0:
-        n_newly_aligns_to = bold(cyan(n_newly_aligns_to))
-
     n_aligns_to = len(conflict2["aligns_to"])
-    if n_aligns_to > 0:
-        n_aligns_to = cyan(n_aligns_to)
-
     n_newly_resolves = len(conflict2["resolves"] - conflict1["resolves"])
-    if n_newly_resolves > 0:
-        n_newly_resolves = bold(green(n_newly_resolves))
-
     n_resolves = len(conflict2["resolves"])
-    if n_resolves > 0:
-        n_resolves = green(n_resolves)
+    ret = (n_newly_broken, n_conflicts_with, n_newly_aligns_to, n_aligns_to, n_newly_resolves, n_resolves)
+    if not HTML_OUT:
+        ret = color_conf_summ(ret)
+    return ret
 
-    return "({}) {} / ({}) {} / ({}) {}".format(n_newly_broken,
-                                                n_conflicts_with,
-                                                n_newly_aligns_to,
-                                                n_aligns_to,
-                                                n_newly_resolves,
-                                                n_resolves)
+def conflict_summary_line(conflict1, conflict2):
+    d = conflict_summary_line_data(conflict1, conflict2)
+    return CONFLICT_FMT.format(*d)
 
 
 # writes details of the broken taxa to a file that can be input by
 # report_on_broken_taxa.py
-def newly_broken_taxa_report(run1, run2):
+def newly_broken_taxa_report(out, run1, run2):
     # load local copy of OTT
     status("\nAnalyzing broken taxa:")
     status("  * Loading OTT ... ", newline=False)
@@ -284,16 +286,17 @@ def newly_broken_taxa_report(run1, run2):
     bt1 = set(run1.broken_taxa)
     bt2 = set(run2.broken_taxa)
     diff = bt2.difference(bt1)
-    broken_taxa_filename = 'broken_taxa_report.csv'
+    broken_taxa_fn = 'broken_taxa_report.csv'
+    btfp = broken_taxa_fn if HTML_DIR is None else os.path.join(HTML_DIR, broken_taxa_fn)
     btf_s = "  * Printing details of {x} broken taxa to {f}"
-    btf_s = btf_s.format(x=len(diff), f=broken_taxa_filename)
+    btf_s = btf_s.format(x=len(diff), f=btfp)
     status(btf_s)
 
     conflict_status1 = run1.get_taxon_conflict_info()
     conflict_status2 = run2.get_taxon_conflict_info()
     #    print(conflict_status1)
     #    exit(0)
-    with open(broken_taxa_filename, 'w') as f:
+    with open(btfp, 'w', encoding='utf-8') as f:
         for ott_id in diff:
             int_id = get_id_from_ottnum(ott_id)
             name = id2names.get(int_id, "no name")
@@ -319,15 +322,40 @@ def newly_broken_taxa_report(run1, run2):
 
     # FIXME: write out number of duplicate trees per study
     # NEW: show aligns_to last
+    if HTML_DIR is not None:
+        out = open(os.path.join(HTML_DIR, "trees_by_new_broken.html"), "w", encoding='utf-8')
+    
+    try:
+        print_trees_by_new_broken(out, run2, conflict1, conflict_at_rank1,
+                                  tree_conflict2, tree_conflict_at_rank2, id2names)
+    finally:
+        if HTML_DIR is not None:
+            out.close()
 
-    print("Here are the trees in order of NEW broken taxa, then all broken taxa:\n")
-    print("\n\n{}: ({}) {} / ({}) {} / ({}) {} ".format("tree",
-                                                        bold(yellow("change")),
-                                                        yellow("conflicts_with"),
-                                                        bold(cyan("change")),
-                                                        cyan("aligns_to"),
-                                                        bold(green("change")),
-                                                        green("resolves")))
+decorate = [lambda x: bold(yellow(x)),
+            yellow,
+            lambda x: bold(cyan(x)),
+            cyan,
+            lambda x: bold(green(x)),
+            green,
+            ]
+
+
+def print_trees_by_new_broken(out,
+                              run2,
+                              conflict1,
+                              conflict_at_rank1,
+                              tree_conflict2,
+                              tree_conflict_at_rank2,
+                              id2names):
+    print_paragraph(out, "Here are the trees in order of NEW broken taxa, then all broken taxa:\n")
+    second = "by rank" if HTML_OUT else ''
+    labels = ["change", "conflicts_with", "change", "aligns_to", "change", "resolves"]
+    if not HTML_OUT:
+        labels = color_conf_summ(labels)
+    headers = ["tree", second, ] + labels + ["examples"]
+    print_table_open(out, text_fmt=LBL_CONFLICT_FMT, headers=headers)
+
 
     for tree in sorted(tree_conflict2,
                        key=lambda t: (len(tree_conflict2[t]["conflicts_with"] - conflict1["conflicts_with"]),
@@ -336,36 +364,40 @@ def newly_broken_taxa_report(run1, run2):
         ctree = tree
         if len(tree_conflict2[tree]["conflicts_with"]) > len(tree_conflict2[tree]["aligns_to"]):
             ctree = bold(red(tree))
-        print("\n\n{}: {}".format(ctree, conflict_summary_line(conflict1, tree_conflict2[tree])))
-
-        for rank in sorted(tree_conflict_at_rank2[tree], key=lambda key: rank_of_rank[key]):
-
-            c1 = conflict_at_rank1[rank]
-            c2 = tree_conflict_at_rank2[tree][rank]
-
-            examples = ''
-            if rank_of_rank[rank] < rank_of_rank["genus"]:
-                examples2 = set()
-                for example_id in c2["conflicts_with"] - c1["conflicts_with"]:
-                    examples2.add(id2names[example_id])
-                if len(examples2) > 0:
-                    examples = '{}'.format(examples2)
-            n_newly_broken = len(c2["conflicts_with"] - c1["conflicts_with"])
-            crank = get_color_rank(rank) if n_newly_broken > 0 else rank
-            print("   {}: {}    {}".format(crank,
-                                           conflict_summary_line(c1, c2),
-                                           examples))
+        cells = [ctree, ""] + list(conflict_summary_line_data(conflict1, tree_conflict2[tree])) + [""]
+        print_table_row(out, text_fmt=LBL_CONFLICT_FMT, cells=cells)
+        write_conf_by_rank(out, conflict_at_rank1, tree_conflict_at_rank2, tree, id2names)
+    print_table_close(out)
 
     # Find duplicate trees per study
-    print("Studies with duplicate trees:\n\n")
+    print_header(out, 3, "Studies with duplicate trees")
     trees_for_study = defaultdict(set)
     for study_tree in run2.read_input_trees()['input_trees']:
         (study, tree) = study_tree.split('@')
         trees_for_study[study].add(tree)
+    print_table_open(out, headers=["study", "# trees", "trees"])
     for study, trees in trees_for_study.items():
         if len(trees) > 1:
-            print("{} : {} : {}".format(study, len(trees), trees))
+            print_table_row(out, cells=[study, len(trees), trees])
+    print_table_close(out)
 
+
+def write_conf_by_rank(out, conflict_at_rank1, tree_conflict_at_rank2, tree, id2names):
+    for rank in sorted(tree_conflict_at_rank2[tree], key=lambda key: rank_of_rank[key]):
+        c1 = conflict_at_rank1[rank]
+        c2 = tree_conflict_at_rank2[tree][rank]
+
+        examples = ''
+        if rank_of_rank[rank] < rank_of_rank["genus"]:
+            examples2 = set()
+            for example_id in c2["conflicts_with"] - c1["conflicts_with"]:
+                examples2.add(id2names[example_id])
+            if len(examples2) > 0:
+                examples = '{}'.format(examples2)
+        n_newly_broken = len(c2["conflicts_with"] - c1["conflicts_with"])
+        crank = get_color_rank(rank) if n_newly_broken > 0 else rank
+        cells = ["", "  " + crank] + list(conflict_summary_line_data(c1, c2)) + [examples]
+        print_table_row(out, text_fmt=LBL_CONFLICT_FMT, cells=cells)
 
 # generic function to compare two lists: number of items in each,
 # items in first but not second and items in second but not first
@@ -451,15 +483,28 @@ def phylo_input_diffs(out, treedata1, treedata2, verbose):
     compare_lists(out, 'Non-empty trees', treedata1[t], treedata2[t], verbose)
 
 
-def print_table_open(out, headers):
+def print_table_open(out, headers, text_fmt=None):
     if HTML_OUT:
         out.write('<table class="table table-condensed">\n')
         out.write('<tr>{}</tr>\n'.format(''.join(['<th>{}</th>'.format(i) for i in headers])))
+        return
+    if text_fmt:
+        line = text_fmt.format(*headers)
     else:
         line = ','.join(headers)
-        dashes = '-'*len(line)
-        out.write(' {}\n'.format(line))
-        out.write(' {}\n'.format(dashes))
+    dashes = '-'*len(line)
+    out.write(' {}\n'.format(line))
+    out.write(' {}\n'.format(dashes))
+
+def print_table_row(out, cells, text_fmt=None):
+    if HTML_OUT:
+        out.write("<tr>{}</tr>\n".format(''.join(['<td>{}</td>'.format(i) for i in cells])))
+        return
+    if text_fmt:
+        summary_str = text_fmt.format(*cells)
+    else: 
+        summary_str = " {}".format(','.join([str(i) for i in cells]))
+    print_paragraph(out, summary_str)
 
 def print_table_close(out):
     if HTML_OUT:
@@ -472,7 +517,7 @@ def compare_subproblems(out, subp1, subp2, verbose):
     # compare sizes of subproblems
     limits = [3, 20, 500]
     print_header(out, 2, "Subproblem size summary:")
-    print_table_open(out, ["run", "trivial", "small", "med", "large"])
+    print_table_open(out, headers=["run", "trivial", "small", "med", "large"])
     size_summary(out, R1N, limits, subp1['subproblem_dist'])
     size_summary(out, R2N, limits, subp2['subproblem_dist'])
     print_table_close(out)
@@ -489,16 +534,8 @@ def size_summary(out, label, limits, data):
             med += 1
         else:
             large += 1
-    print_table_row(out, label, trivial, small, med, large)
+    print_table_row(out, cells=(label, trivial, small, med, large))
     
-
-def print_table_row(out, *cells):
-    if HTML_OUT:
-        out.write("<tr>{}</tr>\n".format(''.join(['<td>{}</td>'.format(i) for i in cells])))
-    else:
-        row_str = " {}".format(','.join(cells))
-        print_paragraph(out, summary_str)
-
 
 
 # outputs the table for the release notes, given input_output_stats and
@@ -517,36 +554,36 @@ def summary_table(out, io_stats1, io_stats2, subp1, subp2):
     # data2 = json.load(open(jsonfile, 'r'))
     former_HTML_OUT = HTML_OUT
     try:
-        print_table_open(out, headers)
+        print_table_open(out, headers=headers)
         # total tips
         d1 = io_stats1['input']['num_taxonomy_leaves']
         d2 = io_stats2['input']['num_taxonomy_leaves']
-        print_table_row(out, *['total tips', d1, d2, d2 - d1])
+        print_table_row(out, cells=['total tips', d1, d2, d2 - d1])
 
         # tips from phylogeny
         d1 = io_stats1['input']['num_solution_leaves']
         d2 = io_stats2['input']['num_solution_leaves']
-        print_table_row(out, *['tips from phylogeny', d1, d2, d2 - d1])
+        print_table_row(out, cells=['tips from phylogeny', d1, d2, d2 - d1])
 
         # internal taxonomy nodes
         d1 = io_stats1['input']['num_taxonomy_internals']
         d2 = io_stats2['input']['num_taxonomy_internals']
-        print_table_row(out, *['internal nodes in taxonomy', d1, d2, d2 - d1])
+        print_table_row(out, cells=['internal nodes in taxonomy', d1, d2, d2 - d1])
 
         # internal phylogeny nodes
         d1 = io_stats1['input']['num_solution_internals']
         d2 = io_stats2['input']['num_solution_internals']
-        print_table_row(out, *['internal nodes from phylogeny', d1, d2, d2 - d1])
+        print_table_row(out, cells=['internal nodes from phylogeny', d1, d2, d2 - d1])
 
         # broken taxa
         d1 = io_stats1['output']['num_taxa_rejected']
         d2 = io_stats2['output']['num_taxa_rejected']
-        print_table_row(out, *['broken taxa', d1, d2, d2 - d1])
+        print_table_row(out, cells=['broken taxa', d1, d2, d2 - d1])
 
         # subproblems
         d1 = len(subp1['subproblem_list'])
         d2 = len(subp2['subproblem_list'])
-        print_table_row(out, *['subproblems', d1, d2, d2 - d1])
+        print_table_row(out, cells=['subproblems', d1, d2, d2 - d1])
         print_table_close(out)
     finally:
         HTML_OUT = former_HTML_OUT
@@ -554,36 +591,36 @@ def summary_table(out, io_stats1, io_stats2, subp1, subp2):
 
 # given dicts of stats from input_output_stats.json, compare
 def synthesis_tree_diffs(out, io_stats1, io_stats2):
-    print_table_open(out, ["statistic", R1N, R2N, "difference"])
+    print_table_open(out, headers=["statistic", R1N, R2N, "difference"])
     # total tips
     tips1 = io_stats1['input']['num_taxonomy_leaves']
     tips2 = io_stats2['input']['num_taxonomy_leaves']
     diff = int(tips2 - tips1)
-    print_table_row(out, "total tips", tips1, tips2, diff)
+    print_table_row(out, cells=("total tips", tips1, tips2, diff))
 
     # number of taxonomy tips
     tips1 = io_stats1['output']['num_leaves_added']
     tips2 = io_stats2['output']['num_leaves_added']
     diff = int(tips2 - tips1)
-    print_table_row(out, "taxonomy tips", tips1, tips2, diff)
+    print_table_row(out, cells=("taxonomy tips", tips1, tips2, diff))
 
     # number of phylogeny leaves
     tips1 = io_stats1['input']['num_solution_leaves']
     tips2 = io_stats2['input']['num_solution_leaves']
     diff = int(tips2 - tips1)
-    print_table_row(out, "phylogeny tips", tips1, tips2, diff)
+    print_table_row(out, cells=("phylogeny tips", tips1, tips2, diff))
 
     # resolved nodes
     nodes1 = io_stats1['input']['num_solution_splits']
     nodes2 = io_stats2['input']['num_solution_splits']
     diff = int(nodes2 - nodes1)
-    print_table_row(out, "forking nodes", nodes1, nodes2, diff)
+    print_table_row(out, cells=("forking nodes", nodes1, nodes2, diff))
 
     # broken taxa
     taxa1 = io_stats1['output']['num_taxa_rejected']
     taxa2 = io_stats2['output']['num_taxa_rejected']
     diff = int(taxa2 - taxa1)
-    print_table_row(out, "broken taxa", taxa1, taxa2, diff)
+    print_table_row(out, cells=("broken taxa", taxa1, taxa2, diff))
 
 
 # object that holds various stats for a synthesis run
@@ -680,14 +717,15 @@ class RunStatistics(object):
     def get_taxon_conflict_info(self):
         exemplified_phylo_dir = os.path.join(self.output_dir, 'exemplified_phylo')
         taxonomy = os.path.join(exemplified_phylo_dir, 'regraft_cleaned_ott.tre')
-        trees = glob.glob(os.path.join(exemplified_phylo_dir, '*_*@*.tre'))
+        trees_unf = glob.glob(os.path.join(exemplified_phylo_dir, '*_*@*.tre'))
+        trees = [i for i in trees_unf if not os.path.split(i)[-1].startswith('tree_')]
         from subprocess import DEVNULL
         cmdline = ['otc-annotate-synth'] + [taxonomy] + trees
         #        print('cmdline = {}'.format('otc-annotate-synth {} {}'.format(taxonomy, os.path.join(exemplified_phylo_dir, '*_*@*.tre'))))
-        print("  * Running otc-annotate-synth to get fuller conflict info on trees and broken taxa ... ", end='',
-              flush=True)
+        status("  * Running otc-annotate-synth to get fuller conflict info on trees and broken taxa ... ",
+               newline=False)
         output = subprocess.check_output(cmdline, stderr=DEVNULL)
-        print("done.")
+        status("done.")
         j = json.loads(output)['nodes']
         j2 = {}
         pattern = re.compile(r'.*(ott.*)$')
@@ -720,6 +758,9 @@ def main():
                         action='store_true',
                         help='print output as html'
                         )
+    parser.add_argument('--html-dir',
+                        help='specify a directory for multi-file html output'
+                        )
     parser.add_argument('-b',
                         dest='print_broken_taxa',
                         action='store_true',
@@ -738,7 +779,12 @@ def main():
     args = parser.parse_args()
     if args.html:
         to_html_out()
-    out = sys.stdout
+    html_dir = args.html_dir
+    if html_dir:
+        to_html_out(html_dir)
+        out = open(os.path.join(html_dir, 'index.html'), 'w', encoding='utf-8')
+    else:
+        out = sys.stdout
     status("run 1 output: {d}".format(d=args.run1))
     status("run 2 output: {d}".format(d=args.run2))
 
@@ -753,22 +799,35 @@ def main():
     run1 = RunStatistics(args.run1)
     run2 = RunStatistics(args.run2)
 
+    try:
+        do_compare(out, run1, run2,
+                   verbose=args.verbose,
+                   print_broken_taxa=args.print_broken_taxa,
+                   print_summary_table=args.print_summary_table)
+    finally:
+        if html_dir:
+            out.close()
+
+def do_compare(out, run1, run2,
+               verbose=False,
+               print_broken_taxa=False,
+               print_summary_table=False):
     print_header(out, 1, "Comparing inputs")
-    config_diffs(out, run1.config, run2.config, args.verbose)
-    phylo_input_diffs(out, run1.input_trees, run2.input_trees, args.verbose)
+    config_diffs(out, run1.config, run2.config, verbose)
+    phylo_input_diffs(out, run1.input_trees, run2.input_trees, verbose)
 
     print_header(out, 1, "Comparing subproblems")
-    compare_subproblems(out, run1.subproblems, run2.subproblems, args.verbose)
+    compare_subproblems(out, run1.subproblems, run2.subproblems, verbose)
 
     print_header(out, 1, "Comparing broken taxa")
-    broken_taxa_diffs(out, run1.broken_taxa, run2.broken_taxa, args.verbose)
-    if args.print_broken_taxa:
-        newly_broken_taxa_report(run1, run2)
+    broken_taxa_diffs(out, run1.broken_taxa, run2.broken_taxa, verbose)
+    if print_broken_taxa:
+        newly_broken_taxa_report(out, run1, run2)
 
     print_header(out, 1, "Synthetic tree summary")
-    # synthesis_tree_diffs(args.run1, args.run2)
+    # synthesis_tree_diffs(run1, run2)
     synthesis_tree_diffs(out, run1.input_output_stats, run2.input_output_stats)
-    if args.print_summary_table:
+    if print_summary_table:
         print_header(out, 1, "Summary table for release notes")
         summary_table(out, run1.input_output_stats, run2.input_output_stats, run1.subproblems, run2.subproblems)
 
