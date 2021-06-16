@@ -162,6 +162,12 @@ def print_header(out, level, line):
     else:
         out.write('\n# {}\n'.format(line))
 
+def print_link(out, url, text):
+    if HTML_OUT:
+        out.write('<a href="{u}" target="_blank">{t}</a>\n'.format(u=url, t=text))
+    else:
+        print(text)
+
 def print_paragraph(out, line):
     if HTML_OUT:
         out.write('<p>{}</p>\n'.format(line))
@@ -322,8 +328,11 @@ def newly_broken_taxa_report(out, run1, run2):
 
     # FIXME: write out number of duplicate trees per study
     # NEW: show aligns_to last
+    ret = [broken_taxa_fn,]
     if HTML_DIR is not None:
-        out = open(os.path.join(HTML_DIR, "trees_by_new_broken.html"), "w", encoding='utf-8')
+        tbn = "trees_by_new_broken.html"
+        out = open(os.path.join(HTML_DIR, tbn), "w", encoding='utf-8')
+        ret.append(tbn)
     
     try:
         print_trees_by_new_broken(out, run2, conflict1, conflict_at_rank1,
@@ -331,6 +340,7 @@ def newly_broken_taxa_report(out, run1, run2):
     finally:
         if HTML_DIR is not None:
             out.close()
+    return ret
 
 decorate = [lambda x: bold(yellow(x)),
             yellow,
@@ -621,6 +631,7 @@ def synthesis_tree_diffs(out, io_stats1, io_stats2):
     taxa2 = io_stats2['output']['num_taxa_rejected']
     diff = int(taxa2 - taxa1)
     print_table_row(out, cells=("broken taxa", taxa1, taxa2, diff))
+    print_table_close(out)
 
 
 # object that holds various stats for a synthesis run
@@ -822,14 +833,31 @@ def do_compare(out, run1, run2,
     print_header(out, 1, "Comparing broken taxa")
     broken_taxa_diffs(out, run1.broken_taxa, run2.broken_taxa, verbose)
     if print_broken_taxa:
-        newly_broken_taxa_report(out, run1, run2)
-
+        r = newly_broken_taxa_report(out, run1, run2)
+        if HTML_DIR:
+            print_link(out, "./{}".format(r[0]), "Broken taxon list (CSV)")
+            print_paragraph(out, "")
+            print_link(out, "./{}".format(r[1]), "Broken taxa by input tree report")
+            print_paragraph(out, "")
+    
     print_header(out, 1, "Synthetic tree summary")
     # synthesis_tree_diffs(run1, run2)
     synthesis_tree_diffs(out, run1.input_output_stats, run2.input_output_stats)
     if print_summary_table:
-        print_header(out, 1, "Summary table for release notes")
-        summary_table(out, run1.input_output_stats, run2.input_output_stats, run1.subproblems, run2.subproblems)
+        if HTML_DIR:
+            sout = open(os.path.join(HTML_DIR, 'summary.html'), 'w', encoding='utf-8')
+        else:
+            sout = out
+        try:
+            print_header(sout, 1, "Summary table for release notes")
+            summary_table(sout,
+                          run1.input_output_stats, run2.input_output_stats,
+                          run1.subproblems, run2.subproblems)
+        finally:
+            if HTML_DIR:
+                print_link(out, "./summary.html", "Summary Table for release notes")
+                print_paragraph(out, "")
+                sout.close()
 
 
 if __name__ == "__main__":
