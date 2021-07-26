@@ -1306,6 +1306,22 @@ def decompose_into_subproblems(tax_tree_fp,
               (tmp_contesting, out_contesting),]
     run_unhide_if_worked(invocation, unhide, CFG=CFG)
 
+def clean_contesting_tree_refs(in_fp, out_fp, CFG=None):
+    excessive_pat = re.compile(r"tree_([a-zA-Z][a-zA-Z]_[0-9]+@.+\.tre)")
+    blob = read_as_json(in_fp)
+    new_blob = {}
+    for taxon, td in blob.items():
+        new_dict = {}
+        for old_key, val in td.items():
+            m = excessive_pat.match(old_key)
+            if m:
+                new_key = m.group(1)
+            else:
+                new_key = old_key
+            new_dict[new_key] = val
+        new_blob[taxon] = new_dict
+    write_as_json_if_needed(new_blob, out_fp, CFG=CFG)
+
 def solve_subproblem(incert_sed_fp, subprob_fp, out_fp,
                      in_deg_dist_fp=None, out_deg_dist_fp=None, CFG=None):
     sp_fn = os.path.split(subprob_fp)[-1]
