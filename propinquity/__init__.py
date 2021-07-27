@@ -184,9 +184,9 @@ def mv_if_needed(src, dest, name=None, CFG=None):
     os.unlink(src)
     return False
 
-def write_as_json_if_needed(blob, fp, CFG=None):
+def write_as_json_if_needed(blob, fp, indent=0, CFG=None):
     hide_fp = fp + '.hide'
-    write_as_json(blob, hide_fp)
+    write_as_json(blob, hide_fp, indent=indent)
     return mv_if_needed(hide_fp, fp, CFG=CFG)
 
 def write_if_needed(fp, content, name=None, CFG=None):
@@ -1239,6 +1239,7 @@ def run_unhide_if_worked(invocation,
     """
     if unhide_list is None:
         unhide_list = []
+    # print('run_unhide_if_worked(invocation = "{}"'.format('" "'.join(invocation)))
     if stdout_capture is None:
         if stderr_capture is not None:
             raise NotImplementedError("stderr_capture != None, but stdout_capture is None")
@@ -1320,7 +1321,7 @@ def clean_contesting_tree_refs(in_fp, out_fp, CFG=None):
                 new_key = old_key
             new_dict[new_key] = val
         new_blob[taxon] = new_dict
-    write_as_json_if_needed(new_blob, out_fp, CFG=CFG)
+    write_as_json_if_needed(new_blob, out_fp, indent=1, CFG=CFG)
 
 def solve_subproblem(incert_sed_fp, subprob_fp, out_fp,
                      in_deg_dist_fp=None, out_deg_dist_fp=None, CFG=None):

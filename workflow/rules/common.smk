@@ -16,7 +16,6 @@ checkpoint decompose:
            taxonomy = "exemplified_phylo/taxonomy.tre"
     output: subprob_id = "subproblems/dumped_subproblem_ids.txt", \
             contesting = "subproblems/raw_contesting_trees.json", \
-            contest_link = "subproblems/contesting-trees.json", \
             subprob_link = "subproblems/subproblem-ids.txt"
     run:
         decompose_into_subproblems(tax_tree_fp=input.taxonomy,
@@ -33,7 +32,7 @@ checkpoint cleancontest:
            otcconfig = "otc-config", \
            raw = "subproblems/raw_contesting_trees.json"
     output: contesting = "subproblems/contesting_trees.json", \
-            contest_link = "subproblems/contesting-trees.json", \
+            contest_link = "subproblems/contesting-trees.json"
     run:
         clean_contesting_tree_refs(input.raw, output.contesting, CFG=CFG)
         if not os.path.exists(output.contest_link):
