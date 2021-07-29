@@ -1,5 +1,4 @@
 from propinquity import (run_unhide_if_worked, 
-                         solve_subproblem,
                          validate_config,
                          write_if_needed)
 from snakemake.logging import logger

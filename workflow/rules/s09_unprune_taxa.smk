@@ -4,7 +4,6 @@ from propinquity import (calc_degree_dist,
                          relabel_tree, 
                          run_unhide_if_worked,
                          simplify_tax_names,
-                         solve_subproblem,
                          validate_config,
                          write_if_needed)
 from snakemake.logging import logger

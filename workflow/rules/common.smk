@@ -1,6 +1,5 @@
 from propinquity import (clean_contesting_tree_refs,
                          decompose_into_subproblems,
-                         solve_subproblem,
                          validate_config,
                          write_if_needed)
 from snakemake.logging import logger

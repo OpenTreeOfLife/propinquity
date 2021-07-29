@@ -9,6 +9,7 @@ import filecmp
 import pkgutil
 import codecs
 import shutil
+import time
 import json
 import copy
 import csv
@@ -1236,6 +1237,8 @@ def run_unhide_if_worked(invocation,
         suffix ".hide" appended. The output will be moved to the
         final location, if it differs from the content at that
         location.
+    Returns approximate running time (in seconds) for the invocation to return.
+        (approximate because some python if/else logic may be included)
     """
     if unhide_list is None:
         unhide_list = []
@@ -1243,6 +1246,7 @@ def run_unhide_if_worked(invocation,
     if stdout_capture is None:
         if stderr_capture is not None:
             raise NotImplementedError("stderr_capture != None, but stdout_capture is None")
+        start_time = time.time()
         rp = subprocess.run(invocation)
         rp.check_returncode()
     else:
@@ -1253,6 +1257,7 @@ def run_unhide_if_worked(invocation,
             os.makedirs(par)
         with open(h, "w", encoding="utf-8") as outp:
             if stderr_capture is None:
+                start_time = time.time()
                 rc = subprocess.call(invocation, stdout=outp)
             else:
                 he = stderr_capture + ".hide"
@@ -1261,12 +1266,14 @@ def run_unhide_if_worked(invocation,
                 if par and not os.path.exists(par):
                     os.makedirs(par)
                 with open(he, "w", encoding="utf-8") as errp:
+                    start_time = time.time()
                     rc = subprocess.call(invocation, stdout=outp, stderr=errp)
         if rc != 0:
             raise RuntimeError('Call failed:\n"{}"\n'.format('" "'.join(invocation)))
-    
+    end_time = time.time()
     for src, dest in unhide_list:
         mv_if_needed(src=src, dest=dest, CFG=CFG)
+    return end_time - start_time
 
 
 def exemplify_taxa(in_tax_tree_fp,
@@ -1324,7 +1331,10 @@ def clean_contesting_tree_refs(in_fp, out_fp, CFG=None):
     write_as_json_if_needed(new_blob, out_fp, indent=1, CFG=CFG)
 
 def solve_subproblem(incert_sed_fp, subprob_fp, out_fp,
-                     in_deg_dist_fp=None, out_deg_dist_fp=None, CFG=None):
+                     in_deg_dist_fp=None,
+                     out_deg_dist_fp=None,
+                     run_time_fp=None, 
+                     CFG=None):
     sp_fn = os.path.split(subprob_fp)[-1]
     sp_id = sp_fn[:-4] if sp_fn.endswith('.tre') else sp_fn
     invocation = ["otc-solve-subproblem",
@@ -1340,7 +1350,11 @@ def solve_subproblem(incert_sed_fp, subprob_fp, out_fp,
     if out_deg_dist_fp:
         unhide.append([out_deg_dist_fp + '.hide', out_deg_dist_fp])
         invocation.extend(['--output-deg-dist', out_deg_dist_fp + '.hide'])
-    run_unhide_if_worked(invocation, unhide, CFG=CFG, stdout_capture=out_fp)
+    rt = run_unhide_if_worked(invocation, unhide, CFG=CFG, stdout_capture=out_fp)
+    if run_time_fp:
+        with open(run_time_fp, "w") as rto:
+            rto.write('{}\n'.format(rt))
+
 
 def write_inc_sed_ids(tax_tree,
                       ott_dir,
