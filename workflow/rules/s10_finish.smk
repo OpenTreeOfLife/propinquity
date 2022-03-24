@@ -32,8 +32,32 @@ rule templates:
                             content = get_template_text(ptf),
                             CFG=CFG)
 
+rule normalize_tree_names:
+    input: nonempty = "exemplified_phylo/nonempty_trees.txt"
+    output: "exemplified_phylo/nonempty_normalized_names_trees.txt"
+    run:
+        in_phylo_fps_with_t = []
+        with open(input.nonempty, "r") as inp:
+            for line in inp:
+              if not line.strip():
+                  continue
+              in_phylo_fps_with_t.append(os.path.join("exemplified_phylo", line.strip()))
+        in_phylo_fps = []
+        for ofp in in_phylo_fps_with_t:
+            pd, ofn = os.path.split(ofp)
+            if ofn.startswith('tree_'):
+                nfn = ofn[5:]
+                nfp = os.path.join(pd, nfn)
+                if not os.path.exists(nfn):
+                    os.symlink("./" + ofn, nfp)
+                in_phylo_fps.append(nfn)
+            else:
+                in_phylo_fps.append(ofn)
+        with open(output[0], "w") as outp:
+            outp.write("{}\n".format("\n".join(in_phylo_fps)))
+
 rule annotate_1:
-    input: nonempty = "exemplified_phylo/nonempty_trees.txt", \
+    input: nonempty = "exemplified_phylo/nonempty_normalized_names_trees.txt", \
            subpr = "subproblems/dumped_subproblem_ids.txt", 
            tree = "labelled_supertree/labelled_supertree.tre"
     output: "annotated_supertree/annotations1.json"
