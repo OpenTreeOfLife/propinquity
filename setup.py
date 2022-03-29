@@ -59,7 +59,7 @@ setup(
     py_modules=['propinquity'],
     install_requires=["peyutil>=0.0.4",
                       "nexson>=0.0.4",
-                      "peyotl>=1.0.1dev",
+                      "peyotl>=1.0.4dev",
                       "chameleon>=3.8.1",
                       "DendroPy>=4.4.0",
                      ],
