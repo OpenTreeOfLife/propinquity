@@ -174,6 +174,13 @@ def cp_if_needed(src, dest, name=None, CFG=None):
         CFG.warn('copy of {n} not needed'.format(n=name))
     return False
 
+def cp_if_missing(src, dest, name=None, CFG=None):
+    if not os.path.exists(dest):
+        return cp_if_needed(src, dest, name=name, CFG=CFG)
+    if CFG is not None:
+        CFG.warn('copy of {n} not needed'.format(n=name))
+    return False
+
 def mv_if_needed(src, dest, name=None, CFG=None):
     if (not os.path.exists(dest)) or (not filecmp.cmp(src, dest)):
         if CFG is not None:
@@ -1132,10 +1139,10 @@ def _write_bumped_taxonomy(src_ott_dir, bump_json_fp, out_dir, CFG=None):
                 m = write_modified_taxonomy_tsv(inp, outp, fossil_id_to_parent)
         outfp = os.path.join(out_dir, 'patched_by_bumping.json')
         write_as_json(m, outfp)
-    _cp_taxonomy(src_ott_dir,
-                 out_dir,
-                 cp_taxonomy_tsv=needs_taxonomy,
-                 CFG=CFG)
+    _cp_missing_taxonomy(src_ott_dir,
+                         out_dir,
+                         cp_taxonomy_tsv=needs_taxonomy,
+                         CFG=CFG)
     vt = os.path.join(out_dir, 'version.txt')
     vers_text = open(vt, "r").read().strip()
     synth_id = getattr(CFG, 'synth_id', 'synth-?')
@@ -1143,7 +1150,7 @@ def _write_bumped_taxonomy(src_ott_dir, bump_json_fp, out_dir, CFG=None):
     fp = os.path.join(out_dir, _OTT_VERS_FN)
     write_if_needed(fp, ott_vers_text, name=_OTT_VERS_FN, CFG=CFG)
 
-def _cp_taxonomy(src_ott_dir, out_dir, cp_taxonomy_tsv=True, CFG=None):
+def _cp_missing_taxonomy(src_ott_dir, out_dir, cp_taxonomy_tsv=True, CFG=None):
     if not os.path.exists(out_dir):
         os.makedirs(out_dir)
     for fn in OTT.FILENAMES:
@@ -1155,7 +1162,7 @@ def _cp_taxonomy(src_ott_dir, out_dir, cp_taxonomy_tsv=True, CFG=None):
             if CFG:
                 CFG.warning('taxonomy file "{}" does not exist, skipping...'.format(src))
             continue
-        cp_if_needed(src=src, dest=dest, name=fn, CFG=CFG)
+        cp_if_missing(src=src, dest=dest, name=fn, CFG=CFG)
 
 def bumping_of_extinct_req(bump_json_fp):
     with open(bump_json_fp, mode='r', encoding='utf-8') as jinp:
@@ -1169,7 +1176,7 @@ def bump_or_link(src_ott_dir,
     if bumping_of_extinct_req(bump_json_fp):
         _write_bumped_taxonomy(src_ott_dir, bump_json_fp, out_dir, CFG=CFG)
         return True
-    _cp_taxonomy(src_ott_dir, out_dir, cp_taxonomy_tsv=True, CFG=CFG)
+    _cp_missing_taxonomy(src_ott_dir, out_dir, cp_taxonomy_tsv=True, CFG=CFG)
     cp_if_needed(os.path.join(src_ott_dir, 'version.txt'),
                  os.path.join(out_dir, _OTT_VERS_FN),
                  _OTT_VERS_FN,
@@ -1219,10 +1226,10 @@ def subset_ott(orig_ott_dir, sub_ott_dir, root_id, CFG):
                  ]
     rp = subprocess.run(invocation)
     rp.check_returncode()
-    _cp_taxonomy(orig_ott_dir,
-                 ofp,
-                 cp_taxonomy_tsv=False,
-                 CFG=CFG)
+    _cp_missing_taxonomy(orig_ott_dir,
+                         ofp,
+                         cp_taxonomy_tsv=False,
+                         CFG=CFG)
 
 def run_unhide_if_worked(invocation,
                          unhide_list=None,
