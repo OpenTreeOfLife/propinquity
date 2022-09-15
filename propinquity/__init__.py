@@ -566,7 +566,7 @@ class NexsonTreeWrapper(object):
         for k, v in self._node_by_id.items():
             v['@id'] = k
         self._edge_by_target = self._create_edge_by_target()
-        self.nodes_deleted, self.edges_deleted = [], []
+        self.nodes_deleted, self.edges_deleted = set(), set()
         self._by_ott_id = None
         self.is_empty = False
 
@@ -600,8 +600,8 @@ class NexsonTreeWrapper(object):
         return ebt
 
     def _clear_del_log(self):
-        self.nodes_deleted = []
-        self.edges_deleted = []
+        self.nodes_deleted = set()
+        self.edges_deleted = set()
 
     def _log_deletions(self, key):
         if self._log_obj is not None:
@@ -665,7 +665,7 @@ class NexsonTreeWrapper(object):
     def _flag_node_as_del_and_del_in_by_target(self, node_id):
         """Flags a node as deleted, and removes it from the _edge_by_target (and parent's edge_by_source), if it is still found there.
         Does NOT remove the node's entries from self._edge_by_source."""
-        self.nodes_deleted.append(node_id)
+        self.nodes_deleted.add(node_id)
         etp = self._edge_by_target.get(node_id)
         if etp is not None:
             del self._edge_by_target[node_id]
@@ -679,12 +679,12 @@ class NexsonTreeWrapper(object):
         del ebsd[edge_id]
         if not ebsd:
             del self._edge_by_source[source_id]
-        self.edges_deleted.append(edge_id)
+        self.edges_deleted.add(edge_id)
         return source_id, target_id
 
     def _del_tip(self, node_id):
         """Assumes that there is no entry in edge_by_source[node_id] to clean up."""
-        self.nodes_deleted.append(node_id)
+        self.nodes_deleted.add(node_id)
         etp = self._edge_by_target.get(node_id)
         assert etp is not None
         source_id, target_id = self._del_edge(etp)
@@ -737,7 +737,7 @@ class NexsonTreeWrapper(object):
             for sortable_el in sortable_list:
                 node_id = sortable_el[1]
                 par_to_check.add(self._del_tip(node_id))
-                self.nodes_deleted.append(node_id)
+                self.nodes_deleted.add(node_id)
         finally:
             self._log_deletions(reason)
         self.prune_if_deg_too_low(par_to_check)
@@ -975,81 +975,22 @@ def clean_phylo_input(ott_dir,
     touched = False
     all_newick_fps = []
     for inp in inp_files:
-        if CFG is not None:
-            CFG.debug('{}'.format(inp))
-        log_obj = {}
-        inp_fn = os.path.split(inp)[-1]
-        study_tree = '.'.join(inp_fn.split('.')[:-1])  # strip extension
-        study_id, tree_id = propinquity_fn_to_study_tree(inp_fn)
-        nexson_blob = read_as_json(inp)
-        nexml_blob = nexson_blob["nexml"]
-        if "externalTrees" in nexml_blob or ():
-            etlist = nexson_blob["nexml"]["externalTrees"]
-            for et in etlist:
-                path = et["pathFromScriptManagedRepo"]
-                # print(f'{study_tree} at {path}')
-                external_trees.append( (study_tree,path) )
-            continue
-        newick_fp = os.path.join(output_dir, study_tree + '.tre')
-        try:
-            ntw = NexsonTreeWrapper(nexson_blob,
-                                    tree_id,
-                                    log_obj=log_obj,
-                                    logger_msg_obj=CFG)
-        except MissingTreeError:
-            if CFG is not None:
-                CFG.warning('No tree "{}" in study "{}"'.format(tree_id, study_id))
-            if os.path.isfile(newick_fp):
-                os.unlink(newick_fp)
-                touched = True
-                continue
-
-        assert ntw.root_node_id
-        taxonomy_treefile = os.path.join(output_dir, study_tree + '-taxonomy.tre')
-        try:
-            ntw.prune_tree_for_supertree(ott=ott,
-                                         to_prune_fsi_set=to_prune_fsi_set,
-                                         root_ott_id=root_ott_id,
-                                         taxonomy_treefile=taxonomy_treefile,
-                                         id_to_other_prune_reason=to_prune_for_reasons)
-        except EmptyTreeError:
-            log_obj['EMPTY_TREE'] = True
-        out_log = os.path.join(output_dir, study_tree + '.json')
-        write_as_json(log_obj, out_log)
-        
-
-
-
-        def compose_label(node_id, node, otu):
-            try:
-                return '_'.join([otu['^ot:ottTaxonName'], str(node_id), 'ott' + str(otu['^ot:ottId'])])
-            except:
-                # internal nodes may lack otu's but we still want the node Ids
-                return '_{}_'.format(str(node_id))
-
-        if ntw.is_empty:
-            if os.path.isfile(newick_fp):
-                os.unlink(newick_fp)
-                touched = True
-            continue
-        outp = io.StringIO()
-        nexson_frag_write_newick(outp,
-                                 ntw._edge_by_source,
-                                 ntw._node_by_id,
-                                 ntw.otus,
-                                 label_key=compose_label,
-                                 leaf_labels=None,
-                                 root_id=ntw.root_node_id,
-                                 ingroup_id=None,
-                                 bracket_ingroup=False,
-                                 with_edge_lengths=False)
-        outp.write('\n')
-        content = outp.getvalue()
-        if write_if_needed(content=content, fp=newick_fp):
+        t_et_nfp = clean_one_phylo_input(output_dir,
+                                         inp,
+                                         ott,
+                                         to_prune_fsi_set,
+                                         root_ott_id,
+                                         to_prune_for_reasons,
+                                         CFG)
+        touched_one, et_pair, newick_fp = t_et_nfp
+        if et_pair:
+            external_trees.append(et_pair)
+        if newick_fp:
+            all_newick_fps.append(newick_fp)
+        if touched_one:
             touched = True
-        all_newick_fps.append(newick_fp)
     if generate_newicks_for_external_trees(external_trees,
-                                           ott_dir,
+                                           ott,
                                            root_ott_id,
                                            cleaning_flags,
                                            output_dir,
@@ -1060,6 +1001,85 @@ def clean_phylo_input(ott_dir,
     with open(nonempty_out_fp, "w") as neop:
         neop.write('{}\n'.format('\n'.join(all_newick_fps)))
     return touched
+
+def compose_newick_label(node_id, node, otu):
+    try:
+        return '_'.join([otu['^ot:ottTaxonName'], str(node_id), 'ott' + str(otu['^ot:ottId'])])
+    except:
+        # internal nodes may lack otu's but we still want the node Ids
+        return '_{}_'.format(str(node_id))
+
+def clean_one_phylo_input(output_dir,
+                          inp, # file path to NexSON from phylesystem
+                          ott, # OTT object
+                          to_prune_fsi_set, #OTT flag union
+                          root_ott_id, # ID of root
+                          to_prune_for_reasons, # ID->reason dict
+                          CFG):
+    """Returns (touched_on_this_inp, (study_tree, path), newick_fp).
+    """
+    if CFG is not None:
+        CFG.debug('{}'.format(inp))
+    log_obj = {}
+    inp_fn = os.path.split(inp)[-1]
+    study_tree = '.'.join(inp_fn.split('.')[:-1])  # strip extension
+    study_id, tree_id = propinquity_fn_to_study_tree(inp_fn)
+    nexson_blob = read_as_json(inp)
+    nexml_blob = nexson_blob["nexml"]
+    if "externalTrees" in nexml_blob:
+        et_pair = None
+        etlist = nexson_blob["nexml"]["externalTrees"]
+        for et in etlist:
+            path = et["pathFromScriptManagedRepo"]
+            # print(f'{study_tree} at {path}')
+            et_pair = (study_tree, path)
+        return False, et_pair, None
+    newick_fp = os.path.join(output_dir, study_tree + '.tre')
+    try:
+        ntw = NexsonTreeWrapper(nexson_blob,
+                                tree_id,
+                                log_obj=log_obj,
+                                logger_msg_obj=CFG)
+    except MissingTreeError:
+        if CFG is not None:
+            CFG.warning('No tree "{}" in study "{}"'.format(tree_id, study_id))
+        if os.path.isfile(newick_fp):
+            os.unlink(newick_fp)
+            return True, None, None
+
+    assert ntw.root_node_id
+    taxonomy_treefile = os.path.join(output_dir, study_tree + '-taxonomy.tre')
+    try:
+        ntw.prune_tree_for_supertree(ott=ott,
+                                     to_prune_fsi_set=to_prune_fsi_set,
+                                     root_ott_id=root_ott_id,
+                                     taxonomy_treefile=taxonomy_treefile,
+                                     id_to_other_prune_reason=to_prune_for_reasons)
+    except EmptyTreeError:
+        log_obj['EMPTY_TREE'] = True
+    out_log = os.path.join(output_dir, study_tree + '.json')
+    write_as_json(log_obj, out_log)
+
+    if ntw.is_empty:
+        must_unlink = os.path.isfile(newick_fp)
+        if must_unlink:
+            os.unlink(newick_fp)
+        return must_unlink, None, None
+    outp = io.StringIO()
+    nexson_frag_write_newick(outp,
+                             ntw._edge_by_source,
+                             ntw._node_by_id,
+                             ntw.otus,
+                             label_key=compose_newick_label,
+                             leaf_labels=None,
+                             root_id=ntw.root_node_id,
+                             ingroup_id=None,
+                             bracket_ingroup=False,
+                             with_edge_lengths=False)
+    outp.write('\n')
+    content = outp.getvalue()
+    touched = write_if_needed(content=content, fp=newick_fp)
+    return touched, None, newick_fp
 
 def force_or_touch_file(fn, touch=True):
     """Touches fn if touch is True. If touch is False, it will create fn
@@ -1075,8 +1095,6 @@ def force_or_touch_file(fn, touch=True):
 
 def touch_file(fn):
     Path(fn).touch()
-
-
 
 def detect_extinct_taxa_to_bump(ott_tree,
                                 phylo_input_fp,
