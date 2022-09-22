@@ -1,15 +1,22 @@
 #!/usr/bin/env python3
-from propinquity import validate_config, read_as_json
-import os
-import json
 import logging
+import json
+import sys
+import os
+from propinquity import (clean_one_phylo_input,
+                         is_int_type,
+                         OTT,
+                         read_as_json,
+                         validate_config,
+                         )
+
 logger = logging.getLogger('propinquity.clean_one_tree')
 
 def main(args):
     configfile = args[0]
     output_dir = args[1]
     nexson_fp = args[2]
-    pruned_from_ott_json_fp = None if len(args == 3) else args[3]
+    pruned_from_ott_json_fp = None if len(args) == 3 else args[3]
     to_prune_for_reasons = {}
     if pruned_from_ott_json_fp is not None:
         try:
