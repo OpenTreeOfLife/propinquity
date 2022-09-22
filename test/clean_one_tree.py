@@ -5,9 +5,6 @@ import json
 import logging
 logger = logging.getLogger('propinquity.clean_one_tree')
 
-
-
-
 def main(args):
     configfile = args[0]
     output_dir = args[1]
