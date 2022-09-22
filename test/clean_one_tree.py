@@ -11,6 +11,14 @@ from propinquity import (clean_one_phylo_input,
                          )
 
 logger = logging.getLogger('propinquity.clean_one_tree')
+level = logging.DEBUG
+logger.setLevel(level)
+ch = logging.StreamHandler()
+ch.setLevel(level)
+formatter = logging.Formatter('%(name)s - %(levelname)s - %(message)s')
+ch.setFormatter(formatter)
+logger.addHandler(ch)
+
 
 def main(args):
     configfile = args[0]
@@ -35,12 +43,13 @@ def main(args):
     else:
         os.mkdir(output_dir)
     assert os.path.isfile(nexson_fp)
-
+    CFG.debug(f"Reading OTT at {CFG.ott_dir}")
     ott = OTT(ott_dir=CFG.ott_dir)
     cleaning_flags = CFG.cleaning_flags
     if cleaning_flags is None:
         cleaning_flags = OTT.TREEMACHINE_SUPPRESS_FLAGS
     flags = [i.strip() for i in cleaning_flags.split(',') if i.strip()]
+    CFG.debug(f"cleaning_flags={cleaning_flags}")
     to_prune_fsi_set = ott.convert_flag_string_set_to_union(flags)
     root_ott_id = CFG.root_ott_id
     if (root_ott_id is not None) and (not is_int_type(root_ott_id)):
