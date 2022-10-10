@@ -1744,7 +1744,7 @@ def run_assessments(CFG):
         else:
             ub = {'result': 'OK', 'data':unsup}
     
-    ltb['description'] = "Check that otcetera's tc-taxonomy-parser and otc-unprune-solution-and-name-unnamed-nodes tools agree about the number of taxa that are not present in the solution"
+    ltb['description'] = "Check that otcetera's otc-taxonomy-parser and otc-unprune-solution-and-name-unnamed-nodes tools agree about the number of taxa that are not present in the solution"
     btb['description'] = 'Check that none of the taxa listed as "lost" are in the annotations file'
     ub['description'] = 'Check that none of the nodes listed in the annotations file are completely unsupported'
     summary['lost_taxa'] = ltb
