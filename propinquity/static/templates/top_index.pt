@@ -42,7 +42,7 @@ The run completed at <code>${config.config_annot["date_completed"]}</code>.</p>
 <h3 id="configuration-tools-otc"><a href="https://github.com/OpenTreeOfLife/otcetera">otcetera</a></h3>
 
 <ul>
-    <li>version: <code>${config.otc_version}</code> and git SHA <a href="https://github.com/mtholder/otcetera/commit/${config.otc_sha}">${config.otc_sha}</a></li>
+    <li>version: <code>${config.otc_version}</code> and git SHA <a href="https://github.com/OpenTreeOfLife/otcetera/commit/${config.otc_sha}">${config.otc_sha}</a></li>
     <li>compiled using version ${config.otc_boost_version} of the <a href="http://www.boost.org/">boost C++ libraries</a></li>
 
 </ul>
@@ -56,7 +56,7 @@ The run completed at <code>${config.config_annot["date_completed"]}</code>.</p>
 <h3 id="configuration-tools-propinquity"><a href="https://github.com/OpenTreeOfLife/propinquity">propinquity</a></h3>
 
 <ul>
-    <li>git SHA <a href="https://github.com/mtholder/propinquity/commit/${config.propinquity_sha}">${config.propinquity_sha}</a></li>
+    <li>git SHA <a href="https://github.com/OpenTreeOfLife/propinquity/commit/${config.propinquity_sha}">${config.propinquity_sha}</a></li>
 </ul>
 
 
