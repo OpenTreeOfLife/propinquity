@@ -1,5 +1,5 @@
 #!/bin/bash
-start_dir="${PWD}"
+set -x
 res="${1}"
 if ! test -d "${res}" ; then
 	echo "expecting 1 arg: the results directory. ${res} is not a directory"
@@ -16,18 +16,18 @@ cod="${bn}_cruft"
 if ! test -d "${cod}" ; then
     mkdir "${cod}" || exit
 fi
-if ! test -d "${cod}/subott_dir" ; then
-    mkdir "${cod}/subott_dir" || exit
-fi
+
+mv "${bn}/.snakemake" "${cod}/.snakemake" || exit
+mkdir "${bn}/.snakemake" || exit
+mv "${cod}/.snakemake/log" "${bn}/.snakemake/" || exit
+
+mv "${bn}/subott_dir" "${cod}/subott_dir" || exit
+mkdir "${bn}/subott_dir" || exit
+cp "${cod}/subott_dir"/index.* "${bn}/subott_dir"
+
 if ! test -d "${cod}/bumped_ott" ; then
     mkdir "${cod}/bumped_ott" || exit
 fi
-if ! test -d "${cod}/.snakemake" ; then
-    mkdir "${cod}/.snakemake" || exit
-fi
-mv "${bn}/.snakemake"/* "${cod}/.snakemake/" || exit
-mv "${cod}/.snakemake/log" "${bn}/.snakemake/" || exit
-find "${bn}/subott_dir" -name "*.pickle" -exec mv {} "${cod}/subott_dir" \; || exit
 find "${bn}/bumped_ott" -name "*.pickle" -exec mv {} "${cod}/bumped_ott" \; || exit
 
 tar cfvz "${bn}.tgz" "${bn}" || exit
