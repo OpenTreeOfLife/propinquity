@@ -1045,7 +1045,7 @@ def clean_one_phylo_input(output_dir,
             CFG.warning('No tree "{}" in study "{}"'.format(tree_id, study_id))
         if os.path.isfile(newick_fp):
             os.unlink(newick_fp)
-            return True, None, None
+        return True, None, None
 
     assert ntw.root_node_id
     taxonomy_treefile = os.path.join(output_dir, study_tree + '-taxonomy.tre')
