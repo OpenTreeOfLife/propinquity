@@ -99,6 +99,13 @@ rule all:
            s10_finish("index.html"),
            s10_finish("subproblems/subproblem_size_summary_table.tsv")
 
+
+rule prechecksum_inputs:
+    input: s00_tool_config("config"), 
+           s00_tool_config("otc-config"),
+           s01_snapshot("phylo_snapshot/ps_shard_shas.txt"),
+           s01_snapshot("phylo_snapshot/collections_shard_shas.txt"),
+
 rule checksum_inputs:
     input: s00_tool_config("config"), 
            s00_tool_config("otc-config"),
