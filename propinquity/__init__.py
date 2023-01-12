@@ -1343,16 +1343,17 @@ def clean_contesting_tree_refs(in_fp, out_fp, CFG=None):
     excessive_pat = re.compile(r"tree_([a-zA-Z][a-zA-Z]_[0-9]+@.+\.tre)")
     blob = read_as_json(in_fp)
     new_blob = {}
-    for taxon, td in blob.items():
-        new_dict = {}
-        for old_key, val in td.items():
-            m = excessive_pat.match(old_key)
-            if m:
-                new_key = m.group(1)
-            else:
-                new_key = old_key
-            new_dict[new_key] = val
-        new_blob[taxon] = new_dict
+    if blob:
+        for taxon, td in blob.items():
+            new_dict = {}
+            for old_key, val in td.items():
+                m = excessive_pat.match(old_key)
+                if m:
+                    new_key = m.group(1)
+                else:
+                    new_key = old_key
+                new_dict[new_key] = val
+            new_blob[taxon] = new_dict
     write_as_json_if_needed(new_blob, out_fp, indent=1, CFG=CFG)
 
 def solve_subproblem(incert_sed_fp, subprob_fp, out_fp,
