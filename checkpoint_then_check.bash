@@ -29,6 +29,11 @@ mkdir "${full_out_dir}" || exit
 status_fp="${full_out_dir}/${status_fn}"
 echo "CHECKPOINTING" > "${status_fp}"
 
+if ! snakemake --configfile "${cfg_fn}" --directory="${full_out_dir}" --cores "${num_cores}" prechecksum_inputs ; then
+    echo 'ERROR_IN_PRECHECKPOINTING' > "${status_fp}"
+    exit 2
+fi
+
 if ! snakemake --configfile "${cfg_fn}" --directory="${full_out_dir}" --cores "${num_cores}" checksum_inputs ; then
     echo 'ERROR_IN_CHECKPOINTING' > "${status_fp}"
     exit 2
