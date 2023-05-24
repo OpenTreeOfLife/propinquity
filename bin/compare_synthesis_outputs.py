@@ -756,6 +756,47 @@ class RunStatistics(object):
         return j2
 
 
+
+def do_compare(out, run1, run2,
+               verbose=False,
+               print_broken_taxa=False,
+               print_summary_table=False):
+    print_header(out, 1, "Comparing inputs")
+    config_diffs(out, run1.config, run2.config, verbose)
+    phylo_input_diffs(out, run1.input_trees, run2.input_trees, verbose)
+
+    print_header(out, 1, "Comparing subproblems")
+    compare_subproblems(out, run1.subproblems, run2.subproblems, verbose)
+
+    print_header(out, 1, "Comparing broken taxa")
+    broken_taxa_diffs(out, run1.broken_taxa, run2.broken_taxa, verbose)
+    if print_broken_taxa:
+        r = newly_broken_taxa_report(out, run1, run2)
+        if HTML_DIR:
+            print_link(out, "./{}".format(r[0]), "Broken taxon list (CSV)")
+            print_paragraph(out, "")
+            print_link(out, "./{}".format(r[1]), "Broken taxa by input tree report")
+            print_paragraph(out, "")
+    
+    print_header(out, 1, "Synthetic tree summary")
+    # synthesis_tree_diffs(run1, run2)
+    synthesis_tree_diffs(out, run1.input_output_stats, run2.input_output_stats)
+    if print_summary_table:
+        if HTML_DIR:
+            sout = open(os.path.join(HTML_DIR, 'summary.html'), 'w', encoding='utf-8')
+        else:
+            sout = out
+        try:
+            print_header(sout, 1, "Summary table for release notes")
+            summary_table(sout,
+                          run1.input_output_stats, run2.input_output_stats,
+                          run1.subproblems, run2.subproblems)
+        finally:
+            if HTML_DIR:
+                print_link(out, "./summary.html", "Summary Table for release notes")
+                print_paragraph(out, "")
+                sout.close()
+
 def main():
     # get command line arguments (the two directories to compare)
     parser = argparse.ArgumentParser(description='compare synthesis outputs')
@@ -818,47 +859,6 @@ def main():
     finally:
         if html_dir:
             out.close()
-
-def do_compare(out, run1, run2,
-               verbose=False,
-               print_broken_taxa=False,
-               print_summary_table=False):
-    print_header(out, 1, "Comparing inputs")
-    config_diffs(out, run1.config, run2.config, verbose)
-    phylo_input_diffs(out, run1.input_trees, run2.input_trees, verbose)
-
-    print_header(out, 1, "Comparing subproblems")
-    compare_subproblems(out, run1.subproblems, run2.subproblems, verbose)
-
-    print_header(out, 1, "Comparing broken taxa")
-    broken_taxa_diffs(out, run1.broken_taxa, run2.broken_taxa, verbose)
-    if print_broken_taxa:
-        r = newly_broken_taxa_report(out, run1, run2)
-        if HTML_DIR:
-            print_link(out, "./{}".format(r[0]), "Broken taxon list (CSV)")
-            print_paragraph(out, "")
-            print_link(out, "./{}".format(r[1]), "Broken taxa by input tree report")
-            print_paragraph(out, "")
-    
-    print_header(out, 1, "Synthetic tree summary")
-    # synthesis_tree_diffs(run1, run2)
-    synthesis_tree_diffs(out, run1.input_output_stats, run2.input_output_stats)
-    if print_summary_table:
-        if HTML_DIR:
-            sout = open(os.path.join(HTML_DIR, 'summary.html'), 'w', encoding='utf-8')
-        else:
-            sout = out
-        try:
-            print_header(sout, 1, "Summary table for release notes")
-            summary_table(sout,
-                          run1.input_output_stats, run2.input_output_stats,
-                          run1.subproblems, run2.subproblems)
-        finally:
-            if HTML_DIR:
-                print_link(out, "./summary.html", "Summary Table for release notes")
-                print_paragraph(out, "")
-                sout.close()
-
 
 if __name__ == "__main__":
     main()
