@@ -480,7 +480,10 @@ def write_conf_by_rank(out, conflict_at_rank1, tree_conflict_at_rank2, tree, id2
 # generic function to compare two lists: number of items in each,
 # items in first but not second and items in second but not first
 # if verbose = True, then print contents of lists, not just number diffs
-def compare_lists(out, rtype, list1, list2, verbose=False):
+def compare_lists(out, rtype, list1, list2, verbose=False, list_to_str=None):
+    if list_to_str is None:
+        list_to_str = lambda ls: ", ".join(ls)
+
     s1 = set(list1)
     s2 = set(list2)
     if s1 == s2:
@@ -503,7 +506,7 @@ def compare_lists(out, rtype, list1, list2, verbose=False):
             print_paragraph(
                 out, " {t} in {r1} but not {r2}:".format(t=rtype, r1=R1N, r2=R2N)
             )
-            print_paragraph(out, ", ".join(diff1))
+            print_paragraph(out, list_to_str(diff1))
     diff2 = s2.difference(s1)
     if len(diff2) > 0:
         print_paragraph(
@@ -513,7 +516,7 @@ def compare_lists(out, rtype, list1, list2, verbose=False):
             print_paragraph(
                 out, " {t} in {r2} but not {r1}:".format(t=rtype, r1=R1N, r2=R2N)
             )
-            print_paragraph(out, ", ".join(diff2))
+            print_paragraph(out, list_to_str(diff2))
     return 1
 
 
@@ -566,13 +569,56 @@ def get_taxon_details(ottid):
     # print '{i}:{n}'.format(i=ottid, n=taxon_name)
 
 
+_TREE_URL_TEMPLATE = (
+    "https://tree.opentreeoflife.org/curator/study/view/{study}/?tab=home&tree={tree}"
+)
+_TREE_A_TEMPLATE = '<a target="_blank", href="{u}">{n}</a>'
+
+
+def tree_name_to_link(tree_name):
+    s = tree_name.split("@")
+    assert len(s) == 2
+    study, tree = s
+    return _TREE_URL_TEMPLATE.format(study=study, tree=tree)
+
+
+def display_tree_name(tree_name):
+    if HTML_OUT:
+        u = tree_name_to_link(tree_name)
+        r = _TREE_A_TEMPLATE.format(u=u, n=tree_name)
+        return r
+    else:
+        return tree_name
+
+
+def treelist_to_display_str(tree_list):
+    dsl = []
+    for tn in tree_list:
+        dsl.append(display_tree_name(tn))
+    return ", ".join(dsl)
+
+
 # check the lists of input trees
 # does not check SHAs, just study@tree lists
 def phylo_input_diffs(out, treedata1, treedata2, verbose):
     t = "input_trees"
-    compare_lists(out, "Input trees", treedata1[t], treedata2[t], verbose)
+    compare_lists(
+        out,
+        "Input trees",
+        treedata1[t],
+        treedata2[t],
+        verbose,
+        list_to_str=treelist_to_display_str,
+    )
     t = "non_empty_trees"
-    compare_lists(out, "Non-empty trees", treedata1[t], treedata2[t], verbose)
+    compare_lists(
+        out,
+        "Non-empty trees",
+        treedata1[t],
+        treedata2[t],
+        verbose,
+        list_to_str=treelist_to_display_str,
+    )
 
 
 def print_table_open(out, headers, text_fmt=None):
