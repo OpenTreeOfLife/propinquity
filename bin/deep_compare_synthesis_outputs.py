@@ -185,6 +185,19 @@ def print_paragraph(out, line):
     else:
         out.write("{}\n".format(line))
 
+def print_list_item(out, line):
+    if HTML_OUT:
+        out.write("<li>{}</li>\n".format(line))
+    else:
+        out.write("{}\n".format(line))
+
+def open_list(out):
+    if HTML_OUT:
+        out.write("<ul>\n")
+
+def close_list(out):
+    if HTML_OUT:
+        out.write("</ul>\n")
 
 # NOTE: This section gets a rank for unranked nodes by looking at their descendants
 #       If we didn't do this, then we didn't used to see Fungi being broken, since Nucletmycea
@@ -896,14 +909,32 @@ def _find_edge_in_cleaned_phylo_json(blob, edge_id):
             return key
     return 'INCLUDED'
 
+def get_tree_and_otus_from_nexson(nex, tree_id):
+    """Returns the tree_blob, and otuById blob for the tree_id
+    
+    or None, None if tree_id is not found.
+    """
+    
+    nexml = nex['nexml']
+    tree_cont = nexml["treesById"]
+    otu_cont = nexml["otusById"]
+    tree, otu = None, None
+    for trees_id, blob in tree_cont.items():
+        tblobs = blob['treeById']
+        tree_blob = tblobs.get(tree_id)
+        if tree_blob is not None:
+            return tree_blob, otu_cont[blob["@otus"]]['otuById']
+    return None, None
 
+_SNAPSHOT_JSON_TEMPLATE = 'phylo_snapshot/tree_{study_tree}.json'
 
 class RunComparison(object):
-    def __init__(self, run1, run2, outstream, verbose=False):
+    def __init__(self, run1, run2, outstream, verbose=False, html_dir=None):
         self.run1 = run1
         self.run2 = run2
         self.out = outstream
         self.verbose = verbose
+        self.html_dir = html_dir
 
     def input_diffs(self):
         print_header(self.out, 1, "Comparing inputs")
@@ -1019,8 +1050,112 @@ class RunComparison(object):
             sn.append(row)
         return sn
 
+    def do_phylo_comparison(self, study_tree):
+        if self.html_dir is None:
+            return self._do_phylo_comparison(study_tree, self.out)
+        fp = os.path.join(self.html_dir, f"tree_{study_tree}.html")
+        with open(fp, "w") as curr_out:
+            return self._do_phylo_comparison(study_tree, curr_out)
+    
+    def _describe_nexson_diff(self, curr_out, study_tree, nex1, nex2):
+        study_id, tree_id = study_tree.split('@')
+        tree_1, otu_1 = get_tree_and_otus_from_nexson(nex1, tree_id)
+        assert tree_1 is not None
+        tree_2, otu_2 = get_tree_and_otus_from_nexson(nex2, tree_id)
+        assert tree_2 is not None
+        otus_done = set()
+        unmapped = []
+        remapped = []
+        mapped = []
+        for k, v in otu_2.items():
+            otus_done.add(k)
+            other = otu_1.get(k)
+            if other is None:
+                raise RuntimeError(f"new otu_id {k} in {study_tree}")
+            ott_id_2 = v.get("^ot:ottId")
+            ott_id_1 = other.get("^ot:ottId")
+            if ott_id_1 is not None:
+                assert isinstance(ott_id_1, int)
+            if ott_id_2 is not None:
+                assert isinstance(ott_id_2, int)
+                if ott_id_1 is None:
+                    mapped.append((k, ott_id_2, v.get("^ot:ottTaxonName", "")))
+                elif ott_id_1 != ott_id_2:
+                    remapped.append((k, ott_id_1, other.get("^ot:ottTaxonName", ""), 
+                                        ott_id_2. v.get("^ot:ottTaxonName", "")))
+            else:
+                if ott_id_1 is None:
+                    pass # still unmapped
+                else:
+                    unmapped.append((k, ott_id_1, other.get("^ot:ottTaxonName", "")))
+        for k, v in otu_1.items():
+            if k not in otus_done:
+                raise RuntimeError(f"deletion of otu_id {k} in {study_tree}")
+        if mapped or unmapped or remapped:
+            print_paragraph(curr_out, f"{len(unmapped)} taxa unmapped")
+            if unmapped:
+                open_list(curr_out)
+                for u in unmapped:
+                    print_list_item(curr_out, f"node {u[0]} no longer mapped to OTT '{u[2]}' ({u[1]})")
+                close_list(curr_out)
+            print_paragraph(curr_out, f"{len(mapped)} newly taxa mapped")
+            if mapped:
+                open_list(curr_out)
+                for u in mapped:
+                    print_list_item(curr_out, f"node {u[0]} now mapped to OTT '{u[2]}' ({u[1]})")
+                close_list(curr_out)
+                
+            print_paragraph(curr_out, f"{len(remapped)} remapped taxa")
+            if remapped:
+                open_list(curr_out)
+                for u in remapped:
+                    print_list_item(curr_out, f"node {u[0]} changed from OTT '{u[2]}' ({u[1]}) to '{u[4]}'' ({u[3]}) ")
+                close_list(curr_out)
+        else:
+            print_paragraph(curr_out, "No OTU mapping changes")
+        print(study_tree)
+        sys.exit('early')
+
+    def _do_phylo_comparison(self, study_tree, curr_out):
+        run1, run2 = self.run1, self.run2
+        rel_path = _SNAPSHOT_JSON_TEMPLATE.format(study_tree=study_tree)
+        snap_fp1 = run1.filepath_to(rel_path)
+        snap_fp2 = run2.filepath_to(rel_path)
+        nex1 = read_as_json(snap_fp1)
+        nex2 = read_as_json(snap_fp2)
+        
+        print_header(curr_out, 1, f"Input {study_tree}")
+        print_paragraph(curr_out, "curation link: " + display_tree_name(study_tree))
+        changed = False
+        print_header(curr_out, 2, "Curated NexSON")
+        if nex2 == nex1:
+            print_paragraph(curr_out, "No change")
+        else:
+            changed = True
+            self._describe_nexson_diff(curr_out, study_tree, nex1, nex2)
+        return changed
+        # 
+        #     prev_index = it1.index(tid)
+        #     if tid in set_net2:
+        #         if tid in set_net1:
+        #             clean_diff = self.cmp_cleaned_trees(tid)
+        #             if clean_diff:
+        #                 x = '\n  '.join(clean_diff)
+        #                 print(f"{tid} : \n  {x}")
+        #         else:
+        #             print(f"{tid} no longer empty")
+        #     elif tid in set_net1:
+        #         print(f"{tid} newly empty")
+        #     else:
+        #         print(f"{tid} still empty")   
+        # elif tid in set_net2:
+        #     print(f"{tid} new non-empty tree")
+        # else:
+        #     print(f"{tid} new tree, but empty")
+
     def phylo_input_diffs(self):
-        td1, td2 = self.run1.input_trees, self.run2.input_trees
+        run1, run2 = self.run1, self.run2
+        td1, td2 = run1.input_trees, run2.input_trees
         ttds = treelist_to_display_str
         it1, it2 = td1["input_trees"], td2["input_trees"]
         set_it1, set_it2 = set(it1), set(it2)
@@ -1031,28 +1166,10 @@ class RunComparison(object):
         compare_lists(self.out, "Non-empty trees", net1, net2, False)
         idx_offset = 0
         for curr_index, tid in enumerate(it2):
-            #if tid != 'ot_2018@tree9':
-            #    continue
             if tid in set_it1:
-                prev_index = it1.index(tid)
-                if tid in set_net2:
-                    if tid in set_net1:
-                        clean_diff = self.cmp_cleaned_trees(tid)
-                        if clean_diff:
-                            x = '\n  '.join(clean_diff)
-                            print(f"{tid} : \n  {x}")
-                    else:
-                        print(f"{tid} no longer empty")
-
-                else:
-                    if tid in set_net1:
-                        print(f"{tid} newly empty")
-                    else:
-                        print(f"{tid} still empty")
-            elif tid in set_net2:
-                print(f"{tid} new non-empty tree")
-            else:
-                print(f"{tid} new tree, but empty")
+                if self.do_phylo_comparison(tid):
+                    print(tid)
+         
         for tid in it1:
             if tid not in set_it2:
                 if tid in set_net1:
@@ -1062,9 +1179,9 @@ class RunComparison(object):
 
 
 def do_compare(
-    out, run1, run2, verbose=False, print_broken_taxa=False, print_summary_table=False
+    out, run1, run2, verbose=False, print_broken_taxa=False, print_summary_table=False, html_dir=None
 ):
-    rc = RunComparison(run1, run2, outstream=out, verbose=verbose)
+    rc = RunComparison(run1, run2, outstream=out, verbose=verbose, html_dir=html_dir)
     rc.input_diffs()
 
     
@@ -1127,6 +1244,7 @@ def main():
             verbose=args.verbose,
             print_broken_taxa=args.print_broken_taxa,
             print_summary_table=args.print_summary_table,
+            html_dir=html_dir
         )
     finally:
         if html_dir:
