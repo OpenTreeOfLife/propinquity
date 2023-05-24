@@ -520,37 +520,6 @@ def compare_lists(out, rtype, list1, list2, verbose=False, list_to_str=None):
     return 1
 
 
-# list of collections, list of trees, compare SHAs
-# look at phylo_snapshot/concrete_rank_collection.json for each run
-def config_diffs(out, jsondata1, jsondata2, verbose):
-    # do ott versions match
-    print_header(out, 2, "OTT versions")
-    ott1 = jsondata1["ott_version"]
-    ott2 = jsondata2["ott_version"]
-    if ott1 != ott2:
-        para = f"{R1N} ott ({ott1}) != {R2N} ott ({ott2})"
-    else:
-        para = f"Both runs used {ott1}"
-    print_paragraph(out, para)
-
-    # do roots match
-    root1 = int(jsondata1["root_ott_id"])
-    root2 = int(jsondata2["root_ott_id"])
-    if root1 != root2:
-        para = "root id1 ({root1}) != root id2 ({root2})"
-    else:
-        para = f"Both runs used root id {root1}"
-    print_paragraph(out, para)
-
-    # do collections match
-    collections1 = jsondata1["collections"]
-    collections2 = jsondata2["collections"]
-    compare_lists(out, "Collections", collections1, collections2, verbose)
-
-    # do flags match
-    flags1 = jsondata1["taxonomy_cleaning_flags"]
-    flags2 = jsondata2["taxonomy_cleaning_flags"]
-    compare_lists(out, "Flags", flags1, flags2, verbose)
 
 
 # note that ottid is in form 'ott####'
@@ -929,12 +898,66 @@ class RunStatistics(object):
             j2[taxon] = annotations
         return j2
 
+class RunComparison(object):
+    def __init__(self, run1, run2, outstream, verbose=False):
+        self.run1 = run1
+        self.run2 = run2
+        self.out = outstream
+        self.verbose = verbose
+
+    def input_diffs(self):
+        print_header(self.out, 1, "Comparing inputs")
+        self.config_diffs()
+        self.phylo_input_diffs()
+
+    def compare_lists(self, tag, l1, l2, list_to_str=None):
+        compare_lists(self.out, tag, l1, l2, self.verbose, list_to_str)
+
+    # list of collections, list of trees, compare SHAs
+    # look at phylo_snapshot/concrete_rank_collection.json for each run
+    def config_diffs(self):
+        j1, j2 = self.run1.config, self.run2.config
+        # do ott versions match
+        print_header(self.out, 2, "OTT versions")
+        ott1, ott2 = j1["ott_version"], j2["ott_version"]
+        if ott1 != ott2:
+            para = f"{R1N} ott ({ott1}) != {R2N} ott ({ott2})"
+        else:
+            para = f"Both runs used {ott1}"
+        print_paragraph(self.out, para)
+
+        # do roots match
+        root1, root2 = int(j1["root_ott_id"]), int(j2["root_ott_id"])
+        if root1 != root2:
+            para = f"root id1 ({root1}) != root id2 ({root2})"
+        else:
+            para = f"Both runs used root id {root1}"
+        print_paragraph(self.out, para)
+
+        # do collections match
+        collections1, collections2  = j1["collections"], j2["collections"]
+        self.compare_lists("Collections included", collections1, collections2)
+
+        # do flags match
+        flags1, flags2 = j1["taxonomy_cleaning_flags"], j2["taxonomy_cleaning_flags"]
+        self.compare_lists("Flags", flags1, flags2)
+
+    def phylo_input_diffs(self):
+        td1, td2 = self.run1.input_trees, self.run2.input_trees
+        ttds = treelist_to_display_str
+        it1, it2 = td1["input_trees"], td2["input_trees"]
+        self.compare_lists("Input trees", it1, it2, list_to_str=ttds)
+        net1, net2 = td1["non_empty_trees"], td2["non_empty_trees"]
+        self.compare_lists("Non-empty trees", net1, net2, list_to_str=ttds)
+
+
 
 def do_compare(
     out, run1, run2, verbose=False, print_broken_taxa=False, print_summary_table=False
 ):
-    print_header(out, 1, "Comparing inputs")
-    config_diffs(out, run1.config, run2.config, verbose)
+    rc = RunComparison(run1, run2, outstream=out, verbose=verbose)
+    rc.input_diffs()
+
     
 
 def main():
