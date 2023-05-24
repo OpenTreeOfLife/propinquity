@@ -524,23 +524,23 @@ def compare_lists(out, rtype, list1, list2, verbose=False, list_to_str=None):
 # look at phylo_snapshot/concrete_rank_collection.json for each run
 def config_diffs(out, jsondata1, jsondata2, verbose):
     # do ott versions match
+    print_header(out, 2, "OTT versions")
     ott1 = jsondata1["ott_version"]
     ott2 = jsondata2["ott_version"]
     if ott1 != ott2:
-        print_paragraph(
-            out,
-            "{r1} ott ({v1}) != {r2} ott ({v2})".format(
-                v1=ott1, v2=ott2, r1=R1N, r2=R2N
-            ),
-        )
+        para = f"{R1N} ott ({ott1}) != {R2N} ott ({ott2})"
+    else:
+        para = f"Both runs used {ott1}"
+    print_paragraph(out, para)
 
     # do roots match
     root1 = int(jsondata1["root_ott_id"])
     root2 = int(jsondata2["root_ott_id"])
     if root1 != root2:
-        print_paragraph(
-            out, "root id1 ({r1}) != root id2 ({r2})".format(r1=root1, r2=root2)
-        )
+        para = "root id1 ({root1}) != root id2 ({root2})"
+    else:
+        para = f"Both runs used root id {root1}"
+    print_paragraph(out, para)
 
     # do collections match
     collections1 = jsondata1["collections"]
@@ -774,12 +774,43 @@ def synthesis_tree_diffs(out, io_stats1, io_stats2):
 class RunStatistics(object):
     def __init__(self, output_dir):
         self.output_dir = output_dir
-        self.config = self.read_config()
-        self.input_output_stats = self.read_input_output_stats()
-        self.input_trees = self.read_input_trees()
-        self.broken_taxa = self.read_broken_taxa()
-        self.subproblems = self.read_subproblems()
-        self.contested = self.read_contested()
+        self._config = None
+        self._input_output_stats = None
+        self._input_trees = None
+        self._broken_taxa = None
+        self._subproblems = None
+        self._contested = None
+
+    @property
+    def config(self):
+        if self._config is None:
+            self._config = self.read_config()
+        return self._config
+    @property
+    def input_output_stats(self):
+        if self._input_output_stats is None:
+            self._input_output_stats = self.read_input_output_stats()
+        return self._input_output_stats
+    @property
+    def input_trees(self):
+        if self._input_trees is None:
+            self._input_trees = self.read_input_trees()
+        return self._input_trees
+    @property
+    def broken_taxa(self):
+        if self._broken_taxa is None:
+            self._broken_taxa = self.read_broken_taxa()
+        return self._broken_taxa
+    @property
+    def subproblems(self):
+        if self._subproblems is None:
+            self._subproblems = self.read_subproblems()
+        return self._subproblems
+    @property
+    def contested(self):
+        if self._contested is None:
+            self._contested = self.read_contested()
+        return self._contested
 
     def read_broken_taxa(self):
         d = os.path.join(self.output_dir, "labelled_supertree")
@@ -904,44 +935,7 @@ def do_compare(
 ):
     print_header(out, 1, "Comparing inputs")
     config_diffs(out, run1.config, run2.config, verbose)
-    phylo_input_diffs(out, run1.input_trees, run2.input_trees, verbose)
-
-    print_header(out, 1, "Comparing subproblems")
-    compare_subproblems(out, run1.subproblems, run2.subproblems, verbose)
-
-    print_header(out, 1, "Comparing broken taxa")
-    broken_taxa_diffs(out, run1.broken_taxa, run2.broken_taxa, verbose)
-    if print_broken_taxa:
-        r = newly_broken_taxa_report(out, run1, run2)
-        if HTML_DIR:
-            print_link(out, "./{}".format(r[0]), "Broken taxon list (CSV)")
-            print_paragraph(out, "")
-            print_link(out, "./{}".format(r[1]), "Broken taxa by input tree report")
-            print_paragraph(out, "")
-
-    print_header(out, 1, "Synthetic tree summary")
-    # synthesis_tree_diffs(run1, run2)
-    synthesis_tree_diffs(out, run1.input_output_stats, run2.input_output_stats)
-    if print_summary_table:
-        if HTML_DIR:
-            sout = open(os.path.join(HTML_DIR, "summary.html"), "w", encoding="utf-8")
-        else:
-            sout = out
-        try:
-            print_header(sout, 1, "Summary table for release notes")
-            summary_table(
-                sout,
-                run1.input_output_stats,
-                run2.input_output_stats,
-                run1.subproblems,
-                run2.subproblems,
-            )
-        finally:
-            if HTML_DIR:
-                print_link(out, "./summary.html", "Summary Table for release notes")
-                print_paragraph(out, "")
-                sout.close()
-
+    
 
 def main():
     # get command line arguments (the two directories to compare)
