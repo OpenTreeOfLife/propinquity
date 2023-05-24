@@ -15,6 +15,7 @@ import subprocess
 from collections import defaultdict
 
 import peyotl.ott as ott
+from peyotl import read_as_json
 import requests
 
 # From reference-taxonomy:org/opentreeoflife/taxa/Rank.java
@@ -487,55 +488,25 @@ def compare_lists(out, rtype, list1, list2, verbose=False, list_to_str=None):
     s1 = set(list1)
     s2 = set(list2)
     if s1 == s2:
-        print_paragraph(out, "{t}: no differences".format(t=rtype))
+        print_paragraph(out, f"{rtype}: no differences")
         return 0
-    print_header(out, 2, "{t}: ".format(t=rtype))
-    # simple length check
+    print_header(out, 2, f"{rtype}: ")
     if len(s1) != len(s2):
-        m = " {l1} in {r1}; {l2} in {r2}".format(l1=len(s1), l2=len(s2), r1=R1N, r2=R2N)
+        m = f" {len(s1)} in {R1N}; {len(s2)} in {R2N}"
         print_paragraph(out, m)
     common = s1.intersection(s2)
-    if len(common) > 0:
-        print_paragraph(out, " in common = {l}".format(t=rtype, l=len(common)))
+    print_paragraph(out, f" {len(common)} in common")
     diff1 = s1.difference(s2)
-    if len(diff1) > 0:
-        print_paragraph(
-            out, " in {r1} but not {r2} = {l}".format(l=len(diff1), r1=R1N, r2=R2N)
-        )
-        if verbose:
-            print_paragraph(
-                out, " {t} in {r1} but not {r2}:".format(t=rtype, r1=R1N, r2=R2N)
-            )
-            print_paragraph(out, list_to_str(diff1))
+    print_paragraph(out, f" {len(diff1)} in {R1N} but not {R2N}")
+    if verbose:
+        print_paragraph(out, f" {rtype} in {R1N} but not {R2N}:")
+        print_paragraph(out, list_to_str(diff1))
     diff2 = s2.difference(s1)
-    if len(diff2) > 0:
-        print_paragraph(
-            out, " in {r2} but not {r1} = {l}".format(l=len(diff2), r1=R1N, r2=R2N)
-        )
-        if verbose:
-            print_paragraph(
-                out, " {t} in {r2} but not {r1}:".format(t=rtype, r1=R1N, r2=R2N)
-            )
-            print_paragraph(out, list_to_str(diff2))
+    print_paragraph(out, f" {len(diff2)} in {R2N} but not {R1N}")
+    if verbose:
+        print_paragraph(out, f" {rtype} in {R2N} but not {R1N}:")
+        print_paragraph(out, list_to_str(diff2))
     return 1
-
-
-
-
-# note that ottid is in form 'ott####'
-def get_taxon_details(ottid):
-    pattern = re.compile(r"ott")
-    int_id = re.sub(pattern, "", ottid)
-    method_url = "https://api.opentreeoflife.org/v3/taxonomy/taxon_info"
-    header = {"content-type": "application/json"}
-    payload = {"ott_id": int_id}
-    r = requests.post(method_url, headers=header, data=json.dumps(payload))
-    try:
-        j = r.json()
-        return j["name"], j["rank"]
-    except KeyError:
-        print("no name returned for {id}".format(id=ottid))
-    # print '{i}:{n}'.format(i=ottid, n=taxon_name)
 
 
 _TREE_URL_TEMPLATE = (
@@ -781,6 +752,13 @@ class RunStatistics(object):
             self._contested = self.read_contested()
         return self._contested
 
+    def filepath_to(self, rel_path, required=True):
+        rps = os.path.split(rel_path)
+        fp = os.path.join(self.output_dir, *rps)
+        if required and not os.path.exists(fp):
+            raise RuntimeError(f"Required path {fp} not found")
+        return fp
+
     def read_broken_taxa(self):
         d = os.path.join(self.output_dir, "labelled_supertree")
         jsonfile = os.path.join(d, "broken_taxa.json")
@@ -898,6 +876,28 @@ class RunStatistics(object):
             j2[taxon] = annotations
         return j2
 
+def _find_node_in_cleaned_phylo_json(blob, nd_id):
+    for key, val in blob.items():
+        if key == "revised_ingroup_node":
+            if nd_id == val:
+                return key
+            continue
+        node_list = val.get("nodes", [])
+        if nd_id in node_list:
+            return key
+    return 'INCLUDED'
+
+def _find_edge_in_cleaned_phylo_json(blob, edge_id):
+    for key, val in blob.items():
+        if key == "revised_ingroup_node":
+            continue
+        edge_list = val.get("edges", [])
+        if edge_id in edge_list:
+            return key
+    return 'INCLUDED'
+
+
+
 class RunComparison(object):
     def __init__(self, run1, run2, outstream, verbose=False):
         self.run1 = run1
@@ -942,14 +942,123 @@ class RunComparison(object):
         flags1, flags2 = j1["taxonomy_cleaning_flags"], j2["taxonomy_cleaning_flags"]
         self.compare_lists("Flags", flags1, flags2)
 
+    def cmp_cleaned_trees(self, tid):
+        fp = f"cleaned_phylo/tree_{tid}.json"
+        path1, path2 = self.run1.filepath_to(fp), self.run2.filepath_to(fp)
+        j1 = read_as_json(path1)
+        j2 = read_as_json(path2)
+        if j1 == j2:
+            return None
+        # keys = {'unmapped_otu', 
+        #          'mapped_to_taxon_containing_other_mapped_tips', 
+        #          'replaced_by_exemplar_node', 
+        #          'replaced_by_arbitrary_node', 
+        #          'empty-after-higher-taxon-tip-prune', 
+        #          'unrecognized_ott_id', 
+        #          'outgroup', 
+        #          'flagged', 
+        #          'higher-taxon-tip', 
+        #          'revised_ingroup_node', 
+        #          'became_trivial'}
+        node_diffs = {}
+        edge_diffs = {}
+        nds_done = set()
+        edges_done = set()
+        print(path2)
+        for k, v in j2.items():
+            corresp = j1.get(k, {})
+            if k == "revised_ingroup_node":
+                v = {'nodes':[v]}
+                if corresp == {}:
+                    cnodes, cedges = [], []
+                else:
+                    cnodes, cedges = {'nodes':[corresp]}, []
+            else:
+                cnodes, cedges = corresp.get("nodes", []), corresp.get("edges", [])
+            nodes, edges = v.get("nodes", []), v.get("edges", [])
+            
+            for nd in nodes:
+                nds_done.add(nd)
+                if nd in cnodes:
+                    continue
+                prev_tag = _find_node_in_cleaned_phylo_json(j1, nd)
+                new_key = f"{prev_tag} -> {k}"
+                node_diffs.setdefault(new_key, []).append(nd)
+            for edge in edges:
+                if edge in cedges:
+                    continue
+                prev_tag = _find_edge_in_cleaned_phylo_json(j1, edge)
+                new_key = f"{prev_tag} -> {k}"
+                edge_diffs.setdefault(new_key, []).append(edge)
+        for k, v in j1.items():
+            if k == "revised_ingroup_node":
+                v = {'nodes':[v]}
+            nodes, edges = v.get("nodes", []), v.get("edges", [])
+            for nd in nodes:
+                if nd in nds_done:
+                    continue
+                new_key = f"{k} -> INCLUDED"
+                node_diffs.setdefault(new_key, []).append(nd)
+            for edge in edges:
+                if nd in edges_done:
+                    continue
+                new_key = f"{k} -> INCLUDED"
+                edge_diffs.setdefault(new_key, []).append(edge)
+        tks = set()
+        tks.update(node_diffs.keys())
+        tks.update(edge_diffs.keys())
+        tkl = list(tks)
+        tkl.sort()
+        sn = []
+        for k in tkl:
+            nd_strs = node_diffs.get(k, [])
+            nd_strs.sort()
+            edge_strs = edge_diffs.get(k, [])
+            edge_strs.sort()
+            row = f"{k}: nodes = {nd_strs} edges = {edge_strs}"
+            sn.append(row)
+        return sn
+
     def phylo_input_diffs(self):
         td1, td2 = self.run1.input_trees, self.run2.input_trees
         ttds = treelist_to_display_str
         it1, it2 = td1["input_trees"], td2["input_trees"]
-        self.compare_lists("Input trees", it1, it2, list_to_str=ttds)
-        net1, net2 = td1["non_empty_trees"], td2["non_empty_trees"]
-        self.compare_lists("Non-empty trees", net1, net2, list_to_str=ttds)
+        set_it1, set_it2 = set(it1), set(it2)
+        net1 = [i[:-4] if i.endswith('.tre') else i for i in td1["non_empty_trees"]]
+        net2 = [i[:-4] if i.endswith('.tre') else i for i in td2["non_empty_trees"]]
+        set_net1, set_net2 = set(net1), set(net2)
+        compare_lists(self.out, "Input trees", it1, it2, False)
+        compare_lists(self.out, "Non-empty trees", net1, net2, False)
+        idx_offset = 0
+        for curr_index, tid in enumerate(it2):
+            #if tid != 'ot_2018@tree9':
+            #    continue
+            if tid in set_it1:
+                prev_index = it1.index(tid)
+                if tid in set_net2:
+                    if tid in set_net1:
+                        clean_diff = self.cmp_cleaned_trees(tid)
+                        if clean_diff:
+                            x = '\n  '.join(clean_diff)
+                            print(f"{tid} : \n  {x}")
+                    else:
+                        print(f"{tid} no longer empty")
 
+                else:
+                    if tid in set_net1:
+                        print(f"{tid} newly empty")
+                    else:
+                        print(f"{tid} still empty")
+            elif tid in set_net2:
+                print(f"{tid} new non-empty tree")
+            else:
+                print(f"{tid} new tree, but empty")
+        for tid in it1:
+            if tid not in set_it2:
+                if tid in set_net1:
+                    print(f"{tid} non-empty tree deleted")
+                else:
+                    print(f"{tid} empty tree deleted")
 
 
 def do_compare(
