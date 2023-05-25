@@ -12,3 +12,4 @@ logs
 mod_snakemake_env
 propinquity.egg-info
 mth_*
+cruft*

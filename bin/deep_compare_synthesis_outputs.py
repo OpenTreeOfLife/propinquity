@@ -1126,9 +1126,11 @@ class RunComparison(object):
             o1, o2 = tree_1.get("^ot:specifiedRoot"), tree_2.get("^ot:specifiedRoot")
             if o1 != o2:
                 print_paragraph(f"specifiedRoot node changed from {o1} to {o2}")
+            nbi_1, nbi_2 = tree_1.get("nodeById"), tree_2.get("nodeById")
+            if nbi_1 != nbi_2
             try:
                 assert tree_1.get("edgeBySourceId") == tree_2.get("edgeBySourceId")
-                assert tree_1.get("nodeById") == tree_2.get("nodeById")
+                assert 
             except:
                 sys.stderr.write(f"Writing trees for {study_tree} to cruft1.json and cruft2.json")
                 with open("cruft1.json", "w") as o:
