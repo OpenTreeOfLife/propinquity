@@ -1096,26 +1096,49 @@ class RunComparison(object):
             if unmapped:
                 open_list(curr_out)
                 for u in unmapped:
-                    print_list_item(curr_out, f"node {u[0]} no longer mapped to OTT '{u[2]}' ({u[1]})")
+                    print_list_item(curr_out, f"{u[0]} no longer mapped to OTT '{u[2]}' ({u[1]})")
                 close_list(curr_out)
             print_paragraph(curr_out, f"{len(mapped)} newly taxa mapped")
             if mapped:
                 open_list(curr_out)
                 for u in mapped:
-                    print_list_item(curr_out, f"node {u[0]} now mapped to OTT '{u[2]}' ({u[1]})")
+                    print_list_item(curr_out, f"{u[0]} now mapped to OTT '{u[2]}' ({u[1]})")
                 close_list(curr_out)
                 
             print_paragraph(curr_out, f"{len(remapped)} remapped taxa")
             if remapped:
                 open_list(curr_out)
                 for u in remapped:
-                    print_list_item(curr_out, f"node {u[0]} changed from OTT '{u[2]}' ({u[1]}) to '{u[4]}'' ({u[3]}) ")
+                    print_list_item(curr_out, f"{u[0]} changed from OTT '{u[2]}' ({u[1]}) to '{u[4]}'' ({u[3]}) ")
                 close_list(curr_out)
         else:
             print_paragraph(curr_out, "No OTU mapping changes")
-        print(study_tree)
-        sys.exit('early')
 
+        if tree_1 == tree_2:
+            print_paragraph(curr_out, "No tree changes")
+        else:
+            o1, o2 = tree_1.get("^ot:inGroupClade"), tree_2.get("^ot:inGroupClade")
+            if o1 != o2:
+                print_paragraph(f"ingroup node changed from {o1} to {o2}")
+            o1, o2 = tree_1.get("^ot:rootNodeId"), tree_2.get("^ot:rootNodeId")
+            if o1 != o2:
+                print_paragraph(f"root node changed from {o1} to {o2}")
+            o1, o2 = tree_1.get("^ot:specifiedRoot"), tree_2.get("^ot:specifiedRoot")
+            if o1 != o2:
+                print_paragraph(f"specifiedRoot node changed from {o1} to {o2}")
+            try:
+                assert tree_1.get("edgeBySourceId") == tree_2.get("edgeBySourceId")
+                assert tree_1.get("nodeById") == tree_2.get("nodeById")
+            except:
+                sys.stderr.write(f"Writing trees for {study_tree} to cruft1.json and cruft2.json")
+                with open("cruft1.json", "w") as o:
+                    o.write(json.dumps(tree_1, sort_keys=True, indent=2))
+                    o.write('\n')
+                with open("cruft2.json", "w") as o:
+                    o.write(json.dumps(tree_2, sort_keys=True, indent=2))
+                    o.write('\n')
+                raise
+        
     def _do_phylo_comparison(self, study_tree, curr_out):
         run1, run2 = self.run1, self.run2
         rel_path = _SNAPSHOT_JSON_TEMPLATE.format(study_tree=study_tree)
@@ -1168,7 +1191,7 @@ class RunComparison(object):
         for curr_index, tid in enumerate(it2):
             if tid in set_it1:
                 if self.do_phylo_comparison(tid):
-                    print(tid)
+                    pass
          
         for tid in it1:
             if tid not in set_it2:
