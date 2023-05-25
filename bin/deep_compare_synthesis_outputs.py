@@ -925,6 +925,12 @@ def get_tree_and_otus_from_nexson(nex, tree_id):
         if tree_blob is not None:
             return tree_blob, otu_cont[blob["@otus"]]['otuById']
     return None, None
+def _list_elements(out, str_list):
+    if str_list:
+        open_list(out)
+        for el in str_list:
+            print_list_item(out, el)
+        close_list(out)
 
 _SNAPSHOT_JSON_TEMPLATE = 'phylo_snapshot/tree_{study_tree}.json'
 
@@ -1058,81 +1064,136 @@ class RunComparison(object):
             return self._do_phylo_comparison(study_tree, curr_out)
     
     def _describe_nexson_diff(self, curr_out, study_tree, nex1, nex2):
+        sys.stderr.write(f"comparing nexson for {study_tree}\n")
         study_id, tree_id = study_tree.split('@')
         tree_1, otu_1 = get_tree_and_otus_from_nexson(nex1, tree_id)
         assert tree_1 is not None
         tree_2, otu_2 = get_tree_and_otus_from_nexson(nex2, tree_id)
         assert tree_2 is not None
-        otus_done = set()
-        unmapped = []
-        remapped = []
-        mapped = []
-        for k, v in otu_2.items():
-            otus_done.add(k)
-            other = otu_1.get(k)
-            if other is None:
-                raise RuntimeError(f"new otu_id {k} in {study_tree}")
-            ott_id_2 = v.get("^ot:ottId")
-            ott_id_1 = other.get("^ot:ottId")
-            if ott_id_1 is not None:
-                assert isinstance(ott_id_1, int)
-            if ott_id_2 is not None:
-                assert isinstance(ott_id_2, int)
-                if ott_id_1 is None:
-                    mapped.append((k, ott_id_2, v.get("^ot:ottTaxonName", "")))
-                elif ott_id_1 != ott_id_2:
-                    remapped.append((k, ott_id_1, other.get("^ot:ottTaxonName", ""), 
-                                        ott_id_2. v.get("^ot:ottTaxonName", "")))
-            else:
-                if ott_id_1 is None:
-                    pass # still unmapped
+        try:
+            otus_done = set()
+            unmapped = []
+            remapped = []
+            mapped = []
+            for k, v in otu_2.items():
+                # print(f"otu key {k} => {v}")
+                otus_done.add(k)
+                other = otu_1.get(k)
+                if other is None:
+                    raise RuntimeError(f"new otu_id {k} in {study_tree}")
+                ott_id_2 = v.get("^ot:ottId")
+                ott_id_1 = other.get("^ot:ottId")
+                if ott_id_1 is not None:
+                    assert isinstance(ott_id_1, int)
+                if ott_id_2 is not None:
+                    assert isinstance(ott_id_2, int)
+                    if ott_id_1 is None:
+                        mapped.append((k, ott_id_2, v.get("^ot:ottTaxonName", "")))
+                    elif ott_id_1 != ott_id_2:
+                        remapped.append((k, ott_id_1, other.get("^ot:ottTaxonName", ""), 
+                                            ott_id_2, v.get("^ot:ottTaxonName", "")))
                 else:
-                    unmapped.append((k, ott_id_1, other.get("^ot:ottTaxonName", "")))
-        for k, v in otu_1.items():
-            if k not in otus_done:
-                raise RuntimeError(f"deletion of otu_id {k} in {study_tree}")
-        if mapped or unmapped or remapped:
-            print_paragraph(curr_out, f"{len(unmapped)} taxa unmapped")
-            if unmapped:
-                open_list(curr_out)
-                for u in unmapped:
-                    print_list_item(curr_out, f"{u[0]} no longer mapped to OTT '{u[2]}' ({u[1]})")
-                close_list(curr_out)
-            print_paragraph(curr_out, f"{len(mapped)} newly taxa mapped")
-            if mapped:
-                open_list(curr_out)
-                for u in mapped:
-                    print_list_item(curr_out, f"{u[0]} now mapped to OTT '{u[2]}' ({u[1]})")
-                close_list(curr_out)
-                
-            print_paragraph(curr_out, f"{len(remapped)} remapped taxa")
-            if remapped:
-                open_list(curr_out)
-                for u in remapped:
-                    print_list_item(curr_out, f"{u[0]} changed from OTT '{u[2]}' ({u[1]}) to '{u[4]}'' ({u[3]}) ")
-                close_list(curr_out)
-        else:
-            print_paragraph(curr_out, "No OTU mapping changes")
+                    if ott_id_1 is None:
+                        pass # still unmapped
+                    else:
+                        unmapped.append((k, ott_id_1, other.get("^ot:ottTaxonName", "")))
+            for k, v in otu_1.items():
+                if k not in otus_done:
+                    raise RuntimeError(f"deletion of otu_id {k} in {study_tree}")
+            if mapped or unmapped or remapped:
+                print_paragraph(curr_out, f"{len(unmapped)} taxa unmapped")
+                if unmapped:
+                    open_list(curr_out)
+                    for u in unmapped:
+                        print_list_item(curr_out, f"{u[0]} no longer mapped to OTT '{u[2]}' ({u[1]})")
+                    close_list(curr_out)
+                print_paragraph(curr_out, f"{len(mapped)} newly taxa mapped")
+                if mapped:
+                    open_list(curr_out)
+                    for u in mapped:
+                        print_list_item(curr_out, f"{u[0]} now mapped to OTT '{u[2]}' ({u[1]})")
+                    close_list(curr_out)
+                    
+                print_paragraph(curr_out, f"{len(remapped)} remapped taxa")
+                if remapped:
+                    open_list(curr_out)
+                    for u in remapped:
+                        print_list_item(curr_out, f"{u[0]} changed from OTT '{u[2]}' ({u[1]}) to '{u[4]}'' ({u[3]}) ")
+                    close_list(curr_out)
+            else:
+                print_paragraph(curr_out, "No OTU mapping changes")
+        except:
+            sys.stderr.write(f"Writing (possibly modified) otus for {study_tree} to cruft1.json and cruft2.json")
+            with open("cruft1.json", "w") as o:
+                o.write(json.dumps(otu_1, sort_keys=True, indent=2))
+                o.write('\n')
+            with open("cruft2.json", "w") as o:
+                o.write(json.dumps(otu_2, sort_keys=True, indent=2))
+                o.write('\n')
+            raise
 
         if tree_1 == tree_2:
             print_paragraph(curr_out, "No tree changes")
         else:
-            o1, o2 = tree_1.get("^ot:inGroupClade"), tree_2.get("^ot:inGroupClade")
-            if o1 != o2:
-                print_paragraph(f"ingroup node changed from {o1} to {o2}")
-            o1, o2 = tree_1.get("^ot:rootNodeId"), tree_2.get("^ot:rootNodeId")
-            if o1 != o2:
-                print_paragraph(f"root node changed from {o1} to {o2}")
-            o1, o2 = tree_1.get("^ot:specifiedRoot"), tree_2.get("^ot:specifiedRoot")
-            if o1 != o2:
-                print_paragraph(f"specifiedRoot node changed from {o1} to {o2}")
-            nbi_1, nbi_2 = tree_1.get("nodeById"), tree_2.get("nodeById")
-            if nbi_1 != nbi_2
             try:
+                o1, o2 = tree_1.get("^ot:inGroupClade"), tree_2.get("^ot:inGroupClade")
+                if o1 != o2:
+                    print_paragraph(curr_out, f"ingroup node changed from {o1} to {o2}")
+                o1, o2 = tree_1.get("^ot:rootNodeId"), tree_2.get("^ot:rootNodeId")
+                if o1 != o2:
+                    print_paragraph(curr_out, f"root node changed from {o1} to {o2}")
+                o1, o2 = tree_1.get("^ot:specifiedRoot"), tree_2.get("^ot:specifiedRoot")
+                if o1 != o2:
+                    print_paragraph(curr_out, f"specifiedRoot node changed from {o1} to {o2}")
+                nbi_1, nbi_2 = tree_1.get("nodeById"), tree_2.get("nodeById")
+                exemplar_del = []
+                nonexemplar_del = []
+                exemplar_add = []
+                nonexemplar_add = []
+                exemplar_mod = []
+                nonexemplar_mod = []
+            
+                if nbi_1 != nbi_2:
+                    for nd_id, nd_blob in nbi_2.items():
+                        prev_blob = nbi_1[nd_id]
+                        if prev_blob != nd_blob:
+                            k = '^ot:isTaxonExemplar'
+                            e_1, e_2 = prev_blob.get(k), nd_blob.get(k)
+                            if e_1 != e_2:
+                                if e_2 is None:
+                                    if e_1:
+                                        exemplar_del.append(nd_id)
+                                    else:
+                                        nonexemplar_del.append(nd_id)
+                                    del prev_blob[k]
+                                else:
+                                    if e_1 is None:
+                                        if e_2:
+                                            exemplar_add.append(nd_id)
+                                        else:
+                                            nonexemplar_add.append(nd_id)
+                                    else:
+                                        if e_2:
+                                            exemplar_mod.append(nd_id)
+                                        else:
+                                            nonexemplar_mod.append(nd_id)
+                                    prev_blob[k] = e_2
+                                assert prev_blob == nd_blob
+                print_paragraph(curr_out, f"{len(exemplar_del)} exemplar nodes unflagged")
+                _list_elements(curr_out, exemplar_del)
+                print_paragraph(curr_out, f"{len(nonexemplar_del)} nonexemplar nodes unflagged")
+                _list_elements(curr_out, exemplar_del)
+                print_paragraph(curr_out, f"{len(exemplar_add)} nodes flagged as exemplar")
+                _list_elements(curr_out, exemplar_del)
+                print_paragraph(curr_out, f"{len(nonexemplar_add)} nodes flagged as nonexemplar")
+                _list_elements(curr_out, exemplar_del)
+                print_paragraph(curr_out, f"{len(exemplar_mod)} nodes flags changed to exemplar")
+                _list_elements(curr_out, exemplar_del)
+                print_paragraph(curr_out, f"{len(exemplar_del)} nodes flags changed to nonexemplar")
+                _list_elements(curr_out, exemplar_del)
                 assert tree_1.get("edgeBySourceId") == tree_2.get("edgeBySourceId")
-                assert 
             except:
-                sys.stderr.write(f"Writing trees for {study_tree} to cruft1.json and cruft2.json")
+                sys.stderr.write(f"Writing (possibly modified) trees for {study_tree} to cruft1.json and cruft2.json")
                 with open("cruft1.json", "w") as o:
                     o.write(json.dumps(tree_1, sort_keys=True, indent=2))
                     o.write('\n')
