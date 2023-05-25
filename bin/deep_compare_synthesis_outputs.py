@@ -1194,6 +1194,7 @@ class RunComparison(object):
                 assert tree_1.get("edgeBySourceId") == tree_2.get("edgeBySourceId")
             except:
                 sys.stderr.write(f"Writing (possibly modified) trees for {study_tree} to cruft1.json and cruft2.json")
+                sys.stderr.write(f"NOTE: the _describe_nexson_diff function of this script currently does not deal with rerooting annotations in nodes, so... yeah... that's a thing.")
                 with open("cruft1.json", "w") as o:
                     o.write(json.dumps(tree_1, sort_keys=True, indent=2))
                     o.write('\n')
