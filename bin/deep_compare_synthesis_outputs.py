@@ -173,9 +173,14 @@ def print_header(out, level, line):
         out.write("\n# {}\n".format(line))
 
 
+def fmt_link(url, text):
+    if HTML_OUT:
+        return f'<a href="{url}" target="_blank">{text}</a>\n'
+    return text
+
 def print_link(out, url, text):
     if HTML_OUT:
-        out.write(f'<a href="{url}" target="_blank">{text}</a>\n')
+        out.write(fmt_link(url, text))
     else:
         print(text)
 
@@ -1315,21 +1320,25 @@ class RunComparison(object):
         net1 = [i[:-4] if i.endswith('.tre') else i for i in td1["non_empty_trees"]]
         net2 = [i[:-4] if i.endswith('.tre') else i for i in td2["non_empty_trees"]]
         set_net1, set_net2 = set(net1), set(net2)
-        compare_lists(self.out, "Input trees", it1, it2, False)
-        compare_lists(self.out, "Non-empty trees", net1, net2, False)
+        out = self.out
+        compare_lists(out, "Input trees", it1, it2, False)
+        compare_lists(out, "Non-empty trees", net1, net2, False)
         idx_offset = 0
-        for curr_index, tid in enumerate(it2):
-            if tid in set_it1:
-                if self.do_phylo_comparison(tid):
-                    pass
-         
-        for tid in it1:
-            if tid not in set_it2:
-                if tid in set_net1:
-                    print(f"{tid} non-empty tree deleted")
+        open_list(out)
+        for curr_index, study_tree in enumerate(it2):
+            if study_tree in set_it1:
+                if self.do_phylo_comparison(study_tree):
+                    u = f"tree_{study_tree}.html"
+                    print_list_item(out, fmt_link(u, f"{study_tree} changed"))
                 else:
-                    print(f"{tid} empty tree deleted")
-
+                    print_list_item(out, f"{study_tree} unchanged")
+        for study_tree in it1:
+            if study_tree not in set_it2:
+                if study_tree in set_net1:
+                    print_list_item(out, f"{study_tree} non-empty tree deleted")
+                else:
+                    print_list_item(out, f"{study_tree} empty tree deleted")
+        close_list(out)
 
 def do_compare(
     out, run1, run2, verbose=False, print_broken_taxa=False, print_summary_table=False, html_dir=None
