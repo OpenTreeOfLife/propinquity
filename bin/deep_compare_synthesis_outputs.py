@@ -13,7 +13,8 @@ import os
 import re
 import subprocess
 from collections import defaultdict
-
+from dendropy import Tree
+from dendropy.calculate import treecompare
 import peyotl.ott as ott
 from peyotl import read_as_json
 import requests
@@ -174,7 +175,7 @@ def print_header(out, level, line):
 
 def print_link(out, url, text):
     if HTML_OUT:
-        out.write('<a href="{u}" target="_blank">{t}</a>\n'.format(u=url, t=text))
+        out.write(f'<a href="{url}" target="_blank">{text}</a>\n')
     else:
         print(text)
 
@@ -933,6 +934,9 @@ def _list_elements(out, str_list):
         close_list(out)
 
 _SNAPSHOT_JSON_TEMPLATE = 'phylo_snapshot/tree_{study_tree}.json'
+_CLEANED_PHYLO_JSON_TEMPLATE = 'cleaned_phylo/tree_{study_tree}.json'
+_CLEANED_PHYLO_TREE_TEMPLATE = 'cleaned_phylo/tree_{study_tree}.tre'
+_EXEMPLAR_PHYLO_TREE_TEMPLATE = 'exemplified_phylo/{study_tree}.tre'
 
 class RunComparison(object):
     def __init__(self, run1, run2, outstream, verbose=False, html_dir=None):
@@ -1202,8 +1206,8 @@ class RunComparison(object):
                     o.write(json.dumps(tree_2, sort_keys=True, indent=2))
                     o.write('\n')
                 raise
-        
-    def _do_phylo_comparison(self, study_tree, curr_out):
+    
+    def _do_nexson_comparison(self, study_tree, curr_out):
         run1, run2 = self.run1, self.run2
         rel_path = _SNAPSHOT_JSON_TEMPLATE.format(study_tree=study_tree)
         snap_fp1 = run1.filepath_to(rel_path)
@@ -1221,6 +1225,68 @@ class RunComparison(object):
             changed = True
             self._describe_nexson_diff(curr_out, study_tree, nex1, nex2)
         return changed
+
+    def _do_cleaned_phylo_comparison(self, study_tree, curr_out):
+        run1, run2 = self.run1, self.run2
+        rel_path = _CLEANED_PHYLO_TREE_TEMPLATE.format(study_tree=study_tree)
+        print_header(curr_out, 2, "Cleaned phylogeny")
+        tree_fp1 = run1.filepath_to(rel_path, required=False)
+        tree_fp2 = run2.filepath_to(rel_path, required=False)
+        if not os.path.exists(tree_fp1):
+            if os.path.exists(tree_fp2):
+                print_paragraph(curr_out, "Cleaned tree is now empty")
+                return True
+            print_paragraph(curr_out, "Cleaned tree remained empty")
+            return False
+        if not os.path.exists(tree_fp2):
+            print_paragraph(curr_out, "Cleaned tree was previously empty")
+            return True
+        
+        tree1 = Tree.get_from_path(tree_fp1, schema="newick")
+        tree1.is_rooted = True
+        tree2 = Tree.get_from_path(tree_fp2, schema="newick", taxon_namespace=tree1.taxon_namespace)
+        tree2.is_rooted = True
+        sd = treecompare.symmetric_difference(tree1, tree2)
+        if sd > 0:
+            print_paragraph(curr_out, f"Cleaned trees differ symmetric_difference = {sd} (may not be reliable if leafsets differ)")
+            return True
+        print_paragraph(curr_out, "Cleaned tree are the same")
+        return False
+
+    def _do_exemplified_phylo_comparison(self, study_tree, curr_out):
+        run1, run2 = self.run1, self.run2
+        rel_path = _EXEMPLAR_PHYLO_TREE_TEMPLATE.format(study_tree=study_tree)
+        print_header(curr_out, 2, "Exemplified phylogeny")
+        tree_fp1 = run1.filepath_to(rel_path, required=False)
+        tree_fp2 = run2.filepath_to(rel_path, required=False)
+        if not os.path.exists(tree_fp1):
+            if os.path.exists(tree_fp2):
+                print_paragraph(curr_out, "Exemplified tree is now empty")
+                return True
+            print_paragraph(curr_out, "Exemplified tree remained empty")
+            return False
+        if not os.path.exists(tree_fp2):
+            print_paragraph(curr_out, "Exemplified tree was previously empty")
+            return True
+        
+        tree1 = Tree.get_from_path(tree_fp1, schema="newick")
+        tree1.is_rooted = True
+        tree2 = Tree.get_from_path(tree_fp2, schema="newick", taxon_namespace=tree1.taxon_namespace)
+        tree2.is_rooted = True
+        sd = treecompare.symmetric_difference(tree1, tree2)
+        if sd > 0:
+            print_paragraph(curr_out, f"Exemplified trees differ symmetric_difference = {sd} (may not be reliable if leafsets differ)")
+            return True
+        print_paragraph(curr_out, "Exemplified tree are the same")
+        return False
+        
+    def _do_phylo_comparison(self, study_tree, curr_out):
+        changed = self._do_nexson_comparison(study_tree, curr_out)
+        changed = self._do_cleaned_phylo_comparison(study_tree, curr_out) or changed
+        changed = self._do_exemplified_phylo_comparison(study_tree, curr_out) or changed
+        print_link(curr_out, "./index.html", "back to main index")
+        return changed
+
         # 
         #     prev_index = it1.index(tid)
         #     if tid in set_net2:
