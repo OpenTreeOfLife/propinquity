@@ -942,6 +942,7 @@ _SNAPSHOT_JSON_TEMPLATE = 'phylo_snapshot/tree_{study_tree}.json'
 _CLEANED_PHYLO_JSON_TEMPLATE = 'cleaned_phylo/tree_{study_tree}.json'
 _CLEANED_PHYLO_TREE_TEMPLATE = 'cleaned_phylo/tree_{study_tree}.tre'
 _EXEMPLAR_PHYLO_TREE_TEMPLATE = 'exemplified_phylo/{study_tree}.tre'
+_CONTESTING_TREES_JSON = 'subproblems/contesting_trees.json'
 
 class RunComparison(object):
     def __init__(self, run1, run2, outstream, verbose=False, html_dir=None):
@@ -955,10 +956,7 @@ class RunComparison(object):
     def input_diffs(self):
         print_header(self.out, 1, "Comparing inputs")
         self.config_diffs()
-        if False:
-            self.phylo_input_diffs()
-        print("Skipping phylo_input_diffs", file=sys.stderr)
-        self.contested_taxa_diffs()
+        self.phylo_input_diffs()
 
     def compare_lists(self, tag, l1, l2, list_to_str=None):
         compare_lists(self.out, tag, l1, l2, self.verbose, list_to_str)
@@ -1336,6 +1334,8 @@ class RunComparison(object):
                     print_list_item(out, fmt_link(u, f"{study_tree} changed"))
                 else:
                     print_list_item(out, f"{study_tree} unchanged")
+            else:
+                print_list_item(out, f"{study_tree} is a new tree")
         for study_tree in it1:
             if study_tree not in set_it2:
                 if study_tree in set_net1:
@@ -1347,6 +1347,67 @@ class RunComparison(object):
     def contested_taxa_diffs(self):
         run1, run2 = self.run1, self.run2
         ott_to_depth = self._read_ott_to_depth()
+        if not ott_to_depth:
+            ott_to_depth = {}
+        rel_path = _CONTESTING_TREES_JSON
+        print_header(self.out, 2, "Contested taxa")
+        ct_json1 = run1.filepath_to(rel_path, required=False)
+        ct_json2 = run2.filepath_to(rel_path, required=False)
+        ct_blob1 = read_as_json(ct_json1)
+        ct_blob2 = read_as_json(ct_json2)
+        new_cont = []
+        tree2new_count = {}
+        for ott_id, ct in ct_blob2.items():
+            if ott_id not in ct_blob1:
+                assert ott_id.startswith("ott")
+                oid = int(ott_id[3:])
+                order = ott_to_depth.get(oid, 0)
+                ts = set(ct.keys())
+                tsl = list(ts)
+                tsl.sort()
+                for t in tsl:
+                    tree2new_count[t] = 1 + tree2new_count.get(t, 0)
+                new_cont.append((order, oid, tsl))
+        del_cont = []
+        tree2del_count = {}
+        for ott_id, ct in ct_blob1.items():
+            if ott_id not in ct_blob2:
+                assert ott_id.startswith("ott")
+                oid = int(ott_id[3:])
+                order = ott_to_depth.get(oid, 0)
+                ts = set(ct.keys())
+                tsl = list(ts)
+                tsl.sort()
+                for t in tsl:
+                    tree2del_count[t] = 1 + tree2new_count.get(t, 0)
+                del_cont.append((order, oid, tsl))
+        nc_list = [(v, k) for k, v in tree2new_count.items()]
+        nc_list.sort(reverse=True)
+        dc_list = [(v, k) for k, v in tree2del_count.items()]
+        dc_list.sort(reverse=True)
+        if nc_list:
+            print_paragraph(self.out, "Trees by number of newly contested taxa they contest")
+            open_list(self.out)
+            for num_c, tree in nc_list:
+                p = f"{num_c} newly contested taxa contested by "
+                assert tree.endswith(".tre")
+                study_tree = tree[:-4]
+                u = f"tree_{study_tree}.html"
+                l = fmt_link(u, f"{study_tree}")
+                print_list_item(self.out, p + l)
+            close_list(self.out)
+        if dc_list:
+            print_paragraph(self.out, "Trees by number of no longer contested taxa they used to contest")
+            open_list(self.out)
+            for num_c, tree in dc_list:
+                p = f"{num_c} no-longer contested taxa formerly contested by "
+                assert tree.endswith(".tre")
+                study_tree = tree[:-4]
+                u = f"tree_{study_tree}.html"
+                l = fmt_link(u, f"{study_tree}")
+                print_list_item(self.out, p + l)
+            close_list(self.out)
+
 
     def _read_ott_to_depth(self):
         if not self.ott_to_depth_fp:
@@ -1364,6 +1425,7 @@ def do_compare(
     rc = RunComparison(run1, run2, outstream=out, verbose=verbose, html_dir=html_dir)
     rc.ott_to_depth_fp = ott_to_depth_fp
     rc.input_diffs()
+    rc.contested_taxa_diffs()
 
     
 
