@@ -950,11 +950,15 @@ class RunComparison(object):
         self.out = outstream
         self.verbose = verbose
         self.html_dir = html_dir
+        self.ott_to_depth_fp = None
 
     def input_diffs(self):
         print_header(self.out, 1, "Comparing inputs")
         self.config_diffs()
-        self.phylo_input_diffs()
+        if False:
+            self.phylo_input_diffs()
+        print("Skipping phylo_input_diffs", file=sys.stderr)
+        self.contested_taxa_diffs()
 
     def compare_lists(self, tag, l1, l2, list_to_str=None):
         compare_lists(self.out, tag, l1, l2, self.verbose, list_to_str)
@@ -1340,10 +1344,25 @@ class RunComparison(object):
                     print_list_item(out, f"{study_tree} empty tree deleted")
         close_list(out)
 
+    def contested_taxa_diffs(self):
+        run1, run2 = self.run1, self.run2
+        ott_to_depth = self._read_ott_to_depth()
+
+    def _read_ott_to_depth(self):
+        if not self.ott_to_depth_fp:
+            return None
+        with open(self.ott_to_depth_fp, 'r') as inp:
+            o2d = {}
+            for line in inp:
+                ls = [int(i) for i in line.strip().split()]
+                o2d[ls[0]] = ls[1]
+
 def do_compare(
-    out, run1, run2, verbose=False, print_broken_taxa=False, print_summary_table=False, html_dir=None
+    out, run1, run2, verbose=False, print_broken_taxa=False, print_summary_table=False, 
+    ott_to_depth_fp=None, html_dir=None
 ):
     rc = RunComparison(run1, run2, outstream=out, verbose=verbose, html_dir=html_dir)
+    rc.ott_to_depth_fp = ott_to_depth_fp
     rc.input_diffs()
 
     
@@ -1357,6 +1376,11 @@ def main():
     parser.add_argument(
         "--html-dir", help="specify a directory for multi-file html output"
     )
+    parser.add_argument("--ott-to-depth-fp",
+                        dest="ott_to_depth_fp",
+                        default=None,
+                        required=False,
+                        help="path output of a run from: otc-taxonomy-parser --report-dist-to-root ")
     parser.add_argument(
         "-b",
         dest="print_broken_taxa",
@@ -1406,7 +1430,8 @@ def main():
             verbose=args.verbose,
             print_broken_taxa=args.print_broken_taxa,
             print_summary_table=args.print_summary_table,
-            html_dir=html_dir
+            html_dir=html_dir,
+            ott_to_depth_fp=args.ott_to_depth_fp
         )
     finally:
         if html_dir:
