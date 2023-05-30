@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 import sys
 import json
     
@@ -38,13 +39,12 @@ def main(nexson_fp, conflict_call_fp, tree_id):
     ebsi = tree["edgeBySourceId"]
     nbi = tree["nodeById"]
     indent_num = 0
-    next_to_deal_with = (indent_num, root_id)
+    next_to_deal_with = ('', root_id, '')
     deferred_stack = []
     while next_to_deal_with:
         next_tdw = next_to_deal_with
-        idn, nd_id = next_tdw
+        curr_pref, nd_id, fall_back_pref = next_tdw
         conflict = nd_2_conf.get(nd_id, '')
-        istr = '  '*idn
         ebsi_el = ebsi.get(nd_id)
         if ebsi_el is None:
             node_obj = nbi[nd_id]
@@ -54,27 +54,31 @@ def main(nexson_fp, conflict_call_fp, tree_id):
                 ott_id = otu_obj.get('^ot:ottId')
                 ott_name = otu_obj.get('^ot:ottTaxonName')
                 if ott_name:
-                    print(f"{istr}{nd_id} MAPPED TIP {ott_name} ({ott_id})")
+                    print(f"{curr_pref}{nd_id} MAPPED TIP {ott_name} ({ott_id})")
                 else:
-                    print(f"{istr}{nd_id} UNMAPPED TIP")
-            
+                    print(f"{curr_pref}{nd_id} UNMAPPED TIP")
             if deferred_stack:
                 next_to_deal_with = deferred_stack.pop(0)
             else:
                 break
             continue
         else:
-            print(f"{istr}{nd_id} {conflict}")
-        
+            print(f"{curr_pref}{nd_id} {conflict}")
         nn = None
-        for edge_id, eblob in ebsi_el.items():
-            assert eblob["@source"] == nd_id
-            tid = eblob["@target"]
-            if nn is None:
-                nn = tid
-                next_to_deal_with = (1+idn, nn)
-            else:
-                deferred_stack.insert(0,(1+idn, tid))
+        num_items = len(ebsi_el)
+        if num_items > 0:
+            curr_pref = fall_back_pref
+            for idx, tup in enumerate(ebsi_el.items()):
+                edge_id, eblob = tup
+                assert eblob["@source"] == nd_id
+                tid = eblob["@target"]
+                corner = ' └' if ((idx + 1)  == num_items)else ' ├'
+                pref = curr_pref + corner
+                if nn is None:
+                    nn = tid
+                    next_to_deal_with = (pref, tid, curr_pref + ' |')
+                else:
+                    deferred_stack.insert(0,(pref, tid, curr_pref + '  '))
 
     
 
