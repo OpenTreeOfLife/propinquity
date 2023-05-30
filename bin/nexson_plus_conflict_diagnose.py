@@ -54,7 +54,7 @@ def main(nexson_fp, conflict_call_fp, tree_id):
                 ott_id = otu_obj.get('^ot:ottId')
                 ott_name = otu_obj.get('^ot:ottTaxonName')
                 if ott_name:
-                    print(f"{curr_pref}{nd_id} MAPPED TIP {ott_name} ({ott_id})")
+                    print(f"{curr_pref}{nd_id} {ott_name} ({ott_id})")
                 else:
                     print(f"{curr_pref}{nd_id} UNMAPPED TIP")
             if deferred_stack:
@@ -76,7 +76,7 @@ def main(nexson_fp, conflict_call_fp, tree_id):
                 pref = curr_pref + corner
                 if nn is None:
                     nn = tid
-                    next_to_deal_with = (pref, tid, curr_pref + ' |')
+                    next_to_deal_with = (pref, tid, curr_pref + ' │')
                 else:
                     deferred_stack.insert(0,(pref, tid, curr_pref + '  '))
 
