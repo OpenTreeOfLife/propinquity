@@ -7,12 +7,15 @@ def main(nexson_fp, conflict_call_fp, tree_id):
     with open(conflict_call_fp, "r") as inp:
         conflict = json.load(inp)
     with open(nexson_fp, "r") as inp:
-        tbi = json.load(inp)["nexml"]["treesById"]
+        nexml = json.load(inp)["nexml"]
+        tbi = nexml["treesById"]
     tree = None
+    otus_id = None
     all_ids = []
     for trees_id, blob in tbi.items():
         tbi = blob["treeById"]
         tree = tbi.get(tree_id)
+        otus_id = blob["@otus"]
         if tree is not None:
             break
         all_ids.extend(list(tbi.keys()))
@@ -29,8 +32,11 @@ def main(nexson_fp, conflict_call_fp, tree_id):
             nd_2_conf[nd_id] = (len(w), w, wn)
 
     root_id = tree["^ot:rootNodeId"]
+    otus_obj  = nexml["otusById"][otus_id]["otuById"]
+
     assert root_id == tree["^ot:specifiedRoot"]
     ebsi = tree["edgeBySourceId"]
+    nbi = tree["nodeById"]
     indent_num = 0
     next_to_deal_with = (indent_num, root_id)
     deferred_stack = []
@@ -38,15 +44,28 @@ def main(nexson_fp, conflict_call_fp, tree_id):
         next_tdw = next_to_deal_with
         idn, nd_id = next_tdw
         conflict = nd_2_conf.get(nd_id, '')
-        istr = ' '*idn
-        print(f"{istr}{nd_id} {conflict}")
+        istr = '  '*idn
         ebsi_el = ebsi.get(nd_id)
         if ebsi_el is None:
+            node_obj = nbi[nd_id]
+            otu_id = node_obj.get("@otu")
+            if otu_id:
+                otu_obj = otus_obj[otu_id]
+                ott_id = otu_obj.get('^ot:ottId')
+                ott_name = otu_obj.get('^ot:ottTaxonName')
+                if ott_name:
+                    print(f"{istr}{nd_id} MAPPED TIP {ott_name} ({ott_id})")
+                else:
+                    print(f"{istr}{nd_id} UNMAPPED TIP")
+            
             if deferred_stack:
                 next_to_deal_with = deferred_stack.pop(0)
             else:
                 break
             continue
+        else:
+            print(f"{istr}{nd_id} {conflict}")
+        
         nn = None
         for edge_id, eblob in ebsi_el.items():
             assert eblob["@source"] == nd_id
