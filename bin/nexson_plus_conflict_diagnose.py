@@ -4,7 +4,7 @@ import sys
 import json
     
 
-def main(nexson_fp, conflict_call_fp, tree_id):
+def main(nexson_fp, conflict_call_fp, tree_id, root_at_id=None):
     with open(conflict_call_fp, "r") as inp:
         conflict = json.load(inp)
     with open(nexson_fp, "r") as inp:
@@ -39,7 +39,9 @@ def main(nexson_fp, conflict_call_fp, tree_id):
     ebsi = tree["edgeBySourceId"]
     nbi = tree["nodeById"]
     indent_num = 0
-    next_to_deal_with = ('', root_id, '')
+    if root_at_id is None:
+        root_at_id = root_id
+    next_to_deal_with = ('', root_at_id, '')
     deferred_stack = []
     while next_to_deal_with:
         next_tdw = next_to_deal_with
@@ -86,10 +88,13 @@ def main(nexson_fp, conflict_call_fp, tree_id):
 if __name__ == "__main__":
     try:
         a, b, c = sys.argv[1], sys.argv[2], sys.argv[3]
+        d = None
+        if len(sys.argv) > 4:
+            d = sys.argv[4]
     except:
         sys.exit('''Expecting 3 args:
   1. filepath to the phylo_snapshot nexson (or equivalent),
   2. filepath to a JSON returned by the conflict with OTT analysis,
   3. tree_id for the tree in the NexSON
 ''')
-    main(a, b, c)
+    main(a, b, c, d)
