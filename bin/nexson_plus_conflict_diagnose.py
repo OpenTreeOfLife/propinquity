@@ -95,7 +95,7 @@ def calc_len_par_anc_list_skipping(curr_nd, par_nd, gpar_nd, nbi):
         par_shortened = len(pmai) - len(real_par_ai)
     assert par_shortened >= 0
     if gpar_nd is None:
-        return par_shortened, 0
+        return par_shortened, 0, pmai, None, None
     par_nd_id = par_nd["@id"]
     aunts = [i for i in gpar_nd['children'] if i != par_nd_id]
     aunts_ai = [nbi[i]['anc_tup'] for i in aunts]
@@ -107,7 +107,7 @@ def calc_len_par_anc_list_skipping(curr_nd, par_nd, gpar_nd, nbi):
     else:
         gpar_shortened = len(gpmai) - len(real_gpar_ai)
     assert gpar_shortened >= 0
-    return par_shortened, gpar_shortened
+    return par_shortened, gpar_shortened, pmai, real_gpar_ai, gpmai
     
 
 def detect_problem_mapping(ntw, nex_preorder, to_tax_nd):
@@ -136,6 +136,7 @@ def detect_problem_mapping(ntw, nex_preorder, to_tax_nd):
         if par is None:
             continue
         nat = nd['anc_tup']
+        pat, pmai, gpat, gpmai = None, None, None, None
         if nat is not None:
             pat = par['anc_tup']
             if pat is None:
@@ -144,12 +145,12 @@ def detect_problem_mapping(ntw, nex_preorder, to_tax_nd):
                 items_lost = len(nat) - len(pat)
             assert items_lost >= 0
             score_list[1] = items_lost
-            par_missing, gpar_missing = calc_len_par_anc_list_skipping(nd, par, gpar, nbi)
+            par_missing, gpar_missing, pmai, gpat, gpmai = calc_len_par_anc_list_skipping(nd, par, gpar, nbi)
             score_list[2] = par_missing
             score_list[3] = gpar_missing
         score_list[0] = sum(score_list[1:])
         nd_id = nd["@id"]
-        sortable_val = tuple(score_list + [nd_id, nd])
+        sortable_val = tuple(score_list + [nd_id, nd, pat, pmai, gpat, gpmai])
         sortable.append(sortable_val)
     sortable.sort(reverse=True)
     return sortable
@@ -189,7 +190,19 @@ def main(nexson_fp, conflict_call_fp, tree_id, taxonomy_fp, root_at_id=None):
     
     x = detect_problem_mapping(ntw, nex_preorder, ott_id2_tax_nd)
     for idx, sv in enumerate(x):
-        print(sv)
+        nd_id, nd, pat, pmai, gpat, gpmai = sv[-6:]
+        ott_id = nd.get('ott_id')
+        if ott_id is None:
+            print(sv)
+        else:
+            ott_name = nd.get('ott_name')
+            nat = nd['anc_tup']
+            print(f"Node {nd_id} mapped to {ott_name} ({ott_id})")
+            print(f"  node_anc_tup = {nat}")
+            print(f"  par_anc_tup  = {pat}")
+            print(f"  par if del   = {pmai}")
+            print(f"  gpar if del  = {gpat}")
+            print(f"  gpar if del  = {gpmai}")
         if idx > 9:
             break
     
