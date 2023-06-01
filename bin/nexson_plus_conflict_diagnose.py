@@ -197,13 +197,13 @@ def main(nexson_fp, conflict_call_fp, tree_id, taxonomy_fp, root_at_id=None):
         else:
             ott_name = nd.get('ott_name')
             nat = nd['anc_tup']
-            print(f"Node {nd_id} mapped to {ott_name} ({ott_id})")
+            print(f"Node {nd_id} mapped to {ott_name} ({ott_id}): {sv[:-6]}")
             print(f"  node_anc_tup = {nat}")
             print(f"  par_anc_tup  = {pat}")
             print(f"  par if del   = {pmai}")
             print(f"  gpar if del  = {gpat}")
             print(f"  gpar if del  = {gpmai}")
-        if idx > 9:
+        if idx > 40:
             break
     
 
