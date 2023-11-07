@@ -1,0 +1,40 @@
+<html metal:use-macro="load: head.pt">
+<div metal:fill-slot="content">
+<p>Propinquity output documentation. The top-level docs are <a href="../index.html">here</a>.</p>
+<p>The <em>bumped_ott</em> directory a copy of the version of OTT that 
+	may have some extinct (often <em>incertae sedis</em>) taxa moved
+	toward the root of the tree.
+</p>
+
+<strong>Next step: </strong>Choose exemplars for tips in phylogenies that are
+mapped to higher taxa. See
+<a href="../exemplified_phylo/index.html">../exemplified_phylo/index.html</a>.
+
+
+<p>If there is an <code>"edits"</code> property in the JSON
+	file at <a href="../cleaned_ott/move_extinct_higher_log.json">../cleaned_ott/move_extinct_higher_log.json</a>.
+	If that property does not exist, then the taxonomy files in this directory
+	will be links to the files in <a href="../subott_dir/index.html">../subott_dir</a>.
+</p>
+<p>See <a href="https://github.com/OpenTreeOfLife/reference-taxonomy/wiki/Interim-taxonomy-file-format">https://github.com/OpenTreeOfLife/reference-taxonomy/wiki/Interim-taxonomy-file-format</a> for documentation
+  of the OTT format.</p>
+<p>Any <code>*.pickle</code> files are Python pickle artifacts of reading the taxonomy. They can be deleted because they can be regenerated from the primary OTT files.
+</p>
+<p>The taxonomic structure in the files in this directory will determine the
+phylogenetic interpretation of names in the rest of the synthesis run.</p>
+
+<p><strong>Results: </strong>
+<ul>
+  <li><a href="./cleaned_ott_1.json">cleaned_ott.json</a> is a JSON summary (often a large file that can be hard to look at in a browser) that lists the reasons different taxa were pruned. The file is composed from 
+  2 different files (which are rarely of direct interest to end-users): 
+  <a href="./flagged_in_cleaned.json">flagged_in_cleaned.json</a> and
+  <a href="./cleaned_ott_pruned_nonflagged.json">cleaned_ott_pruned_nonflagged.json</a>/
+  </li>
+  <li><a href="./cleaned_not_updated_ott.tre">cleaned_not_updated_ott.tre</a> is a
+newick representation of the taxonomy.</li>
+  <li><a href="./cleaned_ott_with_hiddenbarren.tre">cleaned_ott_with_hiddenbarren.tre</a> is another representation of the taxonomic tree. This file contains higher taxa that lack descendants. Such taxa are pruned from the cleaned_not_updated_ott.tre form.</li>
+  <li><a href="./cleaned_ott.tre">cleaned_ott.tre</a> is the newick representation of the taxonomy to be used in subsequent steps.</li>
+</ul>
+
+</div>
+</html>

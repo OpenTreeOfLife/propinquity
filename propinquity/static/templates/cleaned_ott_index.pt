@@ -1,0 +1,50 @@
+<html metal:use-macro="load: head.pt">
+<div metal:fill-slot="content" tal:define="basename import: os.path.basename">
+<p>Propinquity output documentation. The top-level docs are <a href="../index.html">here</a>.
+<p>The <em>cleaned_ott</em> directory contains the results of pruning OTT
+version ${cleaned_ott.version} so that the root is
+<a href="https://tree.opentreeoflife.org/taxonomy/browse?id=${cleaned_ott.root_ott_id}">${cleaned_ott.root_ott_id}</a>
+and the taxa flagged with the following flags were removed:</p>
+<ul>
+    <li tal:repeat="flag cleaned_ott.flags_to_prune" tal:content="flag" />
+</ul>
+
+<strong>Next step: </strong>Bump extinct taxa higher in the taxonomy, if necessary so that moving an extinct taxon does not disrupt the phylogenetic naming later in the pipeline.
+<a href="../bumped_ott/index.html">../bumped_ott/index.html</a>.
+
+<p><strong>Results: </strong>
+<ul>
+  <li><a href="./cleaning_flags.txt">cleaning_flags.txt</a> holds the flags that signal that taxon shoule be pruned from the taaxonomy before synthesis (this is one aspect of the configuration, serialized here for convenience).</li>
+  <li><a href="./cleaned_ott.json">cleaned_ott.json</a> is a JSON summary (often a large file that can be hard to look at in a browser) that lists the reasons different taxa were pruned. The file is composed from 
+  3 different files (which are rarely of direct interest to end-users): 
+  <a href="./flagged_in_cleaned.json">flagged_in_cleaned.json</a>, 
+  <a href="./cleaned_ott_pruned_nonflagged.json">cleaned_ott_pruned_nonflagged.json</a>, and
+  <a href="./cleaned_ott_1.json">cleaned_ott_1.json</a>.
+  The following table summarizes the information in  <strong>cleaned_ott.json</strong> by
+  showing the number of OTT IDs pruned by the combination of
+  flags that caused the pruning (we don't list each of the OTT ID here because
+  the list is extremely long and can make your browser hang.):
+<table>
+    <tr><th>Combination of flags</th><th># of nodes pruned</th></tr>
+    <tr tal:repeat="id_eblob cleaned_ott.pruned.items()">
+        <td>${id_eblob[0]}</td>
+        <div tal:switch="id_eblob[0] in cleaned_ott.pruning_keys_not_from_flags">
+            <td tal:case="True">${'{:,}'.format(len(id_eblob[1]))}</td>
+            <td tal:case="False">${'{:,}'.format(len(id_eblob[1]['anc_ott_id_pruned']))}</td>
+        </div>
+    </tr>
+</table>
+  </li>
+  <li><a href="./cleaned_not_updated_ott.tre">cleaned_not_updated_ott.tre</a> is a
+newick representation of the taxonomy with a total of ${'{:,}'.format(cleaned_ott.num_nodes)} nodes.
+${'{:,}'.format(cleaned_ott.num_tips)} of these are leaves and
+${'{:,}'.format(cleaned_ott.num_non_leaf_nodes)} internal nodes.</li>
+  <li><a href="./cleaned_ott_with_hiddenbarren.tre">cleaned_ott_with_hiddenbarren.tre</a> is another representation of the taxonomic tree. This file contains higher taxa that lack descendants. Such taxa are pruned from the cleaned_not_updated_ott.tre form.</li>
+<li><a href="./move_extinct_higher_log.json">move_extinct_higher_log.json</a> is a file that 
+  summarizes a check of whether or not some of the extinct taxa should be moved rootward (higher)
+  in the taxonomy. If their is an "edits" property in this file, then the <a href="../bumped_ott/index.html">../bumped_ott</a> directory will hold a modified version of the taxonomy.</li>
+  <li><a href="./ott_version.txt">ott_version.txt</a> holds the ID for the canonical OTT version used as an input to the synthesis</li>
+  <li><a href="./root_ott_id.txt">root_ott_id.txt</a> holds the root OTT ID (copy of info in other directories just for convenience).</li>
+</ul>
+</div>
+</html>

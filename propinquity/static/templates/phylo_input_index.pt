@@ -1,0 +1,25 @@
+<html metal:use-macro="load: head.pt">
+<div metal:fill-slot="content">
+<p>Propinquity output documentation. The top-level docs are <a href="../index.html">here</a>.
+<p>The <em>phylo_input</em> directory holds the files that are used to extract the ranked list of
+  study+tree IDs for the phylogenetic inputs to the pipeline.
+</p>
+<p><strong>Next step: </strong>Copy the NexSON files as a snapshot.
+  See <a href="../phylo_snapshot/index.html">../phylo_snapshot/index.html</a>
+  for details.
+</p>
+<p><strong>Output files: </strong></p>
+<ul>
+    <li><a href="./rank_collection.json">rank_collection.json</a> is a collection JSON that is the concatenation of the collections (which where found in the phylesystem shard
+    described in <a href="../index.html#configuration">the configuration</a> documentation.</li>
+    <li><a href="./study_tree_pairs.txt">study_tree_pairs.txt</a> is list of the study ID + tree ID in a terse syntax that is appropriate for file names within this propinquity pipeline. These are the ${'{:,}'.format(len(phylo_input.study_id_tree_id_pairs))} trees used as inputs for this run (click any link to view a tree in a new window):
+        <ol>
+            <li tal:repeat="stp phylo_input.study_id_tree_id_pairs">
+              <a href="https://tree.opentreeoflife.org/curator/study/view/${stp[0]}/?tab=trees&tree=${stp[1]}" target="_blank">tree ${stp[1]} of study ${stp[0]}</a></li>
+        </ol>
+    </li>
+    <li><a href="./blob_shas.txt">blob_shas.txt</a> is a list of the object SHAs for the trees listed in <a href="./study_tree_pairs.txt">study_tree_pairs.txt</a>. These SHAs are used to determine if two runs of propinquity have the same phylogenetic inputs.</li>
+    <li><a href="./index.json">index.json</a> is a JSON representation of the summaries used when writing this page.</li>
+
+</div>
+</html>

@@ -1,0 +1,30 @@
+<html metal:use-macro="load: head.pt">
+<div metal:fill-slot="content" tal:define="basename import: os.path.basename">
+<p>Propinquity output documentation. The top-level docs are
+  <a href="../index.html">here</a>.</p>
+<p>The <em>reversed_subproblems</em> directory holds the ${len(subproblems.tree_files)}
+subproblems with the phylogenetic inputs in reverse order relative to the collections.</p>
+<p>
+These versions of the subproblem are produced as a robustness check; they let the user
+see if if the order of trees has an obvious effect on the topology of the solution.
+The synthetic tree is built based on the subproblems found in <a href="../subproblems/index.html">../subproblems/index.html</a>, not the order found in this directory.
+<b>Note:</b> the fact that a solution on the reversed order is the same as the tree on the original
+order should not be taken as a demonstration that every order of trees would yield the same solution.</p>
+
+
+<p><strong>Next step: </strong>Solving the reversed subproblems. See
+<a href="../reversed_subproblem_solutions/index.html">../reversed_subproblem_solutions/index.html</a>
+for details.</p>
+
+<p><strong>Results:</strong>
+The reversed subproblems can be found in:
+<ul>
+  <li tal:repeat="id_src_el subproblems.sorted_by_num_phylo_inputs">
+    <tal:block tal:define="ottp id_src_el[0]; ott_name doc_gen.ott_prefixed_to_label(ottp)">
+      <a href="./${ottp}" title="${ott_name}">${ottp}</a> (${ott_name})
+    </tal:block>
+  </li>
+</ul>
+
+</div>
+</html>

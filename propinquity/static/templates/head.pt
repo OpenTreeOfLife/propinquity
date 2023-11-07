@@ -1,0 +1,16 @@
+<html>
+<head>
+<link rel="stylesheet" href="https://opentreeoflife.github.io/css/main.css">
+<style>
+table, th, td {
+    border: 1px solid black;
+    border-collapse: collapse;
+}
+</style>
+
+    <div metal:define-slot="head"></div>
+</head>
+<body>
+    <div metal:define-slot="content"></div>
+</body>
+</html>

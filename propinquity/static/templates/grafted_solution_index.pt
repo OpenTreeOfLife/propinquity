@@ -1,0 +1,22 @@
+<html metal:use-macro="load: head.pt">
+<div metal:fill-slot="content" tal:define="basename import: os.path.basename">
+<p>Propinquity output documentation. The top-level docs are <a href="../index.html">here</a>.</p>
+<p>The <em>grafted_solution</em> directory holds the solution tree created by
+grafting together ${len(subproblems.tree_files)} subproblems described in
+<a href="../subproblem_solutions/index.html">../subproblem_solutions/index.html</a>.</p>
+
+<p><strong>Next step: </strong>Reattach the taxa that were not present in any
+phylogenetic estimate; See
+<a href="../labelled_supertree/index.html">../labelled_supertree/index.html</a></p>
+<!-- <p>Sorted by the number of tips then by the number of internal nodes, these are:</p> -->
+
+
+
+<p><strong>Results: </strong></p>
+<ul>
+	<li><a href="./grafted_solution.tre">./grafted_solution.tre</a> holds an Newick representation of the solutions grafted together to contain the leaf set of the exemplification step.</li>
+	<li><a href="./grafted_solution_ottnames.tre">./grafted_solution_ottnames.tre</a> is the same tree with OTT names in the addition to the ott IDs as taxon labels.</li>
+</ul> 
+
+</div>
+</html>

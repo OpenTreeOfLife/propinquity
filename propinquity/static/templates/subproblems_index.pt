@@ -1,0 +1,81 @@
+<html metal:use-macro="load: head.pt">
+<div metal:fill-slot="content" tal:define="basename import: os.path.basename">
+<p>Propinquity output documentation. The top-level docs are
+  <a href="../index.html">here</a>.</p>
+<p>The <em>subproblems</em> directory holds the ${len(subproblems.tree_files)}
+subproblems. Each one is a slice of the full tree. They do not overlap.
+The decomposition is produced
+    by identifying each higher taxon that is not contested by any single
+    phylogenetic input.
+This taxon becomes the root of the subproblem (and is used in the file name to
+identify the subproblem).
+Many of the subproblems contain only trivial phylogenetic statements.
+See <a href="https://github.com/OpenTreeOfLife/propinquity/blob/master/subproblems/README.md" target="_blank">the subproblems README</a> for details on the procedure.
+</p>
+
+<p><strong>Next step: </strong>Solving the subproblems. See
+<a href="../subproblem_solutions/index.html">../subproblem_solutions/index.html</a>
+for details.</p>
+
+<p><strong>Results:</strong>
+This page contains the <a href="#subproblems">list of subproblems</a>, the
+<a href="#trees">list of subproblems overlapping each input tree</a>, and the
+<a href="#contested">list of contested taxa</a>.
+
+<p id="subproblems"><strong>List of subproblems</strong></p>
+
+Each of the ${len(subproblems.tree_files)}
+subproblems is a list of trees (in newick
+representation) with the order reflecting the ranking of the input trees.
+The taxonomy overlaps with every subproblem.</p>
+<p>Sorted by the number of phylogenetic inputs, the subproblems are:</p>
+<table>
+    <tr><th>Subproblem</th><th># inputs</th><th># tips</th><th>Input Identifiers</th></tr>
+    <tr tal:repeat="id_src_el subproblems.sorted_by_num_phylo_inputs">
+        <td><tal:block tal:define="ottp id_src_el[0]; ott_name doc_gen.ott_prefixed_to_label(ottp)">
+            <a href="./${ottp}" title="${ott_name}">${ottp}</a> (${ott_name})</tal:block></td>
+        <td>${len(id_src_el[1])}</td>
+        <td>${id_src_el[2]}</td>
+        <td><tal:block tal:repeat="tsn id_src_el[1][:-1]"><tal:block tal:define="stid doc_gen.extract_study_tree_id(tsn); sid stid[0]; tid stid[1]"><a href="https://tree.opentreeoflife.org/curator/study/view/${sid}/?tab=trees&tree=${tid}" target="_blank">${'{}@{}'.format(sid, tid)}</a></tal:block>, </tal:block>TAXONOMY</td>
+    </tr>
+</table>
+
+<p id="trees"><strong>Overlap between trees and subproblems</strong></p>
+
+<p>The list of input phylogenetic trees sorted by the number of subproblems that they overlap with is:</p>
+<table>
+    <tr><th>Study+Tree key</th><th># subproblems</th><th>Subproblem Identifiers</th></tr>
+    <tr tal:repeat="inp_sub_l subproblems.input_and_subproblems_sorted">
+        <td><tal:block tal:define="stid doc_gen.extract_study_tree_id(inp_sub_l[0]); sid stid[0]; tid stid[1]"><a href="https://tree.opentreeoflife.org/curator/study/view/${sid}/?tab=trees&tree=${tid}" target="_blank">${'{}@{}'.format(sid, tid)}</a></tal:block></td>
+        <td>${len(inp_sub_l[1])}</td>
+        <td>${', '.join([doc_gen.ott_id_number_str(i) for i in inp_sub_l[1]])}</td>
+    </tr>
+</table>
+
+<p id="contested"><strong>Contested taxa</strong></p>
+
+<p>The ${len(subproblems.contested_taxa)} contested taxa follow. For each taxon,
+  we list the input tree(s) that conflict with the taxon. For each tree,
+the "parent nodes" are internal nodes each of which has
+at least 1 child that belongs entirely to the taxon
+and at least one descendant that does not belong in the taxon. If the OTT Id were
+not contested, there would only be one internal node that fit those criterion, but
+in contested taxa there are multiple.</p>
+<ul>
+    <li tal:repeat="ott_all_trees subproblems.contested_taxa.items()">
+      <tal:block tal:define="ott_id ott_all_trees[0]; ott_name doc_gen.ott_id_to_label(ott_id)">
+      <a href="https://tree.opentreeoflife.org/taxonomy/browse?id=${ott_id}">${ott_id}</a> (${ott_name}) contested by:
+      <ul>
+        <li tal:repeat="tree_bundle ott_all_trees[1]">
+        <a href="https://tree.opentreeoflife.org/curator/study/view/${tree_bundle['study_id']}/?tab=trees&tree=${tree_bundle['tree_id']}" target="_blank">tree "${tree_bundle['tree_id']}" of study "${tree_bundle['study_id']}"</a>
+            <ul>
+                <li tal:repeat="node_inf tree_bundle.conflicting_nodes">
+                  Parent node ID = <a href="https://tree.opentreeoflife.org/curator/study/view/${tree_bundle['study_id']}/?tab=trees&tree=${tree_bundle['tree_id']}&node=${node_inf['parent'].get('node_id', node_inf['parent']['label'])}">${node_inf['parent'].get('node_id', node_inf['parent']['label'])}</a>
+                </li>
+            </ul>
+        </li>
+      </ul></tal:block>
+    </li>
+</ul>
+</div>
+</html>

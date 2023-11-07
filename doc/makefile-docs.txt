@@ -1,4 +1,0 @@
-"exemplified_phylo/regraft_cleaned_ott.tre" -> "otc-tree-tool --lost-taxa-vs"
-"labelled_supertree/labelled_supertree.tre" -> "otc-tree-tool --lost-taxa-vs"
-"otc-tree-tool --lost-taxa-vs"  [style=filled, color="#EEBBDD"]
-"otc-tree-tool --lost-taxa-vs" -> "assessments/lost_taxa.txt"

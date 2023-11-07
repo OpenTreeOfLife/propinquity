@@ -1,0 +1,114 @@
+from snakemake.utils import min_version
+from snakemake.logging import logger
+import subprocess
+import sys
+import os
+from propinquity import validate_config, write_if_needed
+import json
+from peyutil import write_as_json
+
+
+min_version("5.31.1")
+
+CFG = validate_config(config, logger)
+content = json.dumps(config, sort_keys=True, indent=2) + '\n'
+write_if_needed(content=content, fp="config.json", CFG=CFG)
+
+subworkflow s00_tool_config:
+    workdir: CFG.out_dir
+    snakefile: "rules/s00_tool_config.smk"
+    configfile: "config.json"
+
+subworkflow s01_snapshot:
+    workdir: CFG.out_dir
+    snakefile: "rules/s01_snapshot.smk"
+    configfile: "config.json"
+
+subworkflow s02_clean_ott:
+    workdir: CFG.out_dir
+    snakefile: "rules/s02_clean_ott.smk"
+    configfile: "config.json"
+
+subworkflow s03_clean_phylo:
+    workdir: CFG.out_dir
+    snakefile: "rules/s03_clean_phylo.smk"
+    configfile: "config.json"
+
+subworkflow s04_modify_taxonomy:
+    workdir: CFG.out_dir
+    snakefile: "rules/s04_modify_taxonomy.smk"
+    configfile: "config.json"
+
+subworkflow s05_exemplify:
+    workdir: CFG.out_dir
+    snakefile: "rules/s05_exemplify.smk"
+    configfile: "config.json"
+
+subworkflow s06_subproblems:
+    workdir: CFG.out_dir
+    snakefile: "rules/s06_subproblems.smk"
+    configfile: "config.json"
+
+subworkflow s07_subproblems_deg_dist:
+    workdir: CFG.out_dir
+    snakefile: "rules/s07_subproblems_deg_dist.smk"
+    configfile: "config.json"
+
+subworkflow s08_graft:
+    workdir: CFG.out_dir
+    snakefile: "rules/s08_graft.smk"
+    configfile: "config.json"
+
+subworkflow s09_unprune_taxa:
+    workdir: CFG.out_dir
+    snakefile: "rules/s09_unprune_taxa.smk"
+    configfile: "config.json"
+
+subworkflow s10_finish:
+    workdir: CFG.out_dir
+    snakefile: "rules/s10_finish.smk"
+    configfile: "config.json"
+
+rule all:
+    input: s00_tool_config("config"), 
+           s00_tool_config("otc-config"),
+           s01_snapshot("checksum_for_run.md5"), 
+           s02_clean_ott("cleaned_ott/cleaned_not_updated_ott.tre"),
+           s03_clean_phylo("exemplified_phylo/args.txt"),
+           s03_clean_phylo("cleaned_phylo/phylo_inputs_cleaned.txt"),
+           s04_modify_taxonomy("bumped_ott/cleaned_ott.tre"),
+           s05_exemplify("exemplified_phylo/incertae_sedis.txt"),
+           s06_subproblems("subproblems/raw_contesting_trees.json"),
+           s06_subproblems("subproblems/contesting_trees.json"),
+           s06_subproblems("subproblem_solutions/subproblems-scaffold.tre"),
+           s06_subproblems("subproblem_solutions/subproblems-scaffold-only.tre"),
+           s06_subproblems("subproblem_solutions/solution-ids.txt"),
+           s06_subproblems("reversed_subproblem_solutions/solution-ids.txt"),
+           s07_subproblems_deg_dist("subproblem_solutions/solution-degree-distributions.txt"),
+           s07_subproblems_deg_dist("reversed_subproblem_solutions/solution-degree-distributions.txt"),
+           s07_subproblems_deg_dist("subproblems/.all_deg_dist_calculated.txt"),
+           s08_graft("grafted_solution/grafted_solution_ottnames.tre"),
+           s09_unprune_taxa("labelled_supertree/labelled_supertree.tre"),
+           s09_unprune_taxa("labelled_supertree/labelled_supertree_out_degree_distribution.txt"),
+           s09_unprune_taxa("labelled_supertree/labelled_supertree_ottnames.tre"),
+           s09_unprune_taxa("labelled_supertree/labelled_supertree_simplified_ottnames.tre"),
+           s09_unprune_taxa("labelled_supertree/labelled_supertree_ottnames_without_monotypic.tre"),
+           s09_unprune_taxa("labelled_supertree/labelled_supertree_simplified_ottnames_without_monotypic.tre"),
+           s09_unprune_taxa("exemplified_phylo/pruned_taxonomy_degree_distribution.txt"), 
+           s10_finish("annotated_supertree/annotations.json"),
+           s10_finish("index.html"),
+           s10_finish("subproblems/subproblem_size_summary_table.tsv")
+
+
+rule prechecksum_inputs:
+    input: s00_tool_config("config"), 
+           s00_tool_config("otc-config"),
+           s01_snapshot("phylo_snapshot/ps_shard_shas.txt"),
+           s01_snapshot("phylo_snapshot/collections_shard_shas.txt"),
+
+rule checksum_inputs:
+    input: s00_tool_config("config"), 
+           s00_tool_config("otc-config"),
+           s01_snapshot("phylo_snapshot/ps_shard_shas.txt"),
+           s01_snapshot("phylo_snapshot/collections_shard_shas.txt"),
+           s01_snapshot("checksum_for_run.md5")

@@ -1,0 +1,115 @@
+<html metal:use-macro="load: head.pt">
+<div metal:fill-slot="content">
+<div tal:define="root_name doc_gen.ott_id_to_label(config.root_ott_id)">
+<p>The files in this directory (and its children) were produced using
+    <a href="https://github.com/OpenTreeOfLife/propinquity">propinquity</a>,
+    a <a href="https://snakemake.github.io/">snakemake</a>-based pipeline for phylogenetic supertrees.
+</p>
+<h1 id="configuration">Configuration</h1>
+
+<div tal:switch="bool(config.synth_id)">
+    <div tal:case="True">
+      <p>The Open Tree of Life version is: <strong><code>${config.synth_id}</code></strong></p>
+    </div>
+</div>
+
+<p>The configuration file for the propinquity run is at <a href="./config.json"><code>config.json</code></a>.
+The run completed at <code>${config.config_annot["date_completed"]}</code>.</p>
+
+
+<h2 id="configuration-taxonomy">Taxonomy</h2>
+<ul>
+    <li>OTT version: <a href="https://tree.opentreeoflife.org/about/taxonomy-version/ott${config.ott_major_minor_version}">${config.ott_major_minor_version}</a> (specifically version ${config.ott_version})</li>
+    <li>root taxon:  <a href="https://tree.opentreeoflife.org/taxonomy/browse?id=${config.root_ott_id}" title="${root_name}">${config.root_ott_id}</a> (${root_name})</li>
+    <li>The local copy of this version of OTT was at <code>${config.ott_root}</code></li>
+    <li>This version of OTT was pruned to removed taxa that are flagged with any of the following <a href="https://github.com/OpenTreeOfLife/reference-taxonomy/wiki/Taxon-flags">taxon flags</a>:
+      <ul>
+        <li tal:repeat="flag config.taxonomy_cleaning_flags" tal:content="flag" ></li>
+      </ul>
+    </li>
+</ul>
+
+<h2 id="configuration-phylogenies">Phylogenetic inputs</h2>
+
+<p>The phylesystem shards for this run were located under <code>${config.phylesystem_root}</code></p>
+<p>The collections shards for this run were located under <code>${config.collections_root}</code>. ${len(config.collections)} <a href="https://tree.opentreeoflife.org/curator/collections">collections</a> were used, ranked in this order:</p>
+    <ol>
+        <li tal:repeat="collection config.collections" ><a href="https://raw.githubusercontent.com/OpenTreeOfLife/collections-1/master/collections-by-owner/${collection}.json">${collection}</a></li>
+    </ol>
+
+<h2 id="configuration-tools">Tools</h2>
+
+<h3 id="configuration-tools-otc"><a href="https://github.com/OpenTreeOfLife/otcetera">otcetera</a></h3>
+
+<ul>
+    <li>version: <code>${config.otc_version}</code> and git SHA <a href="https://github.com/OpenTreeOfLife/otcetera/commit/${config.otc_sha}">${config.otc_sha}</a></li>
+    <li>compiled using version ${config.otc_boost_version} of the <a href="http://www.boost.org/">boost C++ libraries</a></li>
+
+</ul>
+
+<h3 id="configuration-tools-peyotl"><a href="https://opentreeoflife.github.io/peyotl">peyotl</a></h3>
+
+<ul>
+    <li>version: <code>${config.peyotl_version}</code></li>
+</ul>
+
+<h3 id="configuration-tools-propinquity"><a href="https://github.com/OpenTreeOfLife/propinquity">propinquity</a></h3>
+
+<ul>
+    <li>git SHA <a href="https://github.com/OpenTreeOfLife/propinquity/commit/${config.propinquity_sha}">${config.propinquity_sha}</a></li>
+</ul>
+
+
+<h2>Processing of phylogenetic inputs</h2>
+<ol>
+    <li> <a href="./phylo_input/index.html">phylo_input/index.html</a> discusses
+the list of ${'{:,}'.format(len(phylo_input.study_id_tree_id_pairs))} input phylogenetic trees that were identified from the collections.</li>
+    <li><a href="./phylo_snapshot/index.html">phylo_snapshot/index.html</a> links to
+the git SHA of these trees and copies of them as they existed when the supertree pipeline
+was run.</li>
+    <li> <a href="./cleaned_phylo/index.html">cleaned_phylo/index.html</a> describes the
+pruning of tips from input phylogenies due to mapping to problematic taxa. There were ${len(exemplified_phylo.nonempty_trees)} nonempty trees after that cleaning.</li>
+    <li><a href="./exemplified_phylo/index.html">exemplified_phylo/index.html</a> describes the choice of terminal taxa to exemplify those nodes that are mapped to higher taxa.</li>
+</ol>
+
+
+<h2>Processing of taxonomic inputs</h2>
+<ol>
+    <li>The <a href="./subott_dir/index.html">subott_dir</a> directory holds a version of the OpenTree Taxonomy pruned so that 
+        the root taxon is <code>${config.root_ott_id}</code>.</li>
+    <li>The <a href="./cleaned_ott/index.html">cleaned_ott</a> directory holds information from the removal of flagged taxa and pruning to the chosen root.</li>
+    <li>The <a href="./bumped_ott/index.html">bumped_ott</a> directory 
+    holds a version of the OpenTree Taxonomy that may have some
+    <em>incertae sedis</em> taxa moved toward the root of the tree.
+    This is done to make the movement of taxonomically uncertain groups less disruptive to the taxonomic naming steps.</li>
+    <li><a href="./exemplified_phylo/index.html">exemplified_phylo/index.html</a> describes how the choice of exemplars for the phylogenetic inputs also leads to a pruned taxonomy with these exemplars.</li>
+</ol>
+<h2>Supertree algorithm</h2>
+<ol>
+    <li><a href="./subproblems/index.html">subproblems/index.html</a> describes the decomposition of the full tree into adjacent subproblems. For the sake of comparison,
+        a version of the subproblems with the order of phylogenetic inputs reversed may be generated at <a href="./reversed_subproblems/index.html">reversed_subproblems/index.html</a></li>
+    <li><a href="./subproblem_solutions/index.html">subproblem_solutions/index.html</a> describes the solutions that result from each of these subproblems. If the reversed subproblems were produced, their solutions will be in <a href="./reversed_subproblem_solutions/index.html">reversed_subproblem_solutions/index.html</a>.</li>
+    <li><a href="./grafted_solution/index.html">grafted_solution/index.html</a> describes piecing the subproblem solutions into a single solution for the exemplified taxa.</li>
+    <li><a href="./labelled_supertree/index.html">labelled_supertree/index.html</a> describes how the taxa pruned off in the exemplar step are reattached to produce a full supertree.</li>
+</ol>
+
+
+<h2>Annotation of the supertree</h2>
+<p>See <a href="./annotated_supertree/index.html">annotated_supertree/index.html</a> links to the annotations for that tree.</p>
+
+
+
+<h2>Assessment of the pipeline</h2>
+<p>See <a href="./assessments/index.html">assessments/index.html</a> discusses what tests were
+run to assess the supertree.</p>
+
+
+<h2>Final output</h2>
+<ol>
+    <li><a href="./labelled_supertree/labelled_supertree.tre">./labelled_supertree/labelled_supertree.tre</a> (the tree)</li>
+    <li><a href="./annotated_supertree/annotations.json">./annotated_supertree/annotations.json</a> (the annotations file)</li>
+</ol>
+
+</div>
+</div>
+</html>

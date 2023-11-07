@@ -1,0 +1,31 @@
+<html metal:use-macro="load: head.pt">
+<div metal:fill-slot="content">
+<p>Propinquity output documentation. The top-level docs are <a href="../index.html">here</a>.
+<p>This directory holds the output of
+a run of propinquity's <code>run_assessments.py</code> script.
+That script checks for certain types of problems in the output of the pipeline.
+<a href="./summary.json">summary.json</a> is a JSON representation of that data.</p>
+<p>The ${len(assessments.categories_of_checks)} checks run were:</p>
+<table>
+    <tr><th>nickname of check</th><th>description</th></tr>
+    <tr tal:repeat="cn assessments.categories_of_checks">
+        <td><code>${cn}</code></td>
+        <td>${assessments.assessments[cn]['description']}</td>
+    </tr>
+</table>
+
+<div tal:switch="0 == len(assessments.categories_of_checks_with_errors)">
+    <p tal:case="True">SUCCESS! No errors were found.</p>
+    <div tal:case="False">
+        <p>There were ${len(assessments.categories_of_checks_with_errors)} classes of error found.</p>
+        <table>
+            <tr><th>nickname of check</th><th>python dictionary representation of problem</th></tr>
+            <tr tal:repeat="cn assessments.categories_of_checks_with_errors">
+                <td><code>${cn}</code></td>
+                <td>${assessments.assessments[cn]['data']}</td>
+            </tr>
+        </table>
+    </div>
+</div>
+</div>
+</html>

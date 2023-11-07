@@ -1,6 +1,0 @@
-cleaning_flags = environmental,viral,barren,not_otu,hidden,was_container,inconsistent,hybrid,merged
-
-[synthesis]
-collections = pcart/cnidaria mwestneat/reef-fishes josephwb/hypocreales kcranston/catfish kcranston/barnacles opentreeoflife/plants opentreeoflife/metazoa opentreeoflife/fungi opentreeoflife/safe-microbes opentreeoflife/default 
-root_ott_id = 93302
-
