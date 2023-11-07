@@ -3,3 +3,14 @@ index.json
 index.html
 config.local
 test-output
+mth-*
+girard
+custom*.bash
+.snakemake
+machine.json
+logs
+mod_snakemake_env
+propinquity.egg-info
+mth_*
+cruft*
+otc-*.log.txt

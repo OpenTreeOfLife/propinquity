@@ -13,8 +13,10 @@ import os
 import re
 import subprocess
 from collections import defaultdict
-
+from dendropy import Tree
+from dendropy.calculate import treecompare
 import peyotl.ott as ott
+from peyotl import read_as_json
 import requests
 
 # From reference-taxonomy:org/opentreeoflife/taxa/Rank.java
@@ -171,9 +173,14 @@ def print_header(out, level, line):
         out.write("\n# {}\n".format(line))
 
 
+def fmt_link(url, text):
+    if HTML_OUT:
+        return f'<a href="{url}" target="_blank">{text}</a>\n'
+    return text
+
 def print_link(out, url, text):
     if HTML_OUT:
-        out.write('<a href="{u}" target="_blank">{t}</a>\n'.format(u=url, t=text))
+        out.write(fmt_link(url, text))
     else:
         print(text)
 
@@ -184,6 +191,19 @@ def print_paragraph(out, line):
     else:
         out.write("{}\n".format(line))
 
+def print_list_item(out, line):
+    if HTML_OUT:
+        out.write("<li>{}</li>\n".format(line))
+    else:
+        out.write("{}\n".format(line))
+
+def open_list(out):
+    if HTML_OUT:
+        out.write("<ul>\n")
+
+def close_list(out):
+    if HTML_OUT:
+        out.write("</ul>\n")
 
 # NOTE: This section gets a rank for unranked nodes by looking at their descendants
 #       If we didn't do this, then we didn't used to see Fungi being broken, since Nucletmycea
@@ -487,86 +507,25 @@ def compare_lists(out, rtype, list1, list2, verbose=False, list_to_str=None):
     s1 = set(list1)
     s2 = set(list2)
     if s1 == s2:
-        print_paragraph(out, "{t}: no differences".format(t=rtype))
+        print_paragraph(out, f"{rtype}: no differences")
         return 0
-    print_header(out, 2, "{t}: ".format(t=rtype))
-    # simple length check
+    print_header(out, 2, f"{rtype}: ")
     if len(s1) != len(s2):
-        m = " {l1} in {r1}; {l2} in {r2}".format(l1=len(s1), l2=len(s2), r1=R1N, r2=R2N)
+        m = f" {len(s1)} in {R1N}; {len(s2)} in {R2N}"
         print_paragraph(out, m)
     common = s1.intersection(s2)
-    if len(common) > 0:
-        print_paragraph(out, " in common = {l}".format(t=rtype, l=len(common)))
+    print_paragraph(out, f" {len(common)} in common")
     diff1 = s1.difference(s2)
-    if len(diff1) > 0:
-        print_paragraph(
-            out, " in {r1} but not {r2} = {l}".format(l=len(diff1), r1=R1N, r2=R2N)
-        )
-        if verbose:
-            print_paragraph(
-                out, " {t} in {r1} but not {r2}:".format(t=rtype, r1=R1N, r2=R2N)
-            )
-            print_paragraph(out, list_to_str(diff1))
+    print_paragraph(out, f" {len(diff1)} in {R1N} but not {R2N}")
+    if verbose:
+        print_paragraph(out, f" {rtype} in {R1N} but not {R2N}:")
+        print_paragraph(out, list_to_str(diff1))
     diff2 = s2.difference(s1)
-    if len(diff2) > 0:
-        print_paragraph(
-            out, " in {r2} but not {r1} = {l}".format(l=len(diff2), r1=R1N, r2=R2N)
-        )
-        if verbose:
-            print_paragraph(
-                out, " {t} in {r2} but not {r1}:".format(t=rtype, r1=R1N, r2=R2N)
-            )
-            print_paragraph(out, list_to_str(diff2))
+    print_paragraph(out, f" {len(diff2)} in {R2N} but not {R1N}")
+    if verbose:
+        print_paragraph(out, f" {rtype} in {R2N} but not {R1N}:")
+        print_paragraph(out, list_to_str(diff2))
     return 1
-
-
-# list of collections, list of trees, compare SHAs
-# look at phylo_snapshot/concrete_rank_collection.json for each run
-def config_diffs(out, jsondata1, jsondata2, verbose):
-    # do ott versions match
-    ott1 = jsondata1["ott_version"]
-    ott2 = jsondata2["ott_version"]
-    if ott1 != ott2:
-        print_paragraph(
-            out,
-            "{r1} ott ({v1}) != {r2} ott ({v2})".format(
-                v1=ott1, v2=ott2, r1=R1N, r2=R2N
-            ),
-        )
-
-    # do roots match
-    root1 = int(jsondata1["root_ott_id"])
-    root2 = int(jsondata2["root_ott_id"])
-    if root1 != root2:
-        print_paragraph(
-            out, "root id1 ({r1}) != root id2 ({r2})".format(r1=root1, r2=root2)
-        )
-
-    # do collections match
-    collections1 = jsondata1["collections"]
-    collections2 = jsondata2["collections"]
-    compare_lists(out, "Collections", collections1, collections2, verbose)
-
-    # do flags match
-    flags1 = jsondata1["taxonomy_cleaning_flags"]
-    flags2 = jsondata2["taxonomy_cleaning_flags"]
-    compare_lists(out, "Flags", flags1, flags2, verbose)
-
-
-# note that ottid is in form 'ott####'
-def get_taxon_details(ottid):
-    pattern = re.compile(r"ott")
-    int_id = re.sub(pattern, "", ottid)
-    method_url = "https://api.opentreeoflife.org/v3/taxonomy/taxon_info"
-    header = {"content-type": "application/json"}
-    payload = {"ott_id": int_id}
-    r = requests.post(method_url, headers=header, data=json.dumps(payload))
-    try:
-        j = r.json()
-        return j["name"], j["rank"]
-    except KeyError:
-        print("no name returned for {id}".format(id=ottid))
-    # print '{i}:{n}'.format(i=ottid, n=taxon_name)
 
 
 _TREE_URL_TEMPLATE = (
@@ -774,12 +733,50 @@ def synthesis_tree_diffs(out, io_stats1, io_stats2):
 class RunStatistics(object):
     def __init__(self, output_dir):
         self.output_dir = output_dir
-        self.config = self.read_config()
-        self.input_output_stats = self.read_input_output_stats()
-        self.input_trees = self.read_input_trees()
-        self.broken_taxa = self.read_broken_taxa()
-        self.subproblems = self.read_subproblems()
-        self.contested = self.read_contested()
+        self._config = None
+        self._input_output_stats = None
+        self._input_trees = None
+        self._broken_taxa = None
+        self._subproblems = None
+        self._contested = None
+
+    @property
+    def config(self):
+        if self._config is None:
+            self._config = self.read_config()
+        return self._config
+    @property
+    def input_output_stats(self):
+        if self._input_output_stats is None:
+            self._input_output_stats = self.read_input_output_stats()
+        return self._input_output_stats
+    @property
+    def input_trees(self):
+        if self._input_trees is None:
+            self._input_trees = self.read_input_trees()
+        return self._input_trees
+    @property
+    def broken_taxa(self):
+        if self._broken_taxa is None:
+            self._broken_taxa = self.read_broken_taxa()
+        return self._broken_taxa
+    @property
+    def subproblems(self):
+        if self._subproblems is None:
+            self._subproblems = self.read_subproblems()
+        return self._subproblems
+    @property
+    def contested(self):
+        if self._contested is None:
+            self._contested = self.read_contested()
+        return self._contested
+
+    def filepath_to(self, rel_path, required=True):
+        rps = os.path.split(rel_path)
+        fp = os.path.join(self.output_dir, *rps)
+        if required and not os.path.exists(fp):
+            raise RuntimeError(f"Required path {fp} not found")
+        return fp
 
     def read_broken_taxa(self):
         d = os.path.join(self.output_dir, "labelled_supertree")
@@ -898,50 +895,539 @@ class RunStatistics(object):
             j2[taxon] = annotations
         return j2
 
+def _find_node_in_cleaned_phylo_json(blob, nd_id):
+    for key, val in blob.items():
+        if key == "revised_ingroup_node":
+            if nd_id == val:
+                return key
+            continue
+        node_list = val.get("nodes", [])
+        if nd_id in node_list:
+            return key
+    return 'INCLUDED'
+
+def _find_edge_in_cleaned_phylo_json(blob, edge_id):
+    for key, val in blob.items():
+        if key == "revised_ingroup_node":
+            continue
+        edge_list = val.get("edges", [])
+        if edge_id in edge_list:
+            return key
+    return 'INCLUDED'
+
+def get_tree_and_otus_from_nexson(nex, tree_id):
+    """Returns the tree_blob, and otuById blob for the tree_id
+    
+    or None, None if tree_id is not found.
+    """
+    
+    nexml = nex['nexml']
+    tree_cont = nexml["treesById"]
+    otu_cont = nexml["otusById"]
+    tree, otu = None, None
+    for trees_id, blob in tree_cont.items():
+        tblobs = blob['treeById']
+        tree_blob = tblobs.get(tree_id)
+        if tree_blob is not None:
+            return tree_blob, otu_cont[blob["@otus"]]['otuById']
+    return None, None
+def _list_elements(out, str_list):
+    if str_list:
+        open_list(out)
+        for el in str_list:
+            print_list_item(out, el)
+        close_list(out)
+
+_SNAPSHOT_JSON_TEMPLATE = 'phylo_snapshot/tree_{study_tree}.json'
+_CLEANED_PHYLO_JSON_TEMPLATE = 'cleaned_phylo/tree_{study_tree}.json'
+_CLEANED_PHYLO_TREE_TEMPLATE = 'cleaned_phylo/tree_{study_tree}.tre'
+_EXEMPLAR_PHYLO_TREE_TEMPLATE = 'exemplified_phylo/{study_tree}.tre'
+_CONTESTING_TREES_JSON = 'subproblems/contesting_trees.json'
+
+class RunComparison(object):
+    def __init__(self, run1, run2, outstream, verbose=False, html_dir=None):
+        self.run1 = run1
+        self.run2 = run2
+        self.out = outstream
+        self.verbose = verbose
+        self.html_dir = html_dir
+        self.ott_to_depth_fp = None
+
+    def input_diffs(self):
+        print_header(self.out, 1, "Comparing inputs")
+        self.config_diffs()
+        self.phylo_input_diffs()
+
+    def compare_lists(self, tag, l1, l2, list_to_str=None):
+        compare_lists(self.out, tag, l1, l2, self.verbose, list_to_str)
+
+    # list of collections, list of trees, compare SHAs
+    # look at phylo_snapshot/concrete_rank_collection.json for each run
+    def config_diffs(self):
+        j1, j2 = self.run1.config, self.run2.config
+        # do ott versions match
+        print_header(self.out, 2, "OTT versions")
+        ott1, ott2 = j1["ott_version"], j2["ott_version"]
+        if ott1 != ott2:
+            para = f"{R1N} ott ({ott1}) != {R2N} ott ({ott2})"
+        else:
+            para = f"Both runs used {ott1}"
+        print_paragraph(self.out, para)
+
+        # do roots match
+        root1, root2 = int(j1["root_ott_id"]), int(j2["root_ott_id"])
+        if root1 != root2:
+            para = f"root id1 ({root1}) != root id2 ({root2})"
+        else:
+            para = f"Both runs used root id {root1}"
+        print_paragraph(self.out, para)
+
+        # do collections match
+        collections1, collections2  = j1["collections"], j2["collections"]
+        self.compare_lists("Collections included", collections1, collections2)
+
+        # do flags match
+        flags1, flags2 = j1["taxonomy_cleaning_flags"], j2["taxonomy_cleaning_flags"]
+        self.compare_lists("Flags", flags1, flags2)
+
+    def cmp_cleaned_trees(self, tid):
+        fp = f"cleaned_phylo/tree_{tid}.json"
+        path1, path2 = self.run1.filepath_to(fp), self.run2.filepath_to(fp)
+        j1 = read_as_json(path1)
+        j2 = read_as_json(path2)
+        if j1 == j2:
+            return None
+        # keys = {'unmapped_otu', 
+        #          'mapped_to_taxon_containing_other_mapped_tips', 
+        #          'replaced_by_exemplar_node', 
+        #          'replaced_by_arbitrary_node', 
+        #          'empty-after-higher-taxon-tip-prune', 
+        #          'unrecognized_ott_id', 
+        #          'outgroup', 
+        #          'flagged', 
+        #          'higher-taxon-tip', 
+        #          'revised_ingroup_node', 
+        #          'became_trivial'}
+        node_diffs = {}
+        edge_diffs = {}
+        nds_done = set()
+        edges_done = set()
+        print(path2)
+        for k, v in j2.items():
+            corresp = j1.get(k, {})
+            if k == "revised_ingroup_node":
+                v = {'nodes':[v]}
+                if corresp == {}:
+                    cnodes, cedges = [], []
+                else:
+                    cnodes, cedges = {'nodes':[corresp]}, []
+            else:
+                cnodes, cedges = corresp.get("nodes", []), corresp.get("edges", [])
+            nodes, edges = v.get("nodes", []), v.get("edges", [])
+            
+            for nd in nodes:
+                nds_done.add(nd)
+                if nd in cnodes:
+                    continue
+                prev_tag = _find_node_in_cleaned_phylo_json(j1, nd)
+                new_key = f"{prev_tag} -> {k}"
+                node_diffs.setdefault(new_key, []).append(nd)
+            for edge in edges:
+                if edge in cedges:
+                    continue
+                prev_tag = _find_edge_in_cleaned_phylo_json(j1, edge)
+                new_key = f"{prev_tag} -> {k}"
+                edge_diffs.setdefault(new_key, []).append(edge)
+        for k, v in j1.items():
+            if k == "revised_ingroup_node":
+                v = {'nodes':[v]}
+            nodes, edges = v.get("nodes", []), v.get("edges", [])
+            for nd in nodes:
+                if nd in nds_done:
+                    continue
+                new_key = f"{k} -> INCLUDED"
+                node_diffs.setdefault(new_key, []).append(nd)
+            for edge in edges:
+                if nd in edges_done:
+                    continue
+                new_key = f"{k} -> INCLUDED"
+                edge_diffs.setdefault(new_key, []).append(edge)
+        tks = set()
+        tks.update(node_diffs.keys())
+        tks.update(edge_diffs.keys())
+        tkl = list(tks)
+        tkl.sort()
+        sn = []
+        for k in tkl:
+            nd_strs = node_diffs.get(k, [])
+            nd_strs.sort()
+            edge_strs = edge_diffs.get(k, [])
+            edge_strs.sort()
+            row = f"{k}: nodes = {nd_strs} edges = {edge_strs}"
+            sn.append(row)
+        return sn
+
+    def do_phylo_comparison(self, study_tree):
+        if self.html_dir is None:
+            return self._do_phylo_comparison(study_tree, self.out)
+        fp = os.path.join(self.html_dir, f"tree_{study_tree}.html")
+        with open(fp, "w") as curr_out:
+            return self._do_phylo_comparison(study_tree, curr_out)
+    
+    def _describe_nexson_diff(self, curr_out, study_tree, nex1, nex2):
+        sys.stderr.write(f"comparing nexson for {study_tree}\n")
+        study_id, tree_id = study_tree.split('@')
+        tree_1, otu_1 = get_tree_and_otus_from_nexson(nex1, tree_id)
+        assert tree_1 is not None
+        tree_2, otu_2 = get_tree_and_otus_from_nexson(nex2, tree_id)
+        assert tree_2 is not None
+        try:
+            otus_done = set()
+            unmapped = []
+            remapped = []
+            mapped = []
+            for k, v in otu_2.items():
+                # print(f"otu key {k} => {v}")
+                otus_done.add(k)
+                other = otu_1.get(k)
+                if other is None:
+                    raise RuntimeError(f"new otu_id {k} in {study_tree}")
+                ott_id_2 = v.get("^ot:ottId")
+                ott_id_1 = other.get("^ot:ottId")
+                if ott_id_1 is not None:
+                    assert isinstance(ott_id_1, int)
+                if ott_id_2 is not None:
+                    assert isinstance(ott_id_2, int)
+                    if ott_id_1 is None:
+                        mapped.append((k, ott_id_2, v.get("^ot:ottTaxonName", "")))
+                    elif ott_id_1 != ott_id_2:
+                        remapped.append((k, ott_id_1, other.get("^ot:ottTaxonName", ""), 
+                                            ott_id_2, v.get("^ot:ottTaxonName", "")))
+                else:
+                    if ott_id_1 is None:
+                        pass # still unmapped
+                    else:
+                        unmapped.append((k, ott_id_1, other.get("^ot:ottTaxonName", "")))
+            for k, v in otu_1.items():
+                if k not in otus_done:
+                    raise RuntimeError(f"deletion of otu_id {k} in {study_tree}")
+            if mapped or unmapped or remapped:
+                print_paragraph(curr_out, f"{len(unmapped)} taxa unmapped")
+                if unmapped:
+                    open_list(curr_out)
+                    for u in unmapped:
+                        print_list_item(curr_out, f"{u[0]} no longer mapped to OTT '{u[2]}' ({u[1]})")
+                    close_list(curr_out)
+                print_paragraph(curr_out, f"{len(mapped)} newly taxa mapped")
+                if mapped:
+                    open_list(curr_out)
+                    for u in mapped:
+                        print_list_item(curr_out, f"{u[0]} now mapped to OTT '{u[2]}' ({u[1]})")
+                    close_list(curr_out)
+                    
+                print_paragraph(curr_out, f"{len(remapped)} remapped taxa")
+                if remapped:
+                    open_list(curr_out)
+                    for u in remapped:
+                        print_list_item(curr_out, f"{u[0]} changed from OTT '{u[2]}' ({u[1]}) to '{u[4]}'' ({u[3]}) ")
+                    close_list(curr_out)
+            else:
+                print_paragraph(curr_out, "No OTU mapping changes")
+        except:
+            sys.stderr.write(f"Writing (possibly modified) otus for {study_tree} to cruft1.json and cruft2.json")
+            with open("cruft1.json", "w") as o:
+                o.write(json.dumps(otu_1, sort_keys=True, indent=2))
+                o.write('\n')
+            with open("cruft2.json", "w") as o:
+                o.write(json.dumps(otu_2, sort_keys=True, indent=2))
+                o.write('\n')
+            raise
+
+        if tree_1 == tree_2:
+            print_paragraph(curr_out, "No tree changes")
+        else:
+            try:
+                o1, o2 = tree_1.get("^ot:inGroupClade"), tree_2.get("^ot:inGroupClade")
+                if o1 != o2:
+                    print_paragraph(curr_out, f"ingroup node changed from {o1} to {o2}")
+                o1, o2 = tree_1.get("^ot:rootNodeId"), tree_2.get("^ot:rootNodeId")
+                if o1 != o2:
+                    print_paragraph(curr_out, f"root node changed from {o1} to {o2}")
+                o1, o2 = tree_1.get("^ot:specifiedRoot"), tree_2.get("^ot:specifiedRoot")
+                if o1 != o2:
+                    print_paragraph(curr_out, f"specifiedRoot node changed from {o1} to {o2}")
+                nbi_1, nbi_2 = tree_1.get("nodeById"), tree_2.get("nodeById")
+                exemplar_del = []
+                nonexemplar_del = []
+                exemplar_add = []
+                nonexemplar_add = []
+                exemplar_mod = []
+                nonexemplar_mod = []
+            
+                if nbi_1 != nbi_2:
+                    for nd_id, nd_blob in nbi_2.items():
+                        prev_blob = nbi_1[nd_id]
+                        if prev_blob != nd_blob:
+                            k = '^ot:isTaxonExemplar'
+                            e_1, e_2 = prev_blob.get(k), nd_blob.get(k)
+                            if e_1 != e_2:
+                                if e_2 is None:
+                                    if e_1:
+                                        exemplar_del.append(nd_id)
+                                    else:
+                                        nonexemplar_del.append(nd_id)
+                                    del prev_blob[k]
+                                else:
+                                    if e_1 is None:
+                                        if e_2:
+                                            exemplar_add.append(nd_id)
+                                        else:
+                                            nonexemplar_add.append(nd_id)
+                                    else:
+                                        if e_2:
+                                            exemplar_mod.append(nd_id)
+                                        else:
+                                            nonexemplar_mod.append(nd_id)
+                                    prev_blob[k] = e_2
+                                assert prev_blob == nd_blob
+                print_paragraph(curr_out, f"{len(exemplar_del)} exemplar nodes unflagged")
+                _list_elements(curr_out, exemplar_del)
+                print_paragraph(curr_out, f"{len(nonexemplar_del)} nonexemplar nodes unflagged")
+                _list_elements(curr_out, nonexemplar_del)
+                print_paragraph(curr_out, f"{len(exemplar_add)} nodes flagged as exemplar")
+                _list_elements(curr_out, exemplar_add)
+                print_paragraph(curr_out, f"{len(nonexemplar_add)} nodes flagged as nonexemplar")
+                _list_elements(curr_out, nonexemplar_add)
+                print_paragraph(curr_out, f"{len(exemplar_mod)} nodes flags changed to exemplar")
+                _list_elements(curr_out, exemplar_mod)
+                print_paragraph(curr_out, f"{len(nonexemplar_mod)} nodes flags changed to nonexemplar")
+                _list_elements(curr_out, nonexemplar_mod)
+                assert tree_1.get("edgeBySourceId") == tree_2.get("edgeBySourceId")
+            except:
+                sys.stderr.write(f"Writing (possibly modified) trees for {study_tree} to cruft1.json and cruft2.json")
+                sys.stderr.write(f"NOTE: the _describe_nexson_diff function of this script currently does not deal with rerooting annotations in nodes, so... yeah... that's a thing.")
+                with open("cruft1.json", "w") as o:
+                    o.write(json.dumps(tree_1, sort_keys=True, indent=2))
+                    o.write('\n')
+                with open("cruft2.json", "w") as o:
+                    o.write(json.dumps(tree_2, sort_keys=True, indent=2))
+                    o.write('\n')
+                raise
+    
+    def _do_nexson_comparison(self, study_tree, curr_out):
+        run1, run2 = self.run1, self.run2
+        rel_path = _SNAPSHOT_JSON_TEMPLATE.format(study_tree=study_tree)
+        snap_fp1 = run1.filepath_to(rel_path)
+        snap_fp2 = run2.filepath_to(rel_path)
+        nex1 = read_as_json(snap_fp1)
+        nex2 = read_as_json(snap_fp2)
+        
+        print_header(curr_out, 1, f"Input {study_tree}")
+        print_paragraph(curr_out, "curation link: " + display_tree_name(study_tree))
+        changed = False
+        print_header(curr_out, 2, "Curated NexSON")
+        if nex2 == nex1:
+            print_paragraph(curr_out, "No change")
+        else:
+            changed = True
+            self._describe_nexson_diff(curr_out, study_tree, nex1, nex2)
+        return changed
+
+    def _do_cleaned_phylo_comparison(self, study_tree, curr_out):
+        run1, run2 = self.run1, self.run2
+        rel_path = _CLEANED_PHYLO_TREE_TEMPLATE.format(study_tree=study_tree)
+        print_header(curr_out, 2, "Cleaned phylogeny")
+        tree_fp1 = run1.filepath_to(rel_path, required=False)
+        tree_fp2 = run2.filepath_to(rel_path, required=False)
+        if not os.path.exists(tree_fp1):
+            if os.path.exists(tree_fp2):
+                print_paragraph(curr_out, "Cleaned tree is now empty")
+                return True
+            print_paragraph(curr_out, "Cleaned tree remained empty")
+            return False
+        if not os.path.exists(tree_fp2):
+            print_paragraph(curr_out, "Cleaned tree was previously empty")
+            return True
+        
+        tree1 = Tree.get_from_path(tree_fp1, schema="newick")
+        tree1.is_rooted = True
+        tree2 = Tree.get_from_path(tree_fp2, schema="newick", taxon_namespace=tree1.taxon_namespace)
+        tree2.is_rooted = True
+        sd = treecompare.symmetric_difference(tree1, tree2)
+        if sd > 0:
+            print_paragraph(curr_out, f"Cleaned trees differ symmetric_difference = {sd} (may not be reliable if leafsets differ)")
+            return True
+        print_paragraph(curr_out, "Cleaned tree are the same")
+        return False
+
+    def _do_exemplified_phylo_comparison(self, study_tree, curr_out):
+        run1, run2 = self.run1, self.run2
+        rel_path = _EXEMPLAR_PHYLO_TREE_TEMPLATE.format(study_tree=study_tree)
+        print_header(curr_out, 2, "Exemplified phylogeny")
+        tree_fp1 = run1.filepath_to(rel_path, required=False)
+        tree_fp2 = run2.filepath_to(rel_path, required=False)
+        if not os.path.exists(tree_fp1):
+            if os.path.exists(tree_fp2):
+                print_paragraph(curr_out, "Exemplified tree is now empty")
+                return True
+            print_paragraph(curr_out, "Exemplified tree remained empty")
+            return False
+        if not os.path.exists(tree_fp2):
+            print_paragraph(curr_out, "Exemplified tree was previously empty")
+            return True
+        
+        tree1 = Tree.get_from_path(tree_fp1, schema="newick")
+        tree1.is_rooted = True
+        tree2 = Tree.get_from_path(tree_fp2, schema="newick", taxon_namespace=tree1.taxon_namespace)
+        tree2.is_rooted = True
+        sd = treecompare.symmetric_difference(tree1, tree2)
+        if sd > 0:
+            print_paragraph(curr_out, f"Exemplified trees differ symmetric_difference = {sd} (may not be reliable if leafsets differ)")
+            return True
+        print_paragraph(curr_out, "Exemplified tree are the same")
+        return False
+        
+    def _do_phylo_comparison(self, study_tree, curr_out):
+        changed = self._do_nexson_comparison(study_tree, curr_out)
+        changed = self._do_cleaned_phylo_comparison(study_tree, curr_out) or changed
+        changed = self._do_exemplified_phylo_comparison(study_tree, curr_out) or changed
+        print_link(curr_out, "./index.html", "back to main index")
+        return changed
+
+        # 
+        #     prev_index = it1.index(tid)
+        #     if tid in set_net2:
+        #         if tid in set_net1:
+        #             clean_diff = self.cmp_cleaned_trees(tid)
+        #             if clean_diff:
+        #                 x = '\n  '.join(clean_diff)
+        #                 print(f"{tid} : \n  {x}")
+        #         else:
+        #             print(f"{tid} no longer empty")
+        #     elif tid in set_net1:
+        #         print(f"{tid} newly empty")
+        #     else:
+        #         print(f"{tid} still empty")   
+        # elif tid in set_net2:
+        #     print(f"{tid} new non-empty tree")
+        # else:
+        #     print(f"{tid} new tree, but empty")
+
+    def phylo_input_diffs(self):
+        run1, run2 = self.run1, self.run2
+        td1, td2 = run1.input_trees, run2.input_trees
+        ttds = treelist_to_display_str
+        it1, it2 = td1["input_trees"], td2["input_trees"]
+        set_it1, set_it2 = set(it1), set(it2)
+        net1 = [i[:-4] if i.endswith('.tre') else i for i in td1["non_empty_trees"]]
+        net2 = [i[:-4] if i.endswith('.tre') else i for i in td2["non_empty_trees"]]
+        set_net1, set_net2 = set(net1), set(net2)
+        out = self.out
+        compare_lists(out, "Input trees", it1, it2, False)
+        compare_lists(out, "Non-empty trees", net1, net2, False)
+        idx_offset = 0
+        open_list(out)
+        for curr_index, study_tree in enumerate(it2):
+            if study_tree in set_it1:
+                if self.do_phylo_comparison(study_tree):
+                    u = f"tree_{study_tree}.html"
+                    print_list_item(out, fmt_link(u, f"{study_tree} changed"))
+                else:
+                    print_list_item(out, f"{study_tree} unchanged")
+            else:
+                print_list_item(out, f"{study_tree} is a new tree")
+        for study_tree in it1:
+            if study_tree not in set_it2:
+                if study_tree in set_net1:
+                    print_list_item(out, f"{study_tree} non-empty tree deleted")
+                else:
+                    print_list_item(out, f"{study_tree} empty tree deleted")
+        close_list(out)
+
+    def contested_taxa_diffs(self):
+        run1, run2 = self.run1, self.run2
+        ott_to_depth = self._read_ott_to_depth()
+        if not ott_to_depth:
+            ott_to_depth = {}
+        rel_path = _CONTESTING_TREES_JSON
+        print_header(self.out, 2, "Contested taxa")
+        ct_json1 = run1.filepath_to(rel_path, required=False)
+        ct_json2 = run2.filepath_to(rel_path, required=False)
+        ct_blob1 = read_as_json(ct_json1)
+        ct_blob2 = read_as_json(ct_json2)
+        new_cont = []
+        tree2new_count = {}
+        for ott_id, ct in ct_blob2.items():
+            if ott_id not in ct_blob1:
+                assert ott_id.startswith("ott")
+                oid = int(ott_id[3:])
+                order = ott_to_depth.get(oid, 0)
+                ts = set(ct.keys())
+                tsl = list(ts)
+                tsl.sort()
+                for t in tsl:
+                    tree2new_count[t] = 1 + tree2new_count.get(t, 0)
+                new_cont.append((order, oid, tsl))
+        del_cont = []
+        tree2del_count = {}
+        for ott_id, ct in ct_blob1.items():
+            if ott_id not in ct_blob2:
+                assert ott_id.startswith("ott")
+                oid = int(ott_id[3:])
+                order = ott_to_depth.get(oid, 0)
+                ts = set(ct.keys())
+                tsl = list(ts)
+                tsl.sort()
+                for t in tsl:
+                    tree2del_count[t] = 1 + tree2new_count.get(t, 0)
+                del_cont.append((order, oid, tsl))
+        nc_list = [(v, k) for k, v in tree2new_count.items()]
+        nc_list.sort(reverse=True)
+        dc_list = [(v, k) for k, v in tree2del_count.items()]
+        dc_list.sort(reverse=True)
+        if nc_list:
+            print_paragraph(self.out, "Trees by number of newly contested taxa they contest")
+            open_list(self.out)
+            for num_c, tree in nc_list:
+                p = f"{num_c} newly contested taxa contested by "
+                assert tree.endswith(".tre")
+                study_tree = tree[:-4]
+                u = f"tree_{study_tree}.html"
+                l = fmt_link(u, f"{study_tree}")
+                print_list_item(self.out, p + l)
+            close_list(self.out)
+        if dc_list:
+            print_paragraph(self.out, "Trees by number of no longer contested taxa they used to contest")
+            open_list(self.out)
+            for num_c, tree in dc_list:
+                p = f"{num_c} no-longer contested taxa formerly contested by "
+                assert tree.endswith(".tre")
+                study_tree = tree[:-4]
+                u = f"tree_{study_tree}.html"
+                l = fmt_link(u, f"{study_tree}")
+                print_list_item(self.out, p + l)
+            close_list(self.out)
+
+
+    def _read_ott_to_depth(self):
+        if not self.ott_to_depth_fp:
+            return None
+        with open(self.ott_to_depth_fp, 'r') as inp:
+            o2d = {}
+            for line in inp:
+                ls = [int(i) for i in line.strip().split()]
+                o2d[ls[0]] = ls[1]
 
 def do_compare(
-    out, run1, run2, verbose=False, print_broken_taxa=False, print_summary_table=False
+    out, run1, run2, verbose=False, print_broken_taxa=False, print_summary_table=False, 
+    ott_to_depth_fp=None, html_dir=None
 ):
-    print_header(out, 1, "Comparing inputs")
-    config_diffs(out, run1.config, run2.config, verbose)
-    phylo_input_diffs(out, run1.input_trees, run2.input_trees, verbose)
+    rc = RunComparison(run1, run2, outstream=out, verbose=verbose, html_dir=html_dir)
+    rc.ott_to_depth_fp = ott_to_depth_fp
+    rc.input_diffs()
+    rc.contested_taxa_diffs()
 
-    print_header(out, 1, "Comparing subproblems")
-    compare_subproblems(out, run1.subproblems, run2.subproblems, verbose)
-
-    print_header(out, 1, "Comparing broken taxa")
-    broken_taxa_diffs(out, run1.broken_taxa, run2.broken_taxa, verbose)
-    if print_broken_taxa:
-        r = newly_broken_taxa_report(out, run1, run2)
-        if HTML_DIR:
-            print_link(out, "./{}".format(r[0]), "Broken taxon list (CSV)")
-            print_paragraph(out, "")
-            print_link(out, "./{}".format(r[1]), "Broken taxa by input tree report")
-            print_paragraph(out, "")
-
-    print_header(out, 1, "Synthetic tree summary")
-    # synthesis_tree_diffs(run1, run2)
-    synthesis_tree_diffs(out, run1.input_output_stats, run2.input_output_stats)
-    if print_summary_table:
-        if HTML_DIR:
-            sout = open(os.path.join(HTML_DIR, "summary.html"), "w", encoding="utf-8")
-        else:
-            sout = out
-        try:
-            print_header(sout, 1, "Summary table for release notes")
-            summary_table(
-                sout,
-                run1.input_output_stats,
-                run2.input_output_stats,
-                run1.subproblems,
-                run2.subproblems,
-            )
-        finally:
-            if HTML_DIR:
-                print_link(out, "./summary.html", "Summary Table for release notes")
-                print_paragraph(out, "")
-                sout.close()
-
+    
 
 def main():
     # get command line arguments (the two directories to compare)
@@ -952,6 +1438,11 @@ def main():
     parser.add_argument(
         "--html-dir", help="specify a directory for multi-file html output"
     )
+    parser.add_argument("--ott-to-depth-fp",
+                        dest="ott_to_depth_fp",
+                        default=None,
+                        required=False,
+                        help="path output of a run from: otc-taxonomy-parser --report-dist-to-root ")
     parser.add_argument(
         "-b",
         dest="print_broken_taxa",
@@ -1001,6 +1492,8 @@ def main():
             verbose=args.verbose,
             print_broken_taxa=args.print_broken_taxa,
             print_summary_table=args.print_summary_table,
+            html_dir=html_dir,
+            ott_to_depth_fp=args.ott_to_depth_fp
         )
     finally:
         if html_dir:

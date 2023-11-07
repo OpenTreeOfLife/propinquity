@@ -1,0 +1,12 @@
+<html metal:use-macro="load: head.pt">
+<div metal:fill-slot="content">
+<p>Propinquity output documentation. The top-level docs are <a href="../index.html">here</a>.</p>
+<p>The <em>subott_dir</em> directory a copy of the version of OTT that is rooted at the root
+  of this synthesis run. After this subtree of the OTT is produced, it is used as the OTT
+  for the remainder of the synthesis run for the sake of performance.
+</p>
+<p>See <a href="https://github.com/OpenTreeOfLife/reference-taxonomy/wiki/Interim-taxonomy-file-format">https://github.com/OpenTreeOfLife/reference-taxonomy/wiki/Interim-taxonomy-file-format</a> for documentation
+  of the OTT format.</p>
+<p>Any <code>*.pickle</code> files are Python pickle artifacts of reading the taxonomy. They can be deleted because they can be regenerated from the primary OTT files.</p>
+</div>
+</html>

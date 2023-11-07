@@ -1,0 +1,72 @@
+<html metal:use-macro="load: head.pt">
+<div metal:fill-slot="content" tal:define="basename import: os.path.basename">
+<p>Propinquity output documentation. The top-level docs are <a href="../index.html">here</a>.
+<p>The <em>cleaned_phylo</em> contains the results of pruning problematically
+mapped tips from phylogenetic inputs. See the <a href="./index.html#procedure">Procedure</a> section below for more details on the process.
+</p>
+
+<p>
+<strong>Next step: </strong>The next step in phylogeny processing is to choose
+exemplars for tips that are mapped to higher taxa (see
+<a href="../exemplified_phylo/index.html">../exemplified_phylo/index.html</a>).
+First, though, we pre-process the Open Tree Taxonomy (see
+<a href="../cleaned_ott/index.html">../cleaned_ott/index.html</a>).
+</p>
+
+<p><strong>Results: </strong>There were ${'{:,}'.format(len(exemplified_phylo.nonempty_trees))}
+nonempty trees after cleaning. The files of interest in this directory are:</p>
+<table>
+    <tr><th>JSON log of pruning</th><th>pruned newick</th><th>induce taxonomy newick for pruned</th></tr>
+    <tr tal:repeat="stp phylo_input.study_id_tree_id_pairs">
+        <div tal:define="study_id stp[0]; tree_id stp[1]">
+        <td><a href="./tree_${study_id}@${tree_id}.json">tree_${study_id}@${tree_id}.json</a></td>
+        <td><div tal:switch="['tree_{}'.format(study_id), tree_id] in exemplified_phylo.nonempty_trees">
+             <a tal:case="True" href="./tree_${study_id}@${tree_id}.tre">tree_${study_id}@${tree_id}.tre</a>
+             <span tal:case="False">Cleaning led to empty tree</span>
+            </div>
+        </td>
+        <td><div tal:switch="['tree_{}'.format(study_id), tree_id] in exemplified_phylo.nonempty_trees">
+             <a tal:case="True" href="./tree_${study_id}@${tree_id}-taxonomy.tre">tree_${study_id}@${tree_id}-taxonomy.tre</a>
+             <span tal:case="False"></span>
+            </div>
+        </td>
+        </div>
+    </tr>
+</table>
+
+<h2 id="procedure">Procedure</h2>
+<ol>
+  <li>If the tree has <code>^ot:inGroupClade</code> set to a node, then that node and all of
+  its descendants will be retained and the "outgroup" will be pruned off the tree.</li>
+  <li> If the tree has any leaves connected to an <code>otu</code> that does not have a <code>ot:^ottId</code> property, these nodes are pruned as "unmapped_otu"</li>
+  <li>If the OTT Id for a leaf is not in OTT (or the forwarding file), the leaf is
+  pruned as an "unrecognized_ott_id"</li>
+  <li> If the OTT Id for a leaf is forwarded to a new OTT Id, but that Id is unrecognized,
+  the the leaf is pruned as an <code>"unrecognized_ott_id"</code></li>
+  <li>If the taxonomic ancestor of an OTT Id was flagged by one of the OTT prune flags,
+  then the leaf is pruned as <code>"flagged"</code></li>
+  <li>If the OTT Id for a leaf is mapped to a taxon that is a taxonomic ancestor
+  of another leaf in the tree, then the leaf is pruned as <code>"mapped_to_taxon_containing_other_mapped_tips"</code></li>
+  <li>If there are multiple leaves mapped to the same OTT Id, one is chosen as an 
+  exemplar. Either because it had the <code>^ot:isTaxonExemplar</code> or because it had a node
+  id that is "lower" in lexicographic sort than any other node Id.</li>
+  <li>Nodes with out-degree 1 are pruned and marked <code>"became_trival"</code></li>
+  <li>Tips in the <strong>taxonomy</strong> that are ranked as higher taxa are removed are marked <code>"higher-taxon-tip"</code> (note that an input tree can have higher taxa as tips, but if just
+  taxa lack children in the taxonomy, they are "barren" in the OTT sense and should be removed).</li>
+  <li>Nodes with no descendants after higher-taxon tips are removed are marked <code>"empty-after-higher-taxon-tip-prune"</code></li>
+  <li> multiple leaves were mapped to the same
+OTT Id, and none of them were flagged as being the exemplar for that taxon, then
+the nodes were sorted by nodeId, and the smallest node Id was chosen as the
+exemplar. the other node is flagged as <code>"replaced_by_arbitrary_node"</code></li>
+  <li> multiple leaves were mapped to the same
+OTT Id, and one of them were flagged as being the exemplar for that taxon (in the NexSON), then
+ the other node is flagged as <code>"replaced_by_exemplar_node"</code>. (If there were multiple exemplar nodes, then the same sorting as described above
+was chosen to choose among them)</li>
+<li>If the ingroup node became trivial in pruning, it's first forking descendant in the tree will be
+	labelled <code>"revised_ingroup_node"</code>.
+</ol>
+
+</div>
+
+
+</html>

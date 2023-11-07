@@ -1,0 +1,58 @@
+<html metal:use-macro="load: head.pt">
+<div metal:fill-slot="content" tal:define="basename import: os.path.basename">
+<p>Propinquity output documentation. The top-level docs are <a href="../index.html">here</a>.</p>
+<p>The <em>exemplified_phylo</em> directory holds the results of the last step
+of the input preprocessing for the supertree pipeline.
+All of the leaves in these trees are mapped to terminal taxa in the taxonomy.
+This is accomplished by taking the cleaned input trees (see
+<a href="../cleaned_phylo/index.html">../cleaned_phylo/index.html</a> and
+<a href="../bumped_ott/index.html">../bumped_ott/index.html</a>) and choosing
+exemplar taxa to represent at for each tip that is mapped to a non-terminal taxon.
+See <a href="https://github.com/OpenTreeOfLife/propinquity/blob/master/exemplified_phylo/README.md" target="_blank"> for details on the procedure</a>.
+</p>
+<p>The result of the procedure is a set of trees that make statements about the same leaf set of terminal taxa, but which only encode phylogenetic information that is equivalent (in some sense)
+    to the information in the original trees (which may have variation with respect to the terminal
+taxa).</p>
+
+<strong>Next step: </strong>Decomposition of inputs into subproblems. See
+<a href="../subproblems/index.html">../subproblems/index.html</a> for details.
+
+<p><strong>Results: </strong>Below you will find tabular or itemized listings of:</p>
+<ul>
+    <li><a href="#exemptreefiles">Exemplified tree files</a></li>
+    <li><a href="#treetoidsreplaces">Exemplifications per tree</a></li>
+    <li><a href="#ottidtoexemplified">Higher taxon to exemplar mapping</a></li>
+</ul>
+
+<h3><a name="exemptreefiles">Exemplified tree files:</a></h3>
+<ul>
+    <li tal:repeat="fn exemplified_phylo.nonempty_tree_filenames"><a href="./${fn}">${fn}</a></li>
+    <li><a href="./taxonomy.tre">taxonomy.tre</a> -- the version of the taxonomy pruned down to
+    only contain the exemplar taxa. This taxonomy has ${'{:,}'.format(exemplified_phylo.num_leaves_in_exemplified_taxonomy)} leaves.</li>
+</ul>
+
+<h3><a name="treetoidsreplaces">Exemplifications per tree</a></h3>
+<p>The following source input trees were affected by the exemplar step:</p>
+<table>
+    <tr><th>study_id + tree_id key</th><th>OTT IDs exemplified</th></tr>
+    <tr tal:repeat="tn_id_set_pair exemplified_phylo.source_tree_to_ott_id_exemplified_list.items()">
+        <td>${tn_id_set_pair[0]}</td>
+<td><tal:block tal:repeat="eu tn_id_set_pair[1]"><tal:block tal:condition="not repeat.eu.start">, </tal:block><tal:block tal:define="ott_num ott_id_number_str(eu); ott_label doc_gen.ott_id_to_label(eu)"><a href="https://tree.opentreeoflife.org/taxonomy/browse?id=${ott_num}" title="${ott_label}">${ott_num}</a></tal:block></tal:block></td>
+    </tr>
+</table>
+
+<h3><a name="ottidtoexemplified">Higher taxon to exemplar mapping</a></h3>
+<p>The following table shows the exemplars for each of the ${len(exemplified_phylo.taxa_exemplified)} OTT Ids that were exemplified:</p>
+<table>
+    <tr><th>higher taxon OTT ID</th><th>exemplars used</th></tr>
+    <tr tal:repeat="id_eblob exemplified_phylo.taxa_exemplified.items()">
+        <td>
+            <al:block tal:define="ott_num ott_id_number_str(id_eblob[0]); ott_label doc_gen.ott_id_to_label(id_eblob[0])"><a href="https://tree.opentreeoflife.org/taxonomy/browse?id=${ott_num}" title="${ott_label}">${ott_num}</a>
+            </al:block>
+        </td>
+        <td><tal:block tal:repeat="eu id_eblob[1]['exemplars_used']"><tal:block tal:condition="not repeat.eu.start" tal:content="', '" /><tal:block tal:define="ott_num ott_id_number_str(eu); ott_label doc_gen.ott_id_to_label(eu)"><a href="https://tree.opentreeoflife.org/taxonomy/browse?id=${ott_num}" title="${ott_label}">${ott_num}</a></tal:block></tal:block>
+        </td>
+    </tr>
+</table>
+</div>
+</html>

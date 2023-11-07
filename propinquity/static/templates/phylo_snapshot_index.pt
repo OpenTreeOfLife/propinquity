@@ -1,0 +1,36 @@
+<html metal:use-macro="load: head.pt">
+<div metal:fill-slot="content" tal:define="basename import: os.path.basename">
+<p>Propinquity output documentation. The top-level docs are
+  <a href="../index.html">here</a>.
+<p>The <em>phylo_snapshot</em> directory copies of the NexSON files for each tree that is a
+  phylogenetic input. </p>
+<p><strong>Next step: </strong>Removing nodes from the phylogenetic inputs
+because of problems associated with the mapping of OTUs to the OTTaxonomy.
+See <a href="../cleaned_phylo/index.html">../cleaned_phylo/index.html</a>
+for details about that step.</p>
+<p><strong>Results: </strong></p>
+<ul>
+    <li><a href="./concrete_rank_collection.json">concrete_rank_collection.json</a>
+    is a version of <a href="../phylo_input/rank_collection.json">../phylo_input/rank_collection.json</a>
+    with git SHAs filled in. Rerunning the pipeline with this collection should
+    yield the same inputs.
+    </li>
+    <li><a href="./${basename(phylo_snapshot.collections_git_shas_file)}">${basename(phylo_snapshot.collections_git_shas_file)}</a>
+    holds a list of the SHAs for the HEADs of each collection shard of the
+    phylesystem at the time the supertree operation was run. In the case of
+    this run:
+        <ul>
+            <li tal:repeat="git_sha phylo_snapshot.collections_git_shas">${git_sha}</li>
+        </ul>
+    </li>
+    <li>The ${'{:,}'.format(len(phylo_input.study_id_tree_id_pairs))} NexSON files stored are:
+        <table>
+            <tr><th>Link to NexSON</th><th>git object SHA of for source of NexSON</th></tr>
+            <tr tal:repeat="nstp enumerate(phylo_input.study_id_tree_id_pairs)">
+                <td><a href="./tree_${nstp[1][0]}@${nstp[1][1]}.json">tree_${nstp[1][0]}@${nstp[1][1]}.json</a></td>
+                <td><code>${phylo_snapshot.git_shas[nstp[0]]}</code></td>
+            </tr>
+        </table>
+    </li>
+</div>
+</html>
