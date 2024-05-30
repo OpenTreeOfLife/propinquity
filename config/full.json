@@ -1,8 +1,8 @@
 {
 "opentree_home": "/home/mholder/ot2023",
-"ott_dir": "/home/mholder/ot2023/ott/ott3.7",
+"ott_dir": "/home/mholder/ot2023/ott/ott3.7.2",
 "root_ott_id": "93302",
-"synth_id": "opentree14.10",
+"synth_id": "opentree15.1",
 "collections": "pcart/cnidaria,mwestneat/reef-fishes,josephwb/hypocreales,kcranston/catfish,kcranston/barnacles,opentreeoflife/plants,josephwb/aves,opentreeoflife/metazoa,opentreeoflife/fungi,opentreeoflife/safe-microbes,opentreeoflife/default",
 "cleaning_flags": "major_rank_conflict,major_rank_conflict_inherited,environmental,viral,barren,not_otu,hidden,was_container,inconsistent,hybrid,merged",
 "additional_regrafting_flags": "unclassified_inherited,unclassified,incertae_sedis,incertae_sedis_inherited,extinct_inherited,extinct,unplaced,unplaced_inherited"
