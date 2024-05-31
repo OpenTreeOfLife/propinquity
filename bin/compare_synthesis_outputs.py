@@ -229,7 +229,11 @@ def get_conflict_info_by_tree(conflict_info, id2ranks):
     tree_conflict_at_rank = defaultdict(lambda: defaultdict(lambda: defaultdict(set)))
     for ott_node, node_conflict in conflict_info.items():
         int_id = get_id_from_ottnum(ott_node)
-        rank = id2ranks[int_id]
+        try:
+            rank = id2ranks[int_id]
+        except KeyError:
+            sys.stderr.write(f"WARNING: OTT ID {int_id} not found in id2ranks. Skipping...\n")
+            continue
         for rel, tree_nodes in node_conflict.items():
             for tree, nodes in tree_nodes.items():
                 if rel == "conflicts_with":
