@@ -84,6 +84,13 @@ if ! snakemake --configfile "${cfg_fn}" --directory="${full_out_dir}" --cores "$
     echo 'ERROR_IN_RUNNING' > "${status_fp}"
     exit 5
 fi
+
+echo "RUNNING CALCDD" > "${status_fp}"
+if ! snakemake --configfile "${cfg_fn}" --directory="${full_out_dir}" --cores "${num_cores}" calcdd ; then
+    echo 'ERROR_IN_RUNNING' > "${status_fp}"
+    exit 5
+fi
+
 echo "RUNNING Post SOLVE" > "${status_fp}"
 if ! snakemake --configfile "${cfg_fn}" --directory="${full_out_dir}" --cores "${num_cores}" postsolve ; then
     echo 'ERROR_IN_RUNNING' > "${status_fp}"

@@ -122,8 +122,8 @@ rule all:
            "subproblems/subproblem_size_summary_table.tsv",
 
 rule presolve:
-    input: "config", 
-           "otc-config",
+    input: "config", \
+           "otc-config", \
            "checksum_for_run.md5",
            "cleaned_ott/cleaned_not_updated_ott.tre",
            "exemplified_phylo/args.txt",
@@ -137,8 +137,11 @@ rule presolve:
 rule solve:
     input: "subproblem_solutions/solution-ids.txt",
            "reversed_subproblem_solutions/solution-ids.txt",
-           "subproblem_solutions/solution-degree-distributions.txt",
-           "reversed_subproblem_solutions/solution-degree-distributions.txt",
+
+rule calcdd:
+    input: "subproblem_solutions/solution-degree-distributions.txt", \
+           "reversed_subproblem_solutions/solution-degree-distributions.txt", \
+           
 
 rule postsolve:
     input: "grafted_solution/grafted_solution_ottnames.tre",
