@@ -138,6 +138,7 @@ rule summarize_subpr_size:
     input: ind = "subproblems/index.json", \
            dd_flag = "subproblems/.all_deg_dist_calculated.txt", \
            num_tips_per_ott = "labelled_supertree/num_tips_for_ott_internals_in_labelled_tree.json", \
+           flag_file = "subproblems/.all_deg_dist_calculated.txt", \
            dd_dir = "subproblems/deg-dist"
     output: "subproblems/subproblem_size_summary.json"
     run:

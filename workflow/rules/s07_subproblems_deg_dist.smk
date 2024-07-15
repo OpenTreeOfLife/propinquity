@@ -9,7 +9,13 @@ rule all:
     input: "subproblem_solutions/solution-degree-distributions.txt"
     log: "logs/subproblems"
 
-include: "common.smk"
+# include: "common.smk"
+module common:
+    snakefile: "common.smk"
+    config: config
+
+use rule * from common as common_*
+include: "common_defs.smk"
 
 rule force_all_subr_dd:
     input: aggregate_probdd

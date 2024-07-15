@@ -6,10 +6,6 @@ from snakemake.logging import logger
 
 CFG = validate_config(config, logger)
 
-rule all:
-    input: "config", "otc_config"
-    log: "logs/config"
-
 rule config:
     """Uses snakemake config to creat a config file for synthesis settings"""
     output: "config"
@@ -28,3 +24,6 @@ rule clean_config:
     """Clean up the config and otc-config that are created automatically"""
     shell: "rm config otc-config"
 
+rule all:
+    input: "config", "otc_config"
+    log: "logs/config"

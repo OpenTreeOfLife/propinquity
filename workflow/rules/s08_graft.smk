@@ -12,7 +12,15 @@ rule all:
     log: "logs/subproblems"
 
 
-include: "common.smk"
+# include: "common.smk"
+# include: "common.smk"
+module common:
+    snakefile: "common.smk"
+    config: config
+
+use rule * from common as common_*
+include: "common_defs.smk"
+
 
 rule graft_solutions:
     input: aggregate_trees

@@ -29,7 +29,12 @@ rule expand_path_to_nonempty_phylo:
                         name="nonempty tree fullpaths",
                         CFG=CFG)
 
-include: "common.smk"
+module common:
+    snakefile: "common.smk"
+    config: config
+
+use rule * from common as common_*
+include: "common_defs.smk"
 
 rule create_subproblem_scaffold:
     input: config = "config", \

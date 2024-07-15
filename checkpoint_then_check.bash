@@ -29,7 +29,7 @@ mkdir "${full_out_dir}" || exit
 status_fp="${full_out_dir}/${status_fn}"
 echo "CHECKPOINTING" > "${status_fp}"
 
-if ! snakemake --configfile "${cfg_fn}" --directory="${full_out_dir}" --cores "${num_cores}" prechecksum_inputs ; then
+if ! snakemake --debug-dag --configfile "${cfg_fn}" --directory="${full_out_dir}" --cores "${num_cores}" prechecksum_inputs ; then
     echo 'ERROR_IN_PRECHECKPOINTING' > "${status_fp}"
     exit 2
 fi
@@ -75,8 +75,18 @@ elif test ${num_matching} -gt 1 ; then
 fi
 
 echo "RUNNING" > "${status_fp}"
-if ! snakemake --configfile "${cfg_fn}" --directory="${full_out_dir}" --cores "${num_cores}" all ; then
+if ! snakemake --configfile "${cfg_fn}" --directory="${full_out_dir}" --cores "${num_cores}" presolve ; then
     echo 'ERROR_IN_RUNNING' > "${status_fp}"
     exit 4
+fi
+echo "RUNNING SOLVE" > "${status_fp}"
+if ! snakemake --configfile "${cfg_fn}" --directory="${full_out_dir}" --cores "${num_cores}" solve ; then
+    echo 'ERROR_IN_RUNNING' > "${status_fp}"
+    exit 5
+fi
+echo "RUNNING Post SOLVE" > "${status_fp}"
+if ! snakemake --configfile "${cfg_fn}" --directory="${full_out_dir}" --cores "${num_cores}" postsolve ; then
+    echo 'ERROR_IN_RUNNING' > "${status_fp}"
+    exit 6
 fi
 echo 'COMPLETED_SUCCESSFULLY' > "${status_fp}"
