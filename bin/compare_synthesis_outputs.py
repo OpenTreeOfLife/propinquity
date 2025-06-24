@@ -412,7 +412,10 @@ def print_trees_by_new_broken(
     )
     second = "by rank" if HTML_OUT else ""
     labels = ["change", "conflicts_with", "change", "aligns_to", "change", "resolves"]
-    if not HTML_OUT:
+    if HTML_OUT:
+        # line to allow header to float as you scroll
+        out.write("<style>\nth {\n  position: sticky; top: 0;\n}\n</style>")
+    else:
         labels = color_conf_summ(labels)
     headers = (
         [
@@ -422,6 +425,7 @@ def print_trees_by_new_broken(
         + labels
         + ["examples"]
     )
+
     print_table_open(out, text_fmt=LBL_CONFLICT_FMT, headers=headers)
 
     for tree in sorted(
