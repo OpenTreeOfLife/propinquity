@@ -26,9 +26,6 @@ def aggregate_sdd_common(wildcards, solved_dir, dd_dir=None):
 def aggregate_sdd(wildcards):
     return aggregate_sdd_common(wildcards, directory("subproblem_solutions"))
 
-def aggregate_rsdd(wildcards):
-    solve_out = os.path.split(checkpoints.reverse_subproblems_flag.get(**wildcards).output[0])[0]
-    return aggregate_sdd_common(wildcards, directory("reversed_subproblem_solutions"))
 
 def aggregate_probdd(wildcards):
     return aggregate_sdd_common(wildcards, directory("subproblems"), "subproblems/deg-dist")

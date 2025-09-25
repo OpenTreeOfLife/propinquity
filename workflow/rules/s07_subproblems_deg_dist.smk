@@ -45,6 +45,9 @@ rule concat_soln_deg_dist:
     output: "subproblem_solutions/solution-degree-distributions.txt"
     run: concatenate_deg_dist(input, output[0])
 
+def aggregate_rsdd(wildcards):
+    solve_out = os.path.split(common.checkpoints.reverse_subproblems_flag.get(**wildcards).output[0])[0]
+    return aggregate_sdd_common(wildcards, directory("reversed_subproblem_solutions"))
 
 rule concat_rev_soln_deg_dist:
     input: aggregate_rsdd
