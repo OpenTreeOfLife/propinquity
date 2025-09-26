@@ -21,9 +21,20 @@ module common:
 use rule * from common as common_*
 include: "common_defs.smk"
 
+def _dup_agg_trees_impl(wildcards, soln_dir):
+    solve_out = os.path.split(common.checkpoints.decompose.get(**wildcards).output[0])[0]
+    gw = glob_wildcards(os.path.join(solve_out, '{ottid}.tre'))
+    template = soln_dir + "/{ottid}.tre"
+    return expand(template, ottid=gw.ottid)
+
+def dup_aggregate_trees(wildcards):
+    return _dup_agg_trees_impl(wildcards, "subproblem_solutions")
+
+def dup_aggregate_rev_trees(wildcards):
+    return _dup_agg_trees_impl(wildcards, "reversed_subproblem_solutions")
 
 rule graft_solutions:
-    input: aggregate_trees
+    input: dup_aggregate_trees
     output: tree = "grafted_solution/grafted_solution.tre"
     run:
         content = '{}\n'.format('\n'.join(list(input)))
