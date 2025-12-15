@@ -47,14 +47,14 @@ def summarize_same_names(amend_list):
     assert(len(soi) == len(amend_list))
     if len(spi) > 1:
         if len(sr) > 1:
-            out.write(f"{name} was given {len(soi)} ott_ids: {ott_ids}; {len(spi)} par_ids: {par_ids}; {len(sr)} ranks: {ranks}.\n")
+            out.write(f"\"{name}\" was given {len(soi)} ott_ids={ott_ids}; {len(spi)} par_ids={par_ids}; {len(sr)} ranks={ranks}.\n")
         else:
-            out.write(f"{name} was given {len(soi)} ott_ids: {ott_ids}; {len(spi)} par_ids: {par_ids}; rank={ranks[0]}.\n")
+            out.write(f"\"{name}\" was given {len(soi)} ott_ids={ott_ids}; {len(spi)} par_ids={par_ids}; rank={ranks[0]}.\n")
     else:
         if len(sr) > 1:
-            out.write(f"{name} was given {len(soi)} ott_ids: {ott_ids}; par_id={par_ids[0]}; {len(sr)} ranks: {ranks}.\n")
+            out.write(f"\"{name}\" was given {len(soi)} ott_ids={ott_ids}; par_id={par_ids[0]}; {len(sr)} ranks={ranks}.\n")
         else:
-            out.write(f"{name} was given {len(soi)} ott_ids: {ott_ids}; par_id={par_ids[0]}; rank={ranks[0]}.\n")
+            out.write(f"\"{name}\" was given {len(soi)} ott_ids={ott_ids}; par_id={par_ids[0]}; rank={ranks[0]}.\n")
 
 def diagnose_problems():
     for ott_id, amend_list in by_id.items():
