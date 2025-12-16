@@ -8,31 +8,65 @@ import subprocess
 def debug(msg):
     sys.stderr.write(f"{msg}\n")
 
-def analyze_bad_id_set(ott_fp, curr_name, curr_used, curr_unused):
-    debug(f"curr_name={curr_name} len(curr_used)={len(curr_used)} len(curr_unused)={len(curr_unused)}")
-    if len(curr_used) == 0:
-        debug(f"grepping for {curr_name} in {ott_fp} ...")
-        resp = subprocess.run(["grep", "-P", f"\\t{curr_name}\\t", ott_fp], capture_output=True, encoding="utf-8")
-        if resp.returncode == 0:
+def get_lines_for_name(ott_fp, curr_name):
+    # debug(f"grepping for {curr_name} in {ott_fp} ...")
+    resp = subprocess.run(["grep", "-P", f"\\t{curr_name}\\t", ott_fp], capture_output=True, encoding="utf-8")
+    if resp.returncode == 0:
             lines = [i for i in resp.stdout.split("\n")]
             nonempty = [i for i in lines if i]
-            if len(nonempty) == 1:
-                matched = lines[0]
-                ls = matched.split("\t")
-                debug(f"ls={ls}")
-                ott_id = int(ls[0])
-                if ott_id not in curr_unused:
-                    sys.exit(f'"{curr_name}" assigned ID {ott_id} which was not expected')
-                else:
-                    debug(f"No change needed for {curr_name} staying {ott_id}")
-            else:
-                raise NotImplementedError(f"Dealing with names repeated. lines={nonempty}")
-        else:
-            debug(f" ... not found.")
-    elif len(curr_used) == 1:
-        pass
+            return [i.split("\t|\t") for i in nonempty]
     else:
-        raise NotImplementedError("dealing with names that have multiple IDs that are used in studies is not yet supported")
+        debug(f" ... {curr_name} not found.")
+    return []
+
+def get_most_used(curr_used):
+    num_uses = -1
+    muid = None
+    for oid, studies in curr_used.items():
+        if len(studies) > num_uses:
+            muid = oid
+            num_uses = len(studies)
+    return muid
+
+def get_other_studies(curr_used, taboo_id):
+    other_studies = []
+    for oid, studies in curr_used.items():
+        if oid != taboo_id:
+            other_studies.extend(studies)
+    return other_studies
+
+def analyze_bad_id_set(ott_fp, curr_name, curr_used, curr_unused):
+    debug(f"curr_name={curr_name} len(curr_used)={len(curr_used)} len(curr_unused)={len(curr_unused)}")
+    split_lines = get_lines_for_name(ott_fp, curr_name)
+    if not split_lines:
+        print(f'Need to add "{curr_name}" to taxonomy')
+    elif len(split_lines) == 1:
+        only_line =  split_lines[0]
+        ott_id = int(only_line[0])
+        if len(curr_used) == 0:
+            if ott_id not in curr_unused:
+                sys.exit(f'"{curr_name}" assigned ID {ott_id} which was not expected')
+            else:
+                print(f"No change needed for {curr_name} staying {ott_id}")
+        elif len(curr_used) == 1:
+            ott_id_used_in_studies = list(curr_used.keys())[0]
+            if ott_id == ott_id_used_in_studies:
+                print(f"No change needed for {curr_name} staying {ott_id}")
+            elif ott_id not in curr_unused:
+                sys.exit(f'"{curr_name}" assigned ID {ott_id} which was not expected')
+            else:
+                print(f"Need to change OTT ID for {curr_name} from {ott_id} to {ott_id_used_in_studies} to avoid remapping studies")
+        else:
+            most_commonly_used_id = get_most_used(curr_used)
+            all_other_studies = get_other_studies(curr_used, most_commonly_used_id)
+            os_str = ", ".join(all_other_studies)
+            if ott_id == most_commonly_used_id:
+                print(f"No change needed for {curr_name} staying {ott_id}, but need to update mapping in {os_str}")
+            else:
+                print(f"Need to change OTT ID for {curr_name} from {ott_id} to {most_commonly_used_id} and then remap studies {os_str}")
+            
+    else:
+        raise NotImplementedError(f"Dealing with names repeated. lines={nonempty}")
 
 def parse_bad_amend_out_file(prob_fp, ott_fp):
     next_name_pat = re.compile(r'^name = (.*)$')
