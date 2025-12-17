@@ -8,6 +8,7 @@ import subprocess
 def debug(msg):
     sys.stderr.write(f"{msg}\n")
 
+
 def get_lines_for_name(ott_fp, curr_name):
     # debug(f"grepping for {curr_name} in {ott_fp} ...")
     resp = subprocess.run(["grep", "-P", f"\\t{curr_name}\\t", ott_fp], capture_output=True, encoding="utf-8")
@@ -35,6 +36,12 @@ def get_other_studies(curr_used, taboo_id):
             other_studies.extend(studies)
     return other_studies
 
+TO_DEL = []
+TO_ADD = []
+def record_del_add(to_del, to_add):
+    TO_DEL.append(f"sed -E '/^{to_del[0]}\\t/d'")
+    TO_ADD.append("\t|\t".join(to_add))
+
 def analyze_bad_id_set(ott_fp, curr_name, curr_used, curr_unused):
     debug(f"curr_name={curr_name} len(curr_used)={len(curr_used)} len(curr_unused)={len(curr_unused)}")
     split_lines = get_lines_for_name(ott_fp, curr_name)
@@ -55,6 +62,9 @@ def analyze_bad_id_set(ott_fp, curr_name, curr_used, curr_unused):
             elif ott_id not in curr_unused:
                 sys.exit(f'"{curr_name}" assigned ID {ott_id} which was not expected')
             else:
+                mod_line = list(only_line)
+                mod_line[0] = f"{ott_id_used_in_studies}"
+                record_del_add(only_line, mod_line)
                 print(f"Need to change OTT ID for {curr_name} from {ott_id} to {ott_id_used_in_studies} to avoid remapping studies")
         else:
             most_commonly_used_id = get_most_used(curr_used)
@@ -63,6 +73,9 @@ def analyze_bad_id_set(ott_fp, curr_name, curr_used, curr_unused):
             if ott_id == most_commonly_used_id:
                 print(f"No change needed for {curr_name} staying {ott_id}, but need to update mapping in {os_str}")
             else:
+                mod_line = list(only_line)
+                mod_line[0] = f"{most_commonly_used_id}"
+                record_del_add(only_line, mod_line)
                 print(f"Need to change OTT ID for {curr_name} from {ott_id} to {most_commonly_used_id} and then remap studies {os_str}")
             
     else:
@@ -120,6 +133,29 @@ def main():
     if not os.path.isfile(taxonomy_filepath):
         sys.exit(f"Error need to generalize this script or move the taxonomy file to ../ott/ott3.7.3/taxonomy.tsv.\n")
     parse_bad_amend_out_file(bad_amend_out_fp, taxonomy_filepath)
+
+    out_scriptfn = "cruft/ott_mod_script.sh"
+    out_tax = "cruft/ott-taxonomy-modified.tsv"
+    if TO_DEL:
+        del_lines = "\\\n  | ".join(TO_DEL)
+        del_lines = f" | {del_lines}"
+    else:
+        del_lines = ""
+
+    if TO_ADD:
+        add_lines = "\n".join([f'echo -e {repr(i)} >> "{out_tax}"' for i in TO_ADD])
+    else:
+        add_lines = ""
+    with open(out_scriptfn, "w") as out_script:
+        out_script.write(f"""#/bin/bash
+
+cat "{taxonomy_filepath}" {del_lines} > "{out_tax}"
+
+{add_lines}
+
+""")
+    debug(f"Script {out_scriptfn} written")
+
 
 
 if __name__ == "__main__":
