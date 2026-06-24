@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 
 from collections import defaultdict
-from chameleon import PageTemplateLoader
 import subprocess
 import itertools
 import datetime
@@ -32,6 +31,7 @@ from peyotl.phylo.entities import OTULabelStyleEnum
 import peyotl
 
 __version__ = '2.0.dev1'
+__description__ = "'Workflow for building synthetic phylogenetic trees for the Open Tree of Life project"
 
 OTT_FILENAMES = ("forwards.tsv", 
                  "synonyms.tsv", 
@@ -2345,6 +2345,8 @@ class DocGen(object):
         return fo
 
     def render(self):
+        from chameleon import PageTemplateLoader
+
         templates = PageTemplateLoader("logs/templates")
         src_dest_list = ((render_top_index, 'top_index.pt', 'index'),
                          (render_no_vars_index, 'subott_dir_index.pt', 'subott_dir/index'),
