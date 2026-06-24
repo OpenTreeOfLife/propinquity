@@ -551,11 +551,13 @@ class EmptyTreeError(Exception):
 
 
 class NexsonTreeWrapper(object):
-    def __init__(self, nexson, tree_id, log_obj=None, logger_msg_obj=None):
+    def __init__(self, nexson, tree_id, log_obj=None, logger_msg_obj=None, inp_fp=""):
         self.logger_msg_obj = logger_msg_obj
         self.tree, self.otus = find_tree_and_otus_in_nexson(nexson, tree_id)
         if self.tree is None:
             raise MissingTreeError(tree_id)
+        self.tree_id = tree_id
+        self.inp_fp = inp_fp
         self._log_obj = log_obj
         self._edge_by_source = self.tree['edgeBySourceId']
         self._node_by_id = self.tree['nodeById']
@@ -580,7 +582,7 @@ class NexsonTreeWrapper(object):
             assert r in self._edge_by_source
             assert r in self._node_by_id
         except:
-            error('Illegal root node "{}"'.format(r))
+            self.logger_msg_obj.error(f'Illegal root node "{r}" for tree {self.tree_id} from file: {self.inp_fp}')
             raise
         self._root_node_id = r
 
@@ -1039,7 +1041,8 @@ def clean_one_phylo_input(output_dir,
         ntw = NexsonTreeWrapper(nexson_blob,
                                 tree_id,
                                 log_obj=log_obj,
-                                logger_msg_obj=CFG)
+                                logger_msg_obj=CFG,
+                                inp_fp=inp)
     except MissingTreeError:
         if CFG is not None:
             CFG.warning('No tree "{}" in study "{}"'.format(tree_id, study_id))
